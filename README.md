@@ -25,4 +25,4 @@ python3 -m <service>
 
 # Test Plan Documentation
 
-[Test Plan Directory] (./docs/test_plan_directory.md)
+[Test Plan Directory](./docs/test_plan/README.md)
