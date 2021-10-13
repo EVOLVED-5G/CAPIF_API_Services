@@ -1,7 +1,7 @@
 - [Test Plan for CAPIF Api Invoker Management](#test-plan-for-capif-api-invoker-management)
 - [Tests](#tests)
   - [Test Case 1: Register NetApp](#test-case-1-register-netapp)
-  - [Test Case 1: Register NetApp Already registered](#test-case-1-register-netapp-already-registered)
+  - [Test Case 2: Register NetApp Already registered](#test-case-2-register-netapp-already-registered)
 
 
 # Test Plan for CAPIF Api Invoker Management
@@ -27,7 +27,7 @@ At this documentation you will have all information and related files and exampl
   Header Location at response contains the URI of the newly created resource, according to the structure: {apiRoot}/api-invoker-management/v1/onboardedInvokers/{onboardingId}
 
 
-## Test Case 1: Register NetApp Already registered
+## Test Case 2: Register NetApp Already registered
 * Description:
   
   This test case will check if a registration of NetApp previously registered return the properly response 
