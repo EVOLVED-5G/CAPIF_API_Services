@@ -1,0 +1,26 @@
+# coding: utf-8
+
+# flake8: noqa
+from __future__ import absolute_import
+# import models into model package
+from capif_routing_info.models.aef_profile import AefProfile
+from capif_routing_info.models.communication_type import CommunicationType
+from capif_routing_info.models.communication_type_any_of import CommunicationTypeAnyOf
+from capif_routing_info.models.custom_operation import CustomOperation
+from capif_routing_info.models.data_format import DataFormat
+from capif_routing_info.models.data_format_any_of import DataFormatAnyOf
+from capif_routing_info.models.interface_description import InterfaceDescription
+from capif_routing_info.models.invalid_param import InvalidParam
+from capif_routing_info.models.ipv4_address_range import Ipv4AddressRange
+from capif_routing_info.models.ipv6_address_range import Ipv6AddressRange
+from capif_routing_info.models.operation import Operation
+from capif_routing_info.models.operation_any_of import OperationAnyOf
+from capif_routing_info.models.problem_details import ProblemDetails
+from capif_routing_info.models.protocol import Protocol
+from capif_routing_info.models.protocol_any_of import ProtocolAnyOf
+from capif_routing_info.models.resource import Resource
+from capif_routing_info.models.routing_info import RoutingInfo
+from capif_routing_info.models.routing_rule import RoutingRule
+from capif_routing_info.models.security_method import SecurityMethod
+from capif_routing_info.models.security_method_any_of import SecurityMethodAnyOf
+from capif_routing_info.models.version import Version

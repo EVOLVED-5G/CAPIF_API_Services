@@ -3,22 +3,18 @@ services:
     build: TS29222_AEF_Security_API/.
     expose:
       - "8080"
-    command: uvicorn aef_security.main:app --host 0.0.0.0 --port 8080 --root-path /aef-security
   api-invoker-management:
     build: TS29222_CAPIF_API_Invoker_Management_API/.
     expose:
       - "8080"
-    command: uvicorn api_invoker_management.main:app --host 0.0.0.0 --port 8080 --root-path /api-invoker-management
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
-    command: uvicorn api_provider_management.main:app --host 0.0.0.0 --port 8080 --root-path /api-provider-management
   access-control-policy:
     build: TS29222_CAPIF_Access_Control_Policy_API/.
     expose:
       - "8080"
-    command: uvicorn access_control_policy.main:app --host 0.0.0.0 --port 8080 --root-path /access-control-policy
   logs:
     build: TS29222_CAPIF_Auditing_API/.
     expose:
@@ -31,27 +27,22 @@ services:
     build: TS29222_CAPIF_Events_API/.
     expose:
       - "8080"
-    command: uvicorn capif_events.main:app --host 0.0.0.0 --port 8080 --root-path /capif-events
   api-invocation-logs:
     build: TS29222_CAPIF_Logging_API_Invocation_API/.
     expose:
       - "8080"
-    command: uvicorn api_invocation_logs.main:app --host 0.0.0.0 --port 8080 --root-path /api-invocation-logs
   published-apis:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
       - "8080"
-    command: uvicorn published_apis.main:app --host 0.0.0.0 --port 8080 --root-path /published-apis
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
       - "8080"
-    command: uvicorn capif_routing_info.main:app --host 0.0.0.0 --port 8080 --root-path /capif-routing-info
   capif-security:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
-    command: uvicorn capif_security.main:app --host 0.0.0.0 --port 8080 --root-path /capif-security
   nginx:
     image: nginx:latest
     volumes:
@@ -70,5 +61,3 @@ services:
       - published-apis
       - capif-routing-info
       - capif-security
-
-
