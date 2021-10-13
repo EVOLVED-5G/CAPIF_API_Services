@@ -1,48 +1,67 @@
 services:
-  aef-security:
-    build: TS29222_AEF_Security_API/.
-    expose:
-      - "8080"
+#  aef-security:
+#    build: TS29222_AEF_Security_API/.
+#    expose:
+#      - "8080"
   api-invoker-management:
     build: TS29222_CAPIF_API_Invoker_Management_API/.
+    volumes:
+      - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app/
     expose:
       - "8080"
-  api-provider-management:
-    build: TS29222_CAPIF_API_Provider_Management_API/.
-    expose:
-      - "8080"
-  access-control-policy:
-    build: TS29222_CAPIF_Access_Control_Policy_API/.
-    expose:
-      - "8080"
-  logs:
-    build: TS29222_CAPIF_Auditing_API/.
-    expose:
-      - "8080"
-  service-apis:
-    build: TS29222_CAPIF_Discover_Service_API/.
-    expose:
-      - "8080"
-  capif-events:
-    build: TS29222_CAPIF_Events_API/.
-    expose:
-      - "8080"
-  api-invocation-logs:
-    build: TS29222_CAPIF_Logging_API_Invocation_API/.
-    expose:
-      - "8080"
-  published-apis:
-    build: TS29222_CAPIF_Publish_Service_API/.
-    expose:
-      - "8080"
-  capif-routing-info:
-    build: TS29222_CAPIF_Routing_Info_API/.
-    expose:
-      - "8080"
-  capif-security:
-    build: TS29222_CAPIF_Security_API/.
-    expose:
-      - "8080"
+#  api-provider-management:
+#    build: TS29222_CAPIF_API_Provider_Management_API/.
+#    expose:
+#      - "8080"
+#  access-control-policy:
+#    build: TS29222_CAPIF_Access_Control_Policy_API/.
+#    expose:
+#      - "8080"
+#  # logs:
+#  #   build: TS29222_CAPIF_Auditing_API/.
+#  #   expose:
+#  #     - "8080"
+#  service-apis:
+#    build: TS29222_CAPIF_Discover_Service_API/.
+#    expose:
+#      - "8080"
+#  # capif-events:
+#  #   build: TS29222_CAPIF_Events_API/.
+#  #   expose:
+#  #     - "8080"
+#  api-invocation-logs:
+#    build: TS29222_CAPIF_Logging_API_Invocation_API/.
+#    expose:
+#      - "8080"
+#  published-apis:
+#    build: TS29222_CAPIF_Publish_Service_API/.
+#    expose:
+#      - "8080"
+#  capif-routing-info:
+#    build: TS29222_CAPIF_Routing_Info_API/.
+#    expose:
+#      - "8080"
+#  capif-security:
+#    build: TS29222_CAPIF_Security_API/.
+#    expose:
+#      - "8080"
+  mongo:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    depends_on:
+      - mongo
   nginx:
     image: nginx:latest
     volumes:
@@ -50,14 +69,12 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - aef-security
+#      - aef-security
       - api-invoker-management
-      - api-provider-management
-      - access-control-policy
-      - logs
-      - service-apis
-      - capif-events
-      - api-invocation-logs
-      - published-apis
-      - capif-routing-info
-      - capif-security
+#      - api-provider-management
+#      - access-control-policy
+#      - service-apis
+#      - api-invocation-logs
+#      - published-apis
+#      - capif-routing-info
+#      - capif-security
