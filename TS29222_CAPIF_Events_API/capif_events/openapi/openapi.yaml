@@ -1,0 +1,3314 @@
+openapi: 3.0.0
+info:
+  description: |
+    API for event subscription management.
+    © 2021, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
+    All rights reserved.
+  title: CAPIF_Events_API
+  version: 1.2.0-alpha.1
+externalDocs:
+  description: 3GPP TS 29.222 V17.1.0 Common API Framework for 3GPP Northbound APIs
+  url: http://www.3gpp.org/ftp/Specs/archive/29_series/29.222/
+servers:
+- url: '{apiRoot}/capif-events/v1'
+  variables:
+    apiRoot:
+      default: https://example.com
+      description: apiRoot as defined in subclause 7.5 of 3GPP TS 29.222
+paths:
+  /{subscriberId}/subscriptions:
+    post:
+      callbacks:
+        notificationDestination:
+          '{request.body#/notificationDestination}':
+            post:
+              operationId: notificationDestination_request_bodyNotificationDestinationPost
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/EventNotification'
+                required: true
+              responses:
+                "204":
+                  description: No Content (successful notification)
+                "307":
+                  description: Temporary Redirect
+                  headers:
+                    Location:
+                      description: An alternative URI of the resource.
+                      required: true
+                      schema:
+                        type: string
+                "308":
+                  description: Permanent Redirect
+                  headers:
+                    Location:
+                      description: An alternative URI of the resource.
+                      required: true
+                      schema:
+                        type: string
+                "400":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Bad request
+                "401":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Unauthorized
+                "403":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Forbidden
+                "404":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Not Found
+                "411":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Length Required
+                "413":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Payload Too Large
+                "415":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Unsupported Media Type
+                "429":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Too Many Requests
+                "500":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Internal Server Error
+                "503":
+                  content:
+                    application/problem+json:
+                      schema:
+                        $ref: '#/components/schemas/ProblemDetails'
+                  description: Service Unavailable
+                default:
+                  description: Generic Error
+              x-callback-request: true
+      description: Creates a new individual CAPIF Event Subscription.
+      operationId: subscriber_id_subscriptions_post
+      parameters:
+      - description: Identifier of the Subscriber
+        explode: false
+        in: path
+        name: subscriberId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventSubscription'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSubscription'
+          description: Created (Successful creation of subscription)
+          headers:
+            Location:
+              description: 'Contains the URI of the newly created resource, according
+                to the structure: {apiRoot}/capif-events/v1/{subscriberId}/subscriptions/{subscriptionId}'
+              explode: false
+              required: true
+              schema:
+                type: string
+              style: simple
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Bad request
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Unauthorized
+        "403":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Forbidden
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Not Found
+        "411":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Length Required
+        "413":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Payload Too Large
+        "415":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Unsupported Media Type
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Too Many Requests
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Internal Server Error
+        "503":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Service Unavailable
+        default:
+          description: Generic Error
+      x-openapi-router-controller: capif_events.controllers.default_controller
+  /{subscriberId}/subscriptions/{subscriptionId}:
+    delete:
+      description: Deletes an individual CAPIF Event Subscription.
+      operationId: subscriber_id_subscriptions_subscription_id_delete
+      parameters:
+      - description: Identifier of the Subscriber
+        explode: false
+        in: path
+        name: subscriberId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Identifier of an individual Events Subscription
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: The individual CAPIF Events Subscription matching the subscriptionId
+            is deleted.
+        "307":
+          description: Temporary Redirect
+          headers:
+            Location:
+              description: An alternative URI of the resource.
+              required: true
+              schema:
+                type: string
+        "308":
+          description: Permanent Redirect
+          headers:
+            Location:
+              description: An alternative URI of the resource.
+              required: true
+              schema:
+                type: string
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Bad request
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Unauthorized
+        "403":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Forbidden
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Not Found
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Too Many Requests
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Internal Server Error
+        "503":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Service Unavailable
+        default:
+          description: Generic Error
+      x-openapi-router-controller: capif_events.controllers.default_controller
+components:
+  schemas:
+    EventSubscription:
+      description: Represents an individual CAPIF Event Subscription resource.
+      example:
+        notificationDestination: notificationDestination
+        eventFilters:
+        - aefIds:
+          - aefIds
+          - aefIds
+          apiInvokerIds:
+          - apiInvokerIds
+          - apiInvokerIds
+          apiIds:
+          - apiIds
+          - apiIds
+        - aefIds:
+          - aefIds
+          - aefIds
+          apiInvokerIds:
+          - apiInvokerIds
+          - apiInvokerIds
+          apiIds:
+          - apiIds
+          - apiIds
+        supportedFeatures: supportedFeatures
+        eventReq:
+          partitionCriteria:
+          - null
+          - null
+          grpRepTime: 5
+          monDur: 2000-01-23T04:56:07.000+00:00
+          immRep: true
+          maxReportNbr: 0
+          repPeriod: 6
+          sampRatio: 15
+        websockNotifConfig:
+          requestWebsocketUri: true
+          websocketUri: websocketUri
+        events:
+        - null
+        - null
+        requestTestNotification: true
+      properties:
+        events:
+          description: Subscribed events
+          items:
+            $ref: '#/components/schemas/CAPIFEvent'
+          minItems: 1
+          title: events
+          type: array
+        eventFilters:
+          description: Subscribed event filters
+          items:
+            $ref: '#/components/schemas/CAPIFEventFilter'
+          minItems: 1
+          title: eventFilters
+          type: array
+        eventReq:
+          $ref: '#/components/schemas/ReportingInformation'
+        notificationDestination:
+          description: string providing an URI formatted according to IETF RFC 3986.
+          title: Uri
+          type: string
+        requestTestNotification:
+          description: Set to true by Subscriber to request the CAPIF core function
+            to send a test notification as defined in in subclause 7.6. Set to false
+            or omitted otherwise.
+          title: requestTestNotification
+          type: boolean
+        websockNotifConfig:
+          $ref: '#/components/schemas/WebsockNotifConfig'
+        supportedFeatures:
+          description: A string used to indicate the features supported by an API
+            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
+            contain a bitmask indicating supported features in hexadecimal representation
+            Each character in the string shall take a value of "0" to "9", "a" to
+            "f" or "A" to "F" and shall represent the support of 4 features as described
+            in table 5.2.2-3. The most significant character representing the highest-numbered
+            features shall appear first in the string, and the character representing
+            features 1 to 4 shall appear last in the string. The list of features
+            and their numbering (starting with 1) are defined separately for each
+            API. If the string contains a lower number of characters than there are
+            defined features for an API, all features that would be represented by
+            characters that are not present in the string are not supported
+          pattern: ^[A-Fa-f0-9]*$
+          title: SupportedFeatures
+          type: string
+      required:
+      - events
+      - notificationDestination
+      title: EventSubscription
+      type: object
+    EventNotification:
+      description: Represents an individual CAPIF Event notification.
+      example:
+        subscriptionId: subscriptionId
+        eventDetail:
+          apiInvokerIds:
+          - apiInvokerIds
+          - apiInvokerIds
+          invocationLogs:
+          - supportedFeatures: supportedFeatures
+            apiInvokerId: apiInvokerId
+            aefId: aefId
+            logs:
+            - apiName: apiName
+              invocationTime: 2000-01-23T04:56:07.000+00:00
+              srcInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              fwdInterface: fwdInterface
+              resourceName: resourceName
+              uri: uri
+              inputParameters: ""
+              invocationLatency: 0
+              result: result
+              apiVersion: apiVersion
+              destInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              apiId: apiId
+              outputParameters: ""
+            - apiName: apiName
+              invocationTime: 2000-01-23T04:56:07.000+00:00
+              srcInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              fwdInterface: fwdInterface
+              resourceName: resourceName
+              uri: uri
+              inputParameters: ""
+              invocationLatency: 0
+              result: result
+              apiVersion: apiVersion
+              destInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              apiId: apiId
+              outputParameters: ""
+          - supportedFeatures: supportedFeatures
+            apiInvokerId: apiInvokerId
+            aefId: aefId
+            logs:
+            - apiName: apiName
+              invocationTime: 2000-01-23T04:56:07.000+00:00
+              srcInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              fwdInterface: fwdInterface
+              resourceName: resourceName
+              uri: uri
+              inputParameters: ""
+              invocationLatency: 0
+              result: result
+              apiVersion: apiVersion
+              destInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              apiId: apiId
+              outputParameters: ""
+            - apiName: apiName
+              invocationTime: 2000-01-23T04:56:07.000+00:00
+              srcInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              fwdInterface: fwdInterface
+              resourceName: resourceName
+              uri: uri
+              inputParameters: ""
+              invocationLatency: 0
+              result: result
+              apiVersion: apiVersion
+              destInterface:
+                ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              apiId: apiId
+              outputParameters: ""
+          apiTopoHide:
+            apiId: apiId
+            routingRules:
+            - ipv6AddrRanges:
+              - start: start
+                end: end
+              - start: start
+                end: end
+              aefProfile:
+                securityMethods:
+                - null
+                - null
+                versions:
+                - apiVersion: apiVersion
+                  resources:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  custOperations:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  expiry: 2000-01-23T04:56:07.000+00:00
+                - apiVersion: apiVersion
+                  resources:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  custOperations:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  expiry: 2000-01-23T04:56:07.000+00:00
+                domainName: domainName
+                aefId: aefId
+                interfaceDescriptions:
+                - ipv6Addr: ipv6Addr
+                  securityMethods:
+                  - null
+                  - null
+                  port: 5248
+                  ipv4Addr: ipv4Addr
+                - ipv6Addr: ipv6Addr
+                  securityMethods:
+                  - null
+                  - null
+                  port: 5248
+                  ipv4Addr: ipv4Addr
+              ipv4AddrRanges:
+              - start: 198.51.100.1
+                end: 198.51.100.1
+              - start: 198.51.100.1
+                end: 198.51.100.1
+            - ipv6AddrRanges:
+              - start: start
+                end: end
+              - start: start
+                end: end
+              aefProfile:
+                securityMethods:
+                - null
+                - null
+                versions:
+                - apiVersion: apiVersion
+                  resources:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  custOperations:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  expiry: 2000-01-23T04:56:07.000+00:00
+                - apiVersion: apiVersion
+                  resources:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    resourceName: resourceName
+                    custOpName: custOpName
+                    uri: uri
+                  custOperations:
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  - operations:
+                    - null
+                    - null
+                    description: description
+                    custOpName: custOpName
+                  expiry: 2000-01-23T04:56:07.000+00:00
+                domainName: domainName
+                aefId: aefId
+                interfaceDescriptions:
+                - ipv6Addr: ipv6Addr
+                  securityMethods:
+                  - null
+                  - null
+                  port: 5248
+                  ipv4Addr: ipv4Addr
+                - ipv6Addr: ipv6Addr
+                  securityMethods:
+                  - null
+                  - null
+                  port: 5248
+                  ipv4Addr: ipv4Addr
+              ipv4AddrRanges:
+              - start: 198.51.100.1
+                end: 198.51.100.1
+              - start: 198.51.100.1
+                end: 198.51.100.1
+          serviceAPIDescriptions:
+          - serviceAPICategory: serviceAPICategory
+            ccfId: ccfId
+            apiName: apiName
+            shareableInfo:
+              capifProvDoms:
+              - capifProvDoms
+              - capifProvDoms
+              isShareable: true
+            supportedFeatures: supportedFeatures
+            description: description
+            apiSuppFeats: apiSuppFeats
+            apiId: apiId
+            aefProfiles:
+            - securityMethods:
+              - null
+              - null
+              versions:
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              domainName: domainName
+              aefId: aefId
+              interfaceDescriptions:
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+            - securityMethods:
+              - null
+              - null
+              versions:
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              domainName: domainName
+              aefId: aefId
+              interfaceDescriptions:
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+            pubApiPath:
+              ccfIds:
+              - ccfIds
+              - ccfIds
+          - serviceAPICategory: serviceAPICategory
+            ccfId: ccfId
+            apiName: apiName
+            shareableInfo:
+              capifProvDoms:
+              - capifProvDoms
+              - capifProvDoms
+              isShareable: true
+            supportedFeatures: supportedFeatures
+            description: description
+            apiSuppFeats: apiSuppFeats
+            apiId: apiId
+            aefProfiles:
+            - securityMethods:
+              - null
+              - null
+              versions:
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              domainName: domainName
+              aefId: aefId
+              interfaceDescriptions:
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+            - securityMethods:
+              - null
+              - null
+              versions:
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              domainName: domainName
+              aefId: aefId
+              interfaceDescriptions:
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+            pubApiPath:
+              ccfIds:
+              - ccfIds
+              - ccfIds
+          apiIds:
+          - apiIds
+          - apiIds
+      properties:
+        subscriptionId:
+          description: Identifier of the subscription resource to which the notification
+            is related – CAPIF resource identifier
+          type: string
+        events:
+          $ref: '#/components/schemas/CAPIFEvent'
+        eventDetail:
+          $ref: '#/components/schemas/CAPIFEventDetail'
+      required:
+      - events
+      - subscriptionId
+      type: object
+    CAPIFEventFilter:
+      description: Represents a CAPIF event filter.
+      example:
+        aefIds:
+        - aefIds
+        - aefIds
+        apiInvokerIds:
+        - apiInvokerIds
+        - apiInvokerIds
+        apiIds:
+        - apiIds
+        - apiIds
+      properties:
+        apiIds:
+          description: Identifier of the service API
+          items:
+            type: string
+          minItems: 1
+          title: apiIds
+          type: array
+        apiInvokerIds:
+          description: Identity of the API invoker
+          items:
+            type: string
+          minItems: 1
+          title: apiInvokerIds
+          type: array
+        aefIds:
+          description: Identifier of the API exposing function
+          items:
+            type: string
+          minItems: 1
+          title: aefIds
+          type: array
+      title: CAPIFEventFilter
+      type: object
+    CAPIFEventDetail:
+      description: Represents a CAPIF event details.
+      example:
+        apiInvokerIds:
+        - apiInvokerIds
+        - apiInvokerIds
+        invocationLogs:
+        - supportedFeatures: supportedFeatures
+          apiInvokerId: apiInvokerId
+          aefId: aefId
+          logs:
+          - apiName: apiName
+            invocationTime: 2000-01-23T04:56:07.000+00:00
+            srcInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            fwdInterface: fwdInterface
+            resourceName: resourceName
+            uri: uri
+            inputParameters: ""
+            invocationLatency: 0
+            result: result
+            apiVersion: apiVersion
+            destInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            apiId: apiId
+            outputParameters: ""
+          - apiName: apiName
+            invocationTime: 2000-01-23T04:56:07.000+00:00
+            srcInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            fwdInterface: fwdInterface
+            resourceName: resourceName
+            uri: uri
+            inputParameters: ""
+            invocationLatency: 0
+            result: result
+            apiVersion: apiVersion
+            destInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            apiId: apiId
+            outputParameters: ""
+        - supportedFeatures: supportedFeatures
+          apiInvokerId: apiInvokerId
+          aefId: aefId
+          logs:
+          - apiName: apiName
+            invocationTime: 2000-01-23T04:56:07.000+00:00
+            srcInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            fwdInterface: fwdInterface
+            resourceName: resourceName
+            uri: uri
+            inputParameters: ""
+            invocationLatency: 0
+            result: result
+            apiVersion: apiVersion
+            destInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            apiId: apiId
+            outputParameters: ""
+          - apiName: apiName
+            invocationTime: 2000-01-23T04:56:07.000+00:00
+            srcInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            fwdInterface: fwdInterface
+            resourceName: resourceName
+            uri: uri
+            inputParameters: ""
+            invocationLatency: 0
+            result: result
+            apiVersion: apiVersion
+            destInterface:
+              ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            apiId: apiId
+            outputParameters: ""
+        apiTopoHide:
+          apiId: apiId
+          routingRules:
+          - ipv6AddrRanges:
+            - start: start
+              end: end
+            - start: start
+              end: end
+            aefProfile:
+              securityMethods:
+              - null
+              - null
+              versions:
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              domainName: domainName
+              aefId: aefId
+              interfaceDescriptions:
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+            ipv4AddrRanges:
+            - start: 198.51.100.1
+              end: 198.51.100.1
+            - start: 198.51.100.1
+              end: 198.51.100.1
+          - ipv6AddrRanges:
+            - start: start
+              end: end
+            - start: start
+              end: end
+            aefProfile:
+              securityMethods:
+              - null
+              - null
+              versions:
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              - apiVersion: apiVersion
+                resources:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  resourceName: resourceName
+                  custOpName: custOpName
+                  uri: uri
+                custOperations:
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                - operations:
+                  - null
+                  - null
+                  description: description
+                  custOpName: custOpName
+                expiry: 2000-01-23T04:56:07.000+00:00
+              domainName: domainName
+              aefId: aefId
+              interfaceDescriptions:
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+              - ipv6Addr: ipv6Addr
+                securityMethods:
+                - null
+                - null
+                port: 5248
+                ipv4Addr: ipv4Addr
+            ipv4AddrRanges:
+            - start: 198.51.100.1
+              end: 198.51.100.1
+            - start: 198.51.100.1
+              end: 198.51.100.1
+        serviceAPIDescriptions:
+        - serviceAPICategory: serviceAPICategory
+          ccfId: ccfId
+          apiName: apiName
+          shareableInfo:
+            capifProvDoms:
+            - capifProvDoms
+            - capifProvDoms
+            isShareable: true
+          supportedFeatures: supportedFeatures
+          description: description
+          apiSuppFeats: apiSuppFeats
+          apiId: apiId
+          aefProfiles:
+          - securityMethods:
+            - null
+            - null
+            versions:
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            domainName: domainName
+            aefId: aefId
+            interfaceDescriptions:
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+          - securityMethods:
+            - null
+            - null
+            versions:
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            domainName: domainName
+            aefId: aefId
+            interfaceDescriptions:
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+          pubApiPath:
+            ccfIds:
+            - ccfIds
+            - ccfIds
+        - serviceAPICategory: serviceAPICategory
+          ccfId: ccfId
+          apiName: apiName
+          shareableInfo:
+            capifProvDoms:
+            - capifProvDoms
+            - capifProvDoms
+            isShareable: true
+          supportedFeatures: supportedFeatures
+          description: description
+          apiSuppFeats: apiSuppFeats
+          apiId: apiId
+          aefProfiles:
+          - securityMethods:
+            - null
+            - null
+            versions:
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            domainName: domainName
+            aefId: aefId
+            interfaceDescriptions:
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+          - securityMethods:
+            - null
+            - null
+            versions:
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            domainName: domainName
+            aefId: aefId
+            interfaceDescriptions:
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+          pubApiPath:
+            ccfIds:
+            - ccfIds
+            - ccfIds
+        apiIds:
+        - apiIds
+        - apiIds
+      properties:
+        serviceAPIDescriptions:
+          description: Description of the service API as published by the APF.
+          items:
+            $ref: '#/components/schemas/ServiceAPIDescription'
+          minItems: 1
+          title: serviceAPIDescriptions
+          type: array
+        apiIds:
+          description: Identifier of the service API
+          items:
+            type: string
+          minItems: 1
+          title: apiIds
+          type: array
+        apiInvokerIds:
+          description: Identity of the API invoker
+          items:
+            type: string
+          minItems: 1
+          title: apiInvokerIds
+          type: array
+        accCtrlPolList:
+          $ref: '#/components/schemas/AccessControlPolicyListExt'
+        invocationLogs:
+          description: Invocation logs.
+          items:
+            $ref: '#/components/schemas/InvocationLog'
+          minItems: 1
+          title: invocationLogs
+          type: array
+        apiTopoHide:
+          $ref: '#/components/schemas/TopologyHiding'
+      title: CAPIFEventDetail
+      type: object
+    AccessControlPolicyListExt:
+      allOf:
+      - $ref: '#/components/schemas/AccessControlPolicyList'
+      - $ref: '#/components/schemas/AccessControlPolicyListExt_allOf'
+      description: Represents the extension for access control policies.
+      required:
+      - apiId
+      properties:
+        apiId:
+          title: apiId
+          type: string
+      title: AccessControlPolicyListExt
+    TopologyHiding:
+      description: Represents the routing rules information of a service API.
+      example:
+        apiId: apiId
+        routingRules:
+        - ipv6AddrRanges:
+          - start: start
+            end: end
+          - start: start
+            end: end
+          aefProfile:
+            securityMethods:
+            - null
+            - null
+            versions:
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            domainName: domainName
+            aefId: aefId
+            interfaceDescriptions:
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+          ipv4AddrRanges:
+          - start: 198.51.100.1
+            end: 198.51.100.1
+          - start: 198.51.100.1
+            end: 198.51.100.1
+        - ipv6AddrRanges:
+          - start: start
+            end: end
+          - start: start
+            end: end
+          aefProfile:
+            securityMethods:
+            - null
+            - null
+            versions:
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            - apiVersion: apiVersion
+              resources:
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              - operations:
+                - null
+                - null
+                description: description
+                resourceName: resourceName
+                custOpName: custOpName
+                uri: uri
+              custOperations:
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              - operations:
+                - null
+                - null
+                description: description
+                custOpName: custOpName
+              expiry: 2000-01-23T04:56:07.000+00:00
+            domainName: domainName
+            aefId: aefId
+            interfaceDescriptions:
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+            - ipv6Addr: ipv6Addr
+              securityMethods:
+              - null
+              - null
+              port: 5248
+              ipv4Addr: ipv4Addr
+          ipv4AddrRanges:
+          - start: 198.51.100.1
+            end: 198.51.100.1
+          - start: 198.51.100.1
+            end: 198.51.100.1
+      properties:
+        apiId:
+          title: apiId
+          type: string
+        routingRules:
+          items:
+            $ref: '#/components/schemas/RoutingRule'
+          minItems: 1
+          title: routingRules
+          type: array
+      required:
+      - apiId
+      - routingRules
+      title: TopologyHiding
+      type: object
+    CAPIFEvent:
+      anyOf:
+      - $ref: '#/components/schemas/CAPIFEvent_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - SERVICE_API_AVAILABLE: Events related to the availability of service APIs after the service APIs are published. - SERVICE_API_UNAVAILABLE: Events related to the unavailability of service APIs after the service APIs are unpublished. - SERVICE_API_UPDATE: Events related to change in service API information. - API_INVOKER_ONBOARDED: Events related to API invoker onboarded to CAPIF. - API_INVOKER_OFFBOARDED: Events related to API invoker offboarded from CAPIF. - SERVICE_API_INVOCATION_SUCCESS: Events related to the successful invocation of service APIs. - SERVICE_API_INVOCATION_FAILURE: Events related to the failed invocation of service APIs. - ACCESS_CONTROL_POLICY_UPDATE: Events related to the update for the access control policy related to the service APIs. - ACCESS_CONTROL_POLICY_UNAVAILABLE: Events related to the unavailability of the access control policy related to the service APIs. - API_INVOKER_AUTHORIZATION_REVOKED: Events related to the revocation of the authorization of API invokers to access the service APIs. - API_INVOKER_UPDATED: Events related to API invoker profile updated to CAPIF. - API_TOPOLOGY_HIDING_CREATED: Events related to the creation or update of the API topology hiding information of the service APIs after the service APIs are published. - API_TOPOLOGY_HIDING_REVOKED: Events related to the revocation of the API topology hiding information of the service APIs after the service APIs are unpublished.
+      title: CAPIFEvent
+    ProblemDetails:
+      description: Represents additional information and details on an error response.
+      properties:
+        type:
+          description: string providing an URI formatted according to IETF RFC 3986.
+          title: Uri
+          type: string
+        title:
+          description: A short, human-readable summary of the problem type. It should
+            not change from occurrence to occurrence of the problem.
+          title: title
+          type: string
+        status:
+          description: The HTTP status code for this occurrence of the problem.
+          title: status
+          type: integer
+        detail:
+          description: A human-readable explanation specific to this occurrence of
+            the problem.
+          title: detail
+          type: string
+        instance:
+          description: string providing an URI formatted according to IETF RFC 3986.
+          title: Uri
+          type: string
+        cause:
+          description: A machine-readable application error cause specific to this
+            occurrence of the problem. This IE should be present and provide application-related
+            error information, if available.
+          title: cause
+          type: string
+        invalidParams:
+          description: Description of invalid parameters, for a request rejected due
+            to invalid parameters.
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+          minItems: 1
+          title: invalidParams
+          type: array
+        supportedFeatures:
+          description: A string used to indicate the features supported by an API
+            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
+            contain a bitmask indicating supported features in hexadecimal representation
+            Each character in the string shall take a value of "0" to "9", "a" to
+            "f" or "A" to "F" and shall represent the support of 4 features as described
+            in table 5.2.2-3. The most significant character representing the highest-numbered
+            features shall appear first in the string, and the character representing
+            features 1 to 4 shall appear last in the string. The list of features
+            and their numbering (starting with 1) are defined separately for each
+            API. If the string contains a lower number of characters than there are
+            defined features for an API, all features that would be represented by
+            characters that are not present in the string are not supported
+          pattern: ^[A-Fa-f0-9]*$
+          title: SupportedFeatures
+          type: string
+      title: ProblemDetails
+      type: object
+    Uri:
+      description: string providing an URI formatted according to IETF RFC 3986.
+      title: Uri
+      type: string
+    InvalidParam:
+      description: Represents the description of invalid parameters, for a request
+        rejected due to invalid parameters.
+      properties:
+        param:
+          description: Attribute's name encoded as a JSON Pointer, or header's name.
+          title: param
+          type: string
+        reason:
+          description: A human-readable reason, e.g. "must be a positive integer".
+          title: reason
+          type: string
+      required:
+      - param
+      title: InvalidParam
+      type: object
+    ReportingInformation:
+      description: Represents the type of reporting that the subscription requires.
+      example:
+        partitionCriteria:
+        - null
+        - null
+        grpRepTime: 5
+        monDur: 2000-01-23T04:56:07.000+00:00
+        immRep: true
+        maxReportNbr: 0
+        repPeriod: 6
+        sampRatio: 15
+      properties:
+        immRep:
+          title: immRep
+          type: boolean
+        notifMethod:
+          $ref: '#/components/schemas/NotificationMethod'
+        maxReportNbr:
+          description: Unsigned Integer, i.e. only value 0 and integers above 0 are
+            permissible.
+          minimum: 0
+          title: Uinteger
+          type: integer
+        monDur:
+          description: string with format "date-time" as defined in OpenAPI.
+          format: date-time
+          title: DateTime
+          type: string
+        repPeriod:
+          description: indicating a time in seconds.
+          title: DurationSec
+          type: integer
+        sampRatio:
+          description: Unsigned integer indicating Sampling Ratio (see clauses 4.15.1
+            of 3GPP TS 23.502), expressed in percent.
+          maximum: 100
+          minimum: 1
+          title: SamplingRatio
+          type: integer
+        partitionCriteria:
+          description: Criteria for partitioning the UEs before applying the sampling
+            ratio.
+          items:
+            $ref: '#/components/schemas/PartitioningCriteria'
+          minItems: 1
+          title: partitionCriteria
+          type: array
+        grpRepTime:
+          description: indicating a time in seconds.
+          title: DurationSec
+          type: integer
+        notifFlag:
+          $ref: '#/components/schemas/NotificationFlag'
+      title: ReportingInformation
+      type: object
+    WebsockNotifConfig:
+      description: Represents the configuration information for the delivery of notifications
+        over Websockets.
+      example:
+        requestWebsocketUri: true
+        websocketUri: websocketUri
+      properties:
+        websocketUri:
+          description: string formatted according to IETF RFC 3986 identifying a referenced
+            resource.
+          title: Link
+          type: string
+        requestWebsocketUri:
+          description: Set by the SCS/AS to indicate that the Websocket delivery is
+            requested.
+          title: requestWebsocketUri
+          type: boolean
+      title: WebsockNotifConfig
+      type: object
+    Link:
+      description: string formatted according to IETF RFC 3986 identifying a referenced
+        resource.
+      title: Link
+      type: string
+    SupportedFeatures:
+      description: A string used to indicate the features supported by an API that
+        is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain
+        a bitmask indicating supported features in hexadecimal representation Each
+        character in the string shall take a value of "0" to "9", "a" to "f" or "A"
+        to "F" and shall represent the support of 4 features as described in table 5.2.2-3.
+        The most significant character representing the highest-numbered features
+        shall appear first in the string, and the character representing features
+        1 to 4 shall appear last in the string. The list of features and their numbering
+        (starting with 1) are defined separately for each API. If the string contains
+        a lower number of characters than there are defined features for an API, all
+        features that would be represented by characters that are not present in the
+        string are not supported
+      pattern: ^[A-Fa-f0-9]*$
+      title: SupportedFeatures
+      type: string
+    ServiceAPIDescription:
+      description: Represents the description of a service API as published by the
+        APF.
+      example:
+        serviceAPICategory: serviceAPICategory
+        ccfId: ccfId
+        apiName: apiName
+        shareableInfo:
+          capifProvDoms:
+          - capifProvDoms
+          - capifProvDoms
+          isShareable: true
+        supportedFeatures: supportedFeatures
+        description: description
+        apiSuppFeats: apiSuppFeats
+        apiId: apiId
+        aefProfiles:
+        - securityMethods:
+          - null
+          - null
+          versions:
+          - apiVersion: apiVersion
+            resources:
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            custOperations:
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            expiry: 2000-01-23T04:56:07.000+00:00
+          - apiVersion: apiVersion
+            resources:
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            custOperations:
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            expiry: 2000-01-23T04:56:07.000+00:00
+          domainName: domainName
+          aefId: aefId
+          interfaceDescriptions:
+          - ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          - ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+        - securityMethods:
+          - null
+          - null
+          versions:
+          - apiVersion: apiVersion
+            resources:
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            custOperations:
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            expiry: 2000-01-23T04:56:07.000+00:00
+          - apiVersion: apiVersion
+            resources:
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            custOperations:
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            expiry: 2000-01-23T04:56:07.000+00:00
+          domainName: domainName
+          aefId: aefId
+          interfaceDescriptions:
+          - ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          - ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+        pubApiPath:
+          ccfIds:
+          - ccfIds
+          - ccfIds
+      properties:
+        apiName:
+          description: API name, it is set as {apiName} part of the URI structure
+            as defined in subclause 4.4 of 3GPP TS 29.501.
+          title: apiName
+          type: string
+        apiId:
+          description: API identifier assigned by the CAPIF core function to the published
+            service API. Shall not be present in the HTTP POST request from the API
+            publishing function to the CAPIF core function. Shall be present in the
+            HTTP POST response from the CAPIF core function to the API publishing
+            function and in the HTTP GET response from the CAPIF core function to
+            the API invoker (discovery API).
+          title: apiId
+          type: string
+        aefProfiles:
+          description: AEF profile information, which includes the exposed API details
+            (e.g. protocol).
+          items:
+            $ref: '#/components/schemas/AefProfile'
+          minItems: 1
+          title: aefProfiles
+          type: array
+        description:
+          description: Text description of the API
+          title: description
+          type: string
+        supportedFeatures:
+          description: A string used to indicate the features supported by an API
+            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
+            contain a bitmask indicating supported features in hexadecimal representation
+            Each character in the string shall take a value of "0" to "9", "a" to
+            "f" or "A" to "F" and shall represent the support of 4 features as described
+            in table 5.2.2-3. The most significant character representing the highest-numbered
+            features shall appear first in the string, and the character representing
+            features 1 to 4 shall appear last in the string. The list of features
+            and their numbering (starting with 1) are defined separately for each
+            API. If the string contains a lower number of characters than there are
+            defined features for an API, all features that would be represented by
+            characters that are not present in the string are not supported
+          pattern: ^[A-Fa-f0-9]*$
+          title: SupportedFeatures
+          type: string
+        shareableInfo:
+          $ref: '#/components/schemas/ShareableInformation'
+        serviceAPICategory:
+          title: serviceAPICategory
+          type: string
+        apiSuppFeats:
+          description: A string used to indicate the features supported by an API
+            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
+            contain a bitmask indicating supported features in hexadecimal representation
+            Each character in the string shall take a value of "0" to "9", "a" to
+            "f" or "A" to "F" and shall represent the support of 4 features as described
+            in table 5.2.2-3. The most significant character representing the highest-numbered
+            features shall appear first in the string, and the character representing
+            features 1 to 4 shall appear last in the string. The list of features
+            and their numbering (starting with 1) are defined separately for each
+            API. If the string contains a lower number of characters than there are
+            defined features for an API, all features that would be represented by
+            characters that are not present in the string are not supported
+          pattern: ^[A-Fa-f0-9]*$
+          title: SupportedFeatures
+          type: string
+        pubApiPath:
+          $ref: '#/components/schemas/PublishedApiPath'
+        ccfId:
+          description: CAPIF core function identifier.
+          title: ccfId
+          type: string
+      required:
+      - apiName
+      title: ServiceAPIDescription
+      type: object
+    AefProfile:
+      description: Represents the AEF profile data.
+      example:
+        securityMethods:
+        - null
+        - null
+        versions:
+        - apiVersion: apiVersion
+          resources:
+          - operations:
+            - null
+            - null
+            description: description
+            resourceName: resourceName
+            custOpName: custOpName
+            uri: uri
+          - operations:
+            - null
+            - null
+            description: description
+            resourceName: resourceName
+            custOpName: custOpName
+            uri: uri
+          custOperations:
+          - operations:
+            - null
+            - null
+            description: description
+            custOpName: custOpName
+          - operations:
+            - null
+            - null
+            description: description
+            custOpName: custOpName
+          expiry: 2000-01-23T04:56:07.000+00:00
+        - apiVersion: apiVersion
+          resources:
+          - operations:
+            - null
+            - null
+            description: description
+            resourceName: resourceName
+            custOpName: custOpName
+            uri: uri
+          - operations:
+            - null
+            - null
+            description: description
+            resourceName: resourceName
+            custOpName: custOpName
+            uri: uri
+          custOperations:
+          - operations:
+            - null
+            - null
+            description: description
+            custOpName: custOpName
+          - operations:
+            - null
+            - null
+            description: description
+            custOpName: custOpName
+          expiry: 2000-01-23T04:56:07.000+00:00
+        domainName: domainName
+        aefId: aefId
+        interfaceDescriptions:
+        - ipv6Addr: ipv6Addr
+          securityMethods:
+          - null
+          - null
+          port: 5248
+          ipv4Addr: ipv4Addr
+        - ipv6Addr: ipv6Addr
+          securityMethods:
+          - null
+          - null
+          port: 5248
+          ipv4Addr: ipv4Addr
+      oneOf:
+      - required:
+        - domainName
+      - required:
+        - interfaceDescriptions
+      properties:
+        aefId:
+          description: Identifier of the API exposing function
+          title: aefId
+          type: string
+        versions:
+          description: API version
+          items:
+            $ref: '#/components/schemas/Version'
+          minItems: 1
+          title: versions
+          type: array
+        protocol:
+          $ref: '#/components/schemas/Protocol'
+        dataFormat:
+          $ref: '#/components/schemas/DataFormat'
+        securityMethods:
+          description: Security methods supported by the AEF
+          items:
+            $ref: '#/components/schemas/SecurityMethod'
+          minItems: 1
+          title: securityMethods
+          type: array
+        domainName:
+          description: Domain to which API belongs to
+          title: domainName
+          type: string
+        interfaceDescriptions:
+          description: Interface details
+          items:
+            $ref: '#/components/schemas/InterfaceDescription'
+          minItems: 1
+          title: interfaceDescriptions
+          type: array
+      required:
+      - aefId
+      - versions
+      title: AefProfile
+      type: object
+    Version:
+      description: Represents the API version information.
+      example:
+        apiVersion: apiVersion
+        resources:
+        - operations:
+          - null
+          - null
+          description: description
+          resourceName: resourceName
+          custOpName: custOpName
+          uri: uri
+        - operations:
+          - null
+          - null
+          description: description
+          resourceName: resourceName
+          custOpName: custOpName
+          uri: uri
+        custOperations:
+        - operations:
+          - null
+          - null
+          description: description
+          custOpName: custOpName
+        - operations:
+          - null
+          - null
+          description: description
+          custOpName: custOpName
+        expiry: 2000-01-23T04:56:07.000+00:00
+      properties:
+        apiVersion:
+          description: API major version in URI (e.g. v1)
+          title: apiVersion
+          type: string
+        expiry:
+          description: string with format "date-time" as defined in OpenAPI.
+          format: date-time
+          title: DateTime
+          type: string
+        resources:
+          description: Resources supported by the API.
+          items:
+            $ref: '#/components/schemas/Resource'
+          minItems: 1
+          title: resources
+          type: array
+        custOperations:
+          description: Custom operations without resource association.
+          items:
+            $ref: '#/components/schemas/CustomOperation'
+          minItems: 1
+          title: custOperations
+          type: array
+      required:
+      - apiVersion
+      title: Version
+      type: object
+    Resource:
+      description: Represents the API resource data.
+      example:
+        operations:
+        - null
+        - null
+        description: description
+        resourceName: resourceName
+        custOpName: custOpName
+        uri: uri
+      properties:
+        resourceName:
+          description: Resource name
+          title: resourceName
+          type: string
+        commType:
+          $ref: '#/components/schemas/CommunicationType'
+        uri:
+          description: Relative URI of the API resource, it is set as {apiSpecificResourceUriPart}
+            part of the URI structure as defined in subclause 4.4 of 3GPP TS 29.501.
+          title: uri
+          type: string
+        custOpName:
+          description: it is set as {custOpName} part of the URI structure for a custom
+            operation associated with a resource as defined in subclause 4.4 of 3GPP
+            TS 29.501.
+          title: custOpName
+          type: string
+        operations:
+          description: Supported HTTP methods for the API resource. Only applicable
+            when the protocol in AefProfile indicates HTTP.
+          items:
+            $ref: '#/components/schemas/Operation'
+          minItems: 1
+          title: operations
+          type: array
+        description:
+          description: Text description of the API resource
+          title: description
+          type: string
+      required:
+      - commType
+      - resourceName
+      - uri
+      title: Resource
+      type: object
+    CommunicationType:
+      anyOf:
+      - $ref: '#/components/schemas/CommunicationType_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - REQUEST_RESPONSE: The communication is of the type request-response - SUBSCRIBE_NOTIFY: The communication is of the type subscribe-notify
+      title: CommunicationType
+    Operation:
+      anyOf:
+      - $ref: '#/components/schemas/Operation_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - GET: HTTP GET method - POST: HTTP POST method - PUT: HTTP PUT method - PATCH: HTTP PATCH method - DELETE: HTTP DELETE method
+      title: Operation
+    CustomOperation:
+      description: Represents the description of a custom operation.
+      example:
+        operations:
+        - null
+        - null
+        description: description
+        custOpName: custOpName
+      properties:
+        commType:
+          $ref: '#/components/schemas/CommunicationType'
+        custOpName:
+          description: it is set as {custOpName} part of the URI structure for a custom
+            operation without resource association as defined in subclause 4.4 of
+            3GPP TS 29.501.
+          title: custOpName
+          type: string
+        operations:
+          description: Supported HTTP methods for the API resource. Only applicable
+            when the protocol in AefProfile indicates HTTP.
+          items:
+            $ref: '#/components/schemas/Operation'
+          minItems: 1
+          title: operations
+          type: array
+        description:
+          description: Text description of the custom operation
+          title: description
+          type: string
+      required:
+      - commType
+      - custOpName
+      title: CustomOperation
+      type: object
+    Protocol:
+      anyOf:
+      - $ref: '#/components/schemas/Protocol_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - HTTP_1_1: HTTP version 1.1 - HTTP_2: HTTP version 2
+      title: Protocol
+    DataFormat:
+      anyOf:
+      - $ref: '#/components/schemas/DataFormat_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - JSON: JavaScript Object Notation
+      title: DataFormat
+    SecurityMethod:
+      anyOf:
+      - $ref: '#/components/schemas/SecurityMethod_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - PSK: Security method 1 (Using TLS-PSK) as described in 3GPP TS 33.122 - PKI: Security method 2 (Using PKI) as described in 3GPP TS 33.122 - OAUTH: Security method 3 (TLS with OAuth token) as described in 3GPP TS 33.122
+      title: SecurityMethod
+    InterfaceDescription:
+      description: Represents the description of an API's interface.
+      example:
+        ipv6Addr: ipv6Addr
+        securityMethods:
+        - null
+        - null
+        port: 5248
+        ipv4Addr: ipv4Addr
+      oneOf:
+      - required:
+        - ipv4Addr
+      - required:
+        - ipv6Addr
+      properties:
+        ipv4Addr:
+          description: string identifying a Ipv4 address formatted in the "dotted
+            decimal" notation as defined in IETF RFC 1166.
+          title: Ipv4Addr
+          type: string
+        ipv6Addr:
+          description: string identifying a Ipv6 address formatted according to clause
+            4 in IETF RFC 5952. The mixed Ipv4 Ipv6 notation according to clause 5
+            of IETF RFC 5952 shall not be used.
+          title: Ipv6Addr
+          type: string
+        port:
+          description: Unsigned integer with valid values between 0 and 65535.
+          maximum: 65535
+          minimum: 0
+          title: Port
+          type: integer
+        securityMethods:
+          description: Security methods supported by the interface, it take precedence
+            over the security methods provided in AefProfile, for this specific interface.
+          items:
+            $ref: '#/components/schemas/SecurityMethod'
+          minItems: 1
+          title: securityMethods
+          type: array
+      title: InterfaceDescription
+      type: object
+    ShareableInformation:
+      description: Indicates whether the service API and/or the service API category
+        can be shared to the list of CAPIF provider domains.
+      example:
+        capifProvDoms:
+        - capifProvDoms
+        - capifProvDoms
+        isShareable: true
+      properties:
+        isShareable:
+          description: Set to "true" indicates that the service API and/or the service
+            API category can be shared to the list of CAPIF provider domain information.
+            Otherwise set to "false".
+          title: isShareable
+          type: boolean
+        capifProvDoms:
+          description: List of CAPIF provider domains to which the service API information
+            to be shared.
+          items:
+            type: string
+          minItems: 1
+          title: capifProvDoms
+          type: array
+      required:
+      - isShareable
+      title: ShareableInformation
+      type: object
+    PublishedApiPath:
+      description: Represents the published API path within the same CAPIF provider
+        domain.
+      example:
+        ccfIds:
+        - ccfIds
+        - ccfIds
+      properties:
+        ccfIds:
+          description: A list of CCF identifiers where the service API is already
+            published.
+          items:
+            type: string
+          minItems: 1
+          title: ccfIds
+          type: array
+      title: PublishedApiPath
+      type: object
+    InvocationLog:
+      description: Represents a set of Service API invocation logs to be stored in
+        a CAPIF core function.
+      example:
+        supportedFeatures: supportedFeatures
+        apiInvokerId: apiInvokerId
+        aefId: aefId
+        logs:
+        - apiName: apiName
+          invocationTime: 2000-01-23T04:56:07.000+00:00
+          srcInterface:
+            ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          fwdInterface: fwdInterface
+          resourceName: resourceName
+          uri: uri
+          inputParameters: ""
+          invocationLatency: 0
+          result: result
+          apiVersion: apiVersion
+          destInterface:
+            ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          apiId: apiId
+          outputParameters: ""
+        - apiName: apiName
+          invocationTime: 2000-01-23T04:56:07.000+00:00
+          srcInterface:
+            ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          fwdInterface: fwdInterface
+          resourceName: resourceName
+          uri: uri
+          inputParameters: ""
+          invocationLatency: 0
+          result: result
+          apiVersion: apiVersion
+          destInterface:
+            ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          apiId: apiId
+          outputParameters: ""
+      properties:
+        aefId:
+          description: Identity information of the API exposing function requesting
+            logging of service API invocations
+          title: aefId
+          type: string
+        apiInvokerId:
+          description: Identity of the API invoker which invoked the service API
+          title: apiInvokerId
+          type: string
+        logs:
+          description: Service API invocation log
+          items:
+            $ref: '#/components/schemas/Log'
+          minItems: 1
+          title: logs
+          type: array
+        supportedFeatures:
+          description: A string used to indicate the features supported by an API
+            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
+            contain a bitmask indicating supported features in hexadecimal representation
+            Each character in the string shall take a value of "0" to "9", "a" to
+            "f" or "A" to "F" and shall represent the support of 4 features as described
+            in table 5.2.2-3. The most significant character representing the highest-numbered
+            features shall appear first in the string, and the character representing
+            features 1 to 4 shall appear last in the string. The list of features
+            and their numbering (starting with 1) are defined separately for each
+            API. If the string contains a lower number of characters than there are
+            defined features for an API, all features that would be represented by
+            characters that are not present in the string are not supported
+          pattern: ^[A-Fa-f0-9]*$
+          title: SupportedFeatures
+          type: string
+      required:
+      - aefId
+      - apiInvokerId
+      - logs
+      title: InvocationLog
+      type: object
+    Log:
+      description: Represents an individual service API invocation log entry.
+      example:
+        apiName: apiName
+        invocationTime: 2000-01-23T04:56:07.000+00:00
+        srcInterface:
+          ipv6Addr: ipv6Addr
+          securityMethods:
+          - null
+          - null
+          port: 5248
+          ipv4Addr: ipv4Addr
+        fwdInterface: fwdInterface
+        resourceName: resourceName
+        uri: uri
+        inputParameters: ""
+        invocationLatency: 0
+        result: result
+        apiVersion: apiVersion
+        destInterface:
+          ipv6Addr: ipv6Addr
+          securityMethods:
+          - null
+          - null
+          port: 5248
+          ipv4Addr: ipv4Addr
+        apiId: apiId
+        outputParameters: ""
+      properties:
+        apiId:
+          description: String identifying the API invoked.
+          title: apiId
+          type: string
+        apiName:
+          description: Name of the API which was invoked, it is set as {apiName} part
+            of the URI structure as defined in subclause 4.4 of 3GPP TS 29.501.
+          title: apiName
+          type: string
+        apiVersion:
+          description: Version of the API which was invoked
+          title: apiVersion
+          type: string
+        resourceName:
+          description: Name of the specific resource invoked
+          title: resourceName
+          type: string
+        uri:
+          description: string providing an URI formatted according to IETF RFC 3986.
+          title: Uri
+          type: string
+        protocol:
+          $ref: '#/components/schemas/Protocol'
+        operation:
+          $ref: '#/components/schemas/Operation'
+        result:
+          description: For HTTP protocol, it contains HTTP status code of the invocation
+          title: result
+          type: string
+        invocationTime:
+          description: string with format "date-time" as defined in OpenAPI.
+          format: date-time
+          title: DateTime
+          type: string
+        invocationLatency:
+          description: Unsigned integer identifying a period of time in units of milliseconds.
+          minimum: 0
+          title: DurationMs
+          type: integer
+        inputParameters:
+          description: List of input parameters. Can be any value - string, number,
+            boolean, array or object.
+          title: inputParameters
+        outputParameters:
+          description: List of output parameters. Can be any value - string, number,
+            boolean, array or object.
+          title: outputParameters
+        srcInterface:
+          $ref: '#/components/schemas/InterfaceDescription'
+        destInterface:
+          $ref: '#/components/schemas/InterfaceDescription'
+        fwdInterface:
+          description: It includes the node identifier (as defined in IETF RFC 7239
+            of all forwarding entities between the API invoker and the AEF, concatenated
+            with comma and space, e.g. 192.0.2.43:80, unknown:_OBFport, 203.0.113.60
+          title: fwdInterface
+          type: string
+      required:
+      - apiId
+      - apiName
+      - apiVersion
+      - protocol
+      - resourceName
+      - result
+      title: Log
+      type: object
+    DurationMs:
+      description: Unsigned integer identifying a period of time in units of milliseconds.
+      minimum: 0
+      title: DurationMs
+      type: integer
+    AccessControlPolicyList:
+      description: Represents the access control policy list for a published service
+        API.
+      properties:
+        apiInvokerPolicies:
+          description: Policy of each API invoker.
+          items:
+            $ref: '#/components/schemas/ApiInvokerPolicy'
+          minItems: 0
+          title: apiInvokerPolicies
+          type: array
+      title: AccessControlPolicyList
+      type: object
+    ApiInvokerPolicy:
+      description: Represents the policy of an API Invoker.
+      properties:
+        apiInvokerId:
+          description: API invoker ID assigned by the CAPIF core function
+          title: apiInvokerId
+          type: string
+        allowedTotalInvocations:
+          description: Total number of invocations allowed on the service API by the
+            API invoker.
+          title: allowedTotalInvocations
+          type: integer
+        allowedInvocationsPerSecond:
+          description: Invocations per second allowed on the service API by the API
+            invoker.
+          title: allowedInvocationsPerSecond
+          type: integer
+        allowedInvocationTimeRangeList:
+          description: The time ranges during which the invocations are allowed on
+            the service API by the API invoker.
+          items:
+            $ref: '#/components/schemas/TimeRangeList'
+          minItems: 0
+          title: allowedInvocationTimeRangeList
+          type: array
+      required:
+      - apiInvokerId
+      title: ApiInvokerPolicy
+      type: object
+    TimeRangeList:
+      description: Represents the time range during which the invocation of a service
+        API is allowed by the API invoker.
+      properties:
+        startTime:
+          description: string with format "date-time" as defined in OpenAPI.
+          format: date-time
+          title: DateTime
+          type: string
+        stopTime:
+          description: string with format "date-time" as defined in OpenAPI.
+          format: date-time
+          title: DateTime
+          type: string
+      title: TimeRangeList
+      type: object
+    RoutingRule:
+      description: Represents an API routing rule.
+      example:
+        ipv6AddrRanges:
+        - start: start
+          end: end
+        - start: start
+          end: end
+        aefProfile:
+          securityMethods:
+          - null
+          - null
+          versions:
+          - apiVersion: apiVersion
+            resources:
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            custOperations:
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            expiry: 2000-01-23T04:56:07.000+00:00
+          - apiVersion: apiVersion
+            resources:
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            - operations:
+              - null
+              - null
+              description: description
+              resourceName: resourceName
+              custOpName: custOpName
+              uri: uri
+            custOperations:
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            - operations:
+              - null
+              - null
+              description: description
+              custOpName: custOpName
+            expiry: 2000-01-23T04:56:07.000+00:00
+          domainName: domainName
+          aefId: aefId
+          interfaceDescriptions:
+          - ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+          - ipv6Addr: ipv6Addr
+            securityMethods:
+            - null
+            - null
+            port: 5248
+            ipv4Addr: ipv4Addr
+        ipv4AddrRanges:
+        - start: 198.51.100.1
+          end: 198.51.100.1
+        - start: 198.51.100.1
+          end: 198.51.100.1
+      properties:
+        ipv4AddrRanges:
+          items:
+            $ref: '#/components/schemas/Ipv4AddressRange'
+          minItems: 1
+          title: ipv4AddrRanges
+          type: array
+        ipv6AddrRanges:
+          items:
+            $ref: '#/components/schemas/Ipv6AddressRange'
+          minItems: 1
+          title: ipv6AddrRanges
+          type: array
+        aefProfile:
+          $ref: '#/components/schemas/AefProfile'
+      required:
+      - aefProfile
+      title: RoutingRule
+      type: object
+    Ipv6AddressRange:
+      description: Represents IPv6 address range.
+      example:
+        start: start
+        end: end
+      properties:
+        start:
+          description: string identifying a Ipv6 address formatted according to clause
+            4 in IETF RFC 5952. The mixed Ipv4 Ipv6 notation according to clause 5
+            of IETF RFC 5952 shall not be used.
+          title: Ipv6Addr
+          type: string
+        end:
+          description: string identifying a Ipv6 address formatted according to clause
+            4 in IETF RFC 5952. The mixed Ipv4 Ipv6 notation according to clause 5
+            of IETF RFC 5952 shall not be used.
+          title: Ipv6Addr
+          type: string
+      required:
+      - end
+      - start
+      title: Ipv6AddressRange
+      type: object
+    NotificationMethod:
+      anyOf:
+      - $ref: '#/components/schemas/NotificationMethod_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - PERIODIC - ONE_TIME - ON_EVENT_DETECTION
+      title: NotificationMethod
+    Uinteger:
+      description: Unsigned Integer, i.e. only value 0 and integers above 0 are permissible.
+      minimum: 0
+      title: Uinteger
+      type: integer
+    DateTime:
+      description: string with format "date-time" as defined in OpenAPI.
+      format: date-time
+      title: DateTime
+      type: string
+    DurationSec:
+      description: indicating a time in seconds.
+      title: DurationSec
+      type: integer
+    SamplingRatio:
+      description: Unsigned integer indicating Sampling Ratio (see clauses 4.15.1
+        of 3GPP TS 23.502), expressed in percent.
+      maximum: 100
+      minimum: 1
+      title: SamplingRatio
+      type: integer
+    PartitioningCriteria:
+      anyOf:
+      - $ref: '#/components/schemas/PartitioningCriteria_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - "TAC": Type Allocation Code - "SUBPLMN": Subscriber PLMN ID - "GEOAREA": Geographical area, i.e. list(s) of TAI(s) - "SNSSAI": S-NSSAI - "DNN": DNN
+      title: PartitioningCriteria
+    NotificationFlag:
+      anyOf:
+      - $ref: '#/components/schemas/NotificationFlag_anyOf'
+      - description: |
+          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
+        type: string
+      description: |
+        Possible values are - ACTIVATE: The event notification is activated. - DEACTIVATE: The event notification is deactivated and shall be muted. The available event(s) shall be stored. - RETRIEVAL: The event notification shall be sent to the NF service consumer(s), after that, is muted again.
+      title: NotificationFlag
+    Ipv4Addr:
+      description: string identifying a Ipv4 address formatted in the "dotted decimal"
+        notation as defined in IETF RFC 1166.
+      title: Ipv4Addr
+      type: string
+    Ipv6Addr:
+      description: string identifying a Ipv6 address formatted according to clause
+        4 in IETF RFC 5952. The mixed Ipv4 Ipv6 notation according to clause 5 of
+        IETF RFC 5952 shall not be used.
+      title: Ipv6Addr
+      type: string
+    Port:
+      description: Unsigned integer with valid values between 0 and 65535.
+      maximum: 65535
+      minimum: 0
+      title: Port
+      type: integer
+    Ipv4AddressRange:
+      description: Range of IPv4 addresses
+      example:
+        start: 198.51.100.1
+        end: 198.51.100.1
+      properties:
+        start:
+          description: String identifying a IPv4 address formatted in the "dotted
+            decimal" notation as defined in RFC 1166.
+          example: 198.51.100.1
+          pattern: ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$
+          title: Ipv4Addr_1
+          type: string
+        end:
+          description: String identifying a IPv4 address formatted in the "dotted
+            decimal" notation as defined in RFC 1166.
+          example: 198.51.100.1
+          pattern: ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$
+          title: Ipv4Addr_1
+          type: string
+      title: Ipv4AddressRange
+      type: object
+    Ipv4Addr_1:
+      description: String identifying a IPv4 address formatted in the "dotted decimal"
+        notation as defined in RFC 1166.
+      example: 198.51.100.1
+      pattern: ^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$
+      title: Ipv4Addr_1
+      type: string
+    AccessControlPolicyListExt_allOf:
+      properties:
+        apiId:
+          title: apiId
+          type: string
+      title: AccessControlPolicyListExt_allOf
+      type: object
+    CAPIFEvent_anyOf:
+      enum:
+      - SERVICE_API_AVAILABLE
+      - SERVICE_API_UNAVAILABLE
+      - SERVICE_API_UPDATE
+      - API_INVOKER_ONBOARDED
+      - API_INVOKER_OFFBOARDED
+      - SERVICE_API_INVOCATION_SUCCESS
+      - SERVICE_API_INVOCATION_FAILURE
+      - ACCESS_CONTROL_POLICY_UPDATE
+      - ACCESS_CONTROL_POLICY_UNAVAILABLE
+      - API_INVOKER_AUTHORIZATION_REVOKED
+      - API_INVOKER_UPDATED
+      - API_TOPOLOGY_HIDING_CREATED
+      - API_TOPOLOGY_HIDING_REVOKED
+      title: CAPIFEvent_anyOf
+      type: string
+    CommunicationType_anyOf:
+      enum:
+      - REQUEST_RESPONSE
+      - SUBSCRIBE_NOTIFY
+      title: CommunicationType_anyOf
+      type: string
+    Operation_anyOf:
+      enum:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
+      title: Operation_anyOf
+      type: string
+    Protocol_anyOf:
+      enum:
+      - HTTP_1_1
+      - HTTP_2
+      title: Protocol_anyOf
+      type: string
+    DataFormat_anyOf:
+      enum:
+      - JSON
+      title: DataFormat_anyOf
+      type: string
+    SecurityMethod_anyOf:
+      enum:
+      - PSK
+      - PKI
+      - OAUTH
+      title: SecurityMethod_anyOf
+      type: string
+    NotificationMethod_anyOf:
+      enum:
+      - PERIODIC
+      - ONE_TIME
+      - ON_EVENT_DETECTION
+      title: NotificationMethod_anyOf
+      type: string
+    PartitioningCriteria_anyOf:
+      enum:
+      - TAC
+      - SUBPLMN
+      - GEOAREA
+      - SNSSAI
+      - DNN
+      title: PartitioningCriteria_anyOf
+      type: string
+    NotificationFlag_anyOf:
+      enum:
+      - ACTIVATE
+      - DEACTIVATE
+      - RETRIEVAL
+      title: NotificationFlag_anyOf
+      type: string

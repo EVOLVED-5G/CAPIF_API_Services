@@ -1,30 +1,16 @@
-FROM python:3.7 AS builder
+FROM python:3-alpine
 
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-RUN python3 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
+COPY requirements.txt /usr/src/app/
 
-RUN pip install --upgrade pip
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . .
-RUN pip install --no-cache-dir .
+COPY . /usr/src/app
 
+EXPOSE 8080
 
-FROM python:3.7 AS test_runner
-WORKDIR /tmp
-COPY --from=builder /venv /venv
-COPY --from=builder /usr/src/app/tests tests
-ENV PATH=/venv/bin:$PATH
+ENTRYPOINT ["python3"]
 
-# install test dependencies
-RUN pip install pytest
-
-# run tests
-RUN pytest tests
-
-
-FROM python:3.7 AS service
-WORKDIR /root/app/site-packages
-COPY --from=test_runner /venv /venv
-ENV PATH=/venv/bin:$PATH
+CMD ["-m", "api_invoker_management"]

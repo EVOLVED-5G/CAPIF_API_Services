@@ -1,0 +1,29 @@
+# coding: utf-8
+
+# flake8: noqa
+from __future__ import absolute_import
+# import models into model package
+from api_invoker_management.models.api_invoker_enrolment_details import APIInvokerEnrolmentDetails
+from api_invoker_management.models.aef_profile import AefProfile
+from api_invoker_management.models.communication_type import CommunicationType
+from api_invoker_management.models.communication_type_any_of import CommunicationTypeAnyOf
+from api_invoker_management.models.custom_operation import CustomOperation
+from api_invoker_management.models.data_format import DataFormat
+from api_invoker_management.models.data_format_any_of import DataFormatAnyOf
+from api_invoker_management.models.interface_description import InterfaceDescription
+from api_invoker_management.models.invalid_param import InvalidParam
+from api_invoker_management.models.onboarding_information import OnboardingInformation
+from api_invoker_management.models.onboarding_notification import OnboardingNotification
+from api_invoker_management.models.operation import Operation
+from api_invoker_management.models.operation_any_of import OperationAnyOf
+from api_invoker_management.models.problem_details import ProblemDetails
+from api_invoker_management.models.protocol import Protocol
+from api_invoker_management.models.protocol_any_of import ProtocolAnyOf
+from api_invoker_management.models.published_api_path import PublishedApiPath
+from api_invoker_management.models.resource import Resource
+from api_invoker_management.models.security_method import SecurityMethod
+from api_invoker_management.models.security_method_any_of import SecurityMethodAnyOf
+from api_invoker_management.models.service_api_description import ServiceAPIDescription
+from api_invoker_management.models.shareable_information import ShareableInformation
+from api_invoker_management.models.version import Version
+from api_invoker_management.models.websock_notif_config import WebsockNotifConfig
