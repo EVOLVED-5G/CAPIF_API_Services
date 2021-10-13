@@ -23,3 +23,6 @@ pip3 install -r requirements.txt
 python3 -m <service>
 ```
 
+# Test Plan Documentation
+
+[Test Plan Directory] (./docs/test_plan_directory.md)
