@@ -10,14 +10,17 @@ At this documentation you will have all information and related files and exampl
 # Tests
 
 ## Test Case 1: Register new API Provider
-* Description:
   
   This test case will check if a registration of new API provider are OK 
 
 * Pre-Conditions:
   
   NetApp was not registered previously.
-  
+
+* Actions:
+
+  Register provider
+
   Request Body: TBD
 
 * Post-Conditions:
@@ -28,13 +31,16 @@ At this documentation you will have all information and related files and exampl
 
 
 ## Test Case 2: Register API Provider Already registered
-* Description:
-  
+
   This test case will check if a registration of API provider previously registered return the properly response 
 
 * Pre-Conditions:
   
   NetApp was registered previously.
+
+* Actions:
+
+  Register provider
   
   Request Body: TBD
 

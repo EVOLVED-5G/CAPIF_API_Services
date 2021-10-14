@@ -10,13 +10,16 @@ At this documentation you will have all information and related files and exampl
 # Tests
 
 ## Test Case 1: Register NetApp
-* Description:
   
   This test case will check if a registration of new NetApp are OK 
 
 * Pre-Conditions:
   
   NetApp was not registered previously.
+
+* Actions:
+
+  Register NetApp
   
   Request Body: [request body](tc1_post_body_example.json)
 
@@ -28,13 +31,16 @@ At this documentation you will have all information and related files and exampl
 
 
 ## Test Case 2: Register NetApp Already registered
-* Description:
   
   This test case will check if a registration of NetApp previously registered return the properly response 
 
 * Pre-Conditions:
   
   NetApp was registered previously.
+
+* Actions:
+
+  Register NetApp
   
   Request Body: [request body](tc1_post_body_example.json)
 
