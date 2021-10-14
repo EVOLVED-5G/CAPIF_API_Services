@@ -2,6 +2,7 @@
 - [Tests](#tests)
   - [Test Case 1: Register NetApp](#test-case-1-register-netapp)
   - [Test Case 2: Register NetApp Already registered](#test-case-2-register-netapp-already-registered)
+  - [Test Case 2: Register NetApp Already registered](#test-case-2-register-netapp-already-registered-1)
 
 
 # Test Plan for CAPIF Api Invoker Management
@@ -33,6 +34,24 @@ At this documentation you will have all information and related files and exampl
 ## Test Case 2: Register NetApp Already registered
   
   This test case will check if a registration of NetApp previously registered return the properly response 
+
+* Pre-Conditions:
+  
+  NetApp was registered previously.
+
+* Actions:
+
+  Register NetApp
+  
+  Request Body: [request body](tc1_post_body_example.json)
+
+* Post-Conditions:
+  
+  403 Forbidden returned.
+
+## Test Case 2: Register NetApp Already registered
+  
+  Prueba 3
 
 * Pre-Conditions:
   
