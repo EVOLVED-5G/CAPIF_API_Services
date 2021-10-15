@@ -2,7 +2,10 @@
 - [Tests](#tests)
   - [Test Case 1: Register NetApp](#test-case-1-register-netapp)
   - [Test Case 2: Register NetApp Already registered](#test-case-2-register-netapp-already-registered)
-  - [Test Case 2: Register NetApp Already registered](#test-case-2-register-netapp-already-registered-1)
+  - [Test Case 3: Update Registered NetApp](#test-case-3-update-registered-netapp)
+  - [Test Case 4: Update Not Registered NetApp](#test-case-4-update-not-registered-netapp)
+  - [Test Case 5: Delete Registered NetApp](#test-case-5-delete-registered-netapp)
+  - [Test Case 6: Delete Not Registered NetApp](#test-case-6-delete-not-registered-netapp)
 
 
 # Test Plan for CAPIF Api Invoker Management
@@ -12,7 +15,7 @@ At this documentation you will have all information and related files and exampl
 
 ## Test Case 1: Register NetApp
   
-  This test case will check if a registration of new NetApp are OK 
+  This test case will check that NetApp can be registered 
 
 * Pre-Conditions:
   
@@ -33,11 +36,11 @@ At this documentation you will have all information and related files and exampl
 
 ## Test Case 2: Register NetApp Already registered
   
-  This test case will check if a registration of NetApp previously registered return the properly response 
+  This test case will check that a NetApp previously registered canot be re-registered
 
 * Pre-Conditions:
   
-  NetApp was registered previously.
+  NetApp was registered previously and there is a {onboardingId} for his NetApp in the DB
 
 * Actions:
 
@@ -49,9 +52,45 @@ At this documentation you will have all information and related files and exampl
   
   403 Forbidden returned.
 
-## Test Case 2: Register NetApp Already registered
+## Test Case 3: Update Registered NetApp  
   
-  Prueba 3
+  This test case will check that a Registered NetApp can be updated  
+
+* Pre-Conditions:
+  
+  NetApp was registered previously and there is a {onboardingId} for his NetApp in the DB
+
+* Actions:
+
+  Update NetApp onboardingDetails
+  
+  Request Body: [request body](tc1_post_body_example.json)
+
+* Post-Conditions:
+  
+  201 Updated, API Invoker updated successfully.
+
+## Test Case 4: Update Not Registered NetApp 
+  
+  This test case will check that a Non-Registered NetApp cannot be updated  
+
+* Pre-Conditions:
+  
+  NetApp was not registered previously.
+
+* Actions:
+
+  Update NetApp onboardingDetails
+  
+  Request Body: [request body](tc1_post_body_example.json)
+
+* Post-Conditions:
+  
+  403 Forbidden returned.
+
+## Test Case 5: Delete Registered NetApp   
+  
+  This test case will check that a Registered NetApp can be deleted  
 
 * Pre-Conditions:
   
@@ -59,7 +98,25 @@ At this documentation you will have all information and related files and exampl
 
 * Actions:
 
-  Register NetApp
+  Delete NetApp 
+  
+  Request Body: [request body](tc1_post_body_example.json)
+
+* Post-Conditions:
+  
+  201 Deleted returned.
+
+## Test Case 6: Delete Not Registered NetApp 
+  
+  This test case will check that a Non-Registered NetApp cannot be deleted  
+
+* Pre-Conditions:
+  
+  NetApp was not registered previously.
+
+* Actions:
+
+  Delete NetApp 
   
   Request Body: [request body](tc1_post_body_example.json)
 
