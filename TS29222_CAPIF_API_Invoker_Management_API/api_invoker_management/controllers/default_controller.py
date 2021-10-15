@@ -4,6 +4,7 @@ import six
 from api_invoker_management.models.api_invoker_enrolment_details import APIInvokerEnrolmentDetails  # noqa: E501
 from api_invoker_management.models.problem_details import ProblemDetails  # noqa: E501
 from api_invoker_management import util
+from ..core import apiinvokerenrolmentdetails
 
 import pymongo
 import secrets
@@ -51,19 +52,8 @@ def onboarded_invokers_post(body):  # noqa: E501
     :rtype: APIInvokerEnrolmentDetails
     """
 
-    uri = "mongodb://root:example@mongo:27017"
+    if connexion.request.is_json:
+        body = APIInvokerEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient["capif"]
-    mycol = mydb["invokerdetails"]
-
-    body["apiInvokerId"] = secrets.token_hex(15)
-
-    try:
-        mycol.insert_one(body)
-    except Exception:
-        return 'bad request!', 400
-    finally:
-        myclient.close()
-        body.pop('_id',None)
-        return json.dumps(body)
+    res = apiinvokerenrolmentdetails.add_apiinvokerenrolmentdetail(body)
+    return res

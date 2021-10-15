@@ -11,6 +11,14 @@ def main():
     app.add_api('openapi.yaml',
                 arguments={'title': 'CAPIF_API_Invoker_Management_API'},
                 pythonic_params=True)
+    app.app.config['MONGODB_SETTINGS'] = {
+        'user': 'root',
+        'password': 'example',
+        'db': 'capif',
+        'col': 'invokerdetails',
+        'host': 'mongo',
+        'port': 27017,
+    }
 
     app.run(port=8080)
 
