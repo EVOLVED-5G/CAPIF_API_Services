@@ -43,7 +43,7 @@ mydb = myclient[db]
 user = mydb[col]
 
 
-@app.route("/api-invoker-management/register", methods=["POST"])
+@app.route("/register", methods=["POST"])
 def register():
     email = request.form["email"]
     test = user.find_one({"email": email})
@@ -58,7 +58,7 @@ def register():
         return jsonify(message="User added sucessfully"), 201
 
 
-@app.route("/api-invoker-management/gettoken", methods=["POST"])
+@app.route("/gettoken", methods=["POST"])
 def gettoken():
     if request.is_json:
         email = request.json["email"]
@@ -76,4 +76,4 @@ def gettoken():
 
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run(debug=True, port=8080)
