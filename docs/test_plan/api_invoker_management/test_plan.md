@@ -29,7 +29,7 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  201 Created, API invoker on-boarded successfully.
+  201 API invoker on-boarded successfully.
 
   Header Location at response contains the URI of the newly created resource, according to the structure: {apiRoot}/api-invoker-management/v1/onboardedInvokers/{onboardingId}
 
@@ -68,7 +68,7 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  201 Updated, API Invoker updated successfully.
+  200 API invoker details updated successfully.
 
 ## Test Case 4: Update Not Registered NetApp 
   
@@ -86,7 +86,7 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  401 Not found returned.
+  401 Not found.
 
 ## Test Case 5: Delete Registered NetApp   
   
@@ -104,7 +104,7 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  201 Deleted returned.
+  204 The individual API Invoker matching onboardingId was offboarded.
 
 ## Test Case 6: Delete Not Registered NetApp 
   
@@ -122,4 +122,4 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  401 Not Found returned.
+  401 Not Found.
