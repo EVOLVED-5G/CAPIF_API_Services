@@ -86,7 +86,7 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  403 Forbidden returned.
+  401 Not found returned.
 
 ## Test Case 5: Delete Registered NetApp   
   
@@ -122,4 +122,4 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  403 Forbidden returned.
+  401 Not Found returned.
