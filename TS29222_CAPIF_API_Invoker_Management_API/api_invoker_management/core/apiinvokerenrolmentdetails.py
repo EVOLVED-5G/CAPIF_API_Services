@@ -3,6 +3,11 @@ import secrets
 from flask import current_app, Flask
 
 
+
+
+
+
+
 def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
 
     user = current_app.config['MONGODB_SETTINGS']['user']
@@ -18,7 +23,7 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
     mydb = myclient[db]
     mycol = mydb[col]
 
-    apiinvokerenrolmentdetail._api_invoker_id = secrets.token_hex(15)
+    apiinvokerenrolmentdetail.api_invoker_id = secrets.token_hex(15)
 
     try:
         mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
@@ -43,18 +48,25 @@ def update_apiinvokerenrolmentdetail(onboard_id, apiinvokerenrolmentdetail):
     mydb = myclient[db]
     mycol = mydb[col]
 
-    apiinvokerenrolmentdetail.api_list.api_name = "Industry 4.0"
+    
 
     try:
         myQuery = {'api_invoker_id':onboard_id}
-        old_values = mycol.find(myQuery)
-        print(old_values)
-        mycol.update_one(old_values, apiinvokerenrolmentdetail.to_dict())
+        old_values = mycol.find_one(myQuery)
+        
+        
+        if (old_values == None):
+            return "Please provide an existing Netapp ID", 404
+        else:
+
+            apiinvokerenrolmentdetail.api_invoker_id = onboard_id
+            mycol.replace_one(old_values, apiinvokerenrolmentdetail.to_dict())
+            return apiinvokerenrolmentdetail, 200
     except Exception:
         return 'bad request!', 400
     finally:
         myclient.close()
-        return apiinvokerenrolmentdetail, 200
+        
 
 def remove_apiinvokerenrolmentdetail(onboard_id):
 
@@ -71,13 +83,18 @@ def remove_apiinvokerenrolmentdetail(onboard_id):
     mydb = myclient[db]
     mycol = mydb[col]
 
-
-
     try:
         myQuery ={'api_invoker_id':onboard_id}
-        mycol.delete_one(myQuery)
+        result=mycol.find_one(myQuery)
+
+        if (result == None):
+            return "Please provide an existing Netapp ID", 404
+        else:
+            mycol.delete_one(myQuery)
+            return " The Netapp matching onboardingId  " + onboard_id + " was offboarded.",204
+                    
     except Exception:
-        return "This ID is not a registered NetAPP" + onboard_id, 400
+        return "An error has ocurred with the" + onboard_id, 400
     finally:
         myclient.close()
-        return " NetAPP with ID " + onboard_id + " has been deleted",200
+
