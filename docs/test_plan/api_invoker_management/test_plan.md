@@ -86,7 +86,7 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  401 Not found.
+  404 Not found.
 
 ## Test Case 5: Delete Registered NetApp   
   
