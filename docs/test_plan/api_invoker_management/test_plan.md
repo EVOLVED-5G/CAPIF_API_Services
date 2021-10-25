@@ -122,4 +122,4 @@ At this documentation you will have all information and related files and exampl
 
 * Post-Conditions:
   
-  401 Not Found.
+  404 Not Found.
