@@ -36,7 +36,7 @@ Get Request Capif
 
     ${headers}=    Create CAPIF Session    ${server}  ${auth}
 
-    ${resp}=    GET On Session    apisession    ${endpoint}    
+    ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}
 
     [Return]    ${resp}
 

@@ -1,16 +1,94 @@
 *** Settings ***
 Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
+Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
+
+Library    MongoDBLibrary
+
+Test Setup    Reset Db
+
+*** Variables ***
+${API_INVOKER_NOT_REGISTERED}    9860ab566edf4c805474cc382c8c04
+
+*** Keywords ***
+Reset Db
+	Log                   Db capif.invokerdetails collection will be removed in order to isolate each test.
+	Connect To MongoDB    mongodb://root:example@10.95.216.81	27017
+
+	@{allCollections}=             Get MongoDB Collections    capif
+	Log Many	@{allCollections}
+
+	Drop MongoDB Collection    capif    invokerdetails
+
+	Disconnect From MongoDB
 
 *** Test Cases ***
 Register NetApp
-	[Tags]      tc-1
-	${resp}=    Get Api Invoker Management UI
-	# ${environment}=          Set Variable    jpu
-	# ${test_session_name}=    Set Variable    MME_NODAL_1-OMEC
+	[Tags]    tc-1
 
-	# Wait Until Keyword Succeeds    5x    5    Test Server ${environment} Is Ready
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
-	# ${statistics_file}    ${test_id}=    Launch Spirent Test And Get Statistic File    ${library}    ${test_session_name}    ${environment}    5
+	Should Be Equal As Strings    ${resp.status_code}    201
 
-	# ${rate}=    Check Value Between Parameters From Excel    ${statistics_file}    SCTP    Socket Connect Count    value=1
+Register NetApp Already registered
+	[Tags]    tc-2
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${resp}=    Post Request Capif    /api-invoker-management/v1/onboardedInvokers    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    403
+
+Update Registered NetApp
+	[Tags]    tc-3
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${api_invoker_id}=    Set Variable    ${resp.json().get('apiInvokerId')}
+
+	${resp}=    Put Request Capif    /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    200
+
+Update Not Registered NetApp
+	[Tags]    tc-4
+
+	${api_invoker_id}=    Set Variable    ${API_INVOKER_NOT_REGISTERED}
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Put Request Capif                      /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    404
+
+Delete Registered NetApp
+	[Tags]    tc-5
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${api_invoker_id}=    Set Variable    ${resp.json().get('apiInvokerId')}
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Delete Request Capif                   /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}
+
+	Should Be Equal As Strings    ${resp.status_code}    204
+
+Delete Not Registered NetApp
+	[Tags]    tc-6
+
+	${api_invoker_id}=    Set Variable    ${API_INVOKER_NOT_REGISTERED}
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Delete Request Capif                   /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}
+
+	Should Be Equal As Strings    ${resp.status_code}    404
+
