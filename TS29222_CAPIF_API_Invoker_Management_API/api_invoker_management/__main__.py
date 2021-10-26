@@ -4,7 +4,6 @@ import connexion
 
 from api_invoker_management import encoder
 
-import pymongo
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
@@ -38,7 +37,7 @@ port = app.app.config['MONGODB_SETTINGS']['port']
 
 uri = "mongodb://" + username + ":" + password + "@" + host + ":" + str(port)
 
-myclient = pymongo.MongoClient(uri)
+myclient = MongoClient(uri)
 mydb = myclient[db]
 user = mydb[col]
 
