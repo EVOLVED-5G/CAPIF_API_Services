@@ -23,6 +23,19 @@ pip3 install -r requirements.txt
 python3 -m <service>
 ```
 
+
 # Test Plan Documentation
 
 [Test Plan Directory](./docs/test_plan/README.md)
+
+
+Additional info:
+```
+post_body_example.json:
+Example of APIInvokerEnrolmentDetails object for POST request of API_Invoker_Management API 
+
+
+Mongo Express url:
+http://0.0.0.0:8081/
+```
+

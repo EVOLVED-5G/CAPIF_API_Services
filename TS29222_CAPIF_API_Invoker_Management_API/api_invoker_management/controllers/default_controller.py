@@ -4,6 +4,11 @@ import six
 from api_invoker_management.models.api_invoker_enrolment_details import APIInvokerEnrolmentDetails  # noqa: E501
 from api_invoker_management.models.problem_details import ProblemDetails  # noqa: E501
 from api_invoker_management import util
+from ..core import apiinvokerenrolmentdetails
+
+import pymongo
+import secrets
+import json
 
 
 def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
@@ -41,11 +46,14 @@ def onboarded_invokers_post(body):  # noqa: E501
 
     Creates a new individual API Invoker profile. # noqa: E501
 
-    :param api_invoker_enrolment_details: 
+    :param api_invoker_enrolment_details:
     :type api_invoker_enrolment_details: dict | bytes
 
     :rtype: APIInvokerEnrolmentDetails
     """
+
     if connexion.request.is_json:
-        api_invoker_enrolment_details = APIInvokerEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = APIInvokerEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
+
+    res = apiinvokerenrolmentdetails.add_apiinvokerenrolmentdetail(body)
+    return res
