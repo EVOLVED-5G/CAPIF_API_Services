@@ -49,6 +49,13 @@ services:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
+  jwtauth:
+    build:
+      context: ./jwt_auth
+    expose:
+      - "8080"
+    volumes:
+      - ./jwt_auth:/usr/src/app
   mongo:
     image: mongo:latest
     restart: always
