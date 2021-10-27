@@ -9,6 +9,7 @@ from ..core import apiinvokerenrolmentdetails
 import pymongo
 import secrets
 import json
+from flask_jwt_extended import jwt_required
 
 
 def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
@@ -41,6 +42,7 @@ def onboarded_invokers_onboarding_id_put(onboarding_id, api_invoker_enrolment_de
     return 'do some magic!'
 
 
+@jwt_required()
 def onboarded_invokers_post(body):  # noqa: E501
     """onboarded_invokers_post
 

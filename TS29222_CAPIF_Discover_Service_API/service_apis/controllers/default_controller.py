@@ -8,7 +8,14 @@ from service_apis.models.problem_details import ProblemDetails  # noqa: E501
 from service_apis.models.protocol import Protocol  # noqa: E501
 from service_apis import util
 
+from ..core import discoveredapis
+import pymongo
+import secrets
+import json
+from flask_jwt_extended import jwt_required
 
+
+@jwt_required()
 def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_type=None, protocol=None, aef_id=None, data_format=None, api_cat=None, supported_features=None, api_supported_features=None):  # noqa: E501
     """all_service_apis_get
 
@@ -37,10 +44,15 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
 
     :rtype: DiscoveredAPIs
     """
-    if connexion.request.is_json:
-        comm_type =  CommunicationType.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        protocol =  Protocol.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        data_format =  DataFormat.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+    discovered_apis = discoveredapis.get_discoveredapis(api_invoker_id)
+    response = discovered_apis, 200
+
+    # if connexion.request.is_json:
+    #     comm_type =  CommunicationType.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     protocol =  Protocol.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     data_format =  DataFormat.from_dict(connexion.request.get_json())  # noqa: E501
+    # return 'do some magic!'
+    return response

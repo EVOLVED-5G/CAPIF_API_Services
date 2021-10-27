@@ -4,11 +4,12 @@ services:
     expose:
       - "8080"
   api-invoker-management:
-    build: TS29222_CAPIF_API_Invoker_Management_API/.
-    volumes:
-      - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app/
+    build:
+      context: ./TS29222_CAPIF_API_Invoker_Management_API
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
@@ -22,9 +23,12 @@ services:
     expose:
       - "8080"
   service-apis:
-    build: TS29222_CAPIF_Discover_Service_API/.
+    build:
+      context: ./TS29222_CAPIF_Discover_Service_API
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
   capif-events:
     build: TS29222_CAPIF_Events_API/.
     expose:
@@ -45,6 +49,13 @@ services:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
+  jwtauth:
+    build:
+      context: ./jwt_auth
+    expose:
+      - "8080"
+    volumes:
+      - ./jwt_auth:/usr/src/app
   mongo:
     image: mongo:latest
     restart: always
