@@ -30,10 +30,12 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
     else:
         api_invoker_id =  secrets.token_hex(15)
         apiinvokerenrolmentdetail.api_invoker_id = api_invoker_id
+        mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
         myclient.close()
         res = Response(json.dumps(apiinvokerenrolmentdetail, cls=JSONEncoder), status=201, mimetype='application/json')
         res.headers['Location'] = "http://localhost:8080/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
         return res
+
 
 def update_apiinvokerenrolmentdetail(onboard_id, apiinvokerenrolmentdetail):
 
