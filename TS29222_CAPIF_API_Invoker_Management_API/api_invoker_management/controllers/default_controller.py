@@ -6,7 +6,6 @@ from api_invoker_management.models.problem_details import ProblemDetails  # noqa
 from api_invoker_management import util
 from ..core import apiinvokerenrolmentdetails
 
-import pymongo
 import secrets
 import json
 from flask_jwt_extended import jwt_required
@@ -22,10 +21,12 @@ def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    print(onboarding_id)
+   
+    return  apiinvokerenrolmentdetails.remove_apiinvokerenrolmentdetail(onboarding_id)
 
 
-def onboarded_invokers_onboarding_id_put(onboarding_id, api_invoker_enrolment_details):  # noqa: E501
+def onboarded_invokers_onboarding_id_put(onboarding_id, body):  # noqa: E501
     """onboarded_invokers_onboarding_id_put
 
     Updates an individual API invoker details. # noqa: E501
@@ -38,8 +39,9 @@ def onboarded_invokers_onboarding_id_put(onboarding_id, api_invoker_enrolment_de
     :rtype: APIInvokerEnrolmentDetails
     """
     if connexion.request.is_json:
-        api_invoker_enrolment_details = APIInvokerEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = APIInvokerEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
+    res = apiinvokerenrolmentdetails.update_apiinvokerenrolmentdetail(onboarding_id,body)
+    return res
 
 
 @jwt_required()
