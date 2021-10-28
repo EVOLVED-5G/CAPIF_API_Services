@@ -8,12 +8,12 @@ Library    MongoDBLibrary
 Test Setup    Reset Db
 
 *** Variables ***
-${API_INVOKER_NOT_REGISTERED}    9860ab566edf4c805474cc382c8c04
+${API_INVOKER_NOT_REGISTERED}    not-valid
 
 *** Keywords ***
 Reset Db
 	Log                   Db capif.invokerdetails collection will be removed in order to isolate each test.
-	Connect To MongoDB    mongodb://root:example@10.95.216.81	27017
+	Connect To MongoDB    mongodb://root:example@192.168.1.3	27017
 
 	@{allCollections}=             Get MongoDB Collections    capif
 	Log Many	@{allCollections}
@@ -51,9 +51,9 @@ Update Registered NetApp
 
 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${api_invoker_id}=    Set Variable    ${resp.json().get('apiInvokerId')}
+	${url}=    Set Variable    ${resp.headers['Location']}
 
-	${resp}=    Put Request Capif    /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}    ${request_body}
+	${resp}=    Put Request Capif    ${url.path}    ${request_body}  server=${url.netloc}
 
 	Should Be Equal As Strings    ${resp.status_code}    200
 
