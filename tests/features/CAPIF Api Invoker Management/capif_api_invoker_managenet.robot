@@ -13,7 +13,7 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 *** Keywords ***
 Reset Db
 	Log                   Db capif.invokerdetails collection will be removed in order to isolate each test.
-	Connect To MongoDB    mongodb://root:example@192.168.1.3	27017
+	Connect To MongoDB    mongodb://root:example@192.168.0.13	27017
 
 	@{allCollections}=             Get MongoDB Collections    capif
 	Log Many	@{allCollections}
