@@ -3,24 +3,13 @@ Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
 Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
 
-Library    MongoDBLibrary
-
-Test Setup    Reset Db
+Test Setup    Initialize Test And Register
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 *** Keywords ***
-Reset Db
-	Log                   Db capif.invokerdetails collection will be removed in order to isolate each test.
-	Connect To MongoDB    mongodb://root:example@192.168.0.13	27017
 
-	@{allCollections}=             Get MongoDB Collections    capif
-	Log Many	@{allCollections}
-
-	Drop MongoDB Collection    capif    invokerdetails
-
-	Disconnect From MongoDB
 
 *** Test Cases ***
 Register NetApp
@@ -51,9 +40,9 @@ Update Registered NetApp
 
 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${url}=    Set Variable    ${resp.headers['Location']}
+	${url}=    Parse Url    ${resp.headers['Location']}
 
-	${resp}=    Put Request Capif    ${url.path}    ${request_body}  server=${url.netloc}
+	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${url.scheme}://${url.netloc}
 
 	Should Be Equal As Strings    ${resp.status_code}    200
 
@@ -75,10 +64,10 @@ Delete Registered NetApp
 
 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${api_invoker_id}=    Set Variable    ${resp.json().get('apiInvokerId')}
+	${url}=    Parse Url    ${resp.headers['Location']}
 
 	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Delete Request Capif                   /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}
+	${resp}=            Delete Request Capif                   ${url.path}  server=${url.scheme}://${url.netloc}
 
 	Should Be Equal As Strings    ${resp.status_code}    204
 
@@ -91,4 +80,5 @@ Delete Not Registered NetApp
 	${resp}=            Delete Request Capif                   /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}
 
 	Should Be Equal As Strings    ${resp.status_code}    404
+
 
