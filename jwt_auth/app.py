@@ -36,14 +36,14 @@ user = mydb[col]
 
 @app.route("/register", methods=["POST"])
 def register():
-    email = request.form["email"]
+    email = request.json["email"]
     test = user.find_one({"email": email})
     if test:
         return jsonify(message="User Already Exist"), 409
     else:
-        first_name = request.form["first_name"]
-        last_name = request.form["last_name"]
-        password = request.form["password"]
+        first_name = request.json["first_name"]
+        last_name = request.json["last_name"]
+        password = request.json["password"]
         user_info = dict(first_name=first_name, last_name=last_name, email=email, password=password)
         user.insert_one(user_info)
         return jsonify(message="User added sucessfully"), 201
@@ -55,8 +55,8 @@ def gettoken():
         email = request.json["email"]
         password = request.json["password"]
     else:
-        email = request.form["email"]
-        password = request.form["password"]
+        email = request.json["email"]
+        password = request.json["password"]
 
     test = user.find_one({"email": email, "password": password})
     if test:
