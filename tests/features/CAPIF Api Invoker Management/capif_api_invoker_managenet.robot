@@ -13,7 +13,7 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 *** Test Cases ***
 Register NetApp
-	[Tags]    tc-1
+	[Tags]    capif_api_invoker_management-1
 
 	${request_body}=    Create Onboarding Notification Body
 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
@@ -21,7 +21,7 @@ Register NetApp
 	Should Be Equal As Strings    ${resp.status_code}    201
 
 Register NetApp Already registered
-	[Tags]    tc-2
+	[Tags]    capif_api_invoker_management-2
 
 	${request_body}=    Create Onboarding Notification Body
 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
@@ -33,7 +33,7 @@ Register NetApp Already registered
 	Should Be Equal As Strings    ${resp.status_code}    403
 
 Update Registered NetApp
-	[Tags]    tc-3
+	[Tags]    capif_api_invoker_management-3
 
 	${request_body}=    Create Onboarding Notification Body
 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
@@ -47,7 +47,7 @@ Update Registered NetApp
 	Should Be Equal As Strings    ${resp.status_code}    200
 
 Update Not Registered NetApp
-	[Tags]    tc-4
+	[Tags]    capif_api_invoker_management-4
 
 	${api_invoker_id}=    Set Variable    ${API_INVOKER_NOT_REGISTERED}
 
@@ -57,7 +57,7 @@ Update Not Registered NetApp
 	Should Be Equal As Strings    ${resp.status_code}    404
 
 Delete Registered NetApp
-	[Tags]    tc-5
+	[Tags]    capif_api_invoker_management-5
 
 	${request_body}=    Create Onboarding Notification Body
 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
@@ -72,7 +72,7 @@ Delete Registered NetApp
 	Should Be Equal As Strings    ${resp.status_code}    204
 
 Delete Not Registered NetApp
-	[Tags]    tc-6
+	[Tags]    capif_api_invoker_management-6
 
 	${api_invoker_id}=    Set Variable    ${API_INVOKER_NOT_REGISTERED}
 

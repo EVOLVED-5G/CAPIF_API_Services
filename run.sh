@@ -1,5 +1,5 @@
 #!/bin/bash
-docker-compose -f docker-compose-test.yml up --remove-orphans --build
+docker-compose up --detach --remove-orphans --build
 
 
 
