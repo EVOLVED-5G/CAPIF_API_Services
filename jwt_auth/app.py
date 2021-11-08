@@ -3,6 +3,7 @@
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
+import secrets
 
 
 app = Flask(__name__)
@@ -20,14 +21,14 @@ app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
 
 jwt = JWTManager(app)
 
-username = app.config['MONGODB_SETTINGS']['user']
-password = app.config['MONGODB_SETTINGS']['password']
+user = app.config['MONGODB_SETTINGS']['user']
+passwd = app.config['MONGODB_SETTINGS']['password']
 db = app.config['MONGODB_SETTINGS']['db']
 col = app.config['MONGODB_SETTINGS']['jwt']
 host = app.config['MONGODB_SETTINGS']['host']
 port = app.config['MONGODB_SETTINGS']['port']
 
-uri = "mongodb://" + username + ":" + password + "@" + host + ":" + str(port)
+uri = "mongodb://" + user + ":" + passwd + "@" + host + ":" + str(port)
 
 myclient = MongoClient(uri)
 mydb = myclient[db]
@@ -36,34 +37,34 @@ user = mydb[col]
 
 @app.route("/register", methods=["POST"])
 def register():
-    email = request.json["email"]
-    test = user.find_one({"email": email})
+    username = request.json["username"]
+    test = user.find_one({"username": username})
     if test:
         return jsonify(message="User Already Exist"), 409
+    elif request.json["role"] != "invoker" and request.json["role"] != "apf":
+        return jsonify(message="Role must be invoker or apf"), 409
     else:
-        first_name = request.json["first_name"]
-        last_name = request.json["last_name"]
+        username = request.json["username"]
         password = request.json["password"]
-        user_info = dict(first_name=first_name, last_name=last_name, email=email, password=password)
-        user.insert_one(user_info)
-        return jsonify(message="User added sucessfully"), 201
+        role = request.json["role"]
+        hostip = request.json["hostip"]
+        email = request.json["email"]
+        user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, hostip=hostip, email=email)
+        obj = user.insert_one(user_info)
+        return jsonify(message="User added sucessfully", id=obj.inserted_id), 201
 
 
 @app.route("/gettoken", methods=["POST"])
 def gettoken():
-    if request.is_json:
-        email = request.json["email"]
-        password = request.json["password"]
-    else:
-        email = request.json["email"]
-        password = request.json["password"]
+    username = request.json["username"]
+    password = request.json["password"]
 
-    test = user.find_one({"email": email, "password": password})
+    test = user.find_one({"username": username, "password": password})
     if test:
-        access_token = create_access_token(identity=email)
+        access_token = create_access_token(identity=username)
         return jsonify(message="Login Succeeded!", access_token=access_token), 201
     else:
-        return jsonify(message="Bad Email or Password"), 401
+        return jsonify(message="Bad username or password"), 401
 
 
 if __name__ == '__main__':
