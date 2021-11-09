@@ -58,13 +58,14 @@ def register():
 def gettoken():
     username = request.json["username"]
     password = request.json["password"]
+    role = request.json["role"]
 
-    test = user.find_one({"username": username, "password": password})
+    test = user.find_one({"username": username, "password": password, "role": role})
     if test:
-        access_token = create_access_token(identity=username)
+        access_token = create_access_token(identity=(username + " " + role))
         return jsonify(message="Login Succeeded!", access_token=access_token), 201
     else:
-        return jsonify(message="Bad username or password"), 401
+        return jsonify(message="Bad credentials. User not found"), 401
 
 
 if __name__ == '__main__':

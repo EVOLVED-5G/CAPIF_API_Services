@@ -12,7 +12,10 @@ from ..core import discoveredapis
 import pymongo
 import secrets
 import json
-from flask_jwt_extended import jwt_required
+from flask import Response
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..encoder import JSONEncoder
+from ..models.problem_details import ProblemDetails
 
 
 @jwt_required()
@@ -44,6 +47,14 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
 
     :rtype: DiscoveredAPIs
     """
+
+    identity = get_jwt_identity()
+    username, role = identity.split()
+
+    if role != "invoker":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be invoker")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     discovered_apis = discoveredapis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
     response = discovered_apis, 200

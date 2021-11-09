@@ -8,7 +8,10 @@ from ..core import serviceapidescriptions
 
 import secrets
 import json
-from flask_jwt_extended import jwt_required
+from flask import Response
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from ..encoder import JSONEncoder
+from ..models.problem_details import ProblemDetails
 
 
 
@@ -38,6 +41,14 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
 
     :rtype: ServiceAPIDescription
     """
+    identity = get_jwt_identity()
+    username, role = identity.split()
+
+    if role != "apf":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
     if connexion.request.is_json:
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
