@@ -26,9 +26,9 @@ def add_serviceapidescription(apf_id, serviceapidescription):
 
     if apf_res.count() == 0:
         myclient.close()
-        prob = ProblemDetails(title="Forbidden", status=403, detail="APF not registered",
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="APF not existing",
                               cause="APF id not found")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
     else:
         res = mycol.find({'api_name': serviceapidescription.api_name})
         if res.count() != 0:
@@ -39,8 +39,6 @@ def add_serviceapidescription(apf_id, serviceapidescription):
         else:
             api_id = secrets.token_hex(15)
             serviceapidescription.api_id = api_id
-            # rec = {"apf_id": apf_id}.update(serviceapidescription.to_dict())
-            # serviceapidescription['apf_id'] = apf_id
             rec = dict()
             rec['apf_id'] = apf_id
             rec.update(serviceapidescription.to_dict())
