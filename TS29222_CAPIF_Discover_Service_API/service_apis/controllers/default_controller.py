@@ -45,7 +45,7 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
     :rtype: DiscoveredAPIs
     """
 
-    discovered_apis = discoveredapis.get_discoveredapis(api_invoker_id)
+    discovered_apis = discoveredapis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
     response = discovered_apis, 200
 
     # if connexion.request.is_json:
