@@ -41,6 +41,8 @@ services:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
