@@ -3,7 +3,7 @@ Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
 Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
 
-Test Setup    Initialize Test And Register
+Test Setup    Initialize Test And Register    role=invoker
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
@@ -67,7 +67,7 @@ Delete Registered NetApp
 	${url}=    Parse Url    ${resp.headers['Location']}
 
 	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Delete Request Capif                   ${url.path}  server=${url.scheme}://${url.netloc}
+	${resp}=            Delete Request Capif                   ${url.path}    server=${url.scheme}://${url.netloc}
 
 	Should Be Equal As Strings    ${resp.status_code}    204
 
