@@ -8,6 +8,7 @@ Library    MongoDBLibrary
 
 *** Keywords ***
 Initialize Test And Register
+	[Arguments]    ${email}=robot@test.com    ${password}=password    ${username}=robot    ${hostip}=localhost    ${role}=invoker
     Reset Db
     Register User At Jwt Auth
 
