@@ -1,11 +1,9 @@
 import pymongo
-import secrets
 from flask import current_app, Flask, Response
 import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from bson import json_util
-import sys
 
 
 def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_type=None, protocol=None, aef_id=None,
@@ -37,15 +35,15 @@ def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_typ
         if api_name is not None:
             myParams.append({"api_name": api_name})
         if api_version is not None:
-            myParams.append({"aef_profiles.versions.api_version": api_version})
+            myParams.append({"aef_profiles.0.versions.api_version": api_version})
         if comm_type is not None:
-            myParams.append({"aef_profiles.versions.resources.comm_type": comm_type})
+            myParams.append({"aef_profiles.0.versions.resources.comm_type": comm_type})
         if protocol is not None:
-            myParams.append({"aef_profiles.protocol": protocol})
+            myParams.append({"aef_profiles.0.protocol": protocol})
         if aef_id is not None:
-            myParams.append({"aef_profiles.aef_id": aef_id})
+            myParams.append({"aef_profiles.0.aef_id": aef_id})
         if data_format is not None:
-            myParams.append({"aef_profiles.data_format": data_format})
+            myParams.append({"aef_profiles.0.data_format": data_format})
         if api_cat is not None:
             myParams.append({"service_api_category": api_cat})
         if supported_features is not None:
@@ -62,12 +60,6 @@ def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_typ
             json_doc = json.dumps(discoved_api, default=json_util.default)
             json_docs.append(json_doc)
 
-        # print("***************")
-        # print(myParams)
-        # print(myQuery)
-        # print(json_docs)
-        # sys.stdout.flush()
-
         myclient.close()
-        res = Response(json_docs, status=201, mimetype='application/json')
+        res = Response(json_docs, status=200, mimetype='application/json')
         return res

@@ -1,12 +1,8 @@
 import connexion
-import six
 
 from api_invoker_management.models.api_invoker_enrolment_details import APIInvokerEnrolmentDetails  # noqa: E501
-from api_invoker_management.models.problem_details import ProblemDetails  # noqa: E501
-from api_invoker_management import util
 from ..core import apiinvokerenrolmentdetails
 
-import secrets
 import json
 from flask import Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
