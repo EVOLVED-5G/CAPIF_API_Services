@@ -9,7 +9,7 @@ from ..core import serviceapidescriptions
 import secrets
 import json
 from flask import Response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+#from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 
@@ -25,10 +25,24 @@ def apf_id_service_apis_get(apf_id):  # noqa: E501
 
     :rtype: ServiceAPIDescription
     """
-    return 'do some magic!'
+    # identity = get_jwt_identity()
+    # _, role = identity.split()
+
+    role = "apf"
+
+    if role != "apf":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
+    if connexion.request.is_json:
+        body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
+
+    res = serviceapidescriptions.get_serviceapidescription(apf_id)
+    return res
 
 
-@jwt_required()
+#@jwt_required()
 def apf_id_service_apis_post(apf_id, body):  # noqa: E501
     """apf_id_service_apis_post
 
@@ -41,9 +55,11 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
 
     :rtype: ServiceAPIDescription
     """
-    identity = get_jwt_identity()
-    username, role = identity.split()
-
+    # identity = get_jwt_identity()
+    # _, role = identity.split()
+    
+    role = "apf" ## role added to test python
+    
     if role != "apf":
         prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
                               cause="User role must be apf")
@@ -68,7 +84,23 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
 
     :rtype: None
     """
-    return 'do some magic!'
+
+    # identity = get_jwt_identity()
+    # _, role = identity.split()
+    
+    role = "apf" ## role added to test python
+
+    if role != "apf":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
+    if connexion.request.is_json:
+        body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
+
+    res = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
+    return res
+
 
 
 def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E501
@@ -83,7 +115,22 @@ def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E50
 
     :rtype: ServiceAPIDescription
     """
-    return 'do some magic!'
+    
+    # identity = get_jwt_identity()
+    # _, role = identity.split()
+    
+    role = "apf" ## role added to test python
+
+    if role != "apf":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
+    if connexion.request.is_json:
+        body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
+
+    res = serviceapidescriptions.getServiceId_serviceapidescription(service_api_id, apf_id)
+    return res
 
 
 def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, service_api_description):  # noqa: E501
@@ -100,6 +147,18 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, service_api_d
 
     :rtype: ServiceAPIDescription
     """
+    # identity = get_jwt_identity()
+    # _, role = identity.split()
+    
+    role = "apf" ## role added to test python
+
+    if role != "apf":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
     if connexion.request.is_json:
-        service_api_description = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
+
+    res = serviceapidescriptions.update_serviceapidescription(service_api_id, apf_id, service_api_description)
+    return res

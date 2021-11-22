@@ -5,7 +5,7 @@ import connexion
 from published_apis import encoder
 
 from flask import Flask, jsonify, request
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+#from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 
 
@@ -21,13 +21,13 @@ app.app.config['MONGODB_SETTINGS'] = {
     'db': 'capif',
     'col': 'serviceapidescriptions',
     'jwt': 'user',
-    'host': 'mongo',
+    'host': '172.21.0.3',
     'port': 27017,
 }
 
 app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
 
-jwt = JWTManager(app.app)
+#jwt = JWTManager(app.app)
 
 
 if __name__ == '__main__':
