@@ -1,16 +1,4 @@
-import connexion
-import six
-
-from service_apis.models.communication_type import CommunicationType  # noqa: E501
-from service_apis.models.data_format import DataFormat  # noqa: E501
-from service_apis.models.discovered_apis import DiscoveredAPIs  # noqa: E501
-from service_apis.models.problem_details import ProblemDetails  # noqa: E501
-from service_apis.models.protocol import Protocol  # noqa: E501
-from service_apis import util
-
 from ..core import discoveredapis
-import pymongo
-import secrets
 import json
 from flask import Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -59,11 +47,4 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
     discovered_apis = discoveredapis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
     response = discovered_apis, 200
 
-    # if connexion.request.is_json:
-    #     comm_type =  CommunicationType.from_dict(connexion.request.get_json())  # noqa: E501
-    # if connexion.request.is_json:
-    #     protocol =  Protocol.from_dict(connexion.request.get_json())  # noqa: E501
-    # if connexion.request.is_json:
-    #     data_format =  DataFormat.from_dict(connexion.request.get_json())  # noqa: E501
-    # return 'do some magic!'
     return response

@@ -38,20 +38,20 @@ user = mydb[col]
 @app.route("/register", methods=["POST"])
 def register():
     username = request.json["username"]
+    role = request.json["role"]
     test = user.find_one({"username": username})
     if test:
-        return jsonify(message="User Already Exist"), 409
-    elif request.json["role"] != "invoker" and request.json["role"] != "apf":
+        return jsonify("User already exists"), 409
+    elif role != "invoker" and role != "apf":
         return jsonify(message="Role must be invoker or apf"), 409
     else:
         username = request.json["username"]
         password = request.json["password"]
         role = request.json["role"]
-        hostip = request.json["hostip"]
-        email = request.json["email"]
-        user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, hostip=hostip, email=email)
+        description = request.json["description"]
+        user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description)
         obj = user.insert_one(user_info)
-        return jsonify(message="User added sucessfully", id=obj.inserted_id), 201
+        return jsonify(message=role + " registered successfully", id=obj.inserted_id), 201
 
 
 @app.route("/gettoken", methods=["POST"])
@@ -63,7 +63,7 @@ def gettoken():
     test = user.find_one({"username": username, "password": password, "role": role})
     if test:
         access_token = create_access_token(identity=(username + " " + role))
-        return jsonify(message="Login Succeeded!", access_token=access_token), 201
+        return jsonify(message="Token returned successfully", access_token=access_token), 201
     else:
         return jsonify(message="Bad credentials. User not found"), 401
 
