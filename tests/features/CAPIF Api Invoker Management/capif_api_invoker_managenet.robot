@@ -3,7 +3,7 @@ Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
 Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
 
-Test Setup    Initialize Test And Register    role=invoker
+Test Setup    Initialize Test And Register    role=invoker    db_col=invokerdetails
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
