@@ -51,6 +51,8 @@ services:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Security_API:/usr/src/app
   jwtauth:
     build:
       context: ./jwt_auth
