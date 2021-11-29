@@ -333,9 +333,9 @@ def create_onboarding_notification_body():
     }
 
 
-def create_service_api_description():
+def create_service_api_description(api_name="3gpp-monitoring-event"):
     return {
-        "apiName": "3gpp-monitoring-event",
+        "apiName": api_name,
         "aefProfiles": [
             {
                 "aefId": "string",

@@ -7,7 +7,7 @@ Test Setup    Initialize Test And Register    role=apf    db_col=serviceapidescr
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
-${APF_ID_NOT_VALID}     apf-example
+${APF_ID_NOT_VALID}              apf-example
 
 *** Keywords ***
 
@@ -17,22 +17,36 @@ Publish API by Authorised API Publisher
 	[Tags]    capif_api_publish_service-1
 
 	${request_body}=    Create Service Api Description
-	# ${apfId}=           Set Variable                      apf-example
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+Publish API by NON Authorised API Publisher
+	[Tags]              capif_api_publish_service-2
+	${request_body}=    Create Service Api Description
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID_NOT_VALID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    401
+
+Retrieve all APIs Published by Authorised apfId
+	[Tags]    capif_api_publish_service-3
+
+	${request_body}=    Create Service Api Description
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${request_body}=    Create Service Api Description    other_service
 	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
 	Should Be Equal As Strings    ${resp.status_code}    201
 
 
-Publish API by NON Authorised API Publisher
-	[Tags]    capif_api_publish_service-2
-	Log       Test "${TEST NAME}" Not Implemented    WARN
-	Skip      Test "${TEST NAME}" Not Implemented
+	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID}/service-apis
 
-Retrieve all APIs Published by Authorised apfId
-	[Tags]    capif_api_publish_service-3
+	Should Be Equal As Strings    ${resp.status_code}    200
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	Log    ${resp.json()}
 
 Retrieve all APIs Published by NON Authorised apfId
 	[Tags]    capif_api_publish_service-4
