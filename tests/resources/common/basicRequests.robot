@@ -71,6 +71,8 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
+    Set Global Variable    ${APF_ID}    ${resp.json()['id']}
+
     &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
 
     ${resp}=    POST On Session    jwtsession    /gettoken    json=${body}

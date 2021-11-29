@@ -3,10 +3,11 @@ Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
 Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
 
-Test Setup    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
+Test Setup    Initialize Test And Register    role=apf    db_col=serviceapidescriptions
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
+${APF_ID_NOT_VALID}     apf-example
 
 *** Keywords ***
 
@@ -15,8 +16,12 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 Publish API by Authorised API Publisher
 	[Tags]    capif_api_publish_service-1
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${request_body}=    Create Service Api Description
+	# ${apfId}=           Set Variable                      apf-example
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
 
 Publish API by NON Authorised API Publisher
 	[Tags]    capif_api_publish_service-2
