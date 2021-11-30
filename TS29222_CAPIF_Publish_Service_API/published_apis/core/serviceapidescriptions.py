@@ -35,11 +35,11 @@ def get_serviceapis(apf_id):
         json_docs = []
         for serviceapi in service_apis:
             del serviceapi['apf_id']
-            json_doc = json.dumps(serviceapi, default=json_util.default)
-            json_docs.append(json_doc)
+            del serviceapi['_id']
+            json_docs.append(serviceapi)
 
         myclient.close()
-        res = Response(json_docs, status=200, mimetype='application/json')
+        res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype='application/json')
         return res
 
 
