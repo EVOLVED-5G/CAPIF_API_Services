@@ -125,31 +125,57 @@ Update API Published by Authorised apfId with valid serviceApiId
 Update APIs Published by Authorised apfId with invalid serviceApiId
 	[Tags]    capif_api_publish_service-9
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${request_body}=    Create Service Api Description    first_service_modified
+
+	${resp}=    Put Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
+
+	Should Be Equal As Strings    ${resp.status_code}    404
 
 Update APIs Published by NON Authorised apfId
 	[Tags]    capif_api_publish_service-10
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${request_body}=    Create Service Api Description    first_service
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+	${serviceApiId1}=             Set Variable           ${resp.json()['apiId']}
+	${url}=                       Parse Url              ${resp.headers['Location']}
+
+	Register User At Jwt Auth    role=invoker
+
+	${request_body}=    Create Service Api Description    first_service_modified
+
+	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${url.scheme}://${url.netloc}
+
+	Should Be Equal As Strings    ${resp.status_code}    401
 
 Delete API Published by Authorised apfId with valid serviceApiId
 	[Tags]    capif_api_publish_service-11
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${request_body}=    Create Service Api Description    first_service
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+	${serviceApiId1}=             Set Variable           ${resp.json()['apiId']}
+	${url}=                       Parse Url              ${resp.headers['Location']}
+
+	${resp}=    Delete Request Capif    ${url.path}    server=${url.scheme}://${url.netloc}
+
+	Should Be Equal As Strings    ${resp.status_code}    204
 
 Delete APIs Published by Authorised apfId with invalid serviceApiId
 	[Tags]    capif_api_publish_service-12
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${resp}=    Delete Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
+
+	Should Be Equal As Strings    ${resp.status_code}    404
 
 Delete APIs Published by NON Authorised apfId
 	[Tags]    capif_api_publish_service-13
+	[Setup]    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${resp}=    Delete Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
+
+	Should Be Equal As Strings    ${resp.status_code}    401
 
 
