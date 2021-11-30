@@ -1,7 +1,7 @@
 *** Settings ***
 Resource    /opt/robot-tests/tests/resources/common.resource
-Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
-Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
+Library     /opt/robot-tests/tests/libraries/api_publish_service/bodyRequests.py
+Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 Test Setup    Initialize Test And Register    role=apf    db_col=serviceapidescriptions
 
@@ -127,7 +127,7 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
 
 	${request_body}=    Create Service Api Description    first_service_modified
 
-	${resp}=    Put Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
+	${resp}=    Put Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}    ${request_body}
 
 	Should Be Equal As Strings    ${resp.status_code}    404
 
@@ -141,7 +141,7 @@ Update APIs Published by NON Authorised apfId
 	${serviceApiId1}=             Set Variable           ${resp.json()['apiId']}
 	${url}=                       Parse Url              ${resp.headers['Location']}
 
-	Register User At Jwt Auth    role=invoker
+	Register User At Jwt Auth    username=robot2    role=invoker
 
 	${request_body}=    Create Service Api Description    first_service_modified
 
@@ -171,7 +171,7 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
 	Should Be Equal As Strings    ${resp.status_code}    404
 
 Delete APIs Published by NON Authorised apfId
-	[Tags]    capif_api_publish_service-13
+	[Tags]     capif_api_publish_service-13
 	[Setup]    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
 
 	${resp}=    Delete Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
