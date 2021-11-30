@@ -6,7 +6,6 @@ Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests
 Test Setup    Initialize Test And Register    role=apf    db_col=serviceapidescriptions
 
 *** Variables ***
-${API_INVOKER_NOT_REGISTERED}    not-valid
 ${APF_ID_NOT_VALID}              apf-example
 
 *** Keywords ***
@@ -23,6 +22,8 @@ Publish API by Authorised API Publisher
 
 Publish API by NON Authorised API Publisher
 	[Tags]              capif_api_publish_service-2
+	[Setup]   Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
+
 	${request_body}=    Create Service Api Description
 	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID_NOT_VALID}/service-apis    ${request_body}
 
@@ -41,7 +42,6 @@ Retrieve all APIs Published by Authorised apfId
 
 	Should Be Equal As Strings    ${resp.status_code}    201
 
-
 	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID}/service-apis
 
 	Should Be Equal As Strings    ${resp.status_code}    200
@@ -50,15 +50,41 @@ Retrieve all APIs Published by Authorised apfId
 
 Retrieve all APIs Published by NON Authorised apfId
 	[Tags]    capif_api_publish_service-4
+	[Setup]   Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
+
+	Should Be Equal As Strings    ${resp.status_code}    401
+
+	Log    ${resp.json()}
 
 Retrieve single APIs Published by Authorised apfId
 	[Tags]    capif_api_publish_service-5
 
-	Log     Test "${TEST NAME}" Not Implemented    WARN
-	Skip    Test "${TEST NAME}" Not Implemented
+	${request_body}=    Create Service Api Description		first_service
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+	${serviceApiId1}=    Set Variable   ${resp.json()['apiId']}
+
+	${request_body}=    Create Service Api Description    other_service
+	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${serviceApiId2}=    Set Variable   ${resp.json()['apiId']}
+
+	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID}/service-apis/${serviceApiId1}
+
+	Should Be Equal As Strings    ${resp.status_code}    200
+
+	Should Be Equal    ${resp.json()['api_name']}    first_service
+
+	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID}/service-apis/${serviceApiId2}
+
+	Should Be Equal As Strings    ${resp.status_code}    200
+
+	Should Be Equal    ${resp.json()['api_name']}    other_service
 
 Retrieve single APIs non Published by Authorised apfId
 	[Tags]    capif_api_publish_service-6
