@@ -12,8 +12,8 @@ To run all CAPIF APIs at same time you can execute:
 Also you can run service by service using docker:
 ```
 cd <Service>
-docker build -t openapi_server .
-docker run -p 8080:8080 openapi_server
+docker build -t capif_security .
+docker run -p 8080:8080 capif_security
 ```
 
 Or directly python

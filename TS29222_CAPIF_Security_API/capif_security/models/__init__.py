@@ -5,6 +5,7 @@ from __future__ import absolute_import
 # import models into model package
 from capif_security.models.access_token_claims import AccessTokenClaims
 from capif_security.models.access_token_err import AccessTokenErr
+from capif_security.models.access_token_req import AccessTokenReq
 from capif_security.models.access_token_rsp import AccessTokenRsp
 from capif_security.models.cause import Cause
 from capif_security.models.cause_any_of import CauseAnyOf
