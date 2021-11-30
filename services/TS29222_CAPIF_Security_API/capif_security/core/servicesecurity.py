@@ -153,5 +153,5 @@ def return_token(security_id, access_token_req):
         response = requests.request('POST', access_token_url, data=access_payload)
         parsed = json.loads(response.text)
         access_token = parsed['access_token']
+        return response
 
-        
