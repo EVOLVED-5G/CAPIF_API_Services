@@ -3,6 +3,7 @@ import six
 
 from capif_security.models.access_token_err import AccessTokenErr  # noqa: E501
 from capif_security.models.access_token_rsp import AccessTokenRsp  # noqa: E501
+from capif_security.models.access_token_req import AccessTokenReq  # noqa: E501
 from capif_security.models.security_notification import SecurityNotification  # noqa: E501
 from capif_security.models.service_security import ServiceSecurity  # noqa: E501
 from capif_security import util
@@ -12,6 +13,7 @@ from flask import Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+import sys
 
 
 @jwt_required()
@@ -22,13 +24,13 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
 
     :param security_id: Identifier of an individual API invoker
     :type security_id: str
-    :param grant_type: 
+    :param grant_type:
     :type grant_type: str
-    :param client_id: 
+    :param client_id:
     :type client_id: str
-    :param client_secret: 
+    :param client_secret:
     :type client_secret: str
-    :param scope: 
+    :param scope:
     :type scope: str
 
     :rtype: AccessTokenRsp
@@ -36,13 +38,16 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     identity = get_jwt_identity()
     username, role = identity.split()
 
+    print("**********")
+    sys.stdout.flush()
+
     if role != "invoker":
         prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
                               cause="User role must be invoker")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
-        body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
+        body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501
     res = servicesecurity.return_token(security_id, body)
     return res
 
