@@ -1,9 +1,12 @@
+import sys
+
 import pymongo
 import secrets
 from flask import current_app, Flask, Response
 import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from ..models.access_token_rsp import AccessTokenRsp
 from bson import json_util
 import requests
 
@@ -150,8 +153,19 @@ def return_token(security_id, access_token_req):
             "username": "admin@my-email.com",
             "password": "pass"
         }
+        request_token_obj = access_token_req.to_dict()
+        # DO NOT REMOVE
+        # for (key, value) in request_token_obj.items():
+        #     access_payload[key] = value
+
         response = requests.request('POST', access_token_url, data=access_payload)
         parsed = json.loads(response.text)
         access_token = parsed['access_token']
-        return response
+        token_type = parsed['token_type']
+        access_token_resp = AccessTokenRsp(access_token=access_token, token_type=token_type, expires_in=691200)
+        if "scope" in request_token_obj.keys():
+            access_token_resp.scope = request_token_obj["scope"]
+        res = Response(json.dumps(access_token_resp, cls=JSONEncoder), status=201, mimetype='application/json')
+        return res
+
 

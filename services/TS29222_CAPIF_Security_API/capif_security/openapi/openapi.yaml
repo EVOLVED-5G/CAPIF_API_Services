@@ -30,7 +30,7 @@ paths:
         style: simple
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               $ref: '#/components/schemas/AccessTokenReq'
         required: true
@@ -46,17 +46,21 @@ paths:
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "308":
           description: Permanent Redirect
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "400":
           content:
             application/json:
@@ -84,17 +88,21 @@ paths:
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "308":
           description: Permanent Redirect
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "400":
           content:
             application/problem+json:
@@ -184,17 +192,21 @@ paths:
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "308":
           description: Permanent Redirect
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "400":
           content:
             application/problem+json:
@@ -272,17 +284,21 @@ paths:
                   headers:
                     Location:
                       description: An alternative URI of the resource.
+                      explode: false
                       required: true
                       schema:
                         type: string
+                      style: simple
                 "308":
                   description: Permanent Redirect
                   headers:
                     Location:
                       description: An alternative URI of the resource.
+                      explode: false
                       required: true
                       schema:
                         type: string
+                      style: simple
                 "400":
                   content:
                     application/problem+json:
@@ -469,17 +485,21 @@ paths:
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "308":
           description: Permanent Redirect
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "400":
           content:
             application/problem+json:
@@ -574,17 +594,21 @@ paths:
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "308":
           description: Permanent Redirect
           headers:
             Location:
               description: An alternative URI of the resource.
+              explode: false
               required: true
               schema:
                 type: string
+              style: simple
         "400":
           content:
             application/problem+json:
@@ -809,6 +833,11 @@ components:
       type: object
     AccessTokenReq:
       description: Represents the access token request information.
+      example:
+        grant_type: client_credentials
+        scope: scope
+        client_secret: client_secret
+        client_id: client_id
       format: x-www-form-urlencoded
       properties:
         grant_type:
