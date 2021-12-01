@@ -169,3 +169,69 @@ def return_token(security_id, access_token_req):
         return res
 
 
+def update_servicesecurity(api_invoker_id, service_security):
+    user = current_app.config['MONGODB_SETTINGS']['user']
+    password = current_app.config['MONGODB_SETTINGS']['password']
+    db = current_app.config['MONGODB_SETTINGS']['db']
+    serv = current_app.config['MONGODB_SETTINGS']['col']
+    inv = current_app.config['MONGODB_SETTINGS']['invokers']
+    host = current_app.config['MONGODB_SETTINGS']['host']
+    port = current_app.config['MONGODB_SETTINGS']['port']
+
+    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+
+    myclient = pymongo.MongoClient(uri)
+    mydb = myclient[db]
+    services_security = mydb[serv]
+    invokers = mydb[inv]
+
+    invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
+    if invoker is None:
+        myclient.close()
+        prob = ProblemDetails(title="Forbidden", status=403, detail="API Invoker does not exist",
+                              cause="API Invoker id not found")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+    else:
+        myParams = []
+        for i in range(0, len(service_security.security_info)):
+            myParams.append({"security_info." + str(i) + ".aef_id": service_security.security_info[i].aef_id})
+        myQuery = {"$and": myParams}
+        old_object = services_security.find_one(myQuery)
+        if old_object is None:
+            myclient.close()
+            prob = ProblemDetails(title="Forbidden", status=403, detail="Security context not found",
+                                  cause="Not existing AEF Profile IDs")
+            return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+        else:
+            new_object = dict()
+            new_object['api_invoker_id'] = api_invoker_id
+            new_object.update(service_security.to_dict())
+            services_security.replace_one(old_object, new_object)
+            myclient.close()
+            res = Response(json.dumps(service_security, cls=JSONEncoder), status=200, mimetype='application/json')
+            res.headers['Location'] = "http://localhost:8080/capif-security/v1/trustedInvokers/" + str(
+                api_invoker_id)
+            return res
+
+
+def revoke_api_authorization(api_invoker_id, security_notification):
+    user = current_app.config['MONGODB_SETTINGS']['user']
+    password = current_app.config['MONGODB_SETTINGS']['password']
+    db = current_app.config['MONGODB_SETTINGS']['db']
+    serv = current_app.config['MONGODB_SETTINGS']['col']
+    inv = current_app.config['MONGODB_SETTINGS']['invokers']
+    host = current_app.config['MONGODB_SETTINGS']['host']
+    port = current_app.config['MONGODB_SETTINGS']['port']
+
+    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+
+    myclient = pymongo.MongoClient(uri)
+    mydb = myclient[db]
+    services_security = mydb[serv]
+
+    myQuery = {'api_invoker_id': api_invoker_id}
+    result = services_security.find(myQuery)
+    if result.count() == 0:
+        return "Please provide an existing Netapp ID", 404
+    else:
+        return "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
