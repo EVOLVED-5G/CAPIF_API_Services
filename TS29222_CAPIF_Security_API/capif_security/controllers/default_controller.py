@@ -38,9 +38,6 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     identity = get_jwt_identity()
     username, role = identity.split()
 
-    print("**********")
-    sys.stdout.flush()
-
     if role != "invoker":
         prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
                               cause="User role must be invoker")
@@ -74,7 +71,8 @@ def trusted_invokers_api_invoker_id_delete(api_invoker_id):  # noqa: E501
     return servicesecurity.delete_servicesecurity(api_invoker_id)
 
 
-def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, security_notification):  # noqa: E501
+@jwt_required()
+def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: E501
     """trusted_invokers_api_invoker_id_delete_post
 
      # noqa: E501
@@ -86,9 +84,18 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, security_notific
 
     :rtype: None
     """
+    identity = get_jwt_identity()
+    username, role = identity.split()
+
+    if role != "invoker":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be invoker")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
     if connexion.request.is_json:
-        security_notification = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
+
+    return servicesecurity.revoke_api_authorization(api_invoker_id, body)
 
 
 @jwt_required()
@@ -147,7 +154,8 @@ def trusted_invokers_api_invoker_id_put(api_invoker_id, body):  # noqa: E501
     return res
 
 
-def trusted_invokers_api_invoker_id_update_post(api_invoker_id, service_security):  # noqa: E501
+@jwt_required()
+def trusted_invokers_api_invoker_id_update_post(api_invoker_id, body):  # noqa: E501
     """trusted_invokers_api_invoker_id_update_post
 
      # noqa: E501
@@ -159,6 +167,16 @@ def trusted_invokers_api_invoker_id_update_post(api_invoker_id, service_security
 
     :rtype: ServiceSecurity
     """
+
+    identity = get_jwt_identity()
+    username, role = identity.split()
+
+    if role != "invoker":
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+                              cause="User role must be invoker")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
     if connexion.request.is_json:
-        service_security = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
+    res = servicesecurity.update_servicesecurity(api_invoker_id, body)
+    return res

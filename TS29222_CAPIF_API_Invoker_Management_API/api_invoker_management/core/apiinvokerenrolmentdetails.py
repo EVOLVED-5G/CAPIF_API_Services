@@ -56,9 +56,8 @@ def update_apiinvokerenrolmentdetail(onboard_id, apiinvokerenrolmentdetail):
     try:
         myQuery = {'api_invoker_id':onboard_id}
         old_values = mycol.find_one(myQuery)
-        
-        
-        if (old_values == None):
+
+        if old_values is None:
             return "Please provide an existing Netapp ID", 404
         else:
 
