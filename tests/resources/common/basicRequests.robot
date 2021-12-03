@@ -61,9 +61,9 @@ Delete Request Capif
     [Return]    ${resp}
 
 Register User At Jwt Auth
-    [Arguments]    ${email}=robot@test.com    ${password}=password    ${username}=robot    ${hostip}=localhost    ${role}=invoker
+    [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
 
-    &{body}=    Create Dictionary    email=${email}    password=${password}    username=${username}    hostip=${hostip}    role=${role}
+    &{body}=    Create Dictionary    password=${password}    username=${username}    role=${role}    description=${description}
 
     Create Session    jwtsession    http://localhost:8080    verify=True
 
@@ -71,7 +71,9 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    &{body}=    Create Dictionary    username=${username}    password=${password}   role=${role}
+    Set Global Variable    ${APF_ID}    ${resp.json()['id']}
+
+    &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
 
     ${resp}=    POST On Session    jwtsession    /gettoken    json=${body}
 
