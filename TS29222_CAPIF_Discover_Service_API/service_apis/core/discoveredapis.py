@@ -52,14 +52,14 @@ def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_typ
             myParams.append({"api_supp_feats": api_supported_features})
         if myParams:
             myQuery = {"$or": myParams}
+
         discoved_apis = services.find(myQuery)
         json_docs = []
         for discoved_api in discoved_apis:
             del discoved_api['_id']
             del discoved_api['apf_id']
-            json_doc = json.dumps(discoved_api, default=json_util.default)
-            json_docs.append(json_doc)
+            json_docs.append(discoved_api)
 
         myclient.close()
-        res = Response(json_docs, status=200, mimetype='application/json')
+        res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype='application/json')
         return res
