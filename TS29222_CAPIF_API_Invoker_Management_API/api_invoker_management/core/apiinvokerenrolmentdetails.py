@@ -21,9 +21,9 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
     mydb = myclient[db]
     mycol = mydb[col]
 
-    res = mycol.find({'onboarding_information.api_invoker_public_key': apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key})
+    res = mycol.find_one({'onboarding_information.api_invoker_public_key': apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key})
 
-    if res.count() != 0:
+    if res is not None:
         myclient.close()
         prob = ProblemDetails(title="Forbidden", status=403, detail="Invoker already registered", cause="Identical invoker public key")
         return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
@@ -56,8 +56,7 @@ def update_apiinvokerenrolmentdetail(onboard_id, apiinvokerenrolmentdetail):
     try:
         myQuery = {'api_invoker_id':onboard_id}
         old_values = mycol.find_one(myQuery)
-        
-        
+
         if (old_values == None):
             return "Please provide an existing Netapp ID", 404
         else:
