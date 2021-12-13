@@ -10,6 +10,7 @@ services:
       - "8080"
     volumes:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
+    restart: unless-stopped
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
@@ -29,6 +30,7 @@ services:
       - "8080"
     volumes:
       - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
+    restart: unless-stopped
   capif-events:
     build: TS29222_CAPIF_Events_API/.
     expose:
@@ -43,6 +45,7 @@ services:
       - "8080"
     volumes:
       - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
+    restart: unless-stopped
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
@@ -51,6 +54,7 @@ services:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
+    restart: unless-stopped
   jwtauth:
     build:
       context: ./jwt_auth
@@ -58,9 +62,10 @@ services:
       - "8080"
     volumes:
       - ./jwt_auth:/usr/src/app
+    restart: unless-stopped
   mongo:
     image: mongo:latest
-    restart: always
+    restart: unless-stopped
     ports:
       - 27017:27017
     environment:
@@ -68,7 +73,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
   mongo-express:
     image: mongo-express
-    restart: always
+    restart: unless-stopped
     ports:
       - 8081:8081
     environment:
