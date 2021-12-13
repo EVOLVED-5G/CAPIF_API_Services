@@ -29,10 +29,12 @@ def apf_id_service_apis_get(apf_id):  # noqa: E501
                               cause="User role must be apf")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    service_apis = serviceapidescriptions.get_serviceapis(apf_id)
-    response = service_apis, 200
+    # service_apis = serviceapidescriptions.get_serviceapis(apf_id)
+    # response = service_apis, 200
 
-    return response
+    res = serviceapidescriptions.get_serviceapis(apf_id)
+
+    return res
 
 
 @jwt_required()
@@ -80,8 +82,6 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
     identity = get_jwt_identity()
     _, role = identity.split()
 
-
-
     if role != "apf":
         prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
                               cause="User role must be apf")
@@ -90,9 +90,12 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
     if connexion.request.is_json:
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
-    service_apis = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
-    response = service_apis, 204
-    return response
+    # service_apis = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
+    # response = service_apis, 204
+
+    res = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
+
+    return res
 
 
 @jwt_required()
@@ -116,10 +119,12 @@ def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E50
                               cause="User role must be apf")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    service_apis = serviceapidescriptions.get_one_serviceapi(service_api_id, apf_id)
-    response = service_apis, 200
+    # service_apis = serviceapidescriptions.get_one_serviceapi(service_api_id, apf_id)
+    # response = service_apis, 200
 
-    return response
+    res = serviceapidescriptions.get_one_serviceapi(service_api_id, apf_id)
+
+    return res
 
 
 @jwt_required()
@@ -149,4 +154,5 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     response = serviceapidescriptions.update_serviceapidescription(service_api_id, apf_id, body)
-    return response,200
+    # return response,200
+    return response

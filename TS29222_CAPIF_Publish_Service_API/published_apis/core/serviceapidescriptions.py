@@ -1,3 +1,5 @@
+import sys
+
 import pymongo
 import secrets
 from flask import current_app, Flask, Response
@@ -117,16 +119,19 @@ def get_one_serviceapi(service_api_id, apf_id):
     else:
         myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
         service_api = mycol.find_one(myQuery)
+        print(service_api)
+        sys.stdin.flush()
         if service_api is None:
-            prob = ProblemDetails(title="Not Found", status=400, detail="Service API not found",
+            prob = ProblemDetails(title="Not Found", status=404, detail="Service API not found",
                                   cause="No Service with specific credentials exists")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
+            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
+        else:
+            del service_api['apf_id']
+            del service_api['_id']
 
-        del service_api['apf_id']
-
-        myclient.close()
-        res = Response(json.dumps(service_api, default=json_util.default), status=200, mimetype='application/json')
-        return res
+            myclient.close()
+            res = Response(json.dumps(service_api, default=json_util.default), status=200, mimetype='application/json')
+            return res
 
 
 def delete_serviceapidescription(service_api_id, apf_id):
@@ -161,7 +166,11 @@ def delete_serviceapidescription(service_api_id, apf_id):
         serviceapidescription = mycol.find_one(myQuery)
 
         if serviceapidescription is None:
-            return "Please provide an existing service api ID", 404
+            myclient.close()
+            prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
+                                  cause="Service API id not found")
+            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
+            # return "Please provide an existing service api ID", 404
         else:
             mycol.delete_one(myQuery)
          
@@ -201,10 +210,10 @@ def update_serviceapidescription(service_api_id,apf_id, service_api_description)
 
         if serviceapidescription is None:
             myclient.close()
-            return "Please provide an existing service api ID", 404
-
+            prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
+                                  cause="Service API id not found")
+            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
         else:
-
             service_api_description.api_id = service_api_id
             rec = dict()
             rec['apf_id'] = apf_id
