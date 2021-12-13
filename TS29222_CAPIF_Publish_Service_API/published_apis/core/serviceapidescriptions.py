@@ -221,6 +221,6 @@ def update_serviceapidescription(service_api_id,apf_id, service_api_description)
             mycol.replace_one(serviceapidescription, rec)
             myclient.close()
             del rec['apf_id']
-            response = Response(json.dumps(rec, default=str,cls=JSONEncoder), status=201, mimetype='application/json')
+            response = Response(json.dumps(rec, default=str,cls=JSONEncoder), status=200, mimetype='application/json')
 
             return response
