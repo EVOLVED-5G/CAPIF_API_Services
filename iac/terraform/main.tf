@@ -20,7 +20,7 @@ resource "kubernetes_pod" "aef_security" {
 
 resource "kubernetes_service" "aef_security_service" {
   metadata {
-    name      = "aef_security-service"
+    name      = "aef_security_service"
     namespace = "evolved5g"
   }
   spec {
@@ -56,7 +56,7 @@ resource "kubernetes_pod" "api_invoker_management" {
 
 resource "kubernetes_service" "api_invoker_management_service" {
   metadata {
-    name      = "api_invoker_management-service"
+    name      = "api_invoker_management_service"
     namespace = "evolved5g"
   }
   spec {
@@ -92,7 +92,7 @@ resource "kubernetes_pod" "api_provider_management" {
 
 resource "kubernetes_service" "api_provider_management_service" {
   metadata {
-    name      = "api_provider_management-service"
+    name      = "api_provider_management_service"
     namespace = "evolved5g"
   }
   spec {
@@ -128,7 +128,7 @@ resource "kubernetes_pod" "access_control_policy" {
 
 resource "kubernetes_service" "access_control_policy_service" {
   metadata {
-    name      = "access_control_policy-service"
+    name      = "access_control_policy_service"
     namespace = "evolved5g"
   }
   spec {
@@ -164,7 +164,7 @@ resource "kubernetes_pod" "logs" {
 
 resource "kubernetes_service" "logs_service" {
   metadata {
-    name      = "logs-service"
+    name      = "logs_service"
     namespace = "evolved5g"
   }
   spec {
@@ -200,7 +200,7 @@ resource "kubernetes_pod" "discover_service" {
 
 resource "kubernetes_service" "discover_service_service" {
   metadata {
-    name      = "discover_service-service"
+    name      = "discover_service_service"
     namespace = "evolved5g"
   }
   spec {
@@ -236,7 +236,7 @@ resource "kubernetes_pod" "events" {
 
 resource "kubernetes_service" "events_service" {
   metadata {
-    name      = "events-service"
+    name      = "events_service"
     namespace = "evolved5g"
   }
   spec {
@@ -272,7 +272,7 @@ resource "kubernetes_pod" "api_invocation_logs" {
 
 resource "kubernetes_service" "api_invocation_logs_service" {
   metadata {
-    name      = "api_invocation_logs-service"
+    name      = "api_invocation_logs_service"
     namespace = "evolved5g"
   }
   spec {
@@ -308,7 +308,7 @@ resource "kubernetes_pod" "publish_service" {
 
 resource "kubernetes_service" "publish_service_service" {
   metadata {
-    name      = "publish_service-service"
+    name      = "publish_service_service"
     namespace = "evolved5g"
   }
   spec {
@@ -344,7 +344,7 @@ resource "kubernetes_pod" "routing_info" {
 
 resource "kubernetes_service" "routing_info_service" {
   metadata {
-    name      = "routing_info-service"
+    name      = "routing_info_service"
     namespace = "evolved5g"
   }
   spec {
@@ -380,7 +380,7 @@ resource "kubernetes_pod" "security" {
 
 resource "kubernetes_service" "security_service" {
   metadata {
-    name      = "security-service"
+    name      = "security_service"
     namespace = "evolved5g"
   }
   spec {
@@ -416,7 +416,7 @@ resource "kubernetes_pod" "jwtauth" {
 
 resource "kubernetes_service" "jwtauth_service" {
   metadata {
-    name      = "jwtauth-service"
+    name      = "jwtauth_service"
     namespace = "evolved5g"
   }
   spec {
