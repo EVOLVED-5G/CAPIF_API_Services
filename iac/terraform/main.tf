@@ -395,33 +395,158 @@ resource "kubernetes_service" "security_service" {
 }
 
 #############################################
-# JWTAUTH
+# MONGO
 #############################################
-resource "kubernetes_pod" "jwtauth" {
+resource "kubernetes_pod" "mongo" {
   metadata {
-    name      = "jwtauth"
+    name      = "mongo"
     namespace = "evolved5g"
     labels = {
-      app = "jwtauth"
+      app = "mongo"
     }
   }
 
   spec {
     container {
-      image = "dockerhub.hi.inet/evolved-5g/jwtauth:latest"
-      name  = "jwtauth"
+      image = "mongo:latest"
+      name  = "mongo"
     }
+  }
+
+  env {
+    name  = "MONGO_INITDB_ROOT_USERNAME"
+    value = "root"
+  }
+
+  env {
+    name  = "MONGO_INITDB_ROOT_PASSWORD"
+    value = "example"
   }
 }
 
-resource "kubernetes_service" "jwtauth_service" {
+resource "kubernetes_service" "mongo_service" {
   metadata {
-    name      = "jwtauth-service"
+    name      = "mongo-service"
     namespace = "evolved5g"
   }
   spec {
     selector = {
-      app = kubernetes_pod.jwtauth.metadata.0.labels.app
+      app = kubernetes_pod.mongo.metadata.0.labels.app
+    }
+    port {
+      port        = 27017
+      target_port = 27017
+    }
+  }
+}
+
+#############################################
+# MONGO EXPRES
+#############################################
+resource "kubernetes_pod" "mongo-express" {
+  metadata {
+    name      = "mongo-express"
+    namespace = "evolved5g"
+    labels = {
+      app = "mongo-express"
+    }
+  }
+
+  spec {
+    container {
+      image = "mongo-express:latest"
+      name  = "mongo-express"
+    }
+  }
+
+  env {
+    name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+    value = "root"
+  }
+
+  env {
+    name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+    value = "example"
+  }
+
+  env {
+    name  = "ME_CONFIG_MONGODB_URL"
+    value = "mongodb://root:example@mongo:27017/"
+  }
+
+  depends_on = [
+    kubernetes_service.mongo_service
+  ]
+}
+
+resource "kubernetes_service" "mongo-express_service" {
+  metadata {
+    name      = "mongo-express-service"
+    namespace = "evolved5g"
+  }
+  spec {
+    selector = {
+      app = kubernetes_pod.mongo-express.metadata.0.labels.app
+    }
+    port {
+      port        = 8081
+      target_port = 8081
+    }
+  }
+}
+
+#############################################
+# NGINX
+#############################################
+resource "kubernetes_pod" "nginx" {
+  metadata {
+    name      = "nginx"
+    namespace = "evolved5g"
+    labels = {
+      app = "nginx"
+    }
+  }
+
+  spec {
+    container {
+      image = "nginx:latest"
+      name  = "nginx"
+      volume_mount {
+        mount_path = "/etc/nginx/nginx.conf"
+        name       = "config"
+      }
+    }
+
+    volume {
+      name = "config"
+      hostPath {
+        path = "../../nginx.conf"
+      }
+    }
+  }
+
+  depends_on = [
+    kubernetes_service.aef_security_service,
+    kubernetes_service.api_invoker_management_service,
+    kubernetes_service.api_provider_management_service,
+    kubernetes_service.access_control_policy_service,
+    kubernetes_service.logs_service,
+    kubernetes_service.events_service,
+    kubernetes_service.api_invocation_logs_service,
+    kubernetes_service.publish_service_service,
+    kubernetes_service.routing_info_service,
+    kubernetes_service.security_service
+  ]
+}
+
+resource "kubernetes_service" "nginx_service" {
+  metadata {
+    name      = "nginx-service"
+    namespace = "evolved5g"
+  }
+  spec {
+    selector = {
+      app = kubernetes_pod.nginx.metadata.0.labels.app
     }
     port {
       port        = 8080
