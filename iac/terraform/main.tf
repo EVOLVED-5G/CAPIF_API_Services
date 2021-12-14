@@ -156,7 +156,7 @@ resource "kubernetes_pod" "logs" {
 
   spec {
     container {
-      image = "dockerhub.hi.inet/evolved-5g/capif/logs_api:latest"
+      image = "dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest"
       name  = "logs"
     }
   }
