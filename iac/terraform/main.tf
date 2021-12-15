@@ -410,18 +410,20 @@ resource "kubernetes_pod" "mongo" {
     container {
       image = "mongo:latest"
       name  = "mongo"
+
+      env {
+        name  = "MONGO_INITDB_ROOT_USERNAME"
+        value = "root"
+      }
+
+      env {
+        name  = "MONGO_INITDB_ROOT_PASSWORD"
+        value = "example"
+      }
     }
   }
 
-  env {
-    name  = "MONGO_INITDB_ROOT_USERNAME"
-    value = "root"
-  }
 
-  env {
-    name  = "MONGO_INITDB_ROOT_PASSWORD"
-    value = "example"
-  }
 }
 
 resource "kubernetes_service" "mongo_service" {
@@ -456,22 +458,22 @@ resource "kubernetes_pod" "mongo-express" {
     container {
       image = "mongo-express:latest"
       name  = "mongo-express"
+
+      env {
+        name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+        value = "root"
+      }
+
+      env {
+        name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+        value = "example"
+      }
+
+      env {
+        name  = "ME_CONFIG_MONGODB_URL"
+        value = "mongodb://root:example@mongo:27017/"
+      }
     }
-  }
-
-  env {
-    name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-    value = "root"
-  }
-
-  env {
-    name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-    value = "example"
-  }
-
-  env {
-    name  = "ME_CONFIG_MONGODB_URL"
-    value = "mongodb://root:example@mongo:27017/"
   }
 
   depends_on = [
@@ -519,7 +521,7 @@ resource "kubernetes_pod" "nginx" {
 
     volume {
       name = "config"
-      hostPath {
+      host_path {
         path = "../../nginx.conf"
       }
     }
