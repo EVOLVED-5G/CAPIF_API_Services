@@ -574,7 +574,7 @@ resource "kubernetes_pod" "mongo" {
       name  = "mongo"
 
       security_context {
-        privileged = true
+        run_as_user = 1000950001
       }
 
       env {
@@ -670,7 +670,7 @@ resource "kubernetes_pod" "mongo-express" {
       name  = "mongo-express"
 
       security_context {
-        privileged = true
+        run_as_user = 1000950001
       }
 
       env {
