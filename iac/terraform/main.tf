@@ -1,7 +1,24 @@
 #############################################
 # AEF SECURITY
 #############################################
-resource "kubernetes_pod" "aef_security" {
+# resource "kubernetes_pod" "aef_security" {
+#   metadata {
+#     name      = "aef-security"
+#     namespace = "evolved5g"
+#     labels = {
+#       app = "aef_security"
+#     }
+#   }
+
+#   spec {
+#     container {
+#       image = "dockerhub.hi.inet/evolved-5g/aef/security_api:latest"
+#       name  = "aef-security"
+#     }
+#   }
+# }
+
+resource "kubernetes_deployment" "aef_security" {
   metadata {
     name      = "aef-security"
     namespace = "evolved5g"
@@ -9,11 +26,25 @@ resource "kubernetes_pod" "aef_security" {
       app = "aef_security"
     }
   }
-
   spec {
-    container {
-      image = "dockerhub.hi.inet/evolved-5g/aef/security_api:latest"
-      name  = "aef-security"
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "aef_security"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "aef_security"
+        }
+      }
+      spec {
+        container {
+          image = "dockerhub.hi.inet/evolved-5g/aef/security_api:latest"
+          name  = "aef-security"
+        }
+      }
     }
   }
 }
@@ -25,7 +56,7 @@ resource "kubernetes_service" "aef_security_service" {
   }
   spec {
     selector = {
-      app = kubernetes_pod.aef_security.metadata.0.labels.app
+      app = kubernetes_deployment.aef_security.spec.0.template.0.metadata[0].labels.app
     }
     port {
       port        = 8080
@@ -410,6 +441,10 @@ resource "kubernetes_pod" "mongo" {
       image = "mongo:latest"
       name  = "mongo"
 
+      security_context {
+        run_as_user = 0
+      }
+
       env {
         name  = "MONGO_INITDB_ROOT_USERNAME"
         value = "root"
@@ -455,6 +490,10 @@ resource "kubernetes_pod" "mongo-express" {
     container {
       image = "mongo-express:latest"
       name  = "mongo-express"
+
+      security_context {
+        run_as_user = 0
+      }
 
       env {
         name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
@@ -510,6 +549,9 @@ resource "kubernetes_pod" "nginx" {
     container {
       image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
       name  = "nginx"
+    }
+    security_context {
+      run_as_user = 0
     }
   }
 
