@@ -422,8 +422,6 @@ resource "kubernetes_pod" "mongo" {
       }
     }
   }
-
-
 }
 
 resource "kubernetes_service" "mongo_service" {
@@ -522,7 +520,7 @@ resource "kubernetes_pod" "nginx" {
     volume {
       name = "config"
       host_path {
-        path = "../../nginx.conf"
+        path = "./nginx.conf"
       }
     }
   }
