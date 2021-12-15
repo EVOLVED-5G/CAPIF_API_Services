@@ -559,7 +559,7 @@ resource "kubernetes_service" "security_service" {
 #############################################
 # MONGO
 #############################################
-resource "kubernetes_deployment" "mongo" {
+resource "kubernetes_pod" "mongo" {
   metadata {
     name      = "mongo"
     namespace = "evolved5g"
@@ -569,62 +569,93 @@ resource "kubernetes_deployment" "mongo" {
   }
 
   spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        app = "mongo"
+    container {
+      image = "mongo:latest"
+      name  = "mongo"
+
+      security_context {
+        privileged = true
       }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "mongo"
-        }
+
+      env {
+        name  = "MONGO_INITDB_ROOT_USERNAME"
+        value = "root"
       }
-      spec {
-        container {
-          image = "mongo:latest"
-          name  = "mongo"
 
-          security_context {
-            privileged = true
-          }
-
-          env {
-            name  = "MONGO_INITDB_ROOT_USERNAME"
-            value = "root"
-          }
-
-          env {
-            name  = "MONGO_INITDB_ROOT_PASSWORD"
-            value = "example"
-          }
-        }
+      env {
+        name  = "MONGO_INITDB_ROOT_PASSWORD"
+        value = "example"
       }
     }
   }
 }
 
-resource "kubernetes_service" "mongo_service" {
-  metadata {
-    name      = "mongo-service"
-    namespace = "evolved5g"
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.mongo.spec.0.template.0.metadata[0].labels.app
-    }
-    port {
-      port        = 27017
-      target_port = 27017
-    }
-  }
-}
+# resource "kubernetes_deployment" "mongo" {
+#   metadata {
+#     name      = "mongo"
+#     namespace = "evolved5g"
+#     labels = {
+#       app = "mongo"
+#     }
+#   }
+
+#   spec {
+#     replicas = 1
+#     selector {
+#       match_labels = {
+#         app = "mongo"
+#       }
+#     }
+#     template {
+#       metadata {
+#         labels = {
+#           app = "mongo"
+#         }
+#       }
+#       spec {
+#         container {
+#           image = "mongo:latest"
+#           name  = "mongo"
+
+#           security_context {
+#             privileged = true
+#           }
+
+#           env {
+#             name  = "MONGO_INITDB_ROOT_USERNAME"
+#             value = "root"
+#           }
+
+#           env {
+#             name  = "MONGO_INITDB_ROOT_PASSWORD"
+#             value = "example"
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
+
+# resource "kubernetes_service" "mongo_service" {
+#   metadata {
+#     name      = "mongo-service"
+#     namespace = "evolved5g"
+#   }
+#   spec {
+#     selector = {
+#       app = kubernetes_deployment.mongo.spec.0.template.0.metadata[0].labels.app
+#     }
+#     port {
+#       port        = 27017
+#       target_port = 27017
+#     }
+#   }
+# }
 
 #############################################
 # MONGO EXPRES
 #############################################
-resource "kubernetes_deployment" "mongo-express" {
+resource "kubernetes_pod" "mongo-express" {
   metadata {
     name      = "mongo-express"
     namespace = "evolved5g"
@@ -634,130 +665,181 @@ resource "kubernetes_deployment" "mongo-express" {
   }
 
   spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        app = "mongo"
+    container {
+      image = "mongo-express:latest"
+      name  = "mongo-express"
+
+      security_context {
+        privileged = true
       }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "mongo"
-        }
+
+      env {
+        name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+        value = "root"
       }
-      spec {
-        container {
-          image = "mongo-express:latest"
-          name  = "mongo-express"
 
-          security_context {
-            privileged = true
-          }
+      env {
+        name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+        value = "example"
+      }
 
-          env {
-            name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-            value = "root"
-          }
-
-          env {
-            name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-            value = "example"
-          }
-
-          env {
-            name  = "ME_CONFIG_MONGODB_URL"
-            value = "mongodb://root:example@mongo:27017/"
-          }
-        }
+      env {
+        name  = "ME_CONFIG_MONGODB_URL"
+        value = "mongodb://root:example@mongo:27017/"
       }
     }
   }
+
   depends_on = [
-    kubernetes_service.mongo_service
+    kubernetes_pod.mongo
   ]
 }
 
-resource "kubernetes_service" "mongo-express_service" {
-  metadata {
-    name      = "mongo-express-service"
-    namespace = "evolved5g"
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.mongo-express.spec.0.template.0.metadata[0].labels.app
-    }
-    port {
-      port        = 8081
-      target_port = 8081
-    }
-  }
-}
+# resource "kubernetes_deployment" "mongo-express" {
+#   metadata {
+#     name      = "mongo-express"
+#     namespace = "evolved5g"
+#     labels = {
+#       app = "mongo_express"
+#     }
+#   }
+
+#   spec {
+#     replicas = 1
+#     selector {
+#       match_labels = {
+#         app = "mongo_express"
+#       }
+#     }
+#     template {
+#       metadata {
+#         labels = {
+#           app = "mongo_express"
+#         }
+#       }
+#       spec {
+#         container {
+#           image = "mongo-express:latest"
+#           name  = "mongo-express"
+
+#           security_context {
+#             privileged = true
+#           }
+
+#           env {
+#             name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+#             value = "root"
+#           }
+
+#           env {
+#             name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+#             value = "example"
+#           }
+
+#           env {
+#             name  = "ME_CONFIG_MONGODB_URL"
+#             value = "mongodb://root:example@mongo:27017/"
+#           }
+#         }
+#       }
+#     }
+#   }
+#   depends_on = [
+#     kubernetes_deployment.mongo,
+#     kubernetes_service.mongo_service
+#   ]
+# }
+
+# resource "kubernetes_service" "mongo-express_service" {
+#   metadata {
+#     name      = "mongo-express-service"
+#     namespace = "evolved5g"
+#   }
+#   spec {
+#     selector = {
+#       app = kubernetes_deployment.mongo-express.spec.0.template.0.metadata[0].labels.app
+#     }
+#     port {
+#       port        = 8081
+#       target_port = 8081
+#     }
+#   }
+# }
 
 #############################################
 # NGINX
 #############################################
-resource "kubernetes_deployment" "nginx" {
-  metadata {
-    name      = "nginx"
-    namespace = "evolved5g"
-    labels = {
-      app = "nginx"
-    }
-  }
+# resource "kubernetes_deployment" "nginx" {
+#   metadata {
+#     name      = "nginx"
+#     namespace = "evolved5g"
+#     labels = {
+#       app = "nginx"
+#     }
+#   }
 
-  spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        app = "mongo"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "mongo"
-        }
-      }
-      spec {
-        container {
-          image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
-          name  = "nginx"
+#   spec {
+#     replicas = 1
+#     selector {
+#       match_labels = {
+#         app = "mongo"
+#       }
+#     }
+#     template {
+#       metadata {
+#         labels = {
+#           app = "mongo"
+#         }
+#       }
+#       spec {
+#         container {
+#           image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
+#           name  = "nginx"
 
-          security_context {
-            privileged = true
-          }
-        }
-      }
-    }
-  }
+#           security_context {
+#             privileged = true
+#           }
+#         }
+#       }
+#     }
+#   }
 
-  depends_on = [
-    kubernetes_service.aef_security_service,
-    kubernetes_service.api_invoker_management_service,
-    kubernetes_service.api_provider_management_service,
-    kubernetes_service.access_control_policy_service,
-    kubernetes_service.logs_service,
-    kubernetes_service.events_service,
-    kubernetes_service.api_invocation_logs_service,
-    kubernetes_service.publish_service_service,
-    kubernetes_service.routing_info_service,
-    kubernetes_service.security_service
-  ]
-}
+#   depends_on = [
+#     kubernetes_deployment.aef_security,
+#     kubernetes_deployment.api_invoker_management,
+#     kubernetes_deployment.api_provider_management,
+#     kubernetes_deployment.access_control_policy,
+#     kubernetes_deployment.logs,
+#     kubernetes_deployment.events,
+#     kubernetes_deployment.api_invocation_logs,
+#     kubernetes_deployment.publish_service,
+#     kubernetes_deployment.routing_info,
+#     kubernetes_deployment.security,
+#     kubernetes_service.aef_security_service,
+#     kubernetes_service.api_invoker_management_service,
+#     kubernetes_service.api_provider_management_service,
+#     kubernetes_service.access_control_policy_service,
+#     kubernetes_service.logs_service,
+#     kubernetes_service.events_service,
+#     kubernetes_service.api_invocation_logs_service,
+#     kubernetes_service.publish_service_service,
+#     kubernetes_service.routing_info_service,
+#     kubernetes_service.security_service
+#   ]
+# }
 
-resource "kubernetes_service" "nginx_service" {
-  metadata {
-    name      = "nginx-service"
-    namespace = "evolved5g"
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
-    }
-    port {
-      port        = 8080
-      target_port = 8080
-    }
-  }
-}
+# resource "kubernetes_service" "nginx_service" {
+#   metadata {
+#     name      = "nginx-service"
+#     namespace = "evolved5g"
+#   }
+#   spec {
+#     selector = {
+#       app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
+#     }
+#     port {
+#       port        = 8080
+#       target_port = 8080
+#     }
+#   }
+# }
