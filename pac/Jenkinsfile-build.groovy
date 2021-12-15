@@ -27,6 +27,8 @@ pipeline {
                         sh '''
                         docker login --username ${ARTIFACTORY_USER} --password "${ARTIFACTORY_CREDENTIALS}" dockerhub.hi.inet
                         docker-compose push
+                        docker image tag nginx dockerhub.hi.inet/evolved-5g/capif/nginx:latest
+                        docker image push --all-tags dockerhub.hi.inet/evolved-5g/capif/nginx
                         '''
                     }
                 }

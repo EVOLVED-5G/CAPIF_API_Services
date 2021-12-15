@@ -33,7 +33,6 @@ resource "kubernetes_service" "aef_security_service" {
     }
   }
 }
-
 #############################################
 # API INVOKER MANAGEMENT
 #############################################
@@ -509,19 +508,8 @@ resource "kubernetes_pod" "nginx" {
 
   spec {
     container {
-      image = "nginx:latest"
+      image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
       name  = "nginx"
-      volume_mount {
-        mount_path = "/etc/nginx/nginx.conf"
-        name       = "config"
-      }
-    }
-
-    volume {
-      name = "config"
-      host_path {
-        path = "./nginx.conf"
-      }
     }
   }
 
