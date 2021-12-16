@@ -255,7 +255,7 @@ resource "kubernetes_service" "logs_service" {
 #############################################
 resource "kubernetes_deployment" "discover_service" {
   metadata {
-    name      = "discover-service"
+    name      = "service-apis"
     namespace = "evolved5g"
     labels = {
       app = "discover_service"
@@ -278,7 +278,7 @@ resource "kubernetes_deployment" "discover_service" {
       spec {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest"
-          name  = "discover-service"
+          name  = "service-apis"
         }
       }
     }
@@ -287,7 +287,7 @@ resource "kubernetes_deployment" "discover_service" {
 
 resource "kubernetes_service" "discover_service_service" {
   metadata {
-    name      = "discover-service-service"
+    name      = "service-apis-service"
     namespace = "evolved5g"
   }
   spec {
@@ -306,7 +306,7 @@ resource "kubernetes_service" "discover_service_service" {
 #############################################
 resource "kubernetes_deployment" "events" {
   metadata {
-    name      = "events"
+    name      = "capif-events"
     namespace = "evolved5g"
     labels = {
       app = "events"
@@ -338,7 +338,7 @@ resource "kubernetes_deployment" "events" {
 
 resource "kubernetes_service" "events_service" {
   metadata {
-    name      = "events-service"
+    name      = "capif-events-service"
     namespace = "evolved5g"
   }
   spec {
@@ -565,8 +565,8 @@ resource "kubernetes_secret" "mongo" {
   }
 
   data = {
-    mongo-root-username = "admin"
-    mongo-root-password = "P4ssw0rd"
+    mongo-root-username = "root"
+    mongo-root-password = "example"
   }
 
   type = "kubernetes.io/basic-auth"
@@ -583,7 +583,7 @@ resource "kubernetes_pod" "mongo" {
 
   spec {
     container {
-      image = "mongo:latest"
+      image = "dockerhub.hi.inet/evolved-5g/mongo:latest"
       name  = "mongo"
 
       env {
@@ -633,7 +633,7 @@ resource "kubernetes_pod" "mongo" {
 #       }
 #       spec {
 #         container {
-#           image = "mongo:latest"
+#           image = "dockerhub.hi.inet/evolved-5g/mongo:latest"
 #           name  = "mongo"
 
 #           security_context {

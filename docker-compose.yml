@@ -76,13 +76,14 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
   mongo:
-    image: mongo:latest
+    build: mongo/.
     restart: unless-stopped
     ports:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    image: dockerhub.hi.inet/evolved-5g/mongo:latest
   mongo-express:
     image: mongo-express
     restart: unless-stopped
