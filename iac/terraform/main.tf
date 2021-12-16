@@ -570,7 +570,7 @@ resource "kubernetes_pod" "mongo" {
 
   spec {
     container {
-      image = "dockerhub.hi.inet/evolved-5g/mongo:latest"
+      image = "mongo:latest"
       name  = "mongo"
 
       env {
