@@ -582,20 +582,26 @@ resource "kubernetes_pod" "mongo" {
         name  = "MONGO_INITDB_ROOT_PASSWORD"
         value = "example"
       }
+
+      volume_mount {
+        mount_path = "/data/configdb"
+        name       = "configdb"
+      }
+
+      volume_mount {
+        mount_path = "/data/db"
+        name       = "db"
+      }
     }
 
     volume {
-      host_path {
-        path = "/data/configdb"
-      }
+      name = "configdb"
       empty_dir {
       }
     }
 
     volume {
-      host_path {
-        path = "/data/db"
-      }
+      name = "db"
       empty_dir {
       }
     }
