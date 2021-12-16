@@ -586,10 +586,6 @@ resource "kubernetes_pod" "mongo" {
       image = "mongo:latest"
       name  = "mongo"
 
-      security_context {
-        run_as_user = 1000950001
-      }
-
       env {
         name = "MONGO_INITDB_ROOT_USERNAME"
         value_from {
@@ -645,13 +641,23 @@ resource "kubernetes_pod" "mongo" {
 #           }
 
 #           env {
-#             name  = "MONGO_INITDB_ROOT_USERNAME"
-#             value = "root"
+#             name = "MONGO_INITDB_ROOT_USERNAME"
+#             value_from {
+#               secret_key_ref {
+#                 name = "basic-auth"
+#                 key  = "mongo-root-username"
+#               }
+#             }
 #           }
 
 #           env {
-#             name  = "MONGO_INITDB_ROOT_PASSWORD"
-#             value = "example"
+#             name = "MONGO_INITDB_ROOT_PASSWORD"
+#             value_from {
+#               secret_key_ref {
+#                 name = "basic-auth"
+#                 key  = "mongo-root-password"
+#               }
+#             }
 #           }
 #         }
 #       }
@@ -697,13 +703,23 @@ resource "kubernetes_pod" "mongo" {
 #       }
 
 #       env {
-#         name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-#         value = "root"
+#         name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+#         value_from {
+#           secret_key_ref {
+#             name = "basic-auth"
+#             key  = "mongo-root-username"
+#           }
+#         }
 #       }
 
 #       env {
-#         name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-#         value = "example"
+#         name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+#         value_from {
+#           secret_key_ref {
+#             name = "basic-auth"
+#             key  = "mongo-root-password"
+#           }
+#         }
 #       }
 
 #       env {
@@ -750,13 +766,23 @@ resource "kubernetes_pod" "mongo" {
 #           }
 
 #           env {
-#             name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-#             value = "root"
+#             name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+#             value_from {
+#               secret_key_ref {
+#                 name = "basic-auth"
+#                 key  = "mongo-root-username"
+#               }
+#             }
 #           }
 
 #           env {
-#             name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-#             value = "example"
+#             name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+#             value_from {
+#               secret_key_ref {
+#                 name = "basic-auth"
+#                 key  = "mongo-root-password"
+#               }
+#             }
 #           }
 
 #           env {
