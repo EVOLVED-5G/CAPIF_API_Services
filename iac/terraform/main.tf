@@ -575,7 +575,7 @@ resource "kubernetes_pod" "mongo" {
 
       env {
         name  = "MONGO_INITDB_ROOT_USERNAME"
-        value = "root"
+        value = "mongodb"
       }
 
       env {
