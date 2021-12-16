@@ -10,7 +10,8 @@ resource "kubernetes_deployment" "aef_security" {
     }
   }
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "aef-security"
@@ -59,7 +60,8 @@ resource "kubernetes_deployment" "api_invoker_management" {
     }
   }
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "api-invoker-management"
@@ -110,7 +112,8 @@ resource "kubernetes_deployment" "api_provider_management" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "api-provider-managemen"
@@ -161,7 +164,8 @@ resource "kubernetes_deployment" "access_control_policy" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "access-control-policy"
@@ -212,7 +216,8 @@ resource "kubernetes_deployment" "logs" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "logs"
@@ -263,7 +268,8 @@ resource "kubernetes_deployment" "discover_service" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "service-apis"
@@ -314,7 +320,8 @@ resource "kubernetes_deployment" "events" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "capif-events"
@@ -365,7 +372,8 @@ resource "kubernetes_deployment" "api_invocation_logs" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "api-invocation-logs"
@@ -416,7 +424,8 @@ resource "kubernetes_deployment" "publish_service" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "published-apis"
@@ -467,7 +476,8 @@ resource "kubernetes_deployment" "routing_info" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "capif-routing-info"
@@ -518,7 +528,8 @@ resource "kubernetes_deployment" "security" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "capif-security"
@@ -569,7 +580,8 @@ resource "kubernetes_deployment" "jwtauth" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "jwtauth"
@@ -620,7 +632,8 @@ resource "kubernetes_deployment" "mongo" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "mongo"
@@ -703,7 +716,8 @@ resource "kubernetes_deployment" "mongo-express" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "mongo-express"
@@ -773,7 +787,8 @@ resource "kubernetes_deployment" "nginx" {
   }
 
   spec {
-    replicas = 1
+    replicas             = 1
+    enable_service_links = false
     selector {
       match_labels = {
         app = "nginx"
