@@ -34,7 +34,7 @@ resource "kubernetes_deployment" "aef_security" {
 
 resource "kubernetes_service" "aef_security_service" {
   metadata {
-    name      = "aef-security-service"
+    name      = "aef-security"
     namespace = "evolved5g"
   }
   spec {
@@ -83,7 +83,7 @@ resource "kubernetes_deployment" "api_invoker_management" {
 
 resource "kubernetes_service" "api_invoker_management_service" {
   metadata {
-    name      = "api-invoker-management-service"
+    name      = "api-invoker-management"
     namespace = "evolved5g"
   }
   spec {
@@ -134,7 +134,7 @@ resource "kubernetes_deployment" "api_provider_management" {
 
 resource "kubernetes_service" "api_provider_management_service" {
   metadata {
-    name      = "api-provider-management-service"
+    name      = "api-provider-management"
     namespace = "evolved5g"
   }
   spec {
@@ -185,7 +185,7 @@ resource "kubernetes_deployment" "access_control_policy" {
 
 resource "kubernetes_service" "access_control_policy_service" {
   metadata {
-    name      = "access-control-policy-service"
+    name      = "access-control-policy"
     namespace = "evolved5g"
   }
   spec {
@@ -236,7 +236,7 @@ resource "kubernetes_deployment" "logs" {
 
 resource "kubernetes_service" "logs_service" {
   metadata {
-    name      = "logs-service"
+    name      = "logs"
     namespace = "evolved5g"
   }
   spec {
@@ -287,7 +287,7 @@ resource "kubernetes_deployment" "discover_service" {
 
 resource "kubernetes_service" "discover_service_service" {
   metadata {
-    name      = "service-apis-service"
+    name      = "service-apis"
     namespace = "evolved5g"
   }
   spec {
@@ -338,7 +338,7 @@ resource "kubernetes_deployment" "events" {
 
 resource "kubernetes_service" "events_service" {
   metadata {
-    name      = "capif-events-service"
+    name      = "capif-events"
     namespace = "evolved5g"
   }
   spec {
@@ -389,7 +389,7 @@ resource "kubernetes_deployment" "api_invocation_logs" {
 
 resource "kubernetes_service" "api_invocation_logs_service" {
   metadata {
-    name      = "api-invocation-logs-service"
+    name      = "api-invocation-logs"
     namespace = "evolved5g"
   }
   spec {
@@ -440,7 +440,7 @@ resource "kubernetes_deployment" "publish_service" {
 
 resource "kubernetes_service" "publish_service_service" {
   metadata {
-    name      = "published-apis-service"
+    name      = "published-apis"
     namespace = "evolved5g"
   }
   spec {
@@ -491,7 +491,7 @@ resource "kubernetes_deployment" "routing_info" {
 
 resource "kubernetes_service" "routing_info_service" {
   metadata {
-    name      = "capif-routing-info-service"
+    name      = "capif-routing-info"
     namespace = "evolved5g"
   }
   spec {
@@ -542,7 +542,7 @@ resource "kubernetes_deployment" "security" {
 
 resource "kubernetes_service" "security_service" {
   metadata {
-    name      = "capif-security-service"
+    name      = "capif-security"
     namespace = "evolved5g"
   }
   spec {
@@ -625,7 +625,7 @@ resource "kubernetes_deployment" "mongo" {
 
 resource "kubernetes_service" "mongo_service" {
   metadata {
-    name      = "mongo-service"
+    name      = "mongo"
     namespace = "evolved5g"
   }
   spec {
@@ -695,7 +695,7 @@ resource "kubernetes_deployment" "mongo-express" {
 
 resource "kubernetes_service" "mongo-express_service" {
   metadata {
-    name      = "mongo-express-service"
+    name      = "mongo-express"
     namespace = "evolved5g"
   }
   spec {
@@ -712,77 +712,77 @@ resource "kubernetes_service" "mongo-express_service" {
 #############################################
 # NGINX
 #############################################
-# resource "kubernetes_deployment" "nginx" {
-#   metadata {
-#     name      = "nginx"
-#     namespace = "evolved5g"
-#     labels = {
-#       app = "nginx"
-#     }
-#   }
+resource "kubernetes_deployment" "nginx" {
+  metadata {
+    name      = "nginx"
+    namespace = "evolved5g"
+    labels = {
+      app = "nginx"
+    }
+  }
 
-#   spec {
-#     replicas = 1
-#     selector {
-#       match_labels = {
-#         app = "mongo"
-#       }
-#     }
-#     template {
-#       metadata {
-#         labels = {
-#           app = "mongo"
-#         }
-#       }
-#       spec {
-#         container {
-#           image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
-#           name  = "nginx"
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "mongo"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "mongo"
+        }
+      }
+      spec {
+        container {
+          image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
+          name  = "nginx"
 
-#           security_context {
-#             privileged = true
-#           }
-#         }
-#       }
-#     }
-#   }
+          security_context {
+            privileged = true
+          }
+        }
+      }
+    }
+  }
 
-#   depends_on = [
-#     kubernetes_deployment.aef_security,
-#     kubernetes_deployment.api_invoker_management,
-#     kubernetes_deployment.api_provider_management,
-#     kubernetes_deployment.access_control_policy,
-#     kubernetes_deployment.logs,
-#     kubernetes_deployment.events,
-#     kubernetes_deployment.api_invocation_logs,
-#     kubernetes_deployment.publish_service,
-#     kubernetes_deployment.routing_info,
-#     kubernetes_deployment.security,
-#     kubernetes_service.aef_security_service,
-#     kubernetes_service.api_invoker_management_service,
-#     kubernetes_service.api_provider_management_service,
-#     kubernetes_service.access_control_policy_service,
-#     kubernetes_service.logs_service,
-#     kubernetes_service.events_service,
-#     kubernetes_service.api_invocation_logs_service,
-#     kubernetes_service.publish_service_service,
-#     kubernetes_service.routing_info_service,
-#     kubernetes_service.security_service
-#   ]
-# }
+  depends_on = [
+    kubernetes_deployment.aef_security,
+    kubernetes_deployment.api_invoker_management,
+    kubernetes_deployment.api_provider_management,
+    kubernetes_deployment.access_control_policy,
+    kubernetes_deployment.logs,
+    kubernetes_deployment.events,
+    kubernetes_deployment.api_invocation_logs,
+    kubernetes_deployment.publish_service,
+    kubernetes_deployment.routing_info,
+    kubernetes_deployment.security,
+    kubernetes_service.aef_security_service,
+    kubernetes_service.api_invoker_management_service,
+    kubernetes_service.api_provider_management_service,
+    kubernetes_service.access_control_policy_service,
+    kubernetes_service.logs_service,
+    kubernetes_service.events_service,
+    kubernetes_service.api_invocation_logs_service,
+    kubernetes_service.publish_service_service,
+    kubernetes_service.routing_info_service,
+    kubernetes_service.security_service
+  ]
+}
 
-# resource "kubernetes_service" "nginx_service" {
-#   metadata {
-#     name      = "nginx-service"
-#     namespace = "evolved5g"
-#   }
-#   spec {
-#     selector = {
-#       app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
-#     }
-#     port {
-#       port        = 8080
-#       target_port = 8080
-#     }
-#   }
-# }
+resource "kubernetes_service" "nginx_service" {
+  metadata {
+    name      = "nginx"
+    namespace = "evolved5g"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
+    }
+    port {
+      port        = 8080
+      target_port = 8080
+    }
+  }
+}
