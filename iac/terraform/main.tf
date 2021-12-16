@@ -583,6 +583,18 @@ resource "kubernetes_pod" "mongo" {
         value = "example"
       }
     }
+
+    volume {
+      host_path = "/data/configdb"
+      empty_dir {
+      }
+    }
+
+    volume {
+      host_path = "/data/db"
+      empty_dir {
+      }
+    }
   }
 }
 
