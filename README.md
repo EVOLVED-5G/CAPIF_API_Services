@@ -67,6 +67,7 @@ curl --request POST 'http://localhost:8080/register' --header 'Content-Type: app
     "role":"...",
     "description":"..."
 }'
+
 ```
 
 Request body:
@@ -249,6 +250,176 @@ curl --location --request PUT 'http://localhost:8080/api-invoker-management/v1/o
 
 ```shell
 curl --request DELETE 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>'
+```
+
+## Publish APIs
+
+These APIs are triggered by an API Publishing Function (APF)
+
+### Publish a new API.
+```shell
+curl --request POST 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
+  "apiName": "3gpp-monitoring-event",
+  "aefProfiles": [
+    {
+      "aefId": "string",
+      "versions": [
+        {
+          "apiVersion": "v1",
+          "expiry": "2021-11-30T10:32:02.004Z",
+          "resources": [
+            {
+              "resourceName": "string",
+              "commType": "REQUEST_RESPONSE",
+              "uri": "string",
+              "custOpName": "string",
+              "operations": [
+                "GET"
+              ],
+              "description": "string"
+            }
+          ],
+          "custOperations": [
+            {
+              "commType": "REQUEST_RESPONSE",
+              "custOpName": "string",
+              "operations": [
+                "GET"
+              ],
+              "description": "string"
+            }
+          ]
+        }
+      ],
+      "protocol": "HTTP_1_1",
+      "dataFormat": "JSON",
+      "securityMethods": ["PSK"],
+      "interfaceDescriptions": [
+        {
+          "ipv4Addr": "string",
+          "port": 65535,
+          "securityMethods": ["PSK"]
+        },
+        {
+          "ipv4Addr": "string",
+          "port": 65535,
+          "securityMethods": ["PSK"]
+        }
+      ]
+    }
+  ],
+  "description": "string",
+  "supportedFeatures": "fffff",
+  "shareableInfo": {
+    "isShareable": true,
+    "capifProvDoms": [
+      "string"
+    ]
+  },
+  "serviceAPICategory": "string",
+  "apiSuppFeats": "fffff",
+  "pubApiPath": {
+    "ccfIds": [
+      "string"
+    ]
+  },
+  "ccfId": "string"
+}'
+```
+
+### Update a published service API.
+```shell
+curl --request PUT 'http://localhost:8080/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
+  "apiName": "3gpp-monitoring-event",
+  "aefProfiles": [
+    {
+      "aefId": "string1",
+      "versions": [
+        {
+          "apiVersion": "v1",
+          "expiry": "2021-11-30T10:32:02.004Z",
+          "resources": [
+            {
+              "resourceName": "string",
+              "commType": "REQUEST_RESPONSE",
+              "uri": "string",
+              "custOpName": "string",
+              "operations": [
+                "GET"
+              ],
+              "description": "string"
+            }
+          ],
+          "custOperations": [
+            {
+              "commType": "REQUEST_RESPONSE",
+              "custOpName": "string",
+              "operations": [
+                "GET"
+              ],
+              "description": "string"
+            }
+          ]
+        }
+      ],
+      "protocol": "HTTP_1_1",
+      "dataFormat": "JSON",
+      "securityMethods": ["PSK"],
+      "interfaceDescriptions": [
+        {
+          "ipv4Addr": "string",
+          "port": 65535,
+          "securityMethods": ["PSK"]
+        },
+        {
+          "ipv4Addr": "string",
+          "port": 65535,
+          "securityMethods": ["PSK"]
+        }
+      ]
+    }
+  ],
+  "description": "string",
+  "supportedFeatures": "fffff",
+  "shareableInfo": {
+    "isShareable": true,
+    "capifProvDoms": [
+      "string"
+    ]
+  },
+  "serviceAPICategory": "string",
+  "apiSuppFeats": "fffff",
+  "pubApiPath": {
+    "ccfIds": [
+      "string"
+    ]
+  },
+  "ccfId": "string"
+}'
+```
+
+### Unpublish a published service API.
+```shell
+curl --request DELETE 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>'
+```
+
+### Retrieve all published APIs
+```shell
+curl --request GET 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis' --header 'Authorization: Bearer <JWT access token>'
+```
+
+### Retrieve a published service API.
+```shell
+curl --request GET 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>'
+```
+
+## Discover API
+
+This API is triggered by a NetApp (or Invoker)
+
+### Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.
+```shell
+curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>' --header 'Authorization: Bearer <JWT acces token>'
 ```
 
 # Test Plan Documentation
