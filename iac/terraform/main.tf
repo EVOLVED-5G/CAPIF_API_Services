@@ -647,7 +647,7 @@ resource "kubernetes_deployment" "mongo-express" {
     name      = "mongo-express"
     namespace = "evolved5g"
     labels = {
-      app = "mongo_express"
+      app = "mongo-express"
     }
   }
 
@@ -655,13 +655,13 @@ resource "kubernetes_deployment" "mongo-express" {
     replicas = 1
     selector {
       match_labels = {
-        app = "mongo_express"
+        app = "mongo-express"
       }
     }
     template {
       metadata {
         labels = {
-          app = "mongo_express"
+          app = "mongo-express"
         }
       }
       spec {
@@ -725,23 +725,19 @@ resource "kubernetes_deployment" "nginx" {
     replicas = 1
     selector {
       match_labels = {
-        app = "mongo"
+        app = "nginx"
       }
     }
     template {
       metadata {
         labels = {
-          app = "mongo"
+          app = "nginx"
         }
       }
       spec {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
           name  = "nginx"
-
-          security_context {
-            privileged = true
-          }
         }
       }
     }
