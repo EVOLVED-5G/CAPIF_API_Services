@@ -6,20 +6,20 @@ resource "kubernetes_deployment" "aef_security" {
     name      = "aef-security"
     namespace = "evolved5g"
     labels = {
-      app = "aef_security"
+      app = "aef-security"
     }
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        app = "aef_security"
+        app = "aef-security"
       }
     }
     template {
       metadata {
         labels = {
-          app = "aef_security"
+          app = "aef-security"
         }
       }
       spec {
@@ -55,20 +55,20 @@ resource "kubernetes_deployment" "api_invoker_management" {
     name      = "api-invoker-management"
     namespace = "evolved5g"
     labels = {
-      app = "api_invoker_management"
+      app = "api-invoker-management"
     }
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        app = "api_invoker_management"
+        app = "api-invoker-management"
       }
     }
     template {
       metadata {
         labels = {
-          app = "api_invoker_management"
+          app = "api-invoker-management"
         }
       }
       spec {
@@ -105,7 +105,7 @@ resource "kubernetes_deployment" "api_provider_management" {
     name      = "api-provider-management"
     namespace = "evolved5g"
     labels = {
-      app = "api_provider_management"
+      app = "api-provider-managemen"
     }
   }
 
@@ -113,13 +113,13 @@ resource "kubernetes_deployment" "api_provider_management" {
     replicas = 1
     selector {
       match_labels = {
-        app = "api_provider_management"
+        app = "api-provider-managemen"
       }
     }
     template {
       metadata {
         labels = {
-          app = "api_provider_management"
+          app = "api-provider-managemen"
         }
       }
       spec {
@@ -156,7 +156,7 @@ resource "kubernetes_deployment" "access_control_policy" {
     name      = "access-control-policy"
     namespace = "evolved5g"
     labels = {
-      app = "access_control_policy"
+      app = "access-control-policy"
     }
   }
 
@@ -164,13 +164,13 @@ resource "kubernetes_deployment" "access_control_policy" {
     replicas = 1
     selector {
       match_labels = {
-        app = "access_control_policy"
+        app = "access-control-policy"
       }
     }
     template {
       metadata {
         labels = {
-          app = "access_control_policy"
+          app = "access-control-policy"
         }
       }
       spec {
@@ -258,7 +258,7 @@ resource "kubernetes_deployment" "discover_service" {
     name      = "service-apis"
     namespace = "evolved5g"
     labels = {
-      app = "discover_service"
+      app = "service-apis"
     }
   }
 
@@ -266,13 +266,13 @@ resource "kubernetes_deployment" "discover_service" {
     replicas = 1
     selector {
       match_labels = {
-        app = "discover_service"
+        app = "service-apis"
       }
     }
     template {
       metadata {
         labels = {
-          app = "discover_service"
+          app = "service-apis"
         }
       }
       spec {
@@ -309,7 +309,7 @@ resource "kubernetes_deployment" "events" {
     name      = "capif-events"
     namespace = "evolved5g"
     labels = {
-      app = "events"
+      app = "capif-events"
     }
   }
 
@@ -317,19 +317,19 @@ resource "kubernetes_deployment" "events" {
     replicas = 1
     selector {
       match_labels = {
-        app = "events"
+        app = "capif-events"
       }
     }
     template {
       metadata {
         labels = {
-          app = "events"
+          app = "capif-events"
         }
       }
       spec {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/events_api:latest"
-          name  = "events"
+          name  = "capif-events"
         }
       }
     }
@@ -360,7 +360,7 @@ resource "kubernetes_deployment" "api_invocation_logs" {
     name      = "api-invocation-logs"
     namespace = "evolved5g"
     labels = {
-      app = "api_invocation_logs"
+      app = "api-invocation-logs"
     }
   }
 
@@ -368,13 +368,13 @@ resource "kubernetes_deployment" "api_invocation_logs" {
     replicas = 1
     selector {
       match_labels = {
-        app = "api_invocation_logs"
+        app = "api-invocation-logs"
       }
     }
     template {
       metadata {
         labels = {
-          app = "api_invocation_logs"
+          app = "api-invocation-logs"
         }
       }
       spec {
@@ -408,10 +408,10 @@ resource "kubernetes_service" "api_invocation_logs_service" {
 #############################################
 resource "kubernetes_deployment" "publish_service" {
   metadata {
-    name      = "publish-service"
+    name      = "published-apis"
     namespace = "evolved5g"
     labels = {
-      app = "publish_service"
+      app = "published-apis"
     }
   }
 
@@ -419,19 +419,19 @@ resource "kubernetes_deployment" "publish_service" {
     replicas = 1
     selector {
       match_labels = {
-        app = "publish_service"
+        app = "published-apis"
       }
     }
     template {
       metadata {
         labels = {
-          app = "publish_service"
+          app = "published-apis"
         }
       }
       spec {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest"
-          name  = "publish-service"
+          name  = "published-apis"
         }
       }
     }
@@ -440,7 +440,7 @@ resource "kubernetes_deployment" "publish_service" {
 
 resource "kubernetes_service" "publish_service_service" {
   metadata {
-    name      = "publish-service-service"
+    name      = "published-apis-service"
     namespace = "evolved5g"
   }
   spec {
@@ -459,10 +459,10 @@ resource "kubernetes_service" "publish_service_service" {
 #############################################
 resource "kubernetes_deployment" "routing_info" {
   metadata {
-    name      = "routing-info"
+    name      = "capif-routing-info"
     namespace = "evolved5g"
     labels = {
-      app = "routing_info"
+      app = "capif-routing-info"
     }
   }
 
@@ -470,19 +470,19 @@ resource "kubernetes_deployment" "routing_info" {
     replicas = 1
     selector {
       match_labels = {
-        app = "routing_info"
+        app = "capif-routing-info"
       }
     }
     template {
       metadata {
         labels = {
-          app = "routing_info"
+          app = "capif-routing-info"
         }
       }
       spec {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest"
-          name  = "routing-info"
+          name  = "capif-routing-info"
         }
       }
     }
@@ -491,7 +491,7 @@ resource "kubernetes_deployment" "routing_info" {
 
 resource "kubernetes_service" "routing_info_service" {
   metadata {
-    name      = "routing-info-service"
+    name      = "capif-routing-info-service"
     namespace = "evolved5g"
   }
   spec {
@@ -510,10 +510,10 @@ resource "kubernetes_service" "routing_info_service" {
 #############################################
 resource "kubernetes_deployment" "security" {
   metadata {
-    name      = "security"
+    name      = "capif-security"
     namespace = "evolved5g"
     labels = {
-      app = "security"
+      app = "capif-security"
     }
   }
 
@@ -521,19 +521,19 @@ resource "kubernetes_deployment" "security" {
     replicas = 1
     selector {
       match_labels = {
-        app = "security"
+        app = "capif-security"
       }
     }
     template {
       metadata {
         labels = {
-          app = "security"
+          app = "capif-security"
         }
       }
       spec {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/security_api:latest"
-          name  = "security"
+          name  = "capif-security"
         }
       }
     }
@@ -542,7 +542,7 @@ resource "kubernetes_deployment" "security" {
 
 resource "kubernetes_service" "security_service" {
   metadata {
-    name      = "security-service"
+    name      = "capif-security-service"
     namespace = "evolved5g"
   }
   spec {
@@ -559,7 +559,7 @@ resource "kubernetes_service" "security_service" {
 #############################################
 # MONGO
 #############################################
-resource "kubernetes_pod" "mongo" {
+resource "kubernetes_deployment" "mongo" {
   metadata {
     name      = "mongo"
     namespace = "evolved5g"
@@ -569,212 +569,145 @@ resource "kubernetes_pod" "mongo" {
   }
 
   spec {
-    container {
-      image = "mongo:latest"
-      name  = "mongo"
-
-      env {
-        name  = "MONGO_INITDB_ROOT_USERNAME"
-        value = "mongodb"
-      }
-
-      env {
-        name  = "MONGO_INITDB_ROOT_PASSWORD"
-        value = "example"
-      }
-
-      volume_mount {
-        mount_path = "/data/configdb"
-        name       = "configdb"
-      }
-
-      volume_mount {
-        mount_path = "/data/db"
-        name       = "db"
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "mongo"
       }
     }
-
-    volume {
-      name = "configdb"
-      empty_dir {
+    template {
+      metadata {
+        labels = {
+          app = "mongo"
+        }
       }
-    }
+      spec {
+        container {
+          image = "mongo:latest"
+          name  = "mongo"
 
-    volume {
-      name = "db"
-      empty_dir {
+          env {
+            name  = "MONGO_INITDB_ROOT_USERNAME"
+            value = "root"
+          }
+
+          env {
+            name  = "MONGO_INITDB_ROOT_PASSWORD"
+            value = "example"
+          }
+
+          volume_mount {
+            mount_path = "/data/configdb"
+            name       = "configdb"
+          }
+
+          volume_mount {
+            mount_path = "/data/db"
+            name       = "db"
+          }
+        }
+
+        volume {
+          name = "configdb"
+          empty_dir {
+          }
+        }
+
+        volume {
+          name = "db"
+          empty_dir {
+          }
+        }
       }
     }
   }
 }
 
-# resource "kubernetes_deployment" "mongo" {
-#   metadata {
-#     name      = "mongo"
-#     namespace = "evolved5g"
-#     labels = {
-#       app = "mongo"
-#     }
-#   }
-
-#   spec {
-#     replicas = 1
-#     selector {
-#       match_labels = {
-#         app = "mongo"
-#       }
-#     }
-#     template {
-#       metadata {
-#         labels = {
-#           app = "mongo"
-#         }
-#       }
-#       spec {
-#         container {
-#           image = "dockerhub.hi.inet/evolved-5g/mongo:latest"
-#           name  = "mongo"
-
-#           security_context {
-#             privileged = true
-#           }
-
-#           env {
-#             name = "MONGO_INITDB_ROOT_USERNAME"
-#             value = "root"
-#           }
-
-#           env {
-#             name = "MONGO_INITDB_ROOT_PASSWORD"
-#             value = "example"
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
-
-# resource "kubernetes_service" "mongo_service" {
-#   metadata {
-#     name      = "mongo-service"
-#     namespace = "evolved5g"
-#   }
-#   spec {
-#     selector = {
-#       app = kubernetes_deployment.mongo.spec.0.template.0.metadata[0].labels.app
-#     }
-#     port {
-#       port        = 27017
-#       target_port = 27017
-#     }
-#   }
-# }
+resource "kubernetes_service" "mongo_service" {
+  metadata {
+    name      = "mongo-service"
+    namespace = "evolved5g"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.mongo.spec.0.template.0.metadata[0].labels.app
+    }
+    port {
+      port        = 27017
+      target_port = 27017
+    }
+  }
+}
 
 #############################################
 # MONGO EXPRES
 #############################################
-# resource "kubernetes_pod" "mongo-express" {
-#   metadata {
-#     name      = "mongo-express"
-#     namespace = "evolved5g"
-#     labels = {
-#       app = "mongo-express"
-#     }
-#   }
+resource "kubernetes_deployment" "mongo-express" {
+  metadata {
+    name      = "mongo-express"
+    namespace = "evolved5g"
+    labels = {
+      app = "mongo_express"
+    }
+  }
 
-#   spec {
-#     container {
-#       image = "mongo-express:latest"
-#       name  = "mongo-express"
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "mongo_express"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "mongo_express"
+        }
+      }
+      spec {
+        container {
+          image = "mongo-express:latest"
+          name  = "mongo-express"
 
-#       env {
-#         name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-#         value = "root"
-#       }
+          env {
+            name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+            value = "root"
+          }
 
-#       env {
-#         name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-#         value = "example"
-#       }
+          env {
+            name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+            value = "example"
+          }
 
-#       env {
-#         name  = "ME_CONFIG_MONGODB_URL"
-#         value = "mongodb://root:example@mongo:27017/"
-#       }
-#     }
-#   }
+          env {
+            name  = "ME_CONFIG_MONGODB_URL"
+            value = "mongodb://root:example@mongo:27017/"
+          }
+        }
+      }
+    }
+  }
+  depends_on = [
+    kubernetes_deployment.mongo,
+    kubernetes_service.mongo_service
+  ]
+}
 
-#   depends_on = [
-#     kubernetes_pod.mongo
-#   ]
-# }
-
-# resource "kubernetes_deployment" "mongo-express" {
-#   metadata {
-#     name      = "mongo-express"
-#     namespace = "evolved5g"
-#     labels = {
-#       app = "mongo_express"
-#     }
-#   }
-
-#   spec {
-#     replicas = 1
-#     selector {
-#       match_labels = {
-#         app = "mongo_express"
-#       }
-#     }
-#     template {
-#       metadata {
-#         labels = {
-#           app = "mongo_express"
-#         }
-#       }
-#       spec {
-#         container {
-#           image = "mongo-express:latest"
-#           name  = "mongo-express"
-
-#           env {
-#             name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-#             value = "root"
-#           }
-
-#           env {
-#             name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-#             value = "example"
-#           }
-
-#           env {
-#             name  = "ME_CONFIG_MONGODB_URL"
-#             value = "mongodb://root:example@mongo:27017/"
-#           }
-#         }
-#       }
-#     }
-#   }
-#   depends_on = [
-#     kubernetes_deployment.mongo,
-#     kubernetes_service.mongo_service
-#   ]
-# }
-
-# resource "kubernetes_service" "mongo-express_service" {
-#   metadata {
-#     name      = "mongo-express-service"
-#     namespace = "evolved5g"
-#   }
-#   spec {
-#     selector = {
-#       app = kubernetes_deployment.mongo-express.spec.0.template.0.metadata[0].labels.app
-#     }
-#     port {
-#       port        = 8081
-#       target_port = 8081
-#     }
-#   }
-# }
+resource "kubernetes_service" "mongo-express_service" {
+  metadata {
+    name      = "mongo-express-service"
+    namespace = "evolved5g"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.mongo-express.spec.0.template.0.metadata[0].labels.app
+    }
+    port {
+      port        = 8081
+      target_port = 8081
+    }
+  }
+}
 
 #############################################
 # NGINX
