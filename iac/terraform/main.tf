@@ -559,6 +559,19 @@ resource "kubernetes_service" "security_service" {
 #############################################
 # MONGO
 #############################################
+resource "kubernetes_secret" "mongo" {
+  metadata {
+    name = "basic-auth"
+  }
+
+  data = {
+    mongo-root-username = "admin"
+    mongo-root-password = "P4ssw0rd"
+  }
+
+  type = "kubernetes.io/basic-auth"
+}
+
 resource "kubernetes_pod" "mongo" {
   metadata {
     name      = "mongo"
@@ -578,13 +591,23 @@ resource "kubernetes_pod" "mongo" {
       }
 
       env {
-        name  = "MONGO_INITDB_ROOT_USERNAME"
-        value = "root"
+        name = "MONGO_INITDB_ROOT_USERNAME"
+        value_from {
+          secret_key_ref {
+            name = "basic-auth"
+            key  = "mongo-root-username"
+          }
+        }
       }
 
       env {
-        name  = "MONGO_INITDB_ROOT_PASSWORD"
-        value = "example"
+        name = "MONGO_INITDB_ROOT_PASSWORD"
+        value_from {
+          secret_key_ref {
+            name = "basic-auth"
+            key  = "mongo-root-password"
+          }
+        }
       }
     }
   }
@@ -655,45 +678,45 @@ resource "kubernetes_pod" "mongo" {
 #############################################
 # MONGO EXPRES
 #############################################
-resource "kubernetes_pod" "mongo-express" {
-  metadata {
-    name      = "mongo-express"
-    namespace = "evolved5g"
-    labels = {
-      app = "mongo-express"
-    }
-  }
+# resource "kubernetes_pod" "mongo-express" {
+#   metadata {
+#     name      = "mongo-express"
+#     namespace = "evolved5g"
+#     labels = {
+#       app = "mongo-express"
+#     }
+#   }
 
-  spec {
-    container {
-      image = "mongo-express:latest"
-      name  = "mongo-express"
+#   spec {
+#     container {
+#       image = "mongo-express:latest"
+#       name  = "mongo-express"
 
-      security_context {
-        run_as_user = 1000950001
-      }
+#       security_context {
+#         run_as_user = 1000950001
+#       }
 
-      env {
-        name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-        value = "root"
-      }
+#       env {
+#         name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+#         value = "root"
+#       }
 
-      env {
-        name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-        value = "example"
-      }
+#       env {
+#         name  = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+#         value = "example"
+#       }
 
-      env {
-        name  = "ME_CONFIG_MONGODB_URL"
-        value = "mongodb://root:example@mongo:27017/"
-      }
-    }
-  }
+#       env {
+#         name  = "ME_CONFIG_MONGODB_URL"
+#         value = "mongodb://root:example@mongo:27017/"
+#       }
+#     }
+#   }
 
-  depends_on = [
-    kubernetes_pod.mongo
-  ]
-}
+#   depends_on = [
+#     kubernetes_pod.mongo
+#   ]
+# }
 
 # resource "kubernetes_deployment" "mongo-express" {
 #   metadata {
