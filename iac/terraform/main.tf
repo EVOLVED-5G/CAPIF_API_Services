@@ -791,7 +791,7 @@ resource "kubernetes_deployment" "nginx" {
           name  = "nginx"
 
           volume_mount {
-            mount_path = "/var/cache"
+            mount_path = "/var/cache/nginx"
             name       = "cache"
           }
         }
