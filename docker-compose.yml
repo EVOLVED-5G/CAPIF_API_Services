@@ -84,7 +84,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
   mongo-express:
-    image: mongo-express
+    image: mongo-express:latest
     restart: unless-stopped
     ports:
       - 8081:8081

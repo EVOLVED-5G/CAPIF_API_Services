@@ -789,17 +789,6 @@ resource "kubernetes_deployment" "nginx" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
           name  = "nginx"
-
-          volume_mount {
-            mount_path = "/var/cache/nginx"
-            name       = "cache"
-          }
-        }
-
-        volume {
-          name = "cache"
-          empty_dir {
-          }
         }
       }
     }
@@ -835,6 +824,8 @@ resource "kubernetes_service" "nginx_service" {
     namespace = "evolved5g"
   }
   spec {
+    type = "LoadBalancer"
+
     selector = {
       app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
     }
