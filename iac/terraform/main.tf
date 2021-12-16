@@ -557,6 +557,57 @@ resource "kubernetes_service" "security_service" {
 }
 
 #############################################
+# JWTAUTH
+#############################################
+resource "kubernetes_deployment" "jwtauth" {
+  metadata {
+    name      = "jwtauth"
+    namespace = "evolved5g"
+    labels = {
+      app = "jwtauth"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "jwtauth"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "jwtauth"
+        }
+      }
+      spec {
+        container {
+          image = "dockerhub.hi.inet/evolved-5g/jwtauth:latest"
+          name  = "jwtauth"
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "jwtauth" {
+  metadata {
+    name      = "jwtauth"
+    namespace = "evolved5g"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.jwtauth.spec.0.template.0.metadata[0].labels.app
+    }
+    port {
+      port        = 8080
+      target_port = 8080
+    }
+  }
+}
+
+#############################################
 # MONGO
 #############################################
 resource "kubernetes_deployment" "mongo" {
