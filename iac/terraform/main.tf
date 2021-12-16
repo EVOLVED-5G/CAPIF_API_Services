@@ -559,19 +559,6 @@ resource "kubernetes_service" "security_service" {
 #############################################
 # MONGO
 #############################################
-resource "kubernetes_secret" "mongo" {
-  metadata {
-    name = "basic-auth"
-  }
-
-  data = {
-    mongo-root-username = "root"
-    mongo-root-password = "example"
-  }
-
-  type = "kubernetes.io/basic-auth"
-}
-
 resource "kubernetes_pod" "mongo" {
   metadata {
     name      = "mongo"
@@ -587,23 +574,13 @@ resource "kubernetes_pod" "mongo" {
       name  = "mongo"
 
       env {
-        name = "MONGO_INITDB_ROOT_USERNAME"
-        value_from {
-          secret_key_ref {
-            name = "basic-auth"
-            key  = "mongo-root-username"
-          }
-        }
+        name  = "MONGO_INITDB_ROOT_USERNAME"
+        value = "root"
       }
 
       env {
-        name = "MONGO_INITDB_ROOT_PASSWORD"
-        value_from {
-          secret_key_ref {
-            name = "basic-auth"
-            key  = "mongo-root-password"
-          }
-        }
+        name  = "MONGO_INITDB_ROOT_PASSWORD"
+        value = "example"
       }
     }
   }
@@ -642,22 +619,12 @@ resource "kubernetes_pod" "mongo" {
 
 #           env {
 #             name = "MONGO_INITDB_ROOT_USERNAME"
-#             value_from {
-#               secret_key_ref {
-#                 name = "basic-auth"
-#                 key  = "mongo-root-username"
-#               }
-#             }
+#             value = "root"
 #           }
 
 #           env {
 #             name = "MONGO_INITDB_ROOT_PASSWORD"
-#             value_from {
-#               secret_key_ref {
-#                 name = "basic-auth"
-#                 key  = "mongo-root-password"
-#               }
-#             }
+#             value = "example"
 #           }
 #         }
 #       }
@@ -698,28 +665,14 @@ resource "kubernetes_pod" "mongo" {
 #       image = "mongo-express:latest"
 #       name  = "mongo-express"
 
-#       security_context {
-#         run_as_user = 1000950001
-#       }
-
 #       env {
 #         name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-#         value_from {
-#           secret_key_ref {
-#             name = "basic-auth"
-#             key  = "mongo-root-username"
-#           }
-#         }
+#         value = "root"
 #       }
 
 #       env {
 #         name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-#         value_from {
-#           secret_key_ref {
-#             name = "basic-auth"
-#             key  = "mongo-root-password"
-#           }
-#         }
+#         value = "example"
 #       }
 
 #       env {
@@ -761,28 +714,14 @@ resource "kubernetes_pod" "mongo" {
 #           image = "mongo-express:latest"
 #           name  = "mongo-express"
 
-#           security_context {
-#             privileged = true
-#           }
-
 #           env {
 #             name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
-#             value_from {
-#               secret_key_ref {
-#                 name = "basic-auth"
-#                 key  = "mongo-root-username"
-#               }
-#             }
+#             value = "root"
 #           }
 
 #           env {
 #             name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
-#             value_from {
-#               secret_key_ref {
-#                 name = "basic-auth"
-#                 key  = "mongo-root-password"
-#               }
-#             }
+#             value = "example"
 #           }
 
 #           env {
