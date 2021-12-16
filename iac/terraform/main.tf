@@ -789,6 +789,17 @@ resource "kubernetes_deployment" "nginx" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
           name  = "nginx"
+
+          volume_mount {
+            mount_path = "/var/cache"
+            name       = "cache"
+          }
+        }
+
+        volume {
+          name = "cache"
+          empty_dir {
+          }
         }
       }
     }
