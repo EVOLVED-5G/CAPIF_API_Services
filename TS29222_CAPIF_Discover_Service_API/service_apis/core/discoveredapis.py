@@ -1,3 +1,5 @@
+import sys
+
 import pymongo
 from flask import current_app, Flask, Response
 import json
@@ -6,8 +8,8 @@ from ..models.problem_details import ProblemDetails
 from bson import json_util
 
 
-def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_type=None, protocol=None, aef_id=None,
-                       data_format=None, api_cat=None, supported_features=None, api_supported_features=None):
+def get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id,
+                       data_format, api_cat, supported_features, api_supported_features):
 
     user = current_app.config['MONGODB_SETTINGS']['user']
     password = current_app.config['MONGODB_SETTINGS']['password']
@@ -35,9 +37,9 @@ def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_typ
         if api_name is not None:
             myParams.append({"api_name": api_name})
         if api_version is not None:
-            myParams.append({"aef_profiles.0.versions.api_version": api_version})
+            myParams.append({"aef_profiles.0.versions.0.api_version": api_version})
         if comm_type is not None:
-            myParams.append({"aef_profiles.0.versions.resources.comm_type": comm_type})
+            myParams.append({"aef_profiles.0.versions.0.resources.0.comm_type": comm_type})
         if protocol is not None:
             myParams.append({"aef_profiles.0.protocol": protocol})
         if aef_id is not None:
@@ -51,7 +53,7 @@ def get_discoveredapis(api_invoker_id, api_name=None, api_version=None, comm_typ
         if api_supported_features is not None:
             myParams.append({"api_supp_feats": api_supported_features})
         if myParams:
-            myQuery = {"$or": myParams}
+            myQuery = {"$and": myParams}
 
         discoved_apis = services.find(myQuery)
         json_docs = []
