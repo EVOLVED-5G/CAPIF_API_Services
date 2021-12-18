@@ -9,11 +9,9 @@ pipeline {
     parameters {
         string(name: 'VERSION', defaultValue: '1.0', description: '')
     }
-
     environment {
         VERSION="${params.VERSION}"
     }
-
     stages {
         stage('Build') {
             steps {
@@ -24,7 +22,6 @@ pipeline {
                 }
             }
         }
-
         stage('Publish') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker_pull_cred', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_CREDENTIALS')]) {

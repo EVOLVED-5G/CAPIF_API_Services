@@ -6,11 +6,21 @@ pipeline {
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
         ansiColor('xterm')
     }
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
+        string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
+        string(name: 'OPENSHIFT_URL', defaultValue: 'https://openshift-epg.hi.inet:443', description: 'openshift url')
+        string(name: 'NGINX_HOSTNAME', defaultValue: 'nginx-evolved5g.apps-dev.hi.inet', description: 'nginx hostname')
+        string(name: 'MONGO_EXPRESS_HOSTNAME', defaultValue: 'mongo-express-evolved5g.apps-dev.hi.inet', description: 'mongo-express hostname')
+    }
     environment {
-        AWS_DEFAULT_REGION = 'eu-central-1'
-        OPENSHIFT_URL= 'https://openshift-epg.hi.inet:443'
-        NGINX_HOSTNAME= 'nginx-evolved5g.apps-dev.hi.inet'
-        MONGO_EXPRESS_HOSTNAME= 'mongo-express-evolved5g.apps-dev.hi.inet'
+        // This is to work around a jenkins bug on the first build of a multi-branch job
+        // https://issues.jenkins-ci.org/browse/JENKINS-40574 - it is marked resolved but the last comment says it doesn't work for declaritive pipelines
+        BRANCH_NAME = "${params.BRANCH_NAME}"
+        AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
+        OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
+        NGINX_HOSTNAME= "${params.NGINX_HOSTNAME}"
+        MONGO_EXPRESS_HOSTNAME= "${params.MONGO_EXPRESS_HOSTNAME}"
     }
     stages {
         stage('Login openshift') {
@@ -44,16 +54,19 @@ pipeline {
                 }
             }
         }
-        stage ('Expose services') {
+        stage ('Expose nginx') {
             steps {
                 catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh '''
-                        oc expose service nginx --hostname=$NGINX_HOSTNAME
-                        oc expose service mongo-express --hostname=$MONGO_EXPRESS_HOSTNAME
-                    '''
+                    sh 'oc expose service nginx --hostname=$NGINX_HOSTNAME'
                 }   
             }
         }
-
+        stage ('Expose mongo-express') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh 'oc expose service mongo-express --hostname=$MONGO_EXPRESS_HOSTNAME'
+                }   
+            }
+        }
     }
 }
