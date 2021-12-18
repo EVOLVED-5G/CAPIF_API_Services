@@ -7,9 +7,13 @@ pipeline {
         ansiColor('xterm')
     }
     parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'VERSION', defaultValue: '1.0', description: '')
     }
     environment {
+        // This is to work around a jenkins bug on the first build of a multi-branch job
+        // https://issues.jenkins-ci.org/browse/JENKINS-40574 - it is marked resolved but the last comment says it doesn't work for declaritive pipelines
+        BRANCH_NAME = "${params.BRANCH_NAME}"
         VERSION="${params.VERSION}"
     }
     stages {
