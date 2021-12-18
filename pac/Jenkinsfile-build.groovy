@@ -1,12 +1,17 @@
 pipeline {
     agent { node {label 'evol5-slave'}  }
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
+        ansiColor('xterm')
+    }
     parameters {
         string(name: 'VERSION', defaultValue: '1.0', description: '')
     }
 
     environment {
         VERSION="${params.VERSION}"
-        AWS_DEFAULT_REGION = 'eu-central-1'
     }
 
     stages {
@@ -14,7 +19,7 @@ pipeline {
             steps {
                 dir ("${env.WORKSPACE}") {
                     sh '''
-                    docker-compose build --pull
+                        docker-compose build --pull
                     '''
                 }
             }
@@ -25,8 +30,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker_pull_cred', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_CREDENTIALS')]) {
                     dir ("${env.WORKSPACE}") {
                         sh '''
-                        docker login --username ${ARTIFACTORY_USER} --password "${ARTIFACTORY_CREDENTIALS}" dockerhub.hi.inet
-                        docker-compose push
+                            docker login --username ${ARTIFACTORY_USER} --password "${ARTIFACTORY_CREDENTIALS}" dockerhub.hi.inet
+                            docker-compose push
                         '''
                     }
                 }

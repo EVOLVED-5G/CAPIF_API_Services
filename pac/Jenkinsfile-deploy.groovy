@@ -1,8 +1,16 @@
 pipeline {
     agent { node {label 'evol5-slave'}  }
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
+        ansiColor('xterm')
+    }
     environment {
         AWS_DEFAULT_REGION = 'eu-central-1'
         OPENSHIFT_URL= 'https://openshift-epg.hi.inet:443'
+        NGINX_HOSTNAME= 'nginx-evolved5g.apps-dev.hi.inet'
+        MONGO_EXPRESS_HOSTNAME= 'mongo-express-evolved5g.apps-dev.hi.inet'
     }
     stages {
         stage('Login openshift') {
@@ -19,7 +27,10 @@ pipeline {
 
             }
         }
-        stage ('Deploy app in kubernetess') {
+        stage ('Deploy app in kubernetes') {
+            options {
+                retry(2)
+            }
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '328ab84a-aefc-41c1-aca2-1dfae5b150d2', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     dir ("${env.WORKSPACE}/iac/terraform/") {
@@ -27,11 +38,22 @@ pipeline {
                             terraform init
                             terraform validate
                             terraform plan -out deployment.tfplan
-                            terraform apply --auto-approve deployment.tfplan
+                            terraform apply --auto-approve -lock-timeout=15m deployment.tfplan
                         '''
                     }
                 }
             }
         }
+        stage ('Expose services') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh '''
+                        oc expose service nginx --hostname=$NGINX_HOSTNAME
+                        oc expose service mongo-express --hostname=$MONGO_EXPRESS_HOSTNAME
+                    '''
+                }   
+            }
+        }
+
     }
 }

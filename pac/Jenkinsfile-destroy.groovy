@@ -1,5 +1,11 @@
 pipeline {
     agent { node {label 'evol5-slave'}  }
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'HOURS')
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
+        ansiColor('xterm')
+    }
     environment {
         AWS_DEFAULT_REGION = 'eu-central-1'
         OPENSHIFT_URL= 'https://openshift-epg.hi.inet:443'
