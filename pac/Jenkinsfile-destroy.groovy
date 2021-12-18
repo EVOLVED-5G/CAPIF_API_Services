@@ -35,16 +35,26 @@ pipeline {
         }
         stage ('Destroy nginx route') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh 'oc delete route nginx'
-                }   
+                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        sh '''
+                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                            oc delete route nginx
+                        '''
+                    }
+                } 
             }
         }
         stage ('Destroy mongo-express route') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh 'oc delete route mongo-express'
-                }   
+                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        sh '''
+                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                            oc delete route mongo-express
+                        '''
+                    }
+                }  
             }
         }
         stage ('Destroy app in kubernetes') {

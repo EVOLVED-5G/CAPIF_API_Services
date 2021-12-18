@@ -56,16 +56,26 @@ pipeline {
         }
         stage ('Expose nginx') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh 'oc expose service nginx --hostname=$NGINX_HOSTNAME'
-                }   
+                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        sh '''
+                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                            oc expose service nginx --hostname=$NGINX_HOSTNAME
+                        '''
+                    }
+                }
             }
         }
         stage ('Expose mongo-express') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    sh 'oc expose service mongo-express --hostname=$MONGO_EXPRESS_HOSTNAME'
-                }   
+                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        sh '''
+                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                            oc expose service mongo-express --hostname=$MONGO_EXPRESS_HOSTNAME
+                        '''
+                    }
+                }
             }
         }
     }
