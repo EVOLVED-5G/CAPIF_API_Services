@@ -52,6 +52,8 @@ The APIs included in release 1.0 are:
 - CAPIF Publish API
 - CAPIF Discover API
 
+###All APIs can be tested with POSTMAN, by following the instructions in [CAPIF_Tool_Instructions_with_Postman.pdf](CAPIF_Tool_Instructions_with_Postman.pdf)
+
 ## JWT Authentication APIs
 
 These APIs are triggered by an entity (Invoker or APF for release 1.0) to:
@@ -67,24 +69,23 @@ curl --request POST 'http://localhost:8080/register' --header 'Content-Type: app
     "role":"...",
     "description":"..."
 }'
-
 ```
 
 Request body:
 ```json
 {
-  "username": username of entity,
-  "password": password of entity,
-  "role": role of entity ("invoker" or "apf"),
-  "description": description of entity
+  "username": "username of entity",
+  "password": "password of entity",
+  "role": "role of entity (invoker or apf)",
+  "description": "description of entity"
 }
 ```
 
 Response body
 ```json
 {
-  "id": Entity ID,
-  "message": Informative message
+  "id": "Entity ID",
+  "message": "Informative message"
 }
 ```
 
@@ -101,8 +102,8 @@ curl --request POST 'http://localhost:8080/gettoken' --header 'Content-Type: app
 Response body
 ```json
 {
-  "access_token": JSON Web Token for CAPIF APIs, 
-  "message": Informative message
+  "access_token": "JSON Web Token for CAPIF APIs", 
+  "message": "Informative message"
 }
 ```
 
@@ -421,6 +422,8 @@ This API is triggered by a NetApp (or Invoker)
 ```shell
 curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>' --header 'Authorization: Bearer <JWT acces token>'
 ```
+
+
 
 # Test Plan Documentation
 
