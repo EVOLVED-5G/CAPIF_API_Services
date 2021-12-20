@@ -52,7 +52,7 @@ The APIs included in release 1.0 are:
 - CAPIF Publish API
 - CAPIF Discover API
 
-###All APIs can be tested with POSTMAN, by following the instructions in [CAPIF_Tool_Instructions_with_Postman.pdf](CAPIF_Tool_Instructions_with_Postman.pdf)
+### All APIs can be tested with POSTMAN, by following the instructions in [CAPIF_Tool_Instructions_with_Postman.pdf](CAPIF_Tool_Instructions_with_Postman.pdf)
 
 ## JWT Authentication APIs
 
