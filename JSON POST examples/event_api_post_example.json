@@ -1,0 +1,55 @@
+{
+    "events": [
+        "event_name_id_1",
+        "event_name_id_2"
+    ],
+    "eventFilters": [
+        {
+            "apiIds": [
+                "apiIds",
+                "apiIds"
+            ],
+            "apiInvokerIds": [
+                "apiInvokerIds",
+                "apiInvokerIds"
+            ],
+            "aefIds": [
+                "aefIds",
+                "aefIds"
+            ]
+        },
+        {
+            "apiIds": [
+                "apiIds",
+                "apiIds"
+            ],
+            "apiInvokerIds": [
+                "apiInvokerIds",
+                "apiInvokerIds"
+            ],
+            "aefIds": [
+                "aefIds",
+                "aefIds"
+            ]
+        }
+    ],
+    "eventReq": {
+        "immRep": true,
+        "maxReportNbr": 0,
+        "monDur": "2000-01-23T04:56:07+00:00",
+        "repPeriod": 6,
+        "sampRatio": 15,
+        "partitionCriteria": [
+            "string1",
+            "string2"
+        ],
+        "grpRepTime": 5
+    },
+    "notificationDestination": "notificationDestination",
+    "requestTestNotification": true,
+    "websockNotifConfig": {
+        "websocketUri": "websocketUri",
+        "requestWebsocketUri": true
+    },
+    "supportedFeatures": "aaa"
+}
