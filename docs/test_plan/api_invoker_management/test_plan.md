@@ -25,7 +25,7 @@ At this documentation you will have all information and related files and exampl
 
   Register NetApp
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -46,7 +46,7 @@ At this documentation you will have all information and related files and exampl
 
   Register NetApp
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -64,7 +64,7 @@ At this documentation you will have all information and related files and exampl
 
   Update NetApp onboardingDetails
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -82,7 +82,7 @@ At this documentation you will have all information and related files and exampl
 
   Update NetApp onboardingDetails
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -100,7 +100,7 @@ At this documentation you will have all information and related files and exampl
 
   Delete NetApp 
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -118,8 +118,12 @@ At this documentation you will have all information and related files and exampl
 
   Delete NetApp 
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
   404 Not Found.
+
+
+
+[request body]: ../../../JSON%20POST%20examples/invoker_details_post_example.json  "API Invoker Request"
