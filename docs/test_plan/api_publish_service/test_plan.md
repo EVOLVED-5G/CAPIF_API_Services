@@ -32,7 +32,7 @@ At this documentation you will have all information and related files and exampl
 
   POST Publish API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -56,7 +56,7 @@ At this documentation you will have all information and related files and exampl
 
   POST Publish API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -76,7 +76,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -94,7 +94,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -114,7 +114,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve API details for serviceApiId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -134,7 +134,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve API details for serviceApiId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -152,7 +152,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve API details for serviceApiId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -172,7 +172,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT Update APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -191,7 +191,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT Update APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -209,7 +209,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT Update APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -229,7 +229,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -248,7 +248,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -266,8 +266,11 @@ At this documentation you will have all information and related files and exampl
 
   DELETE API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
   401 Unauthorized
+
+
+  [request body]: ../../../JSON%20POST%20examples/service_api_description_post_example.json  "API Invoker Request"

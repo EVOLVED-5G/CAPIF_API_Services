@@ -1,18 +1,18 @@
 *** Settings ***
-Documentation    This resource file contains the basic requests used by Capif. CAPIF_SERVER and CAPIF_AUTH can be set as global variables, depends on environment used
+Documentation    This resource file contains the basic requests used by Capif. NGINX_HOSTNAME and CAPIF_AUTH can be set as global variables, depends on environment used
 Library          RequestsLibrary
 Library          Collections
 
 *** Variables ***
-${CAPIF_SERVER}    http://localhost:8080
+${NGINX_HOSTNAME}    http://localhost:8080
 ${CAPIF_AUTH}
 
 *** keywords ***
 Create CAPIF Session
     [Arguments]    ${server}=${NONE}    ${auth}=${NONE}
 
-    Run Keyword If    "${server}" != "${NONE}"    Create Session    apisession    ${server}          verify=True
-    ...               ELSE                        Create Session    apisession    ${CAPIF_SERVER}    verify=True
+    Run Keyword If    "${server}" != "${NONE}"    Create Session    apisession    ${server}            verify=True
+    ...               ELSE                        Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
 
     ${headers}=    Run Keyword If    "${CAPIF_BEARER}" != ""                                   Create Dictionary    Authorization=Bearer ${CAPIF_BEARER}    
     ...            ELSE IF           "${auth}" != "${NONE}"                                    Create Dictionary    Authorization=Basic ${auth}
