@@ -12,37 +12,37 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 
 *** Test Cases ***
-Discover Published service APIs by Authorised API Invoker
-	[Tags]    capif_api_discover_service-1
+# Discover Published service APIs by Authorised API Invoker
+# 	[Tags]    capif_api_discover_service-1
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+# 	${request_body}=    Create Onboarding Notification Body
+# 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+# 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${resp.json()['apiInvokerId']}
+# 	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${resp.json()['apiInvokerId']}
 
-	Should Be Equal As Strings    ${resp.status_code}    200
+# 	Should Be Equal As Strings    ${resp.status_code}    200
 
-	Log Many    ${resp.json()}
+# 	Log Many    ${resp.json()}
 
-Discover Published service APIs by Non Authorised API Invoker
-	[Tags]    capif_api_discover_service-2
+# Discover Published service APIs by Non Authorised API Invoker
+# 	[Tags]    capif_api_discover_service-2
 	
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+# 	${request_body}=    Create Onboarding Notification Body
+# 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
-	Register User At Jwt Auth    username=robot2    role=apf
+# 	Register User At Jwt Auth    username=robot2    role=apf
 
-	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
+# 	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
 
-	Should Be Equal As Strings    ${resp.status_code}    401
+# 	Should Be Equal As Strings    ${resp.status_code}    401
 
-Discover Not Published service APIs by Authorised API Invoker
-	[Tags]    capif_api_discover_service-3
+# Discover Not Published service APIs by Authorised API Invoker
+# 	[Tags]    capif_api_discover_service-3
 
-	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
+# 	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
 
-	Should Be Equal As Strings    ${resp.status_code}    404
+# 	Should Be Equal As Strings    ${resp.status_code}    404
 
 
