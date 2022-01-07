@@ -17,15 +17,16 @@ Reset Db
 	[Arguments]    ${db_col}
 	Log            Db capif.invokerdetails collection will be removed in order to isolate each test.
 
-	${host}    ${port}=    Get Db Host    ${MONGO_URL}
+	Clean Test Information By HTTP Requests
+	# ${host}    ${port}=    Get Db Host    ${MONGO_URL}
 
-	Connect To MongoDB    mongodb://root:example@${host}	${port}
+	# Connect To MongoDB    mongodb://root:example@${host}	${port}
 
-	@{allCollections}=            Get MongoDB Collections    capif
-	Log Many	@{allCollections}
+	# @{allCollections}=            Get MongoDB Collections    capif
+	# Log Many	@{allCollections}
 
-	Run Keyword And Ignore Error   Drop MongoDB Collection    capif    invokerdetails
-	Run Keyword And Ignore Error   Drop MongoDB Collection    capif    user
-	Run Keyword And Ignore Error   Drop MongoDB Collection    capif    serviceapidescriptions
+	# Run Keyword And Ignore Error   Drop MongoDB Collection    capif    invokerdetails
+	# Run Keyword And Ignore Error   Drop MongoDB Collection    capif    user
+	# Run Keyword And Ignore Error   Drop MongoDB Collection    capif    serviceapidescriptions
 
-	Disconnect From MongoDB
+	# Disconnect From MongoDB

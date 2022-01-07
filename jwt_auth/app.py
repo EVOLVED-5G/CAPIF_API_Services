@@ -33,6 +33,8 @@ uri = "mongodb://" + user + ":" + passwd + "@" + host + ":" + str(port)
 myclient = MongoClient(uri)
 mydb = myclient[db]
 user = mydb[col]
+invokerdetails = mydb['invokerdetails']
+serviceapidescriptions = mydb['serviceapidescriptions']
 
 
 @app.route("/register", methods=["POST"])
@@ -67,6 +69,32 @@ def gettoken():
     else:
         return jsonify(message="Bad credentials. User not found"), 401
 
+@app.route("/testusers", methods=["DELETE"])
+def testusers():
+    myquery = { "username": {"$regex": "^robot.*"} }
+    result = user.delete_many(myquery)
+    if result.deleted_count == 0:
+        return jsonify(message="No test users present"), 200
+    else:
+        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Users"), 200
+
+@app.route("/testservice", methods=["DELETE"])
+def testservice():
+    myquery = { "description": "ROBOT_TESTING" }
+    result = serviceapidescriptions.delete_many(myquery)
+    if result.deleted_count == 0:
+        return jsonify(message="No test services present"), 200
+    else:
+        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Services"), 200
+
+@app.route("/testinvoker", methods=["DELETE"])
+def testinvoker():
+    myquery = { "api_invoker_information": "ROBOT_TESTING" }
+    result = invokerdetails.delete_many(myquery)
+    if result.deleted_count == 0:
+        return jsonify(message="No test Invokers present"), 200
+    else:
+        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Invokers"), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)

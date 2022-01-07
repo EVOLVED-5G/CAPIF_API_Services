@@ -83,5 +83,15 @@ Register User At Jwt Auth
 
     [Return]    ${resp.json()["access_token"]}
 
+Clean Test Information By HTTP Requests
+    Create Session    jwtsession    http://localhost:8080    verify=True
 
+    ${resp}=                      DELETE On Session      jwtsession    /testusers
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /testservice
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /testinvoker
+    Should Be Equal As Strings    ${resp.status_code}    200
 
