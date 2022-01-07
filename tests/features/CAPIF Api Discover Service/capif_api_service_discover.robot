@@ -13,57 +13,57 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 
 *** Test Cases ***
-Discover Published service APIs by Authorised API Invoker
-	[Tags]     capif_api_discover_service-1
-	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+# Discover Published service APIs by Authorised API Invoker
+# 	[Tags]     capif_api_discover_service-1
+# 	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
 
-	${request_body}=    Create Service Api Description
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+# 	${request_body}=    Create Service Api Description
+# 	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+# 	Should Be Equal As Strings    ${resp.status_code}    201
 
 
-	Register User At Jwt Auth    username=robot2    role=invoker
+# 	Register User At Jwt Auth    username=robot2    role=invoker
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+# 	${request_body}=    Create Onboarding Notification Body
+# 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+# 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+# 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
+# 	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
 
-	Should Be Equal As Strings    ${resp.status_code}    200
+# 	Should Be Equal As Strings    ${resp.status_code}    200
 
-Discover Published service APIs by Non Authorised API Invoker
-    [Tags]     capif_api_discover_service-2
-    [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+# Discover Published service APIs by Non Authorised API Invoker
+#     [Tags]     capif_api_discover_service-2
+#     [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
 
-    ${request_body}=    Create Service Api Description
+#     ${request_body}=    Create Service Api Description
 
-	${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+# 	${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+# 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${apf_role_id}=    Set Variable    ${APF_ID}
-	${apf_token}=      Set Variable    ${CAPIF_BEARER}
+# 	${apf_role_id}=    Set Variable    ${APF_ID}
+# 	${apf_token}=      Set Variable    ${CAPIF_BEARER}
 
-	Register User At Jwt Auth    username=robot2    role=invoker
+# 	Register User At Jwt Auth    username=robot2    role=invoker
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+# 	${request_body}=    Create Onboarding Notification Body
+# 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+# 	Should Be Equal As Strings    ${resp.status_code}    201
 
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+# 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-	Set Global Variable    ${APF_ID}          ${apf_role_id}
-	Set Global Variable    ${CAPIF_BEARER}    ${apf_token}
+# 	Set Global Variable    ${APF_ID}          ${apf_role_id}
+# 	Set Global Variable    ${CAPIF_BEARER}    ${apf_token}
 
-	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
+# 	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
 
-    Should Be Equal As Strings    ${resp.status_code}    401
+#     Should Be Equal As Strings    ${resp.status_code}    401
 
 # Discover Not Published service APIs by Authorised API Invoker
 #    [Tags]    capif_api_discover_service-3
