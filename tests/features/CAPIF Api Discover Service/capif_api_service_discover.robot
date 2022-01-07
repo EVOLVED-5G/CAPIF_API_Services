@@ -63,11 +63,11 @@ Discover Published service APIs by Non Authorised API Invoker
 
 #     Should Be Equal As Strings    ${resp.status_code}    401
 
-# Discover Not Published service APIs by Authorised API Invoker
-#    [Tags]    capif_api_discover_service-3
+Discover Published service APIs by not registered API Invoker
+   [Tags]    capif_api_discover_service-3
 
-#    ${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
+   ${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
 
-#    Should Be Equal As Strings    ${resp.status_code}    404
+   Should Be Equal As Strings    ${resp.status_code}    403
 
 
