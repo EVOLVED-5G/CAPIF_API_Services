@@ -32,15 +32,14 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 # 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-# 	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
+	${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}
 
 # 	Should Be Equal As Strings    ${resp.status_code}    200
 
-# Discover Published service APIs by Non Authorised API Invoker
-#     [Tags]     capif_api_discover_service-2
-#     [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
-
-#     ${request_body}=    Create Service Api Description
+Discover Published service APIs by Non Authorised API Invoker
+    [Tags]     capif_api_discover_service-2
+    [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+    ${request_body}=    Create Service Api Description
 
 # 	${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
@@ -58,10 +57,9 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 # 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-# 	Set Global Variable    ${APF_ID}          ${apf_role_id}
-# 	Set Global Variable    ${CAPIF_BEARER}    ${apf_token}
+	Get Token For User    username=robot    password=password   role=apf
 
-# 	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
+	${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}
 
 #     Should Be Equal As Strings    ${resp.status_code}    401
 
