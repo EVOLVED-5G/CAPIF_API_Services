@@ -174,7 +174,7 @@ def create_onboarding_notification_body():
         }, {
             "serviceAPICategory": "serviceAPICategory",
             "ccfId": "ccfId",
-            "apiName": "apiName",
+            "apiName": "apiName2",
             "shareableInfo": {
                 "capifProvDoms": ["capifProvDoms", "capifProvDoms"],
                 "isShareable": True
