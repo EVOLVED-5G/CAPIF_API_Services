@@ -118,7 +118,7 @@ Update API Published by Authorised apfId with valid serviceApiId
 
 	${request_body}=    Create Service Api Description    first_service_modified
 
-	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${url.scheme}://${url.netloc}
+	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${NGINX_HOSTNAME}
 
 	Should Be Equal As Strings    ${resp.status_code}    200
 
@@ -145,7 +145,7 @@ Update APIs Published by NON Authorised apfId
 
 	${request_body}=    Create Service Api Description    first_service_modified
 
-	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${url.scheme}://${url.netloc}
+	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${NGINX_HOSTNAME}
 
 	Should Be Equal As Strings    ${resp.status_code}    401
 
@@ -159,7 +159,7 @@ Delete API Published by Authorised apfId with valid serviceApiId
 	${serviceApiId1}=             Set Variable           ${resp.json()['apiId']}
 	${url}=                       Parse Url              ${resp.headers['Location']}
 
-	${resp}=    Delete Request Capif    ${url.path}    server=${url.scheme}://${url.netloc}
+	${resp}=    Delete Request Capif    ${url.path}    server=${NGINX_HOSTNAME}
 
 	Should Be Equal As Strings    ${resp.status_code}    204
 

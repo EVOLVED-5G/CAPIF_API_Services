@@ -2,7 +2,7 @@ def create_onboarding_notification_body():
     return {
         "notificationDestination": "notificationDestination",
         "supportedFeatures": "fffffff",
-        "apiInvokerInformation": "apiInvokerInformation",
+        "apiInvokerInformation": "ROBOT_TESTING",
         "websockNotifConfig": {
             "requestWebsocketUri": True,
             "websocketUri": "websocketUri"

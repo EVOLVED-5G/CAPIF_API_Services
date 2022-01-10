@@ -65,7 +65,7 @@ Register User At Jwt Auth
 
     &{body}=    Create Dictionary    password=${password}    username=${username}    role=${role}    description=${description}
 
-    Create Session    jwtsession    http://localhost:8080    verify=True
+    Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
@@ -83,5 +83,15 @@ Register User At Jwt Auth
 
     [Return]    ${resp.json()["access_token"]}
 
+Clean Test Information By HTTP Requests
+    Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
+    ${resp}=                      DELETE On Session      jwtsession    /testusers
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /testservice
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /testinvoker
+    Should Be Equal As Strings    ${resp.status_code}    200
 

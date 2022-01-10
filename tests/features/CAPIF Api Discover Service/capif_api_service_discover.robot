@@ -1,7 +1,8 @@
 *** Settings ***
 Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
-Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
+Library     /opt/robot-tests/tests/libraries/bodyRequests.py
+
 
 Test Setup    Initialize Test And Register    role=invoker    db_col=invokerdetails
 
@@ -13,36 +14,62 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 *** Test Cases ***
 # Discover Published service APIs by Authorised API Invoker
-# 	[Tags]    capif_api_discover_service-1
+# 	[Tags]     capif_api_discover_service-1
+# 	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+
+# 	${request_body}=    Create Service Api Description
+# 	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+# 	Should Be Equal As Strings    ${resp.status_code}    201
+
+
+# 	Register User At Jwt Auth    username=robot2    role=invoker
 
 # 	${request_body}=    Create Onboarding Notification Body
 # 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
 # 	Should Be Equal As Strings    ${resp.status_code}    201
 
-# 	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${resp.json()['apiInvokerId']}
+# 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+
+# 	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
 
 # 	Should Be Equal As Strings    ${resp.status_code}    200
 
-# 	Log Many    ${resp.json()}
-
 # Discover Published service APIs by Non Authorised API Invoker
-# 	[Tags]    capif_api_discover_service-2
-	
+#     [Tags]     capif_api_discover_service-2
+#     [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+
+#     ${request_body}=    Create Service Api Description
+
+# 	${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+
+# 	Should Be Equal As Strings    ${resp.status_code}    201
+
+# 	${apf_role_id}=    Set Variable    ${APF_ID}
+# 	${apf_token}=      Set Variable    ${CAPIF_BEARER}
+
+# 	Register User At Jwt Auth    username=robot2    role=invoker
+
 # 	${request_body}=    Create Onboarding Notification Body
 # 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
-# 	Register User At Jwt Auth    username=robot2    role=apf
+# 	Should Be Equal As Strings    ${resp.status_code}    201
 
-# 	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
+# 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-# 	Should Be Equal As Strings    ${resp.status_code}    401
+# 	Set Global Variable    ${APF_ID}          ${apf_role_id}
+# 	Set Global Variable    ${CAPIF_BEARER}    ${apf_token}
+
+# 	${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${api_invoker_id}
+
+#     Should Be Equal As Strings    ${resp.status_code}    401
 
 # Discover Not Published service APIs by Authorised API Invoker
-# 	[Tags]    capif_api_discover_service-3
+#    [Tags]    capif_api_discover_service-3
 
-# 	${resp}=   Get Request Capif  /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
+#    ${resp}=    Get Request Capif    /allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
 
-# 	Should Be Equal As Strings    ${resp.status_code}    404
+#    Should Be Equal As Strings    ${resp.status_code}    404
 
 
