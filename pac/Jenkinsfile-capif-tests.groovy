@@ -20,10 +20,10 @@ String robotTestSelection(String tests, String customTest) {
 
 test_plan = [
     'All Capif Services': 'all',
-    'CUSTOM': 'CUSTOM',
     'CAPIF Api Invoker Management': 'capif_api_invoker_management',
     'CAPIF Api Publish Management': 'capif_api_publish_service',
-    'CAPIF Api Discover Service': 'capif_api_discover_service'
+    'CAPIF Api Discover Service': 'capif_api_discover_service',
+    'CUSTOM': 'CUSTOM'
     ]
 
 
