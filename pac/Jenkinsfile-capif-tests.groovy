@@ -21,16 +21,14 @@ String robotTestSelection(String tests, String customTest) {
 test_plan = [
     'All Capif Services': 'all',
     'CAPIF Api Invoker Management': 'capif_api_invoker_management',
-    'CAPIF Api Publish Management': 'capif_api_publish_service',
+    'CAPIF Api Publish Service': 'capif_api_publish_service',
     'CAPIF Api Discover Service': 'capif_api_discover_service',
     'CUSTOM': 'CUSTOM'
     ]
 
-
 String runCapifLocal(String nginxHost) {
     return nginxHost.matches('^(http|https)://localhost.*') ? 'true' : 'false'
 }
-
 
 // ################################################
 // ## Pipeline
