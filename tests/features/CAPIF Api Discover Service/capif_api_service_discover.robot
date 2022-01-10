@@ -30,7 +30,7 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 # 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
 	Should Be Equal As Strings    ${resp.status_code}    201
-	
+
 	# Get api invoker id after regiter at api-invoker
 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
@@ -43,8 +43,10 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 	Length Should Be       ${resp.json()}    1
 
 Discover Published service APIs by Non Authorised API Invoker
-    [Tags]              capif_api_discover_service-2
-    [Setup]             Initialize Test And Register      role=apf    db_col=invokerdetails
+    [Tags]     capif_api_discover_service-2
+    [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+
+	# Publish one api
     ${request_body}=    Create Service Api Description
 
 # 	${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
@@ -54,14 +56,16 @@ Discover Published service APIs by Non Authorised API Invoker
 # 	${apf_role_id}=    Set Variable    ${APF_ID}
 # 	${apf_token}=      Set Variable    ${CAPIF_BEARER}
 
-# 	Register User At Jwt Auth    username=robot2    role=invoker
+	# Change to user with invoker role and register to invoker management
+	Register User At Jwt Auth    username=robot2    role=invoker
 
 # 	${request_body}=    Create Onboarding Notification Body
 # 	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
 # 	Should Be Equal As Strings    ${resp.status_code}    201
 
-# 	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+	# Get api invoker id after regiter at api-invoker
+	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
 	Get Token For User    username=robot    password=password    role=apf
 
@@ -110,6 +114,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 
     Should Be Equal As Strings    ${resp.status_code}    200
 
+	# Check returned values
 	Should Not Be Empty    ${resp.json()}
 	Length Should Be       ${resp.json()}    1
 
@@ -147,6 +152,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
 
     Should Be Equal As Strings    ${resp.status_code}    200
 
+	# Check returned values
 	Should Be Empty    ${resp.json()}
 
 Discover Published service APIs by registered API Invoker not filtered
@@ -181,6 +187,6 @@ Discover Published service APIs by registered API Invoker not filtered
 
     Should Be Equal As Strings    ${resp.status_code}    200
 
+	# Check returned values
 	Should Not Be Empty    ${resp.json()}
-
-	Length Should Be    ${resp.json()}    2
+	Length Should Be       ${resp.json()}    2
