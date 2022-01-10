@@ -22,25 +22,8 @@ test_plan = [
     'All Capif Services': 'all',
     'CUSTOM': 'CUSTOM',
     'CAPIF Api Invoker Management': 'capif_api_invoker_management',
-    'CAPIF Api Invoker Management->Register NetApp': 'capif_api_invoker_management-1',
-    'CAPIF Api Invoker Management->Register NetApp Already registered': 'capif_api_invoker_management-2',
-    'CAPIF Api Invoker Management->Update Registered NetApp': 'capif_api_invoker_management-3',
-    'CAPIF Api Invoker Management->Update Not Registered NetApp': 'capif_api_invoker_management-4',
-    'CAPIF Api Invoker Management->Delete Registered NetApp': 'capif_api_invoker_management-5',
-    'CAPIF Api Invoker Management->Delete Not Registered NetApp': 'capif_api_invoker_management-6',
-    'CAPIF Api Discover Service->Publish API by Authorised API Publisher': 'capif_api_publish_service-1',
-    'CAPIF Api Discover Service->Publish API by NON Authorised API Publisher': 'capif_api_publish_service-2',
-    'CAPIF Api Discover Service->Retrieve all APIs Published by Authorised apfId': 'capif_api_publish_service-3',
-    'CAPIF Api Discover Service->Retrieve all APIs Published by NON Authorised apfId': 'capif_api_publish_service-4',
-    'CAPIF Api Discover Service->Retrieve single APIs Published by Authorised apfId': 'capif_api_publish_service-5',
-    'CAPIF Api Discover Service->Retrieve single APIs non Published by Authorised apfId': 'capif_api_publish_service-6',
-    'CAPIF Api Discover Service->Retrieve single APIs Published by NON Authorised apfId': 'capif_api_publish_service-7',
-    'CAPIF Api Discover Service->Update API Published by Authorised apfId with valid serviceApiId': 'capif_api_publish_service-8',
-    'CAPIF Api Discover Service->Update APIs Published by Authorised apfId with invalid serviceApiId': 'capif_api_publish_service-9',
-    'CAPIF Api Discover Service->Update APIs Published by NON Authorised apfId': 'capif_api_publish_service-10',
-    'CAPIF Api Discover Service->Delete API Published by Authorised apfId with valid serviceApiId': 'capif_api_publish_service-11',
-    'CAPIF Api Discover Service->Delete APIs Published by Authorised apfId with invalid serviceApiId': 'capif_api_publish_service-12',
-    'CAPIF Api Discover Service->Delete APIs Published by NON Authorised apfId': 'capif_api_publish_service-13'
+    'CAPIF Api Publish Management': 'capif_api_publish_service',
+    'CAPIF Api Discover Service': 'capif_api_discover_service'
     ]
 
 
