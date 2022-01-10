@@ -10,6 +10,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
         string(name: 'OPENSHIFT_URL', defaultValue: 'https://openshift-epg.hi.inet:443', description: 'openshift url')
+        string(name: 'PROTOCOL', defaultValue: 'http', description: 'Nginx and Mongo express protocol')
         string(name: 'NGINX_HOSTNAME', defaultValue: 'nginx-evolved5g.apps-dev.hi.inet', description: 'nginx hostname')
         string(name: 'MONGO_EXPRESS_HOSTNAME', defaultValue: 'mongo-express-evolved5g.apps-dev.hi.inet', description: 'mongo-express hostname')
     }
@@ -19,6 +20,7 @@ pipeline {
         BRANCH_NAME = "${params.BRANCH_NAME}"
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
         OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
+        PROTOCOL = "${params.PROTOCOL}"
         NGINX_HOSTNAME= "${params.NGINX_HOSTNAME}"
         MONGO_EXPRESS_HOSTNAME= "${params.MONGO_EXPRESS_HOSTNAME}"
     }
@@ -75,6 +77,17 @@ pipeline {
                             oc expose service mongo-express --hostname=$MONGO_EXPRESS_HOSTNAME
                         '''
                     }
+                }
+            }
+        }
+        stage ('Launch robot tests') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    build job: 'capif/Launch_Robot_Tests',
+                        parameters: [
+                            string(name: 'BRANCH_NAME', value: BRANCH_NAME),
+                            string(name: 'NGINX_HOSTNAME', value: "${PROTOCOL}://${NGINX_HOSTNAME}")
+                        ]
                 }
             }
         }
