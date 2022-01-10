@@ -73,6 +73,13 @@ Register User At Jwt Auth
 
     Set Global Variable    ${APF_ID}    ${resp.json()['id']}
 
+    ${access_token}=    Get Token For User    ${username}    ${password}   ${role}
+
+    [Return]    ${access_token}
+
+Get Token For User
+    [Arguments]    ${username}    ${password}   ${role}
+
     &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
 
     ${resp}=    POST On Session    jwtsession    /gettoken    json=${body}
