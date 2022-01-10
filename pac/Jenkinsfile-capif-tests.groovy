@@ -51,7 +51,7 @@ pipeline {
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
     }
     environment {
-        CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}"
+        CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}/capif"
         ROBOT_TESTS_DIRECTORY = "${CAPIF_SERVICES_DIRECTORY}/tests"
         ROBOT_COMMON_DIRECTORY = "${WORKSPACE}/common"
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
@@ -86,6 +86,7 @@ pipeline {
                        passwordVariable: 'GIT_PASS'
                    )]) {
                         sh 'git clone --branch ${ROBOT_COMMON_LIBRARY} https://${GIT_USER}:${GIT_PASS}@github.com/Telefonica/robot_test_automation_common.git common'
+                        sh 'git clone --branch ${CAPIF_SERVICES_BRANCH} https://${GIT_USER}:${GIT_PASS}@github.com/EVOLVED-5G/CAPIF_API_Services.git capif'
                         sh "mkdir ${ROBOT_RESULTS_DIRECTORY}"
                    }
                 }
@@ -132,7 +133,7 @@ pipeline {
     post {
         always {
             script {
-                dir ("${env.CAPIF_SERVICES_DIRECTORY}") {
+                dir ("${CAPIF_SERVICES_DIRECTORY}") {
                     echo 'Shutdown all capif services'
                     sh 'sudo ./clean_capif_docker_services.sh'
                 }
@@ -162,9 +163,7 @@ pipeline {
             script {
                 dir ("${env.WORKSPACE}") {
                     sh 'sudo rm -rf tests/'
-                    sh 'sudo rm -rf TS29*'
-                    sh 'sudo rm -rf jwt_auth'
-
+                    sh 'sudo rm -rf capif/'
                 }
             }
         }
