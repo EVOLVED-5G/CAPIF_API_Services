@@ -20,6 +20,7 @@ pipeline {
         BRANCH_NAME = "${params.BRANCH_NAME}"
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
         OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
+        PROTOCOL = "${params.PROTOCOL}"
         NGINX_HOSTNAME= "${params.NGINX_HOSTNAME}"
         MONGO_EXPRESS_HOSTNAME= "${params.MONGO_EXPRESS_HOSTNAME}"
     }
