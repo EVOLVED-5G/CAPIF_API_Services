@@ -1,3 +1,5 @@
+[**[Return To All Test Plans]**]
+
 - [Test Plan for CAPIF Api Invoker Management](#test-plan-for-capif-api-invoker-management)
 - [Tests](#tests)
   - [Test Case 1: Register NetApp](#test-case-1-register-netapp)
@@ -127,3 +129,5 @@ At this documentation you will have all information and related files and exampl
 
 
 [request body]: ../../../JSON%20POST%20examples/invoker_details_post_example.json  "API Invoker Request"
+
+[Return To All Test Plans]: ../README.md

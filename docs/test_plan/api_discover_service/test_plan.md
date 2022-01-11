@@ -1,3 +1,5 @@
+[**[Return To All Test Plans]**]
+
 - [Test Plan for CAPIF Discover Service](#test-plan-for-capif-discover-service)
 - [Tests](#tests)
   - [Test Case 1: Discover Published service APIs by Authorised API Invoker](#test-case-1-discover-published-service-apis-by-authorised-api-invoker)
@@ -110,3 +112,6 @@ At this documentation you will have all information and related files and exampl
 * Post-Conditions:
   
   200 Ok with 2 api returned
+
+
+[Return To All Test Plans]: ../README.md

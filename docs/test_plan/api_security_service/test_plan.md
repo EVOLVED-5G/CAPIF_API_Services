@@ -1,3 +1,5 @@
+[**[Return To All Test Plans]**]
+
 - [Test Plan for CAPIF Api Security Service](#test-plan-for-capif-api-security-service)
 - [Tests](#tests)
   - [Test Case 1: Create a security context for an API invoker](#test-case-1-create-a-security-context-for-an-api-invoker)
@@ -307,3 +309,6 @@ At this documentation you will have all information and related files and exampl
   OAuth 2.0 access token is not provided to API Invoker
 
   403 Forbidden
+
+
+  [Return To All Test Plans]: ../README.md
