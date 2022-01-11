@@ -1,3 +1,5 @@
+[**[Return To All Test Plans]**]
+
 - [Test Plan for CAPIF Discover Service](#test-plan-for-capif-discover-service)
 - [Tests](#tests)
   - [Test Case 1: Discover Published service APIs by Authorised API Invoker](#test-case-1-discover-published-service-apis-by-authorised-api-invoker)
