@@ -3,6 +3,7 @@ services:
     build: TS29222_AEF_Security_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API
@@ -11,18 +12,22 @@ services:
     volumes:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
     restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
   access-control-policy:
     build: TS29222_CAPIF_Access_Control_Policy_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
   logs:
     build: TS29222_CAPIF_Auditing_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
   service-apis:
     build:
       context: ./TS29222_CAPIF_Discover_Service_API
@@ -31,14 +36,17 @@ services:
     volumes:
       - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
     restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
   capif-events:
     build: TS29222_CAPIF_Events_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
   api-invocation-logs:
     build: TS29222_CAPIF_Logging_API_Invocation_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
   published-apis:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
@@ -46,15 +54,18 @@ services:
     volumes:
       - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
     restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
       - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
   capif-security:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
     restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
   jwtauth:
     build:
       context: ./jwt_auth
@@ -63,6 +74,7 @@ services:
     volumes:
       - ./jwt_auth:/usr/src/app
     restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
   mongo:
     image: mongo:latest
     restart: unless-stopped
@@ -72,7 +84,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
   mongo-express:
-    image: mongo-express
+    image: mongo-express:latest
     restart: unless-stopped
     ports:
       - 8082:8081
@@ -83,11 +95,10 @@ services:
     depends_on:
       - mongo
   nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    build: nginx/.
     ports:
       - "8080:8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
     depends_on:
       - aef-security
       - api-invoker-management

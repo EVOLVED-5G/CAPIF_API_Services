@@ -52,6 +52,7 @@ The APIs included in release 1.0 are:
 - CAPIF Publish API
 - CAPIF Discover API
 
+
 ### The above APIs can be tested either with "curl" command or with POSTMAN tool. Below we present how to test the APIs with "curl". 
 ### For more information on how to test the APIs with POSTMAN, follow this [link]()
 
@@ -71,16 +72,6 @@ curl --request POST 'http://localhost:8080/register' --header 'Content-Type: app
     "role":"...",
     "description":"..."
 }'
-```
-
-Request body:
-```json
-{
-  "username": "username of entity",
-  "password": "password of entity",
-  "role": "role of entity (invoker or apf)",
-  "description": "description of entity"
-}
 ```
 
 Response body
@@ -425,20 +416,20 @@ This API is triggered by a NetApp (or Invoker)
 curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>' --header 'Authorization: Bearer <JWT acces token>'
 ```
 
-
-
 # Test Plan Documentation
 
 [Test Plan Directory](./docs/test_plan/README.md)
 
 
-Additional info:
+
+# Important urls:
+
+## Mongo DB Dashboard
 ```
-post_body_example.json:
-Example of APIInvokerEnrolmentDetails object for POST request of API_Invoker_Management API 
+http://0.0.0.0:8081/ (if accessed from localhost) 
 
+or
 
-Mongo Express url:
-http://0.0.0.0:8081/
+http://<Mongo Express Host IP>:8081/ (if accessed from another host)
 ```
 

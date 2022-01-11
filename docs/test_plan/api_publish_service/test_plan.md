@@ -1,3 +1,5 @@
+[**[Return To All Test Plans]**]
+
 - [Test Plan for CAPIF Api Publish Service](#test-plan-for-capif-api-publish-service)
 - [Tests](#tests)
   - [Test Case 1: Publish API by Authorised API Publisher](#test-case-1-publish-api-by-authorised-api-publisher)
@@ -32,7 +34,7 @@ At this documentation you will have all information and related files and exampl
 
   POST Publish API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -56,7 +58,7 @@ At this documentation you will have all information and related files and exampl
 
   POST Publish API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -76,7 +78,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -94,7 +96,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -114,7 +116,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve API details for serviceApiId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -134,7 +136,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve API details for serviceApiId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -152,7 +154,7 @@ At this documentation you will have all information and related files and exampl
 
   GET Retrieve API details for serviceApiId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -172,7 +174,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT Update APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -191,7 +193,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT Update APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -209,7 +211,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT Update APIs
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -229,7 +231,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -248,7 +250,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -266,8 +268,14 @@ At this documentation you will have all information and related files and exampl
 
   DELETE API
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
   401 Unauthorized
+
+
+  [request body]: ../../../JSON%20POST%20examples/service_api_description_post_example.json  "API Invoker Request"
+
+
+  [Return To All Test Plans]: ../README.md

@@ -95,7 +95,7 @@ def create_service_api_description(api_name="3gpp-monitoring-event"):
                 ]
             }
         ],
-        "description": "string",
+        "description": "ROBOT_TESTING",
         "supportedFeatures": "fffff",
         "shareableInfo": {
             "isShareable": True,
