@@ -53,7 +53,7 @@ RUN apt-get install -y --no-install-recommends  \
     tshark
 
 RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt install -y python3.9 python3.9-venv python3.9-dev
+RUN apt-get install -y python3.9 python3.9-venv python3.9-dev
 
 
 RUN mkdir /opt/venv
