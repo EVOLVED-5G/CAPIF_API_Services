@@ -276,3 +276,6 @@ At this documentation you will have all information and related files and exampl
 
 
   [request body]: ../../../JSON%20POST%20examples/service_api_description_post_example.json  "API Invoker Request"
+
+
+  [Return To All Test Plans]: ../README.md
