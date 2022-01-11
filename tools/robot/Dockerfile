@@ -1,6 +1,6 @@
-FROM harbor.elevenpaths.com/dockerhub-proxy/library/alpine:3.12.1
+FROM harbor.elevenpaths.com/dockerhub-proxy/library/ubuntu:18.04
 LABEL maintainer="Jorge Moratinos Salcines <jorge.moratinossalcines@telefonica.com>"
-LABEL version="1.0"
+LABEL version="2.0"
 LABEL description="Docker to run Robot Framework"
 
 ENV ROBOT_DIRECTORY=/opt/robot-tests
@@ -15,6 +15,7 @@ RUN mkdir $ROBOT_COMMON_DIRECTORY
 RUN mkdir $ROBOT_TESTS_DIRECTORY
 RUN mkdir $ROBOT_RESULTS_DIRECTORY
 
+
 # Create Volumes for docker
 # VOLUME $ROBOT_DIRECTORY
 VOLUME $ROBOT_COMMON_DIRECTORY
@@ -23,14 +24,18 @@ VOLUME $ROBOT_RESULTS_DIRECTORY
 
 WORKDIR $ROBOT_DIRECTORY
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install dependencies
-RUN apk upgrade
-RUN apk --update --no-cache add \
-    build-base \
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y --no-install-recommends  \
+    software-properties-common \
+    build-essential \
     bash \
     bash-completion \
     libxml2 \
-    libxslt \
+    libxslt-dev \
     curl \
     yarn \
     less \
@@ -40,13 +45,19 @@ RUN apk --update --no-cache add \
     python3-dev \
     libxslt-dev \
     libffi-dev \
-    py-pip \
-    openssl-dev \
-    openldap-dev \
-    python2-dev
+    python3-pip \
+    python3-venv \
+    python2.7-dev \
+    libssl-dev \
+    libldap2-dev libsasl2-dev ldap-utils slapd tox lcov valgrind\
+    tshark
+
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt install -y python3.9 python3.9-venv python3.9-dev
+
 
 RUN mkdir /opt/venv
-RUN python3 -m venv /opt/venv
+RUN python3.9 -m venv /opt/venv
 
 ADD basicRequirements.txt /root/
 
@@ -80,12 +91,9 @@ RUN sed  -i 's|ROBOT_TESTS_DIRECTORY|'$ROBOT_TESTS_DIRECTORY'|g' /root/libdoc_en
 RUN sed  -i 's|ROBOT_COMMON_DIRECTORY|'$ROBOT_COMMON_DIRECTORY'|g' /root/libdoc_entrypoint.sh
 
 
-
-
 RUN chmod a+x /root/entrypoint.sh
 RUN chmod a+x /root/linter_entrypoint.sh
 RUN chmod a+x /root/featdoc_entrypoint.sh
 RUN chmod a+x /root/libdoc_entrypoint.sh
-
 
 ENTRYPOINT [ "/root/entrypoint.sh" ]

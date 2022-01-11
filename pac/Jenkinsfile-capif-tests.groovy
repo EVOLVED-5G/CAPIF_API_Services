@@ -85,7 +85,6 @@ pipeline {
                        usernameVariable: 'GIT_USER',
                        passwordVariable: 'GIT_PASS'
                    )]) {
-                        sh 'git clone --branch ${ROBOT_COMMON_LIBRARY} https://${GIT_USER}:${GIT_PASS}@github.com/Telefonica/robot_test_automation_common.git common'
                         sh 'git clone --branch ${CAPIF_SERVICES_BRANCH} https://${GIT_USER}:${GIT_PASS}@github.com/EVOLVED-5G/CAPIF_API_Services.git capif'
                         sh "mkdir ${ROBOT_RESULTS_DIRECTORY}"
                    }
@@ -119,7 +118,6 @@ pipeline {
                         docker run -t \
                             --network="host" \
                             --rm \
-                            -v ${ROBOT_COMMON_DIRECTORY}:/opt/robot-tests/common \
                             -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
                             -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
                             ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} \
@@ -136,10 +134,6 @@ pipeline {
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
                     echo 'Shutdown all capif services'
                     sh 'sudo ./clean_capif_docker_services.sh'
-                }
-                dir ("${env.WORKSPACE}") {
-                    echo 'Remove common robot directory'
-                    sh 'sudo rm -rf common/'
                 }
             }
 
