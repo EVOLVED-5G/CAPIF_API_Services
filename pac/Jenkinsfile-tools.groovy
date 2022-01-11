@@ -14,7 +14,7 @@ pipeline {
     }
     parameters {
         choice(name: 'FORCE_DOCKER_CLEAN_BUILD', choices: ['False', 'True'], description: 'Force Docker Clean Build. Default use cached images (False)')
-        string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '1.0', description: 'Robot Docker image version')
+        string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '2.0', description: 'Robot Docker image version')
         booleanParam(name: 'GENERATE_ROBOT_DOCKER_IMAGE', defaultValue: false, description: 'Check if robot docker image should be generated')
     }
     environment {
