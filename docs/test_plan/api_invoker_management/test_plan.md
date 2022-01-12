@@ -128,6 +128,6 @@ At this documentation you will have all information and related files and exampl
 
 
 
-[request body]: ../../../JSON%20POST%20examples/invoker_details_post_example.json  "API Invoker Request"
+[request body]: ./invoker_details_post_example.json  "API Invoker Request"
 
 [Return To All Test Plans]: ../README.md
