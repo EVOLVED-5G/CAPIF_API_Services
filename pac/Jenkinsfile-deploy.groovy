@@ -85,7 +85,7 @@ pipeline {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                     build job: 'capif/Launch_Robot_Tests',
                         parameters: [
-                            string(name: 'BRANCH_NAME', value: BRANCH_NAME),
+                            string(name: 'BRANCH_NAME', value: "${BRANCH_NAME}"),
                             string(name: 'NGINX_HOSTNAME', value: "${PROTOCOL}://${NGINX_HOSTNAME}")
                         ]
                 }
