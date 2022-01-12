@@ -439,6 +439,26 @@ http://<Mongo Express Host IP>:8082/ (if accessed from another host)
 
 CAPIF_API_Services
 └───docs
+└───iac
+└───pac
+└───services
+└───tests
+└───tools
+```
+
+* docs: Documents related with this proyect, like test plans, ppts...
+* iac: Infrastructure as Code, contains all files needed to deploy the structure that support services.
+* pac: Jenkins files to manage different automated tasks
+* services: Services developed following CAPIF specifications, and also come other complementary services.
+* test: Tests developed using Robot Framework
+* tools: Auxiliary tools
+
+
+
+```
+
+CAPIF_API_Services
+└───docs
 │   └───test_plan
 │       │   README.md
 │       └───api_discover_service
@@ -460,13 +480,6 @@ CAPIF_API_Services
 └───services
 └───tests
 └───tools
-    r
-    └───terraform
+    └───robot
+    └───open_api_script
 ```
-
-* docs: Documents related with this proyect, like test plans, ppts...
-* iac: Infrastructure as Code, contains all files needed to deploy the structure that support services.
-* pac: Jenkins files to manage different automated tasks
-* services: Services developed following CAPIF specifications, and also come other complementary services.
-* test: Tests developed using Robot Framework
-* tools: Auxiliary tools
