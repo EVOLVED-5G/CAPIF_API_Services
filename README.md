@@ -426,10 +426,10 @@ curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-inv
 
 ## Mongo DB Dashboard
 ```
-http://0.0.0.0:8081/ (if accessed from localhost) 
+http://0.0.0.0:8082/ (if accessed from localhost) 
 
 or
 
-http://<Mongo Express Host IP>:8081/ (if accessed from another host)
+http://<Mongo Express Host IP>:8082/ (if accessed from another host)
 ```
 
