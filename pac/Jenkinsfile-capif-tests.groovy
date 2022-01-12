@@ -50,9 +50,8 @@ pipeline {
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
     }
     environment {
-        CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}/capif"
-        ROBOT_TESTS_DIRECTORY = "${CAPIF_SERVICES_DIRECTORY}/tests"
-        ROBOT_COMMON_DIRECTORY = "${WORKSPACE}/common"
+        CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}/services"
+        ROBOT_TESTS_DIRECTORY = "${WORKSPACE}/tests"
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
         CUSTOM_TEST = "${params.CUSTOM_TEST}"
         NGINX_HOSTNAME = "${params.NGINX_HOSTNAME}"
@@ -78,14 +77,7 @@ pipeline {
                    }
                 }
                 dir ("${env.WORKSPACE}") {
-                    withCredentials([usernamePassword(
-                       credentialsId: 'github_cred',
-                       usernameVariable: 'GIT_USER',
-                       passwordVariable: 'GIT_PASS'
-                   )]) {
-                        sh 'git clone --branch ${CAPIF_SERVICES_BRANCH} https://${GIT_USER}:${GIT_PASS}@github.com/EVOLVED-5G/CAPIF_API_Services.git capif'
-                        sh "mkdir ${ROBOT_RESULTS_DIRECTORY}"
-                   }
+                    sh "mkdir ${ROBOT_RESULTS_DIRECTORY}"
                 }
             }
         }
@@ -154,8 +146,8 @@ pipeline {
 
             script {
                 dir ("${env.WORKSPACE}") {
-                    sh 'sudo rm -rf tests/'
-                    sh 'sudo rm -rf capif/'
+                    sh "sudo rm -rf ${env.ROBOT_TESTS_DIRECTORY}"
+                    sh "sudo rm -rf ${env.CAPIF_SERVICES_DIRECTORY}"
                 }
             }
         }
