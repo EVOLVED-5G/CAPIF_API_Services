@@ -275,7 +275,7 @@ At this documentation you will have all information and related files and exampl
   401 Unauthorized
 
 
-  [request body]: ./service_api_description_post_example.json  "API Invoker Request"
+  [request body]: ./service_api_description_post_example.json  "Service API Description Request"
 
 
   [Return To All Test Plans]: ../README.md
