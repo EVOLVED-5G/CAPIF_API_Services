@@ -42,6 +42,7 @@ pipeline {
         ansiColor('xterm')
     }
     parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         choice(name: 'TESTS', choices: test_plan.keySet() as ArrayList, description: 'Select option to run. Prefix')
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
         string (name: 'NGINX_HOSTNAME', defaultValue: 'http://localhost:8080', description:'Nginx to forward requests')
@@ -50,6 +51,7 @@ pipeline {
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
     }
     environment {
+        BRANCH_NAME = "${params.BRANCH_NAME}"
         CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}/services"
         ROBOT_TESTS_DIRECTORY = "${WORKSPACE}/tests"
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
