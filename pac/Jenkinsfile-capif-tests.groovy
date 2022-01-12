@@ -47,7 +47,6 @@ pipeline {
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
         string (name: 'NGINX_HOSTNAME', defaultValue: 'http://localhost:8080', description:'Nginx to forward requests')
         string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '2.0', description: 'Robot Docker image version')
-        string(name: 'CAPIF_SERVICES_BRANCH', defaultValue: 'develop', description: 'CAPIF Services Branch To Use')
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
     }
     environment {
@@ -57,7 +56,6 @@ pipeline {
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
         CUSTOM_TEST = "${params.CUSTOM_TEST}"
         NGINX_HOSTNAME = "${params.NGINX_HOSTNAME}"
-        CAPIF_SERVICES_BRANCH = "${params.CAPIF_SERVICES_BRANCH}"
         ROBOT_TEST_OPTIONS = setRobotOptionsValue("${params.ROBOT_TEST_OPTIONS}")
         ROBOT_TESTS_INCLUDE = robotTestSelection("${params.TESTS}", "${params.CUSTOM_TEST}")
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
