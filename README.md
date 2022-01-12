@@ -10,6 +10,8 @@ To run using docker and docker-compose you must ensure you have that tools insta
 
 To run all CAPIF APIs locally using docker and docker-compose you can execute:
 ```
+cd services/
+
 ./run.sh
 ```
 This will build and run all services using docker images, including mongodb and nginx locally and in background.
