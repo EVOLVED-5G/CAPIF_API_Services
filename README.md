@@ -10,6 +10,8 @@ To run using docker and docker-compose you must ensure you have that tools insta
 
 To run all CAPIF APIs locally using docker and docker-compose you can execute:
 ```
+cd services/
+
 ./run.sh
 ```
 This will build and run all services using docker images, including mongodb and nginx locally and in background.
@@ -52,6 +54,11 @@ The APIs included in release 1.0 are:
 - CAPIF Publish API
 - CAPIF Discover API
 
+
+### The above APIs can be tested either with "curl" command or with POSTMAN tool. Below we present how to test the APIs with "curl". 
+### For more information on how to test the APIs with POSTMAN, follow this [link]()
+
+
 ## JWT Authentication APIs
 
 These APIs are triggered by an entity (Invoker or APF for release 1.0) to:
@@ -67,24 +74,13 @@ curl --request POST 'http://localhost:8080/register' --header 'Content-Type: app
     "role":"...",
     "description":"..."
 }'
-
-```
-
-Request body:
-```json
-{
-  "username": username of entity,
-  "password": password of entity,
-  "role": role of entity ("invoker" or "apf"),
-  "description": description of entity
-}
 ```
 
 Response body
 ```json
 {
-  "id": Entity ID,
-  "message": Informative message
+  "id": "Entity ID",
+  "message": "Informative message"
 }
 ```
 
@@ -101,8 +97,8 @@ curl --request POST 'http://localhost:8080/gettoken' --header 'Content-Type: app
 Response body
 ```json
 {
-  "access_token": JSON Web Token for CAPIF APIs, 
-  "message": Informative message
+  "access_token": "JSON Web Token for CAPIF APIs", 
+  "message": "Informative message"
 }
 ```
 
@@ -427,13 +423,15 @@ curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-inv
 [Test Plan Directory](./docs/test_plan/README.md)
 
 
-Additional info:
+
+# Important urls:
+
+## Mongo DB Dashboard
 ```
-post_body_example.json:
-Example of APIInvokerEnrolmentDetails object for POST request of API_Invoker_Management API 
+http://0.0.0.0:8082/ (if accessed from localhost) 
 
+or
 
-Mongo Express url:
-http://0.0.0.0:8081/
+http://<Mongo Express Host IP>:8082/ (if accessed from another host)
 ```
 
