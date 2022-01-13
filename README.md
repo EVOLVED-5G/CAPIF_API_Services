@@ -1,11 +1,71 @@
+- [Repository structure](#repository-structure)
+- [CAPIF_API_Services](#capif_api_services)
+  - [How to run CAPIF services in this Repository](#how-to-run-capif-services-in-this-repository)
+    - [Run All CAPIF Services locally with Docker images](#run-all-capif-services-locally-with-docker-images)
+    - [Run each service using Docker](#run-each-service-using-docker)
+    - [Run each service using Python](#run-each-service-using-python)
+- [How to test CAPIF APIs](#how-to-test-capif-apis)
+  - [Robot Framework](#robot-framework)
+    - [Test Plan Documentation](#test-plan-documentation)
+    - [Initial requirements](#initial-requirements)
+  - [Using Curl](#using-curl)
+    - [JWT Authentication APIs](#jwt-authentication-apis)
+      - [Register an entity](#register-an-entity)
+      - [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+    - [Invoker Management APIs](#invoker-management-apis)
+      - [Onboard an Invoker](#onboard-an-invoker)
+      - [Update Invoker Details](#update-invoker-details)
+      - [Offboard an Invoker](#offboard-an-invoker)
+    - [Publish APIs](#publish-apis)
+      - [Publish a new API.](#publish-a-new-api)
+      - [Update a published service API.](#update-a-published-service-api)
+      - [Unpublish a published service API.](#unpublish-a-published-service-api)
+      - [Retrieve all published APIs](#retrieve-all-published-apis)
+      - [Retrieve a published service API.](#retrieve-a-published-service-api)
+    - [Discover API](#discover-api)
+      - [Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.](#discover-published-service-apis-and-retrieve-a-collection-of-apis-according-to-certain-filter-criteria)
+  - [Using PostMan](#using-postman)
+- [Important urls:](#important-urls)
+  - [Mongo DB Dashboard](#mongo-db-dashboard)
+- [CAPIF Tool Release 1.0](#capif-tool-release-10)
+
+
+# Repository structure
+
+```
+CAPIF_API_Services
+└───docs
+│    └───test_plan
+│    └───testing_with_postman
+└───iac
+│    └───terraform
+└───pac
+└───services
+└───tests
+└───tools
+    └───robot
+    └───open_api_script
+```
+
+* **docs**: Documents related with this proyect, like test plans, ppts...
+  * test_plan: Test plan for each service with detailed description.
+  * testing_with_postman: Postman collection.
+* **iac**: Infrastructure as Code, contains all files needed to deploy the structure that support services.
+    * Terraform: Deploy file
+* **pac**: Jenkins files to manage different automated tasks
+  * Jenkins Pipelines
+* **services**: Services developed following CAPIF specifications, and also come other complementary services.
+* **test**: Tests developed using Robot Framework
+* **tools**: Auxiliary tools.
+
 # CAPIF_API_Services
 This repository has the python-flask Mockup servers created with openapi-generator related with CAPIF APIS defined here:
 https://github.com/jdegre/5GC_APIs
 
-# How to run CAPIF services in this Repository
+## How to run CAPIF services in this Repository
+Capif services are developed under /service/ folder.
 
-## Run All CAPIF Services locally with Docker images
-
+### Run All CAPIF Services locally with Docker images
 To run using docker and docker-compose you must ensure you have that tools installed at your machine. Also to simplify the process, we have 3 script to control docker images to deploy, check and cleanup.
 
 To run all CAPIF APIs locally using docker and docker-compose you can execute:
@@ -28,7 +88,7 @@ When we need to stop CAPIF services, we can use next bash script:
 ```
 This shell script will remove and clean all CAPIF services started previously with run.sh
 
-## Run each service using Docker
+### Run each service using Docker
 
 Also you can run service by service using docker:
 ```
@@ -37,7 +97,7 @@ docker build -t openapi_server .
 docker run -p 8080:8080 openapi_server
 ```
 
-## Run each service using Python
+### Run each service using Python
 
 Run using python
 ```
@@ -46,26 +106,56 @@ pip3 install -r requirements.txt
 python3 -m <service>
 ```
 
-# CAPIF Tool Release 1.0
+# How to test CAPIF APIs
+The above APIs can be tested either with "curl" command, POSTMAN tool or running developed tests with Robot Framework.
+## Robot Framework
 
-The APIs included in release 1.0 are:
-- JWT Authentication APIs
-- CAPIF Invoker Management API
-- CAPIF Publish API
-- CAPIF Discover API
+In order to ensure modifications over CAPIF services still accomplish the required functionallity, Robot Framework test suite must be success.
 
+Test suite implemented accomplish requirements described under test plan at /docs/test_plan/ folder.
+### Test Plan Documentation
 
-### The above APIs can be tested either with "curl" command or with POSTMAN tool. Below we present how to test the APIs with "curl". 
-### For more information on how to test the APIs with POSTMAN, follow this [link]()
+Complete documentation of tests is here: [Test Plan Directory](./docs/test_plan/README.md)
 
+### Initial requirements
+In order run test plan, the easiest way is build robot docker image using dockerfile under /tools/robot. Requirements:
+* Docker installed and running in local machine.
 
-## JWT Authentication APIs
+Steps to execute test plan:
+* Build Robot docker image:
+```
+cd tools/robot
+docker build . -t 5gnow-robot-test:latest
+```
+* Run All Services: See section [Run All CAPIF Services](#run-all-capif-services-locally-with-docker-images)
+* Execute tests locally:
+```
+<PATH_TO_REPOSITORY>=path in local machine to repository cloned
+<PATH_RESULT_FOLDER>=path to a folder on local machine to store results of Robot Framework execution
 
+To execute all tests run :
+docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable NGINX_HOSTNAME:http://localhost:8080
+
+To run more specific tests, for example, only one functionality:
+<TAG>=Select one from list:
+  "capif_api_discover_service",
+  "capif_api_invoker_management",
+  "capif_api_publish_service"
+
+And Run:
+docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable NGINX_HOSTNAME:http://localhost:8080 --include <TAG>
+```
+
+* Review results after tests, check <PATH_RESULT_FOLDER>/report.html or if you need more detailed information <PATH_RESULT_FOLDER>/log.html, example:
+![Report](docs/images/robot_report_example.png)
+![Log](docs/images/robot_log_example.png)
+## Using Curl
+### JWT Authentication APIs
 These APIs are triggered by an entity (Invoker or APF for release 1.0) to:
 - register on the CAPIF Framework
 - get a Json Web Token (JWT) in order to be authorized to call CAPIF APIs
 
-### Register an entity
+#### Register an entity
 Request
 ```shell
 curl --request POST 'http://localhost:8080/register' --header 'Content-Type: application/json' --data '{
@@ -84,7 +174,7 @@ Response body
 }
 ```
 
-### Get access token for an existing entity
+#### Get access token for an existing entity
 Request
 ```shell
 curl --request POST 'http://localhost:8080/gettoken' --header 'Content-Type: application/json' --data '{
@@ -102,11 +192,11 @@ Response body
 }
 ```
 
-## Invoker Management APIs
+### Invoker Management APIs
 
 These APIs are triggered by a NetApp (i.e. Invoker)
 
-### Onboard an Invoker
+#### Onboard an Invoker
 
 ```shell
 curl --request POST 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
@@ -174,7 +264,7 @@ curl --request POST 'http://localhost:8080/api-invoker-management/v1/onboardedIn
 }'
 ```
 
-### Update Invoker Details
+#### Update Invoker Details
 
 ```shell
 curl --location --request PUT 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
@@ -242,17 +332,17 @@ curl --location --request PUT 'http://localhost:8080/api-invoker-management/v1/o
 }'
 ```
 
-### Offboard an Invoker
+#### Offboard an Invoker
 
 ```shell
 curl --request DELETE 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>'
 ```
 
-## Publish APIs
+### Publish APIs
 
 These APIs are triggered by an API Publishing Function (APF)
 
-### Publish a new API.
+#### Publish a new API.
 ```shell
 curl --request POST 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
@@ -323,7 +413,7 @@ curl --request POST 'http://localhost:8080/published-apis/v1/<APF Id>/service-ap
 }'
 ```
 
-### Update a published service API.
+#### Update a published service API.
 ```shell
 curl --request PUT 'http://localhost:8080/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
@@ -394,33 +484,33 @@ curl --request PUT 'http://localhost:8080/published-apis/v1/<APIF Id>/service-ap
 }'
 ```
 
-### Unpublish a published service API.
+#### Unpublish a published service API.
 ```shell
 curl --request DELETE 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>'
 ```
 
-### Retrieve all published APIs
+#### Retrieve all published APIs
 ```shell
 curl --request GET 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis' --header 'Authorization: Bearer <JWT access token>'
 ```
 
-### Retrieve a published service API.
+#### Retrieve a published service API.
 ```shell
 curl --request GET 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>'
 ```
 
-## Discover API
+### Discover API
 
 This API is triggered by a NetApp (or Invoker)
 
-### Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.
+#### Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.
 ```shell
 curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>' --header 'Authorization: Bearer <JWT acces token>'
 ```
 
-# Test Plan Documentation
 
-[Test Plan Directory](./docs/test_plan/README.md)
+## Using PostMan
+For more information on how to test the APIs with POSTMAN, follow this [link]()
 
 
 
@@ -435,51 +525,11 @@ or
 http://<Mongo Express Host IP>:8082/ (if accessed from another host)
 ```
 
-```
 
-CAPIF_API_Services
-└───docs
-└───iac
-└───pac
-└───services
-└───tests
-└───tools
-```
+# CAPIF Tool Release 1.0
 
-* docs: Documents related with this proyect, like test plans, ppts...
-* iac: Infrastructure as Code, contains all files needed to deploy the structure that support services.
-* pac: Jenkins files to manage different automated tasks
-* services: Services developed following CAPIF specifications, and also come other complementary services.
-* test: Tests developed using Robot Framework
-* tools: Auxiliary tools
-
-
-
-```
-
-CAPIF_API_Services
-└───docs
-│   └───test_plan
-│       │   README.md
-│       └───api_discover_service
-│       │   │   test_plan.md
-│       └───api_events_service
-│       │   │   test_plan.md
-│       └───api_invoker_management
-│       │   │   test_plan.md
-│       └───api_provider_management
-│       │   │   test_plan.md
-│       └───api_publish_service
-│       │   │   test_plan.md
-│       └───api_security_service
-│           │   test_plan.md
-│   
-└───iac
-│   └───terraform
-└───pac
-└───services
-└───tests
-└───tools
-    └───robot
-    └───open_api_script
-```
+The APIs included in release 1.0 are:
+- JWT Authentication APIs
+- CAPIF Invoker Management API
+- CAPIF Publish API
+- CAPIF Discover API
