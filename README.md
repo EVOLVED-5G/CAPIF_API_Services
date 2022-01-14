@@ -7,7 +7,9 @@
 - [How to test CAPIF APIs](#how-to-test-capif-apis)
   - [Robot Framework](#robot-framework)
     - [Test Plan Documentation](#test-plan-documentation)
-    - [Initial requirements](#initial-requirements)
+    - [Previously Steps](#previously-steps)
+    - [Tests Execution](#tests-execution)
+    - [Test result review](#test-result-review)
   - [Using Curl](#using-curl)
     - [JWT Authentication APIs](#jwt-authentication-apis)
       - [Register an entity](#register-an-entity)
@@ -46,17 +48,18 @@ CAPIF_API_Services
     └───robot
     └───open_api_script
 ```
+* **services**: Services developed following CAPIF API specifications. Also, other complementary services (e.g., NGINX and JWTauth services for the authentication of API consuming entities).
+* **tools**: Auxiliary tools. Robot Framework related code and OpenAPI scripts.
+* **test**: Tests developed using Robot Framework.
 
-* **docs**: Documents related with this proyect, like test plans, ppts...
-  * test_plan: Test plan for each service with detailed description.
-  * testing_with_postman: Postman collection.
-* **iac**: Infrastructure as Code, contains all files needed to deploy the structure that support services.
-    * Terraform: Deploy file
-* **pac**: Jenkins files to manage different automated tasks
-  * Jenkins Pipelines
-* **services**: Services developed following CAPIF specifications, and also come other complementary services.
-* **test**: Tests developed using Robot Framework
-* **tools**: Auxiliary tools.
+* **docs**: Documents related to the code in the repository.
+  * images: images used in the repository
+  * test_plan: test plan descriptions for each API service referring to the test that are executed with the Robot Framework.
+  * testing_with_postman: auxiliary JSON file needed for the Postman-based examples.
+* **iac**: Infrastructure as Code, contains all the files needed for the deployment of the structure that supports the services. (It is used only for the case of non-local deployment of the CCF services e.g., in the Openshift of EVOLVED-5G project)).
+    * Terraform: Deploy file.
+* **pac**: Jenkins files to manage different automated tasks. (It is used only for the case of non-local deployment of the CCF services e.g., in the Openshift of EVOLVED-5G project).
+  * Jenkins Pipelines.
 
 # CAPIF_API_Services
 This repository has the python-flask Mockup servers created with openapi-generator related with CAPIF APIS defined here:
@@ -117,25 +120,31 @@ Test suite implemented accomplish requirements described under test plan at /doc
 
 Complete documentation of tests is here: [Test Plan Directory](./docs/test_plan/README.md)
 
-### Initial requirements
+### Previously Steps
 In order run test plan, the easiest way is build robot docker image using dockerfile under /tools/robot. Requirements:
 * Docker installed and running in local machine.
 
 Steps to execute test plan:
-* Build Robot docker image:
+* **Build Robot docker image**:
 ```
 cd tools/robot
 docker build . -t 5gnow-robot-test:latest
 ```
-* Run All Services: See section [Run All CAPIF Services](#run-all-capif-services-locally-with-docker-images)
-* Execute tests locally:
+* **Run All Services**: See section [Run All CAPIF Services](#run-all-capif-services-locally-with-docker-images)
+
+### Tests Execution
+  
+Execute all tests locally:
 ```
 <PATH_TO_REPOSITORY>=path in local machine to repository cloned
 <PATH_RESULT_FOLDER>=path to a folder on local machine to store results of Robot Framework execution
 
 To execute all tests run :
 docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable NGINX_HOSTNAME:http://localhost:8080
+```
 
+Execute specific tests locally:
+```
 To run more specific tests, for example, only one functionality:
 <TAG>=Select one from list:
   "capif_api_discover_service",
@@ -145,9 +154,12 @@ To run more specific tests, for example, only one functionality:
 And Run:
 docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable NGINX_HOSTNAME:http://localhost:8080 --include <TAG>
 ```
+### Test result review
 
-* Review results after tests, check <PATH_RESULT_FOLDER>/report.html or if you need more detailed information <PATH_RESULT_FOLDER>/log.html, example:
+In order to Review results after tests, you can check general report at <PATH_RESULT_FOLDER>/report.html or if you need more detailed information <PATH_RESULT_FOLDER>/log.html, example:
+* Report:
 ![Report](docs/images/robot_report_example.png)
+* Detailed information:
 ![Log](docs/images/robot_log_example.png)
 ## Using Curl
 ### JWT Authentication APIs
@@ -510,9 +522,8 @@ curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-inv
 
 
 ## Using PostMan
-For more information on how to test the APIs with POSTMAN, follow this [link]()
-
-
+For more information on how to test the APIs with POSTMAN, follow this [Document](docs/testing_with_postman/EVOLVED-5G%20--%20using%20CCF%20from%20Postman_13.1.2022.pdf).
+Also you have here the [POSTMAN Collection](docs/testing_with_postman/CAPIF_export_APIs.postman_collection.json)
 
 # Important urls:
 
