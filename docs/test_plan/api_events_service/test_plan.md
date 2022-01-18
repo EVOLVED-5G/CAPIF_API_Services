@@ -21,7 +21,7 @@ At this documentation you will have all information and related files and exampl
 
 * Pre-Conditions: 
   
-  CAPIF subscriber is pre-authorised (has valid InvvokerId or apfId from CAPIF Authority) 
+  CAPIF subscriber is pre-authorised (has valid InvokerId or apfId from CAPIF Authority) 
 
 * Actions:
 
@@ -45,7 +45,7 @@ At this documentation you will have all information and related files and exampl
 
 * Pre-Conditions: 
   
-  CAPIF subscriber is not pre-authorised (has invalid InvvokerId or apfId) 
+  CAPIF subscriber is not pre-authorised (has invalid InvokerId or apfId) 
 
 * Actions:
 
@@ -65,7 +65,7 @@ At this documentation you will have all information and related files and exampl
 
 * Pre-Conditions: 
   
-  CAPIF subscriber is pre-authorised (has valid InvvokerId or apfId)  
+  CAPIF subscriber is pre-authorised (has valid InvokerId or apfId)  
 
 * Actions:
 
@@ -85,7 +85,7 @@ At this documentation you will have all information and related files and exampl
 
 * Pre-Conditions: 
   
-  CAPIF subscriber is not pre-authorised (has invalid InvvokerId or apfId) 
+  CAPIF subscriber is not pre-authorised (has invalid InvokerId or apfId) 
 
 * Actions:
 
@@ -105,7 +105,7 @@ At this documentation you will have all information and related files and exampl
 
 * Pre-Conditions: 
   
-  CAPIF subscriber is pre-authorised (has valid InvvokerId or apfId) but Event to delete has invalid SubscriptionId
+  CAPIF subscriber is pre-authorised (has valid InvokerId or apfId) but Event to delete has invalid SubscriptionId
   
 * Actions:
 
