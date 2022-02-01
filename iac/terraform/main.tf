@@ -4,7 +4,7 @@
 resource "kubernetes_deployment" "aef_security" {
   metadata {
     name      = "aef-security"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "aef-security"
     }
@@ -27,16 +27,28 @@ resource "kubernetes_deployment" "aef_security" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/aef/security_api:latest"
           name  = "aef-security"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
+
         }
       }
     }
   }
 }
 
+
 resource "kubernetes_service" "aef_security_service" {
   metadata {
     name      = "aef-security"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -49,12 +61,12 @@ resource "kubernetes_service" "aef_security_service" {
   }
 }
 #############################################
-# API INVOKER MANAGEMENT
+# API INVOKER MANAGEMENTinstan
 #############################################
 resource "kubernetes_deployment" "api_invoker_management" {
   metadata {
     name      = "api-invoker-management"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "api-invoker-management"
     }
@@ -77,6 +89,16 @@ resource "kubernetes_deployment" "api_invoker_management" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest"
           name  = "api-invoker-management"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -86,7 +108,7 @@ resource "kubernetes_deployment" "api_invoker_management" {
 resource "kubernetes_service" "api_invoker_management_service" {
   metadata {
     name      = "api-invoker-management"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -105,7 +127,7 @@ resource "kubernetes_service" "api_invoker_management_service" {
 resource "kubernetes_deployment" "api_provider_management" {
   metadata {
     name      = "api-provider-management"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "api-provider-managemen"
     }
@@ -129,6 +151,16 @@ resource "kubernetes_deployment" "api_provider_management" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest"
           name  = "api-provider-management"
+        resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -138,7 +170,7 @@ resource "kubernetes_deployment" "api_provider_management" {
 resource "kubernetes_service" "api_provider_management_service" {
   metadata {
     name      = "api-provider-management"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -157,7 +189,7 @@ resource "kubernetes_service" "api_provider_management_service" {
 resource "kubernetes_deployment" "access_control_policy" {
   metadata {
     name      = "access-control-policy"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "access-control-policy"
     }
@@ -181,6 +213,16 @@ resource "kubernetes_deployment" "access_control_policy" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest"
           name  = "access-control-policy"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -190,7 +232,7 @@ resource "kubernetes_deployment" "access_control_policy" {
 resource "kubernetes_service" "access_control_policy_service" {
   metadata {
     name      = "access-control-policy"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -209,7 +251,7 @@ resource "kubernetes_service" "access_control_policy_service" {
 resource "kubernetes_deployment" "logs" {
   metadata {
     name      = "logs"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "logs"
     }
@@ -233,6 +275,16 @@ resource "kubernetes_deployment" "logs" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest"
           name  = "logs"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -242,7 +294,7 @@ resource "kubernetes_deployment" "logs" {
 resource "kubernetes_service" "logs_service" {
   metadata {
     name      = "logs"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -261,7 +313,7 @@ resource "kubernetes_service" "logs_service" {
 resource "kubernetes_deployment" "discover_service" {
   metadata {
     name      = "service-apis"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "service-apis"
     }
@@ -285,6 +337,17 @@ resource "kubernetes_deployment" "discover_service" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest"
           name  = "service-apis"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
+
         }
       }
     }
@@ -294,7 +357,7 @@ resource "kubernetes_deployment" "discover_service" {
 resource "kubernetes_service" "discover_service_service" {
   metadata {
     name      = "service-apis"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -313,7 +376,7 @@ resource "kubernetes_service" "discover_service_service" {
 resource "kubernetes_deployment" "events" {
   metadata {
     name      = "capif-events"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "capif-events"
     }
@@ -337,7 +400,17 @@ resource "kubernetes_deployment" "events" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/events_api:latest"
           name  = "capif-events"
-        }
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
+       }
       }
     }
   }
@@ -346,7 +419,7 @@ resource "kubernetes_deployment" "events" {
 resource "kubernetes_service" "events_service" {
   metadata {
     name      = "capif-events"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -365,7 +438,7 @@ resource "kubernetes_service" "events_service" {
 resource "kubernetes_deployment" "api_invocation_logs" {
   metadata {
     name      = "api-invocation-logs"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "api-invocation-logs"
     }
@@ -389,6 +462,16 @@ resource "kubernetes_deployment" "api_invocation_logs" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest"
           name  = "api-invocation-logs"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -398,7 +481,7 @@ resource "kubernetes_deployment" "api_invocation_logs" {
 resource "kubernetes_service" "api_invocation_logs_service" {
   metadata {
     name      = "api-invocation-logs"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -417,7 +500,7 @@ resource "kubernetes_service" "api_invocation_logs_service" {
 resource "kubernetes_deployment" "publish_service" {
   metadata {
     name      = "published-apis"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "published-apis"
     }
@@ -441,6 +524,16 @@ resource "kubernetes_deployment" "publish_service" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest"
           name  = "published-apis"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -450,7 +543,7 @@ resource "kubernetes_deployment" "publish_service" {
 resource "kubernetes_service" "publish_service_service" {
   metadata {
     name      = "published-apis"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -469,7 +562,7 @@ resource "kubernetes_service" "publish_service_service" {
 resource "kubernetes_deployment" "routing_info" {
   metadata {
     name      = "capif-routing-info"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "capif-routing-info"
     }
@@ -493,6 +586,16 @@ resource "kubernetes_deployment" "routing_info" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest"
           name  = "capif-routing-info"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -502,7 +605,7 @@ resource "kubernetes_deployment" "routing_info" {
 resource "kubernetes_service" "routing_info_service" {
   metadata {
     name      = "capif-routing-info"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -521,7 +624,7 @@ resource "kubernetes_service" "routing_info_service" {
 resource "kubernetes_deployment" "security" {
   metadata {
     name      = "capif-security"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "capif-security"
     }
@@ -545,6 +648,16 @@ resource "kubernetes_deployment" "security" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/security_api:latest"
           name  = "capif-security"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -554,7 +667,7 @@ resource "kubernetes_deployment" "security" {
 resource "kubernetes_service" "security_service" {
   metadata {
     name      = "capif-security"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -573,7 +686,7 @@ resource "kubernetes_service" "security_service" {
 resource "kubernetes_deployment" "jwtauth" {
   metadata {
     name      = "jwtauth"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "jwtauth"
     }
@@ -597,6 +710,16 @@ resource "kubernetes_deployment" "jwtauth" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/jwtauth:latest"
           name  = "jwtauth"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -606,7 +729,7 @@ resource "kubernetes_deployment" "jwtauth" {
 resource "kubernetes_service" "jwtauth" {
   metadata {
     name      = "jwtauth"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -625,7 +748,7 @@ resource "kubernetes_service" "jwtauth" {
 resource "kubernetes_deployment" "mongo" {
   metadata {
     name      = "mongo"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "mongo"
     }
@@ -649,6 +772,16 @@ resource "kubernetes_deployment" "mongo" {
         container {
           image = "mongo:latest"
           name  = "mongo"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
 
           env {
             name  = "MONGO_INITDB_ROOT_USERNAME"
@@ -690,7 +823,7 @@ resource "kubernetes_deployment" "mongo" {
 resource "kubernetes_service" "mongo_service" {
   metadata {
     name      = "mongo"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -709,7 +842,7 @@ resource "kubernetes_service" "mongo_service" {
 resource "kubernetes_deployment" "mongo-express" {
   metadata {
     name      = "mongo-express"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "mongo-express"
     }
@@ -733,6 +866,16 @@ resource "kubernetes_deployment" "mongo-express" {
         container {
           image = "mongo-express:latest"
           name  = "mongo-express"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
 
           env {
             name  = "ME_CONFIG_MONGODB_ADMINUSERNAME"
@@ -761,7 +904,7 @@ resource "kubernetes_deployment" "mongo-express" {
 resource "kubernetes_service" "mongo-express_service" {
   metadata {
     name      = "mongo-express"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     selector = {
@@ -780,7 +923,7 @@ resource "kubernetes_service" "mongo-express_service" {
 resource "kubernetes_deployment" "nginx" {
   metadata {
     name      = "nginx"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
     labels = {
       app = "nginx"
     }
@@ -804,6 +947,16 @@ resource "kubernetes_deployment" "nginx" {
         container {
           image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
           name  = "nginx"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
         }
       }
     }
@@ -836,7 +989,7 @@ resource "kubernetes_deployment" "nginx" {
 resource "kubernetes_service" "nginx_service" {
   metadata {
     name      = "nginx"
-    namespace = "evolved5g"
+    namespace = "evol5-capif"
   }
   spec {
     type = "LoadBalancer"
@@ -850,3 +1003,29 @@ resource "kubernetes_service" "nginx_service" {
     }
   }
 }
+
+resource "kubernetes_ingress" "nginx_ingress" {
+  wait_for_load_balancer = true
+  metadata {
+    name = "nginx-ingress2"
+    namespace        = "evol5-capif"
+    annotations = {
+      "kubernetes.io/ingress.class" = "nginx"
+    }
+  }
+
+  spec {
+    rule {
+      host = "openshift.evolved-5g.eu"
+      http {
+        path {
+          path = "/"
+          backend {
+            service_name = kubernetes_service.nginx_service.spec.0.selector.app
+            service_port = 8080
+          }
+        }
+       }
+      }
+    }
+ }
