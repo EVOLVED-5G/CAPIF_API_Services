@@ -998,7 +998,7 @@ resource "kubernetes_service" "nginx_service" {
       app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
     }
     port {
-      port        = 8080
+      port        = 443
       target_port = 8080
     }
   }
@@ -1007,14 +1007,17 @@ resource "kubernetes_service" "nginx_service" {
 resource "kubernetes_ingress" "nginx_ingress" {
   wait_for_load_balancer = true
   metadata {
-    name = "nginx-ingress2"
-    namespace        = "evol5-capif"
+    name = "nginx-ingress5"
+    namespace = "evol5-capif"
     annotations = {
-      "kubernetes.io/ingress.class" = "nginx"
+      "kubernetes.io/ingress.class" = "nginx-ingress"
+      "kubernetes.io/tls-acme" = "true"
+      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/ssl-passthrough" = "true"
     }
   }
 
-  spec {
+  spec {  
     rule {
       host = "openshift.evolved-5g.eu"
       http {
@@ -1022,7 +1025,7 @@ resource "kubernetes_ingress" "nginx_ingress" {
           path = "/"
           backend {
             service_name = kubernetes_service.nginx_service.spec.0.selector.app
-            service_port = 8080
+            service_port = 443
           }
         }
        }
