@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage('Login openshift') {
             steps {
-                withCredentials([string(credentialsId: '17e6e1098-f471-4371-b3ef-9787fb2248a1', variable: 'TOKEN')]) {
+                withCredentials([string(credentialsId: '7e6e1098-f471-4371-b3ef-9787fb2248a1', variable: 'TOKEN')]) {
                     dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
                             
