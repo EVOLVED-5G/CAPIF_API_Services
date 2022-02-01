@@ -111,7 +111,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE Event Subscription
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body](event_subscription.json)
 
 * Post-Conditions:
   
