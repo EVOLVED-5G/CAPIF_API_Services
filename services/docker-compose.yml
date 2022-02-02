@@ -95,7 +95,8 @@ services:
     depends_on:
       - mongo
   nginx:
-    build: nginx/.
+    build: 
+      context: ./nginx
     ports:
       - "8080:8080"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
