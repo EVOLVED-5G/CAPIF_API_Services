@@ -99,7 +99,7 @@ def testinvoker():
 
 @app.route("/testevents", methods=["DELETE"])
 def testevents():
-    myquery = { "supported_features": "ROBOT_TESTING" }
+    myquery = { "notification_destination": "ROBOT_TESTING" }
     result = eventsdetails.delete_many(myquery)
     if result.deleted_count == 0:
         return jsonify(message="No event subscription present"), 200
