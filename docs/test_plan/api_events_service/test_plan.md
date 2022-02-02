@@ -27,7 +27,7 @@ At this documentation you will have all information and related files and exampl
 
   POST Event Subscription
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -51,7 +51,7 @@ At this documentation you will have all information and related files and exampl
 
   POST Event Subscription
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -61,17 +61,15 @@ At this documentation you will have all information and related files and exampl
   
 ## Test Case 3: Deletes an individual CAPIF Event Subscription
   
-  This test case will check that a CAPIF subscriber (Invoker or Publisher) can Delete an Event Subscrioption
+  This test case will check that a CAPIF subscriber (Invoker or Publisher) can Delete an Event Subscription
 
 * Pre-Conditions: 
   
-  CAPIF subscriber is pre-authorised (has valid InvokerId or apfId)  
+  CAPIF subscriber is pre-authorised (has valid InvokerId or apfId) and one previsouly subscription is present.
 
 * Actions:
 
   DELETE Event Subscription
-    
-  Request Body: [request body](tc1_post_body_example.json)
 
 * Post-Conditions:
   
@@ -81,7 +79,7 @@ At this documentation you will have all information and related files and exampl
 
 ## Test Case 4: Deletes an individual CAPIF Event Subscription with invalid SubscriberId
   
-  This test case will check that a CAPIF subscriber (Invoker or Publisher) cannot Delete an Event Subscrioption without valid SubscriberId
+  This test case will check that a CAPIF subscriber (Invoker or Publisher) cannot Delete an Event Subscription without valid SubscriberId
 
 * Pre-Conditions: 
   
@@ -90,8 +88,6 @@ At this documentation you will have all information and related files and exampl
 * Actions:
 
   DELETE Event Subscription
-    
-  Request Body: [request body](tc1_post_body_example.json)
 
 * Post-Conditions:
   
@@ -101,7 +97,7 @@ At this documentation you will have all information and related files and exampl
 
 ## Test Case 5: Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
   
-  This test case will check that a CAPIF subscriber (Invoker or Publisher) cannot Delete an Event Subscrioption without valid SubscriptionId
+  This test case will check that a CAPIF subscriber (Invoker or Publisher) cannot Delete an Event Subscription without valid SubscriptionId
 
 * Pre-Conditions: 
   
@@ -110,13 +106,11 @@ At this documentation you will have all information and related files and exampl
 * Actions:
 
   DELETE Event Subscription
-    
-  Request Body: [request body](event_subscription.json)
 
 * Post-Conditions:
   
   404 Not Found
 
-
+[request body]: ./event_subscription.json  "API Invoker Request"
 
 [Return To All Test Plans]: ../README.md

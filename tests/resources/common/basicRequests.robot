@@ -102,3 +102,6 @@ Clean Test Information By HTTP Requests
     ${resp}=                      DELETE On Session      jwtsession    /testinvoker
     Should Be Equal As Strings    ${resp.status_code}    200
 
+    ${resp}=                      DELETE On Session      jwtsession    /testevents
+    Should Be Equal As Strings    ${resp.status_code}    200
+
