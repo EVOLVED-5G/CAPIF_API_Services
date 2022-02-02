@@ -98,3 +98,17 @@ def testinvoker():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
+
+@app.route("/testevents", methods=["DELETE"])
+def testinvoker():
+    myquery = { "api_invoker_information": "ROBOT_TESTING" }
+    result = invokerdetails.delete_many(myquery)
+    if result.deleted_count == 0:
+        return jsonify(message="No test Invokers present"), 200
+    else:
+        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Invokers"), 200
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8080)
+
+    
