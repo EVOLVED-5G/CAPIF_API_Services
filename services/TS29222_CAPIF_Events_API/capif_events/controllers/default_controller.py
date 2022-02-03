@@ -34,6 +34,8 @@ def subscriber_id_subscriptions_post(subscriber_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = EventSubscription.from_dict(connexion.request.get_json())  # noqa: E501
 
+    
+
     res = eventsapis.post_event(subscriber_id, body)
 
     return res
