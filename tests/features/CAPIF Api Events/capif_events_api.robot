@@ -7,6 +7,8 @@ Test Setup    Initialize Test And Register    role=invoker
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
+${SUBSCRIBER_ID_NOT_VALID}       not-valid
+${SUBSCRIPTION_ID_NOT_VALID}     not-valid
 
 *** Keywords ***
 
@@ -58,5 +60,33 @@ Deletes an individual CAPIF Event Subscription
 Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     [Tags]    capif_api_events-4
 
+    ${subscriber_id}=    Set Variable    ${APF_ID}
+
+    ${request_body}=    Create Events Subscription
+    ${resp}=            Post Request Capif            /capif-events/v1/${subscriber_id}/subscriptions    ${request_body}
+
+    Should Be Equal As Strings    ${resp.status_code}    201
+
+    ${url}=             Parse Url              ${resp.headers['Location']}
+    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${url.path}
+
+    ${resp}=    Delete Request Capif    /capif-events/v1/${SUBSCRIBER_ID_NOT_VALID}/subscriptions/${subscription_id}
+
+    Should Be Equal As Strings    ${resp.status_code}    403
+
 Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     [Tags]    capif_api_events-5
+
+    ${subscriber_id}=    Set Variable    ${APF_ID}
+
+    ${request_body}=    Create Events Subscription
+    ${resp}=            Post Request Capif            /capif-events/v1/${subscriber_id}/subscriptions    ${request_body}
+
+    Should Be Equal As Strings    ${resp.status_code}    201
+
+    ${url}=             Parse Url              ${resp.headers['Location']}
+    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${url.path}
+
+    ${resp}=    Delete Request Capif    /capif-events/v1/${subscriber_id}/subscriptions/${SUBSCRIPTION_ID_NOT_VALID}
+
+    Should Be Equal As Strings    ${resp.status_code}    404
