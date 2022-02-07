@@ -1,6 +1,6 @@
 *** Settings ***
 Resource    /opt/robot-tests/tests/resources/common.resource
-Library     /opt/robot-tests/tests/libraries/api_events/bodyRequests.py
+Library     /opt/robot-tests/tests/libraries/bodyRequests.py
 Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 Test Setup    Initialize Test And Register    role=invoker
@@ -16,6 +16,9 @@ ${SUBSCRIPTION_ID_NOT_VALID}     not-valid
 *** Test Cases ***
 Creates a new individual CAPIF Event Subscription
     [Tags]    capif_api_events-1
+
+    ${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
 
     ${request_body}=    Create Events Subscription
     ${resp}=            Post Request Capif            /capif-events/v1/${APF_ID}/subscriptions    ${request_body}
