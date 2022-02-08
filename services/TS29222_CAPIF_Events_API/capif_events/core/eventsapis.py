@@ -16,8 +16,7 @@ def post_event(subscriber_id, event_subscription):
     password = current_app.config['MONGODB_SETTINGS']['password']
     db = current_app.config['MONGODB_SETTINGS']['db']
     col = current_app.config['MONGODB_SETTINGS']['col']
-    col_invoker = current_app.config['MONGODB_SETTINGS']['col_invoker']
-    col_apf = current_app.config['MONGODB_SETTINGS']['col_apf']
+    col_user = current_app.config['MONGODB_SETTINGS']['jwt']
     host = current_app.config['MONGODB_SETTINGS']['host']
     port = current_app.config['MONGODB_SETTINGS']['port']
 
@@ -26,24 +25,21 @@ def post_event(subscriber_id, event_subscription):
     myclient = pymongo.MongoClient(uri)
     mydb = myclient[db]
     mycol = mydb[col]
+    mycol_user=mydb[col_user]
 
 
     ## Verify that this subscriberID exist in publishers or invokers
-    mycol_apf = mydb[col_apf]
-    mycol_invoker = mydb[col_invoker]
 
-    query_apf = {'api_invoker_id':subscriber_id}
-    query_invoker =  {'_id': subscriber_id}
-    check_id_apf = mycol_apf.find_one(query_apf)
-    check_id_invoker = mycol_invoker.find_one(query_invoker)
+    query= {'_id':subscriber_id}
+    check = mycol_user.find_one(query)
 
 
-    if (check_id_apf and check_id_invoker) is None:
-        print("hola")
+    if  check is None:
+
         myclient.close()
-        prob = ProblemDetails(title="Not Found", status=404, detail="Service API not existing",
-                              cause="Event API subscription id not found")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
+        prob = ProblemDetails(title="Not Found", status=403, detail="Event API not existing",
+                              cause="Event Subscriptions are not stored in CAPIF Database")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     # Generate subscriptionID
     subscription_id = secrets.token_hex(15)

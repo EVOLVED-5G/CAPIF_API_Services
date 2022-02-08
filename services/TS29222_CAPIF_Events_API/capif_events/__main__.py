@@ -23,8 +23,6 @@ app.app.config['MONGODB_SETTINGS'] = {
     'password': 'example',
     'db': 'capif',
     'col': 'eventsdetails',
-    'col_invoker': 'invokerdetails',
-    'col_apf': 'serviceapidescriptions',
     'jwt': 'user',
     'host': 'mongo',
     'port': 27017,
