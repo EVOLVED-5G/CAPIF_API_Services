@@ -35,6 +35,7 @@ mydb = myclient[db]
 user = mydb[col]
 invokerdetails = mydb['invokerdetails']
 serviceapidescriptions = mydb['serviceapidescriptions']
+eventsdetails = mydb['eventsdetails']
 
 
 @app.route("/register", methods=["POST"])
@@ -96,5 +97,16 @@ def testinvoker():
     else:
         return jsonify(message="Deleted " + str(result.deleted_count) + " Test Invokers"), 200
 
+@app.route("/testevents", methods=["DELETE"])
+def testevents():
+    myquery = { "notification_destination": "ROBOT_TESTING" }
+    result = eventsdetails.delete_many(myquery)
+    if result.deleted_count == 0:
+        return jsonify(message="No event subscription present"), 200
+    else:
+        return jsonify(message="Deleted " + str(result.deleted_count) + " Event Subscriptions"), 200
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
+
+    
