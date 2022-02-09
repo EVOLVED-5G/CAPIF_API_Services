@@ -64,6 +64,7 @@ def delete_event(subscriber_id, subscription_id):
     password = current_app.config['MONGODB_SETTINGS']['password']
     db = current_app.config['MONGODB_SETTINGS']['db']
     col = current_app.config['MONGODB_SETTINGS']['col']
+    col_user = current_app.config['MONGODB_SETTINGS']['jwt']
     host = current_app.config['MONGODB_SETTINGS']['host']
     port = current_app.config['MONGODB_SETTINGS']['port']
 
@@ -72,6 +73,18 @@ def delete_event(subscriber_id, subscription_id):
     myclient = pymongo.MongoClient(uri)
     mydb = myclient[db]
     mycol = mydb[col]
+    mycol_user=mydb[col_user]
+
+    query= {'_id':subscriber_id}
+    check = mycol_user.find_one(query)
+
+
+    if  check is None:
+
+        myclient.close()
+        prob = ProblemDetails(title="Not Found", status=403, detail="Event API not existing",
+                              cause="Event Subscriptions are not stored in CAPIF Database")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     myQuery = {'subscriber_id': subscriber_id,
                'subscription_id': subscription_id}
