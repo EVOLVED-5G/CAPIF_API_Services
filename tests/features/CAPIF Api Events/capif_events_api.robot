@@ -17,11 +17,10 @@ ${SUBSCRIPTION_ID_NOT_VALID}     not-valid
 Creates a new individual CAPIF Event Subscription
     [Tags]    capif_api_events-1
 
-    ${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+    ${subscriber_id}=    Set Variable    ${APF_ID}
 
     ${request_body}=    Create Events Subscription
-    ${resp}=            Post Request Capif            /capif-events/v1/${APF_ID}/subscriptions    ${request_body}
+    ${resp}=            Post Request Capif            /capif-events/v1/${subscriber_id}/subscriptions    ${request_body}
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
@@ -34,12 +33,13 @@ Creates a new individual CAPIF Event Subscription
 
 Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     [Tags]    capif_api_events-2
+    
+    ${subscriber_id}=    Set Variable    ${SUBSCRIBER_ID_NOT_VALID}
 
     ${request_body}=    Create Events Subscription
-    ${resp}=            Post Request Capif            /capif-events/v1/${API_INVOKER_NOT_REGISTERED}/subscriptions    ${request_body}
+    ${resp}=            Post Request Capif            /capif-events/v1/${subscriber_id}/subscriptions    ${request_body}
 
     Should Be Equal As Strings    ${resp.status_code}    403
-
 
 Deletes an individual CAPIF Event Subscription
     [Tags]    capif_api_events-3
@@ -57,8 +57,6 @@ Deletes an individual CAPIF Event Subscription
     ${resp}=    Delete Request Capif    /capif-events/v1/${subscriber_id}/subscriptions/${subscription_id}
 
     Should Be Equal As Strings    ${resp.status_code}    204
-
-
 
 Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     [Tags]    capif_api_events-4
