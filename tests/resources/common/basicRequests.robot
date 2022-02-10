@@ -1,18 +1,18 @@
 *** Settings ***
-Documentation    This resource file contains the basic requests used by Capif. CAPIF_SERVER and CAPIF_AUTH can be set as global variables, depends on environment used
+Documentation    This resource file contains the basic requests used by Capif. NGINX_HOSTNAME and CAPIF_AUTH can be set as global variables, depends on environment used
 Library          RequestsLibrary
 Library          Collections
 
 *** Variables ***
-${CAPIF_SERVER}    http://localhost:8080
+${NGINX_HOSTNAME}    http://localhost:8080
 ${CAPIF_AUTH}
 
 *** keywords ***
 Create CAPIF Session
     [Arguments]    ${server}=${NONE}    ${auth}=${NONE}
 
-    Run Keyword If    "${server}" != "${NONE}"    Create Session    apisession    ${server}          verify=True
-    ...               ELSE                        Create Session    apisession    ${CAPIF_SERVER}    verify=True
+    Run Keyword If    "${server}" != "${NONE}"    Create Session    apisession    ${server}            verify=True
+    ...               ELSE                        Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
 
     ${headers}=    Run Keyword If    "${CAPIF_BEARER}" != ""                                   Create Dictionary    Authorization=Bearer ${CAPIF_BEARER}    
     ...            ELSE IF           "${auth}" != "${NONE}"                                    Create Dictionary    Authorization=Basic ${auth}
@@ -61,17 +61,26 @@ Delete Request Capif
     [Return]    ${resp}
 
 Register User At Jwt Auth
-    [Arguments]    ${email}=robot@test.com    ${password}=password    ${username}=robot    ${hostip}=localhost    ${role}=invoker
+    [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
 
-    &{body}=    Create Dictionary    email=${email}    password=${password}    username=${username}    hostip=${hostip}    role=${role}
+    &{body}=    Create Dictionary    password=${password}    username=${username}    role=${role}    description=${description}
 
-    Create Session    jwtsession    http://localhost:8080    verify=True
+    Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    &{body}=    Create Dictionary    username=${username}    password=${password}   role=${role}
+    Set Global Variable    ${APF_ID}    ${resp.json()['id']}
+
+    ${access_token}=    Get Token For User    ${username}    ${password}   ${role}
+
+    [Return]    ${access_token}
+
+Get Token For User
+    [Arguments]    ${username}    ${password}   ${role}
+
+    &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
 
     ${resp}=    POST On Session    jwtsession    /gettoken    json=${body}
 
@@ -81,5 +90,15 @@ Register User At Jwt Auth
 
     [Return]    ${resp.json()["access_token"]}
 
+Clean Test Information By HTTP Requests
+    Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
+    ${resp}=                      DELETE On Session      jwtsession    /testusers
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /testservice
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /testinvoker
+    Should Be Equal As Strings    ${resp.status_code}    200
 

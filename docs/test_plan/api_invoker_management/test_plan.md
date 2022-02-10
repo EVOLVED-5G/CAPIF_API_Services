@@ -1,3 +1,5 @@
+[**[Return To All Test Plans]**]
+
 - [Test Plan for CAPIF Api Invoker Management](#test-plan-for-capif-api-invoker-management)
 - [Tests](#tests)
   - [Test Case 1: Register NetApp](#test-case-1-register-netapp)
@@ -25,7 +27,7 @@ At this documentation you will have all information and related files and exampl
 
   Register NetApp
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -46,7 +48,7 @@ At this documentation you will have all information and related files and exampl
 
   Register NetApp
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -64,7 +66,7 @@ At this documentation you will have all information and related files and exampl
 
   Update NetApp onboardingDetails
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -82,7 +84,7 @@ At this documentation you will have all information and related files and exampl
 
   Update NetApp onboardingDetails
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -100,7 +102,7 @@ At this documentation you will have all information and related files and exampl
 
   Delete NetApp 
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -118,8 +120,14 @@ At this documentation you will have all information and related files and exampl
 
   Delete NetApp 
   
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
   404 Not Found.
+
+
+
+[request body]: ./invoker_details_post_example.json  "API Invoker Request"
+
+[Return To All Test Plans]: ../README.md

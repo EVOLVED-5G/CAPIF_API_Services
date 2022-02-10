@@ -1,9 +1,9 @@
 *** Settings ***
 Resource    /opt/robot-tests/tests/resources/common.resource
-Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagemenrRequests.robot
+Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
 Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
 
-Test Setup    Initialize Test And Register    role=invoker
+Test Setup    Initialize Test And Register    role=invoker    db_col=invokerdetails
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
@@ -42,7 +42,7 @@ Update Registered NetApp
 
 	${url}=    Parse Url    ${resp.headers['Location']}
 
-	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${url.scheme}://${url.netloc}
+	${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${NGINX_HOSTNAME}
 
 	Should Be Equal As Strings    ${resp.status_code}    200
 
@@ -67,7 +67,7 @@ Delete Registered NetApp
 	${url}=    Parse Url    ${resp.headers['Location']}
 
 	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Delete Request Capif                   ${url.path}    server=${url.scheme}://${url.netloc}
+	${resp}=            Delete Request Capif                   ${url.path}    server=${NGINX_HOSTNAME}
 
 	Should Be Equal As Strings    ${resp.status_code}    204
 

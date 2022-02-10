@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "7a85e9e5-5fe7-45f5-bb2b-7e1cb3582dad",
+		"name": "CAPIF export APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register Entity (Invoker or APF)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"...\",\n    \"password\":\"...\",\n    \"role\":\"...\",\n    \"description\":\"...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"...\",\n    \"password\":\"...\",\n    \"role\":\"...\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/gettoken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gettoken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Onboard Invoker",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"notificationDestination\" : \"notificationDestination\",\n  \"supportedFeatures\" : \"fffffff\",\n  \"apiInvokerInformation\" : \"apiInvokerInformation\",\n  \"websockNotifConfig\" : {\n    \"requestWebsocketUri\" : true,\n    \"websocketUri\" : \"websocketUri\"\n  },\n  \"onboardingInformation\" : {\n    \"apiInvokerPublicKey\" : \"apiInvokerPublicKey1\",\n    \"onboardingSecret\" : \"onboardingSecret1\",\n    \"apiInvokerCertificate\" : \"apiInvokerCertificate1\"\n  },\n  \"requestTestNotification\" : true,\n  \"apiList\" : [ {\n    \"serviceAPICategory\" : \"serviceAPICategory\",\n    \"ccfId\" : \"ccfId\",\n    \"apiName\" : \"apiName\",\n    \"shareableInfo\" : {\n      \"capifProvDoms\" : [ \"capifProvDoms\", \"capifProvDoms\" ],\n      \"isShareable\" : true\n    },\n    \"supportedFeatures\" : \"fffffff\",\n    \"description\" : \"description\",\n    \"apiSuppFeats\" : \"fffffff\",\n    \"apiId\" : \"apiId\",\n    \"aefProfiles\" : [ {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    }, {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    } ],\n    \"pubApiPath\" : {\n      \"ccfIds\" : [ \"ccfIds\", \"ccfIds\" ]\n    }\n  }, {\n    \"serviceAPICategory\" : \"serviceAPICategory\",\n    \"ccfId\" : \"ccfId\",\n    \"apiName\" : \"apiName\",\n    \"shareableInfo\" : {\n      \"capifProvDoms\" : [ \"capifProvDoms\", \"capifProvDoms\" ],\n      \"isShareable\" : true\n    },\n    \"supportedFeatures\" : \"fffffff\",\n    \"description\" : \"description\",\n    \"apiSuppFeats\" : \"fffffff\",\n    \"apiId\" : \"apiId\",\n    \"aefProfiles\" : [ {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    }, {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    } ],\n    \"pubApiPath\" : {\n      \"ccfIds\" : [ \"ccfIds\", \"ccfIds\" ]\n    }\n  } ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api-invoker-management/v1/onboardedInvokers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-invoker-management",
+						"v1",
+						"onboardedInvokers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Offboard Invoker",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-invoker-management",
+						"v1",
+						"onboardedInvokers",
+						"<API Invoker ID>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Invoker Details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"notificationDestination\" : \"notificationDestination1\",\n  \"supportedFeatures\" : \"fffffff\",\n  \"apiInvokerInformation\" : \"apiInvokerInformation\",\n  \"websockNotifConfig\" : {\n    \"requestWebsocketUri\" : true,\n    \"websocketUri\" : \"websocketUri\"\n  },\n  \"onboardingInformation\" : {\n    \"apiInvokerPublicKey\" : \"apiInvokerPublicKey1\",\n    \"onboardingSecret\" : \"onboardingSecret1\",\n    \"apiInvokerCertificate\" : \"apiInvokerCertificate1\"\n  },\n  \"requestTestNotification\" : true,\n  \"apiList\" : [ {\n    \"serviceAPICategory\" : \"serviceAPICategory\",\n    \"ccfId\" : \"ccfId\",\n    \"apiName\" : \"apiName\",\n    \"shareableInfo\" : {\n      \"capifProvDoms\" : [ \"capifProvDoms\", \"capifProvDoms\" ],\n      \"isShareable\" : true\n    },\n    \"supportedFeatures\" : \"fffffff\",\n    \"description\" : \"description\",\n    \"apiSuppFeats\" : \"fffffff\",\n    \"apiId\" : \"apiId\",\n    \"aefProfiles\" : [ {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    }, {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    } ],\n    \"pubApiPath\" : {\n      \"ccfIds\" : [ \"ccfIds\", \"ccfIds\" ]\n    }\n  }, {\n    \"serviceAPICategory\" : \"serviceAPICategory\",\n    \"ccfId\" : \"ccfId\",\n    \"apiName\" : \"apiName\",\n    \"shareableInfo\" : {\n      \"capifProvDoms\" : [ \"capifProvDoms\", \"capifProvDoms\" ],\n      \"isShareable\" : true\n    },\n    \"supportedFeatures\" : \"fffffff\",\n    \"description\" : \"description\",\n    \"apiSuppFeats\" : \"fffffff\",\n    \"apiId\" : \"apiId\",\n    \"aefProfiles\" : [ {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    }, {\n      \"securityMethods\" : [\"PSK\"],\n      \"versions\" : [ {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      }, {\n        \"apiVersion\" : \"apiVersion\",\n        \"resources\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"resourceName\" : \"resourceName\",\n          \"custOpName\" : \"custOpName\",\n          \"uri\" : \"uri\",\n          \"commType\": \"REQUEST_RESPONSE\"\n        } ],\n        \"custOperations\" : [ {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        }, {\n          \"operations\" : [\"GET\"],\n          \"description\" : \"description\",\n          \"custOpName\" : \"custOpName\",\n          \"commType\" : \"REQUEST_RESPONSE\"\n        } ],\n        \"expiry\" : \"2000-01-23T04:56:07.000+00:00\"\n      } ],\n      \"aefId\" : \"aefId\",\n      \"interfaceDescriptions\" : [ {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      }, {\n        \"securityMethods\" : [\"PSK\"],\n        \"port\" : 5248,\n        \"ipv4Addr\" : \"ipv4Addr\"\n      } ]\n    } ],\n    \"pubApiPath\" : {\n      \"ccfIds\" : [ \"ccfIds\", \"ccfIds\" ]\n    }\n  } ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api-invoker-management",
+						"v1",
+						"onboardedInvokers",
+						"<API Invoker ID>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Discover APIs",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker ID>&api-name=<API Name>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"service-apis",
+						"v1",
+						"allServiceAPIs"
+					],
+					"query": [
+						{
+							"key": "api-invoker-id",
+							"value": "<API Invoker ID>"
+						},
+						{
+							"key": "api-name",
+							"value": "<API Name>"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Publish Service API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"apiName\": \"3gpp-monitoring-event\",\n  \"aefProfiles\": [\n    {\n      \"aefId\": \"string\",\n      \"versions\": [\n        {\n          \"apiVersion\": \"v1\",\n          \"expiry\": \"2021-11-30T10:32:02.004Z\",\n          \"resources\": [\n            {\n              \"resourceName\": \"string\",\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"uri\": \"string\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ],\n          \"custOperations\": [\n            {\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"protocol\": \"HTTP_1_1\",\n      \"dataFormat\": \"JSON\",\n      \"securityMethods\": [\"PSK\"],\n      \"interfaceDescriptions\": [\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        },\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        }\n      ]\n    },\n    {\n      \"aefId\": \"string\",\n      \"versions\": [\n        {\n          \"apiVersion\": \"v1\",\n          \"expiry\": \"2021-11-30T10:32:02.004Z\",\n          \"resources\": [\n            {\n              \"resourceName\": \"string\",\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"uri\": \"string\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ],\n          \"custOperations\": [\n            {\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"protocol\": \"HTTP_1_1\",\n      \"dataFormat\": \"JSON\",\n      \"securityMethods\": [\"PSK\"],\n      \"interfaceDescriptions\": [\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        },\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        }\n      ]\n    }\n  ],\n  \"description\": \"string\",\n  \"supportedFeatures\": \"fffff\",\n  \"shareableInfo\": {\n    \"isShareable\": true,\n    \"capifProvDoms\": [\n      \"string\"\n    ]\n  },\n  \"serviceAPICategory\": \"string\",\n  \"apiSuppFeats\": \"fffff\",\n  \"pubApiPath\": {\n    \"ccfIds\": [\n      \"string\"\n    ]\n  },\n  \"ccfId\": \"string\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/published-apis/v1/<APF ID>/service-apis",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"published-apis",
+						"v1",
+						"<APF ID>",
+						"service-apis"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Service API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"apiName\": \"3gpp-monitoring-event\",\n  \"aefProfiles\": [\n    {\n      \"aefId\": \"string1\",\n      \"versions\": [\n        {\n          \"apiVersion\": \"v1\",\n          \"expiry\": \"2021-11-30T10:32:02.004Z\",\n          \"resources\": [\n            {\n              \"resourceName\": \"string\",\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"uri\": \"string\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ],\n          \"custOperations\": [\n            {\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"protocol\": \"HTTP_1_1\",\n      \"dataFormat\": \"JSON\",\n      \"securityMethods\": [\"PSK\"],\n      \"interfaceDescriptions\": [\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        },\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        }\n      ]\n    },\n    {\n      \"aefId\": \"string\",\n      \"versions\": [\n        {\n          \"apiVersion\": \"v1\",\n          \"expiry\": \"2021-11-30T10:32:02.004Z\",\n          \"resources\": [\n            {\n              \"resourceName\": \"string\",\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"uri\": \"string\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ],\n          \"custOperations\": [\n            {\n              \"commType\": \"REQUEST_RESPONSE\",\n              \"custOpName\": \"string\",\n              \"operations\": [\n                \"GET\"\n              ],\n              \"description\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"protocol\": \"HTTP_1_1\",\n      \"dataFormat\": \"JSON\",\n      \"securityMethods\": [\"PSK\"],\n      \"interfaceDescriptions\": [\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        },\n        {\n          \"ipv4Addr\": \"string\",\n          \"port\": 65535,\n          \"securityMethods\": [\"PSK\"]\n        }\n      ]\n    }\n  ],\n  \"description\": \"string\",\n  \"supportedFeatures\": \"fffff\",\n  \"shareableInfo\": {\n    \"isShareable\": true,\n    \"capifProvDoms\": [\n      \"string\"\n    ]\n  },\n  \"serviceAPICategory\": \"string\",\n  \"apiSuppFeats\": \"fffff\",\n  \"pubApiPath\": {\n    \"ccfIds\": [\n      \"string\"\n    ]\n  },\n  \"ccfId\": \"string\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/published-apis/v1/<APF ID>/service-apis/<Service API ID>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"published-apis",
+						"v1",
+						"<APF ID>",
+						"service-apis",
+						"<Service API ID>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve all published Services",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/published-apis/v1/<APF ID>/service-apis",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"published-apis",
+						"v1",
+						"<APF ID>",
+						"service-apis"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve one published Service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/published-apis/v1/<APF ID>/service-apis/<Service API ID>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"published-apis",
+						"v1",
+						"<APF ID>",
+						"service-apis",
+						"<Service API ID>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Service API",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/published-apis/v1/<APF ID>/service-apis/<Service API ID>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"published-apis",
+						"v1",
+						"<APF ID>",
+						"service-apis",
+						"<Service API ID>"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
