@@ -3,7 +3,7 @@ Resource    /opt/robot-tests/tests/resources/common.resource
 Library     /opt/robot-tests/tests/libraries/api_publish_service/bodyRequests.py
 Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
-Test Setup    Initialize Test And Register    role=apf    db_col=serviceapidescriptions
+Test Setup    Initialize Test And Register    role=apf
 
 *** Variables ***
 ${APF_ID_NOT_VALID}            apf-example
@@ -23,7 +23,7 @@ Publish API by Authorised API Publisher
 
 Publish API by NON Authorised API Publisher
 	[Tags]     capif_api_publish_service-2
-	[Setup]    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
+	[Setup]    Initialize Test And Register    role=invoker
 
 	${request_body}=    Create Service Api Description
 	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID_NOT_VALID}/service-apis    ${request_body}
@@ -51,7 +51,7 @@ Retrieve all APIs Published by Authorised apfId
 
 Retrieve all APIs Published by NON Authorised apfId
 	[Tags]     capif_api_publish_service-4
-	[Setup]    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
+	[Setup]    Initialize Test And Register    role=invoker
 
 	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
 
@@ -98,7 +98,7 @@ Retrieve single APIs non Published by Authorised apfId
 
 Retrieve single APIs Published by NON Authorised apfId
 	[Tags]     capif_api_publish_service-7
-	[Setup]    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
+	[Setup]    Initialize Test And Register    role=invoker
 
 	${resp}=    Get Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
 
@@ -172,7 +172,7 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
 
 Delete APIs Published by NON Authorised apfId
 	[Tags]     capif_api_publish_service-13
-	[Setup]    Initialize Test And Register    role=invoker    db_col=serviceapidescriptions
+	[Setup]    Initialize Test And Register    role=invoker
 
 	${resp}=    Delete Request Capif    /published-apis/v1/${APF_ID}/service-apis/${SERVICE_API_ID_NOT_VALID}
 

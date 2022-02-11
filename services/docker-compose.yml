@@ -75,8 +75,6 @@ services:
       context: ./jwt_auth
     expose:
       - "8080"
-    volumes:
-      - ./jwt_auth:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
   mongo:
@@ -99,7 +97,8 @@ services:
     depends_on:
       - mongo
   nginx:
-    build: nginx/.
+    build: 
+      context: ./nginx
     ports:
       - "8080:8080"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest

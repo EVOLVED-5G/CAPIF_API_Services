@@ -4,7 +4,7 @@ Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/api
 Library     /opt/robot-tests/tests/libraries/bodyRequests.py
 
 
-Test Setup    Initialize Test And Register    role=invoker    db_col=invokerdetails
+Test Setup    Initialize Test And Register    role=invoker
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}    not-valid
@@ -15,7 +15,7 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 *** Test Cases ***
 Discover Published service APIs by Authorised API Invoker
 	[Tags]     capif_api_discover_service-1
-	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+	[Setup]    Initialize Test And Register    role=apf
 
 	# Publish one api
 	${request_body}=    Create Service Api Description
@@ -44,7 +44,7 @@ Discover Published service APIs by Authorised API Invoker
 
 Discover Published service APIs by Non Authorised API Invoker
     [Tags]     capif_api_discover_service-2
-    [Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+    [Setup]    Initialize Test And Register    role=apf
 
 	# Publish one api
     ${request_body}=    Create Service Api Description
@@ -83,7 +83,7 @@ Discover Published service APIs by not registered API Invoker
 Discover Published service APIs by registered API Invoker with 1 result filtered
     [Tags]    capif_api_discover_service-4
 
-	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+	[Setup]    Initialize Test And Register    role=apf
 
 	${api_name_1}=    Set Variable    apiName1
 	${api_name_2}=    Set Variable    apiName2
@@ -121,7 +121,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 
 Discover Published service APIs by registered API Invoker filtered with no match
 	[Tags]     capif_api_discover_service-5
-	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+	[Setup]    Initialize Test And Register    role=apf
 
 	${api_name_1}=    Set Variable    apiName1
 	${api_name_2}=    Set Variable    apiName2
@@ -158,7 +158,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
 
 Discover Published service APIs by registered API Invoker not filtered
 	[Tags]     capif_api_discover_service-6
-	[Setup]    Initialize Test And Register    role=apf    db_col=invokerdetails
+	[Setup]    Initialize Test And Register    role=apf
 
 	${api_name_1}=    Set Variable    apiName1
 	${api_name_2}=    Set Variable    apiName2
