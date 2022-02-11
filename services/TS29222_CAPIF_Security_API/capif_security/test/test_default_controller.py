@@ -7,6 +7,7 @@ from flask import json
 from six import BytesIO
 
 from capif_security.models.access_token_err import AccessTokenErr  # noqa: E501
+from capif_security.models.access_token_req import AccessTokenReq  # noqa: E501
 from capif_security.models.access_token_rsp import AccessTokenRsp  # noqa: E501
 from capif_security.models.problem_details import ProblemDetails  # noqa: E501
 from capif_security.models.security_notification import SecurityNotification  # noqa: E501
@@ -17,26 +18,25 @@ from capif_security.test import BaseTestCase
 class TestDefaultController(BaseTestCase):
     """DefaultController integration test stubs"""
 
-    @unittest.skip("application/x-www-form-urlencoded not supported by Connexion")
     def test_securities_security_id_token_post(self):
         """Test case for securities_security_id_token_post
 
         
         """
+        access_token_req = {
+  "grant_type" : "client_credentials",
+  "scope" : "scope",
+  "client_secret" : "client_secret",
+  "client_id" : "client_id"
+}
         headers = { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
         }
-        data = dict(grant_type='grant_type_example',
-                    client_id='client_id_example',
-                    client_secret='client_secret_example',
-                    scope='scope_example')
         response = self.client.open(
             '/capif-security/v1/securities/{security_id}/token'.format(security_id='security_id_example'),
             method='POST',
             headers=headers,
-            data=data,
-            content_type='application/x-www-form-urlencoded')
+            data=json.dumps(access_token_req),
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -46,7 +46,6 @@ class TestDefaultController(BaseTestCase):
         
         """
         headers = { 
-            'Accept': 'application/problem+json',
         }
         response = self.client.open(
             '/capif-security/v1/trustedInvokers/{api_invoker_id}'.format(api_invoker_id='api_invoker_id_example'),
@@ -66,8 +65,6 @@ class TestDefaultController(BaseTestCase):
   "apiIds" : [ "apiIds", "apiIds" ]
 }
         headers = { 
-            'Accept': 'application/problem+json',
-            'Content-Type': 'application/json',
         }
         response = self.client.open(
             '/capif-security/v1/trustedInvokers/{api_invoker_id}/delete'.format(api_invoker_id='api_invoker_id_example'),
@@ -86,7 +83,6 @@ class TestDefaultController(BaseTestCase):
         query_string = [('authenticationInfo', True),
                         ('authorizationInfo', True)]
         headers = { 
-            'Accept': 'application/json',
         }
         response = self.client.open(
             '/capif-security/v1/trustedInvokers/{api_invoker_id}'.format(api_invoker_id='api_invoker_id_example'),
@@ -134,8 +130,6 @@ class TestDefaultController(BaseTestCase):
   "requestTestNotification" : true
 }
         headers = { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
         }
         response = self.client.open(
             '/capif-security/v1/trustedInvokers/{api_invoker_id}'.format(api_invoker_id='api_invoker_id_example'),
@@ -184,8 +178,6 @@ class TestDefaultController(BaseTestCase):
   "requestTestNotification" : true
 }
         headers = { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
         }
         response = self.client.open(
             '/capif-security/v1/trustedInvokers/{api_invoker_id}/update'.format(api_invoker_id='api_invoker_id_example'),

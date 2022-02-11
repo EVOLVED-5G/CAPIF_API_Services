@@ -64,8 +64,12 @@ services:
     build: TS29222_CAPIF_Security_API/.
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Security_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
+    extra_hosts:
+      - host.docker.internal:host-gateway
   jwtauth:
     build:
       context: ./jwt_auth
