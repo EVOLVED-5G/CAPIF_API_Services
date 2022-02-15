@@ -23,6 +23,8 @@ test_plan = [
     'CAPIF Api Invoker Management': 'capif_api_invoker_management',
     'CAPIF Api Publish Service': 'capif_api_publish_service',
     'CAPIF Api Discover Service': 'capif_api_discover_service',
+    'CAPIF Api Events': 'capif_api_events',
+    'CAPIF Security Api': 'capif_security_api',
     'CUSTOM': 'CUSTOM'
     ]
 

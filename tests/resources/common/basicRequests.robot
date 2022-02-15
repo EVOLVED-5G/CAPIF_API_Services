@@ -93,15 +93,6 @@ Get Token For User
 Clean Test Information By HTTP Requests
     Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
-    ${resp}=                      DELETE On Session      jwtsession    /testusers
-    Should Be Equal As Strings    ${resp.status_code}    200
-
-    ${resp}=                      DELETE On Session      jwtsession    /testservice
-    Should Be Equal As Strings    ${resp.status_code}    200
-
-    ${resp}=                      DELETE On Session      jwtsession    /testinvoker
-    Should Be Equal As Strings    ${resp.status_code}    200
-
-    ${resp}=                      DELETE On Session      jwtsession    /testevents
+    ${resp}=                      DELETE On Session      jwtsession    /testdata
     Should Be Equal As Strings    ${resp.status_code}    200
 
