@@ -36,7 +36,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -54,13 +54,13 @@ At this documentation you will have all information and related files and exampl
 
 * Pre-Conditions: 
   
-  API Inoker is not pre-authorised (has invalid apiInvokerID) 
+  API Invoker is not pre-authorised (has invalid apiInvokerID) 
 
 * Actions:
 
   PUT /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -79,8 +79,6 @@ At this documentation you will have all information and related files and exampl
 * Actions:
 
   GET /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [request body](tc1_post_body_example.json)
 
 * Post-Conditions:
   
@@ -100,7 +98,7 @@ At this documentation you will have all information and related files and exampl
 
   GET /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -120,7 +118,7 @@ At this documentation you will have all information and related files and exampl
 
   GET /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -140,7 +138,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -160,7 +158,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -180,7 +178,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/update: 
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -201,7 +199,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/update: 
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -222,7 +220,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/delete: 
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -242,7 +240,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/delete: 
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -262,7 +260,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/delete: 
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -282,7 +280,7 @@ At this documentation you will have all information and related files and exampl
 
   POST /securities/{securityId}/token: //securityId will be the apiInvokerId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -302,7 +300,7 @@ At this documentation you will have all information and related files and exampl
 
   POST /securities/{securityId}/token: //securityId will be the apiInvokerId
     
-  Request Body: [request body](tc1_post_body_example.json)
+  Request Body: [request body]
 
 * Post-Conditions:
   
@@ -312,3 +310,7 @@ At this documentation you will have all information and related files and exampl
 
 
   [Return To All Test Plans]: ../README.md
+
+
+
+  [request body]: ./service_security.json  "Service Security Request"
