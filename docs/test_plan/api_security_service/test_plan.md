@@ -15,7 +15,7 @@
   - [Test Case 11: Revoke the authorization of the API invoker for APIs without valid apfID.](#test-case-11-revoke-the-authorization-of-the-api-invoker-for-apis-without-valid-apfid)
   - [Test Case 12: Revoke the authorization of the API invoker for APIs with invalid apiInvokerId.](#test-case-12-revoke-the-authorization-of-the-api-invoker-for-apis-with-invalid-apiinvokerid)
   - [Test Case 13: Retrieve access token](#test-case-13-retrieve-access-token)
-  - [Test Case 14: Retrieve access token iwth invalid apiInvokerId](#test-case-14-retrieve-access-token-iwth-invalid-apiinvokerid)
+  - [Test Case 14: Retrieve access token with invalid apiInvokerId](#test-case-14-retrieve-access-token-with-invalid-apiinvokerid)
  
 
 
@@ -36,7 +36,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -60,7 +60,7 @@ At this documentation you will have all information and related files and exampl
 
   PUT /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -98,7 +98,7 @@ At this documentation you will have all information and related files and exampl
 
   GET /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -118,7 +118,7 @@ At this documentation you will have all information and related files and exampl
 
   GET /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -138,7 +138,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -158,7 +158,7 @@ At this documentation you will have all information and related files and exampl
 
   DELETE /trustedInvokers/{apiInvokerId}:
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -178,7 +178,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/update: 
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -199,7 +199,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/update: 
     
-  Request Body: [request body]
+  Request Body: [service security body]
 
 * Post-Conditions:
   
@@ -220,7 +220,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/delete: 
     
-  Request Body: [request body]
+  Request Body: [security notification body]
 
 * Post-Conditions:
   
@@ -240,7 +240,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/delete: 
     
-  Request Body: [request body]
+  Request Body: [security notification body]
 
 * Post-Conditions:
   
@@ -260,7 +260,7 @@ At this documentation you will have all information and related files and exampl
 
   POST  /trustedInvokers/{apiInvokerId}/delete: 
     
-  Request Body: [request body]
+  Request Body: [security notification body]
 
 * Post-Conditions:
   
@@ -280,7 +280,7 @@ At this documentation you will have all information and related files and exampl
 
   POST /securities/{securityId}/token: //securityId will be the apiInvokerId
     
-  Request Body: [request body]
+  Request Body: [access token req body]
 
 * Post-Conditions:
   
@@ -288,7 +288,7 @@ At this documentation you will have all information and related files and exampl
 
   200 Successful Access Token Request
 
-## Test Case 14: Retrieve access token iwth invalid apiInvokerId
+## Test Case 14: Retrieve access token with invalid apiInvokerId
   
   This test case will check that an API Invoker cannot retrieve a security access token without valid apiInvokerId
 
@@ -300,7 +300,7 @@ At this documentation you will have all information and related files and exampl
 
   POST /securities/{securityId}/token: //securityId will be the apiInvokerId
     
-  Request Body: [request body]
+  Request Body: [access token req body]
 
 * Post-Conditions:
   
@@ -313,4 +313,6 @@ At this documentation you will have all information and related files and exampl
 
 
 
-  [request body]: ./service_security.json  "Service Security Request"
+  [service security body]: ./service_security.json  "Service Security Request"
+  [security notification body]: ./security_notification.json  "Security Notification Request"
+  [access token req body]: ./access_token_req.json  "Access Token Request"

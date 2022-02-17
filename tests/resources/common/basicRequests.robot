@@ -6,7 +6,7 @@ Library          Collections
 *** Variables ***
 ${NGINX_HOSTNAME}    http://localhost:8080
 ${CAPIF_AUTH}
-
+${CAPIF_BEARER}
 *** keywords ***
 Create CAPIF Session
     [Arguments]    ${server}=${NONE}    ${auth}=${NONE}
