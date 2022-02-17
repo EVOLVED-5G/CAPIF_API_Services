@@ -87,10 +87,25 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
 	Should Be Equal As Strings    ${resp.status_code}    404
 
 Retrieve the Security Context of an API Invoker with invalid apfId
-	[Tags]                 capif_security_api-5
-	Set Global Variable    ${APF_ID}               ${APF_ID_NOT_VALID}
+	[Tags]                       capif_security_api-5
+	Register User At Jwt Auth    role=invoker
 
-	${resp}=    Get Request Capif    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+
+	${request_body}=    Create Service Security Body
+
+	${resp}=    Put Request Capif    /capif-security/v1/trustedInvokers/${api_invoker_id}    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	Set Global Variable    ${APF_ID}    ${APF_ID_NOT_VALID}
+
+	${resp}=    Get Request Capif    /capif-security/v1/trustedInvokers/${api_invoker_id}
 
 	Should Be Equal As Strings    ${resp.status_code}    403
 
@@ -267,7 +282,7 @@ Retrieve access token
 	Should Be Equal As Strings    ${resp.status_code}    200
 
 Retrieve access token with invalid apiInvokerId
-	[Tags]    capif_security_api-14
+	[Tags]                       capif_security_api-14
 	Register User At Jwt Auth    role=invoker
 
 	${request_body}=    Create Access Token Req Body
