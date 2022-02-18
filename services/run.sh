@@ -1,4 +1,5 @@
 #!/bin/bash
+#docker-compose build --no-cache
 docker-compose up --detach --remove-orphans --build
 status=$?
 if [ $status -eq 0 ]; then
