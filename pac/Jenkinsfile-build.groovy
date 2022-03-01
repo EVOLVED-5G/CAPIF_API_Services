@@ -1,14 +1,15 @@
 pipeline {
-    agent { node {label 'evol5-slave'}  }
-    options {
+    agent {label params.AGENT == "evol5-slave" ? "" : params.AGENT }
+   options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
         ansiColor('xterm')
     }
-    parameters {
+    parameters {               
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'VERSION', defaultValue: '1.0', description: '')
+        choice(name: "AGENT", choices: ["evol5-slave", "evol5-athens"]) 
     }
     environment {
         // This is to work around a jenkins bug on the first build of a multi-branch job
@@ -29,10 +30,10 @@ pipeline {
         }
         stage('Publish') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker_pull_cred', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_CREDENTIALS')]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'evolved5g-pull', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     dir ("${env.CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
-                            docker login --username ${ARTIFACTORY_USER} --password "${ARTIFACTORY_CREDENTIALS}" dockerhub.hi.inet
+                            $(aws ecr get-login --no-include-email)
                             docker-compose push
                         '''
                     }
