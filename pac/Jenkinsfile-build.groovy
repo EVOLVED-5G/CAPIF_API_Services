@@ -1,5 +1,5 @@
 pipeline {
-    agent {label params.AGENT == "evol5-uma" ? "" : params.AGENT }
+    agent {label params.AGENT == "evol5-slave" ? "" : params.AGENT }
    options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
@@ -9,7 +9,7 @@ pipeline {
     parameters {               
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'VERSION', defaultValue: '1.0', description: '')
-        choice(name: "AGENT", choices: ["evol5-uma", "evol5-athens"]) 
+        choice(name: "AGENT", choices: ["evol5-slave", "evol5-athens"]) 
     }
     environment {
         // This is to work around a jenkins bug on the first build of a multi-branch job
