@@ -1,5 +1,5 @@
 pipeline {
-    agent {label params.AGENT == "evol5-slave" ? "" : params.AGENT }
+    agent {node {label params.AGENT == "evol5-slave" ? "" : params.AGENT }}
    options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
