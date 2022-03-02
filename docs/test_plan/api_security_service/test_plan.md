@@ -21,7 +21,9 @@
   - [Test Case 17: Revoke the authorization of the API invoker for APIs without valid apfID.](#test-case-17-revoke-the-authorization-of-the-api-invoker-for-apis-without-valid-apfid)
   - [Test Case 18: Revoke the authorization of the API invoker for APIs with invalid apiInvokerId.](#test-case-18-revoke-the-authorization-of-the-api-invoker-for-apis-with-invalid-apiinvokerid)
   - [Test Case 19: Retrieve access token](#test-case-19-retrieve-access-token)
-  - [Test Case 20: Retrieve access token with invalid apiInvokerId](#test-case-20-retrieve-access-token-with-invalid-apiinvokerid)
+  - [Test Case 20: Retrieve access token by AEF](#test-case-20-retrieve-access-token-by-aef)
+  - [Test Case 21: Retrieve access token by AEF with invalid apiInvokerId](#test-case-21-retrieve-access-token-by-aef-with-invalid-apiinvokerid)
+  - [Test Case 22: Retrieve access token with invalid apiInvokerId](#test-case-22-retrieve-access-token-with-invalid-apiinvokerid)
  
 
 
@@ -414,9 +416,9 @@ Create a security context for an API invoker with Invoker entity role and invali
 
   200 Successful Access Token Request
 
-## Test Case 20: Retrieve access token with invalid apiInvokerId
+## Test Case 20: Retrieve access token by AEF
   
-  This test case will check that an API Invoker cannot retrieve a security access token without valid apiInvokerId
+  This test case will check that an API Exposure Function cannot retrieve a security access token
 
 * Pre-Conditions: 
   
@@ -433,6 +435,47 @@ Create a security context for an API invoker with Invoker entity role and invali
   OAuth 2.0 access token is not provided to API Invoker
 
   403 Forbidden
+
+  ## Test Case 21: Retrieve access token by AEF with invalid apiInvokerId
+
+  is test case will check that an API Exposure Function cannot retrieve a security access token without valid apiInvokerId
+
+* Pre-Conditions:
+
+  API Invoker is not pre-authorised (has invalid apiInvokerId)
+
+* Actions:
+
+  POST /securities/{securityId}/token: //securityId will be the apiInvokerId
+
+  Request Body: [access token req body]
+
+* Post-Conditions:
+
+  OAuth 2.0 access token is not provided to API Invoker
+
+  403 Forbidden
+
+## Test Case 22: Retrieve access token with invalid apiInvokerId
+
+  This test case will check that an API Invoker can't retrieve a security access token without valid apiInvokerId
+
+* Pre-Conditions:
+
+  API Invoker is pre-authorised (has valid apiInvokerId)
+
+* Actions:
+
+  POST /securities/{securityId}/token: //securityId will be the apiInvokerId
+
+  Request Body: [access token req body]
+
+* Post-Conditions:
+
+  OAuth 2.0 access token is provided to API Invoker
+
+  403 Successful Access Token Request
+
 
 
   [Return To All Test Plans]: ../README.md

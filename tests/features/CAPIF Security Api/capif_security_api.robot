@@ -374,7 +374,7 @@ Retrieve access token by AEF
 
 	Should Be Equal As Strings    ${resp.status_code}    403
 
-Retrieve access token by AEF
+Retrieve access token by AEF with invalid apiInvokerId
 	[Tags]                       capif_security_api-21
 	Register User At Jwt Auth    role=apf
 
