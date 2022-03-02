@@ -1,5 +1,5 @@
 pipeline {
-    agent { node {label 'evol5-slave'}  }
+    agent {node {label params.AGENT == "evol5-athens" ? "" : params.AGENT }}
     options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
@@ -10,6 +10,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
         string(name: 'OPENSHIFT_URL', defaultValue: 'https://api.ocp-epg.hi.inet:6443', description: 'openshift url')
+        choice(name: "AGENT", choices: ["evol5-slave", "evol5-athens"]) 
 
     }
     environment {
@@ -25,11 +26,11 @@ pipeline {
                 withCredentials([string(credentialsId: '7e6e1098-f471-4371-b3ef-9787fb2248a1', variable: 'TOKEN')]) {
                     dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
-                            cp kubeconfigOSv4 ~/kubeconfig
+                            cp kubeconfigAthens ~/kubeconfig
                             export KUBECONFIG="./kubeconfig"
                             oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                         '''
-                        readFile('kubeconfigOSv4')
+                        readFile('kubeconfigAthens')
                     }
                 }
             }

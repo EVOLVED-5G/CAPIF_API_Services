@@ -33,6 +33,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'evolved5g-pull', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     dir ("${env.CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
+                            export AWS_PROFILE=default
                             $(aws ecr get-login --no-include-email)
                             docker-compose push
                         '''
