@@ -349,8 +349,43 @@ Retrieve access token
 
 	Should Be Equal As Strings    ${resp.status_code}    200
 
-Retrieve access token with invalid apiInvokerId
+Retrieve access token by AEF
 	[Tags]                       capif_security_api-20
+	Register User At Jwt Auth    role=invoker
+
+	${request_body}=    Create Onboarding Notification Body
+	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+
+	${request_body}=    Create Service Security Body
+
+	${resp}=    Put Request Capif    /capif-security/v1/trustedInvokers/${api_invoker_id}    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    201
+
+	Register User At Jwt Auth    username=robot2    role=apf
+
+	${request_body}=    Create Access Token Req Body
+
+	${resp}=    Post Request Capif    /capif-security/v1/securities/${api_invoker_id}/token    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    403
+
+Retrieve access token by AEF
+	[Tags]                       capif_security_api-21
+	Register User At Jwt Auth    role=apf
+
+	${request_body}=    Create Access Token Req Body
+
+	${resp}=    Post Request Capif    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token    ${request_body}
+
+	Should Be Equal As Strings    ${resp.status_code}    403
+
+Retrieve access token with invalid apiInvokerId
+	[Tags]                       capif_security_api-22
 	Register User At Jwt Auth    role=invoker
 
 	${request_body}=    Create Access Token Req Body
