@@ -39,9 +39,12 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     username, role = identity.split()
 
     if role != "invoker":
-        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+        # prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
+        #                       cause="User role must be invoker")
+        # return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+
+        prob = AccessTokenErr(error="invalid_client", error_description="Role not authorized for this API route")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
 
     if connexion.request.is_json:
         body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501

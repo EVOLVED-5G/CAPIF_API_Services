@@ -10,6 +10,7 @@ from ..models.problem_details import ProblemDetails
 from ..models.access_token_rsp import AccessTokenRsp
 from bson import json_util
 import requests
+from ..models.access_token_err import AccessTokenErr
 
 
 def get_servicesecurity(api_invoker_id, authentication_info=True, authorization_info=True):
@@ -167,9 +168,11 @@ def return_token(security_id, access_token_req):
     service_security = services_security.find_one({"api_invoker_id": security_id})
     if service_security is None:
         myclient.close()
-        prob = ProblemDetails(title="Forbidden", status=403, detail="API Invoker does not exist",
-                              cause="API Invoker id not found")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+        # prob = ProblemDetails(title="Forbidden", status=403, detail="API Invoker does not exist",
+        #                       cause="API Invoker id not found")
+        # return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+        prob = AccessTokenErr(error="invalid_request", error_description="No Security Context for this API Invoker")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
     else:
         request_token_obj = access_token_req.to_dict()
         access_token = create_access_token(identity=(request_token_obj["client_id"] + " " + request_token_obj["scope"] + " " + "691200"))
