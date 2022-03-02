@@ -31,7 +31,7 @@ pipeline {
                         readFile('kubeconfigAthens')
                     }
                 }
-            }
+            
         }
         stage ('Deploy app in kubernetes') {
             options {
