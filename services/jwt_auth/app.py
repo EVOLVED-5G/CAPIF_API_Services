@@ -118,43 +118,6 @@ def testusers():
 
     return jsonify(message=message_returned), 200
 
-# @app.route("/testservice", methods=["DELETE"])
-# def testservice():
-#     # myquery = { "description": "ROBOT_TESTING" }
-#     # result = serviceapidescriptions.delete_many(myquery)
-#     # if result.deleted_count == 0:
-#     #     return jsonify(message="No test services present"), 200
-#     # else:
-#     #     return jsonify(message="Deleted " + str(result.deleted_count) + " Test Services"), 200
-
-# @app.route("/testinvoker", methods=["DELETE"])
-# def testinvoker():
-#     # myquery = { "api_invoker_information": "ROBOT_TESTING" }
-#     # result = invokerdetails.delete_many(myquery)
-#     # if result.deleted_count == 0:
-#     #     return jsonify(message="No test Invokers present"), 200
-#     # else:
-#     #     return jsonify(message="Deleted " + str(result.deleted_count) + " Test Invokers"), 200
-
-
-# @app.route("/testevents", methods=["DELETE"])
-# def testevents():
-#     # myquery = { "notification_destination": "ROBOT_TESTING" }
-#     # result = eventsdetails.delete_many(myquery)
-#     # if result.deleted_count == 0:
-#     #     return jsonify(message="No event subscription present"), 200
-#     # else:
-#     #     return jsonify(message="Deleted " + str(result.deleted_count) + " Event Subscriptions"), 200
-
-# @app.route("/testservicesecurity", methods=["DELETE"])
-# def testservicesecurity():
-#     # myquery = { "notification_destination": "ROBOT_TESTING" }
-#     # result = servicesecurity.delete_many(myquery)
-#     # if result.deleted_count == 0:
-#     #     return jsonify(message="No event subscription present"), 200
-#     # else:
-#     #     return jsonify(message="Deleted " + str(result.deleted_count) + " Event Subscriptions"), 200
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
 
