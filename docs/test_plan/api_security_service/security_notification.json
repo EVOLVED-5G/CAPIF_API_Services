@@ -1,0 +1,9 @@
+{
+    "aefId": "aefId",
+    "apiIds": [
+        "apiIds",
+        "apiIds"
+    ],
+    "apiInvokerId": "api_invoker_id",
+    "cause": "OVERLIMIT_USAGE"
+}

@@ -36,6 +36,7 @@ user = mydb[col]
 invokerdetails = mydb['invokerdetails']
 serviceapidescriptions = mydb['serviceapidescriptions']
 eventsdetails = mydb['eventsdetails']
+servicesecurity = mydb['servicesecurity']
 
 
 @app.route("/register", methods=["POST"])
@@ -70,41 +71,52 @@ def gettoken():
     else:
         return jsonify(message="Bad credentials. User not found"), 401
 
-@app.route("/testusers", methods=["DELETE"])
+@app.route("/testdata", methods=["DELETE"])
 def testusers():
+    splitter_string='//'
+    message_returned=''
+
     myquery = { "username": {"$regex": "^robot.*"} }
     result = user.delete_many(myquery)
     if result.deleted_count == 0:
-        return jsonify(message="No test users present"), 200
+        message_returned+="No test users present"
     else:
-        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Users"), 200
+        message_returned+="Deleted " + str(result.deleted_count) + " Test Users"
+    message_returned+=splitter_string
 
-@app.route("/testservice", methods=["DELETE"])
-def testservice():
     myquery = { "description": "ROBOT_TESTING" }
     result = serviceapidescriptions.delete_many(myquery)
     if result.deleted_count == 0:
-        return jsonify(message="No test services present"), 200
+        message_returned+="No test services present"
     else:
-        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Services"), 200
+        message_returned+="Deleted " + str(result.deleted_count) + " Test Services"
+    message_returned+=splitter_string
 
-@app.route("/testinvoker", methods=["DELETE"])
-def testinvoker():
     myquery = { "api_invoker_information": "ROBOT_TESTING" }
     result = invokerdetails.delete_many(myquery)
     if result.deleted_count == 0:
-        return jsonify(message="No test Invokers present"), 200
+        message_returned+="No test Invokers present"
     else:
-        return jsonify(message="Deleted " + str(result.deleted_count) + " Test Invokers"), 200
+        message_returned+="Deleted " + str(result.deleted_count) + " Test Invokers"
+    message_returned+=splitter_string
 
-@app.route("/testevents", methods=["DELETE"])
-def testevents():
     myquery = { "notification_destination": "ROBOT_TESTING" }
     result = eventsdetails.delete_many(myquery)
     if result.deleted_count == 0:
-        return jsonify(message="No event subscription present"), 200
+        message_returned+="No event subscription present"
     else:
-        return jsonify(message="Deleted " + str(result.deleted_count) + " Event Subscriptions"), 200
+        message_returned+="Deleted " + str(result.deleted_count) + " Event Subscriptions"
+    message_returned+=splitter_string
+
+    myquery = { "notification_destination": "ROBOT_TESTING" }
+    result = servicesecurity.delete_many(myquery)
+    if result.deleted_count == 0:
+        message_returned+="No service security subscription present"
+    else:
+        message_returned+="Deleted " + str(result.deleted_count) + " service security Subscriptions"
+    message_returned+=splitter_string
+
+    return jsonify(message=message_returned), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
