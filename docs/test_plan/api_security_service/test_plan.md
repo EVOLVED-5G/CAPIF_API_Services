@@ -434,8 +434,16 @@ Create a security context for an API invoker with Invoker entity role and invali
   
   OAuth 2.0 access token is not provided to API Invoker
 
-  403 Forbidden
+  400 with next body:
 
+  400 BAD REQUEST with next body:
+
+```
+{
+  "error": "invalid_client", 
+  "error_description": "Role not authorized for this API route"
+} 
+```
   ## Test Case 21: Retrieve access token by AEF with invalid apiInvokerId
 
   is test case will check that an API Exposure Function cannot retrieve a security access token without valid apiInvokerId
@@ -454,7 +462,15 @@ Create a security context for an API invoker with Invoker entity role and invali
 
   OAuth 2.0 access token is not provided to API Invoker
 
-  403 Forbidden
+
+  400 BAD REQUEST with next body:
+
+```
+{
+  "error": "invalid_client", 
+  "error_description": "Role not authorized for this API route"
+} 
+```
 
 ## Test Case 22: Retrieve access token with invalid apiInvokerId
 
@@ -474,9 +490,14 @@ Create a security context for an API invoker with Invoker entity role and invali
 
   OAuth 2.0 access token is provided to API Invoker
 
-  403 Successful Access Token Request
+  400 BAD REQUEST with next body:
 
-
+```
+{
+  "error": "invalid_request", 
+  "error_description": "No Security Context for this API Invoker"} 
+} 
+```
 
   [Return To All Test Plans]: ../README.md
 

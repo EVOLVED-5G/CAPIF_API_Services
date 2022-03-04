@@ -372,7 +372,9 @@ Retrieve access token by AEF
 
 	${resp}=    Post Request Capif    /capif-security/v1/securities/${api_invoker_id}/token    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    403
+	Should Be Equal As Strings    ${resp.status_code}                    400
+	Should Be Equal As Strings    ${resp.json()['error']}                invalid_client
+	Should Be Equal As Strings    ${resp.json()['error_description']}    Role not authorized for this API route
 
 Retrieve access token by AEF with invalid apiInvokerId
 	[Tags]                       capif_security_api-21
@@ -382,7 +384,9 @@ Retrieve access token by AEF with invalid apiInvokerId
 
 	${resp}=    Post Request Capif    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    403
+	Should Be Equal As Strings    ${resp.status_code}                    400
+	Should Be Equal As Strings    ${resp.json()['error']}                invalid_client
+	Should Be Equal As Strings    ${resp.json()['error_description']}    Role not authorized for this API route
 
 Retrieve access token with invalid apiInvokerId
 	[Tags]                       capif_security_api-22
@@ -392,4 +396,6 @@ Retrieve access token with invalid apiInvokerId
 
 	${resp}=    Post Request Capif    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    403
+	Should Be Equal As Strings    ${resp.status_code}                    400
+	Should Be Equal As Strings    ${resp.json()['error']}                invalid_request
+	Should Be Equal As Strings    ${resp.json()['error_description']}    No Security Context for this API Invoker
