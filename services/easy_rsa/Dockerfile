@@ -43,37 +43,3 @@ EXPOSE 22
 
 CMD ["/usr/sbin/sshd","-D"]
 
-###### SSHD at Dcker 
-
-# FROM ubuntu:latest
-
-# RUN apt update && apt install  openssh-server sudo -y
-
-# RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 test 
-
-# RUN  echo 'test:test' | chpasswd
-
-# RUN service ssh start
-
-# EXPOSE 22
-
-
-# CMD ["/usr/sbin/sshd","-D"]
-
-####
-
-
-# RUN sed -i 's/\/bin\/ash/\/bin\/bash/g' /etc/passwd
-# RUN service ssh start
-# # RUN echo /etc/init.d/ssh restart > /etc/NetworkManager/dispatcher.d/10ssh
-# # RUN 755 /etc/NetworkManager/dispatcher.d/10ssh
-
-# ADD entrypoint.sh /root/
-
-# RUN chmod a+x /root/entrypoint.sh
-
-
-# ENTRYPOINT [ "/root/entrypoint.sh" ]
-
-# CMD ["su", "-", "adminca", "-c", "/bin/bash"]
-
