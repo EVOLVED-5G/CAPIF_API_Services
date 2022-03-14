@@ -120,3 +120,5 @@ services:
       - published-apis
       - capif-routing-info
       - capif-security
+      - easy_rsa
+      
