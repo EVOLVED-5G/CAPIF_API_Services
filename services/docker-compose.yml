@@ -77,7 +77,6 @@ services:
       - "8080"
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
-  
   easy_rsa:
     build:
       context: ./easy_rsa
@@ -121,4 +120,3 @@ services:
       - capif-routing-info
       - capif-security
       - easy_rsa
-      
