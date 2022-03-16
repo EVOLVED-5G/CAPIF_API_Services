@@ -75,6 +75,8 @@ services:
       context: ./jwt_auth
     expose:
       - "8080"
+    volumes:
+      - ./jwt_auth:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
   mongo:

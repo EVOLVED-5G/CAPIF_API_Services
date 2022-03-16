@@ -28,7 +28,7 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
         prob = ProblemDetails(title="Forbidden", status=403, detail="Invoker already registered", cause="Identical invoker public key")
         return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
     else:
-        api_invoker_id =  secrets.token_hex(15)
+        api_invoker_id = secrets.token_hex(15)
         apiinvokerenrolmentdetail.api_invoker_id = api_invoker_id
         mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
         myclient.close()

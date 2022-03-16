@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 import secrets
+import socket
 
 
 app = Flask(__name__)
@@ -16,6 +17,10 @@ app.config['MONGODB_SETTINGS'] = {
     'host': 'mongo',
     'port': 27017,
 }
+app.config['CAPIF_HOST'] = {
+    'ip': 'localhost',
+    'port': 8080,
+}
 
 app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
 
@@ -27,6 +32,9 @@ db = app.config['MONGODB_SETTINGS']['db']
 col = app.config['MONGODB_SETTINGS']['jwt']
 host = app.config['MONGODB_SETTINGS']['host']
 port = app.config['MONGODB_SETTINGS']['port']
+
+capif_ip = app.config['CAPIF_HOST']['ip']
+capif_port = app.config['CAPIF_HOST']['port']
 
 uri = "mongodb://" + user + ":" + passwd + "@" + host + ":" + str(port)
 
@@ -54,7 +62,24 @@ def register():
         description = request.json["description"]
         user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description)
         obj = user.insert_one(user_info)
-        return jsonify(message=role + " registered successfully", id=obj.inserted_id), 201
+        ## getting the hostname by socket.gethostname() method
+        hostname = socket.gethostname()
+        ## getting the IP address using socket.gethostbyname() method
+        ip_address = socket.gethostbyname(hostname)
+        capif_ca = open('capifca.pem', 'rb')
+        capif_ca_crt = capif_ca.read()
+
+        if role == "invoker":
+            return jsonify(message=role + " registered successfully",
+                           id=obj.inserted_id,
+                           ccf_onboarding_url="api-invoker-management/v1/onboardedInvokers",
+                           ccf_discover_url="service-apis/v1/allServiceAPIs?api-invoker-id=",
+                           capif_ca_crt=capif_ca_crt.decode("utf-8")), 201
+        elif role == "apf":
+            return jsonify(message=role + " registered successfully",
+                           id=obj.inserted_id,
+                           ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id),
+                           capif_ca_crt=capif_ca_crt.decode("utf-8")), 201
 
 
 @app.route("/gettoken", methods=["POST"])
@@ -70,6 +95,7 @@ def gettoken():
     else:
         return jsonify(message="Bad credentials. User not found"), 401
 
+
 @app.route("/testusers", methods=["DELETE"])
 def testusers():
     myquery = { "username": {"$regex": "^robot.*"} }
@@ -78,6 +104,7 @@ def testusers():
         return jsonify(message="No test users present"), 200
     else:
         return jsonify(message="Deleted " + str(result.deleted_count) + " Test Users"), 200
+
 
 @app.route("/testservice", methods=["DELETE"])
 def testservice():
@@ -88,6 +115,7 @@ def testservice():
     else:
         return jsonify(message="Deleted " + str(result.deleted_count) + " Test Services"), 200
 
+
 @app.route("/testinvoker", methods=["DELETE"])
 def testinvoker():
     myquery = { "api_invoker_information": "ROBOT_TESTING" }
@@ -97,6 +125,7 @@ def testinvoker():
     else:
         return jsonify(message="Deleted " + str(result.deleted_count) + " Test Invokers"), 200
 
+
 @app.route("/testevents", methods=["DELETE"])
 def testevents():
     myquery = { "notification_destination": "ROBOT_TESTING" }
@@ -105,6 +134,7 @@ def testevents():
         return jsonify(message="No event subscription present"), 200
     else:
         return jsonify(message="Deleted " + str(result.deleted_count) + " Event Subscriptions"), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
