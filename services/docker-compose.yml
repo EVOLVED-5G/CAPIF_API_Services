@@ -77,6 +77,13 @@ services:
       - "8080"
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
+  easy_rsa:
+    build:
+      context: ./easy_rsa
+    expose:
+      - "22"
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/easy_rsa:latest
   mongo:
     image: mongo:latest
     restart: unless-stopped
@@ -112,3 +119,4 @@ services:
       - published-apis
       - capif-routing-info
       - capif-security
+      - easy_rsa
