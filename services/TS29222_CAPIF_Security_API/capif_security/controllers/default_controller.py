@@ -39,9 +39,12 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     username, role = identity.split()
 
     if role != "invoker":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+        # prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
+        #                       cause="User role must be invoker")
+        # return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+
+        prob = AccessTokenErr(error="invalid_client", error_description="Role not authorized for this API route")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
 
     if connexion.request.is_json:
         body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501
@@ -64,9 +67,9 @@ def trusted_invokers_api_invoker_id_delete(api_invoker_id):  # noqa: E501
     username, role = identity.split()
 
     if role != "apf":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     return servicesecurity.delete_servicesecurity(api_invoker_id)
 
@@ -88,9 +91,9 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     username, role = identity.split()
 
     if role != "apf":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     if connexion.request.is_json:
         body = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
@@ -117,14 +120,13 @@ def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=True
     username, role = identity.split()
 
     if role != "apf":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
+                              cause="User role must be apf")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     service_security = servicesecurity.get_servicesecurity(api_invoker_id, authentication_info, authorization_info)
-    response = service_security, 200
 
-    return response
+    return service_security
 
 
 @jwt_required()
@@ -144,9 +146,9 @@ def trusted_invokers_api_invoker_id_put(api_invoker_id, body):  # noqa: E501
     username, role = identity.split()
 
     if role != "invoker":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
                               cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
@@ -171,10 +173,10 @@ def trusted_invokers_api_invoker_id_update_post(api_invoker_id, body):  # noqa: 
     identity = get_jwt_identity()
     username, role = identity.split()
 
-    if role != "apf":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
+    if role != "invoker":
+        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
                               cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
