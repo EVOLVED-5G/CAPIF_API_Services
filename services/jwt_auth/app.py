@@ -47,15 +47,6 @@ eventsdetails = mydb['eventsdetails']
 servicesecurity = mydb['servicesecurity']
 
 
-@app.route("/ca", methods=["POST"])
-def ca_certificate():
-    certificate = request.json["certificate"]
-    capif_ca = open('ca.crt', 'wb')
-    capif_ca.write(str.encode(certificate))
-    capif_ca.close()
-    return jsonify("All fine!"), 201
-
-
 @app.route("/register", methods=["POST"])
 def register():
     username = request.json["username"]

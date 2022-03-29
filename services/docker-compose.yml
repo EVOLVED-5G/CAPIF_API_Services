@@ -70,6 +70,13 @@ services:
     image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
     extra_hosts:
       - host.docker.internal:host-gateway
+  easy_rsa:
+    build:
+      context: ./easy_rsa
+    expose:
+      - "8080"
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/easy_rsa:latest
   jwtauth:
     build:
       context: ./jwt_auth
@@ -79,17 +86,8 @@ services:
       - ./jwt_auth:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
-  easy_rsa:
-    build:
-      context: ./easy_rsa
-    expose:
-      - "22"
-    volumes:
-      - ./easy_rsa:/usr/src/app
-    restart: unless-stopped
-    image: dockerhub.hi.inet/evolved-5g/easy_rsa:latest
     depends_on:
-      - jwtauth
+      - easy_rsa
   mongo:
     image: mongo:latest
     restart: unless-stopped
