@@ -112,7 +112,10 @@ services:
       context: ./nginx
     ports:
       - "8080:8080"
+      - "443:443"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs
     depends_on:
       - aef-security
       - api-invoker-management

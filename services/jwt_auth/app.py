@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+import requests
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 import secrets
 import socket
+import json
 
 
 app = Flask(__name__)
@@ -63,21 +65,22 @@ def register():
         description = request.json["description"]
         user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description)
         obj = user.insert_one(user_info)
-        capif_ca = open('capifca.pem', 'rb')
-        capif_ca_crt = capif_ca.read()
-        capif_ca.close()
+
+        url = "http://easy_rsa:8080/ca-root"
+        response = requests.request("GET", url)
+        response_payload = json.loads(response.text)
 
         if role == "invoker":
             return jsonify(message=role + " registered successfully",
                            id=obj.inserted_id,
                            ccf_onboarding_url="api-invoker-management/v1/onboardedInvokers",
                            ccf_discover_url="service-apis/v1/allServiceAPIs?api-invoker-id=",
-                           capif_ca_crt=capif_ca_crt.decode("utf-8")), 201
+                           capif_ca_crt=response_payload['certificate']), 201
         elif role == "apf":
             return jsonify(message=role + " registered successfully",
                            id=obj.inserted_id,
                            ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id),
-                           capif_ca_crt=capif_ca_crt.decode("utf-8")), 201
+                           capif_ca_crt=response_payload['certificate']), 201
 
 
 @app.route("/gettoken", methods=["POST"])
