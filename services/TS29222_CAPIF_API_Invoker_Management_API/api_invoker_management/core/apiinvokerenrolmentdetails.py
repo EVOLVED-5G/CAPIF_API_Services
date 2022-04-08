@@ -46,6 +46,7 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
 
         response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
 
+        print(response.text)
         sys.stdout.flush()
         response_payload = json.loads(response.text)
 

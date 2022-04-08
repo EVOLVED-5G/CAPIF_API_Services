@@ -1,5 +1,5 @@
 {
   "csr": "CERT",
-  "mode": "client",
-  "filename": "netapp"
+  "mode": "server",
+  "filename": "ccf"
 }

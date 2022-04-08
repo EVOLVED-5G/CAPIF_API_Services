@@ -1,9 +1,9 @@
 services:
-  aef-security:
-    build: TS29222_AEF_Security_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
+#  aef-security:
+#    build: TS29222_AEF_Security_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API
@@ -13,63 +13,63 @@ services:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
-  api-provider-management:
-    build: TS29222_CAPIF_API_Provider_Management_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
-  access-control-policy:
-    build: TS29222_CAPIF_Access_Control_Policy_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
-  logs:
-    build: TS29222_CAPIF_Auditing_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
-  service-apis:
-    build:
-      context: ./TS29222_CAPIF_Discover_Service_API
-    expose:
-      - "8080"
-    volumes:
-      - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
-    restart: unless-stopped
-    image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
-  capif-events:
-    build: TS29222_CAPIF_Events_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
-  api-invocation-logs:
-    build: TS29222_CAPIF_Logging_API_Invocation_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
-  published-apis:
-    build: TS29222_CAPIF_Publish_Service_API/.
-    expose:
-      - "8080"
-    volumes:
-      - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
-    restart: unless-stopped
-    image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
-  capif-routing-info:
-    build: TS29222_CAPIF_Routing_Info_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
-  capif-security:
-    build: TS29222_CAPIF_Security_API/.
-    expose:
-      - "8080"
-    volumes:
-      - ./TS29222_CAPIF_Security_API:/usr/src/app
-    restart: unless-stopped
-    image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
-    extra_hosts:
-      - host.docker.internal:host-gateway
+#  api-provider-management:
+#    build: TS29222_CAPIF_API_Provider_Management_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
+#  access-control-policy:
+#    build: TS29222_CAPIF_Access_Control_Policy_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
+#  logs:
+#    build: TS29222_CAPIF_Auditing_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
+#  service-apis:
+#    build:
+#      context: ./TS29222_CAPIF_Discover_Service_API
+#    expose:
+#      - "8080"
+#    volumes:
+#      - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
+#    restart: unless-stopped
+#    image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
+#  capif-events:
+#    build: TS29222_CAPIF_Events_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
+#  api-invocation-logs:
+#    build: TS29222_CAPIF_Logging_API_Invocation_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
+#  published-apis:
+#    build: TS29222_CAPIF_Publish_Service_API/.
+#    expose:
+#      - "8080"
+#    volumes:
+#      - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
+#    restart: unless-stopped
+#    image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
+#  capif-routing-info:
+#    build: TS29222_CAPIF_Routing_Info_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
+#  capif-security:
+#    build: TS29222_CAPIF_Security_API/.
+#    expose:
+#      - "8080"
+#    volumes:
+#      - ./TS29222_CAPIF_Security_API:/usr/src/app
+#    restart: unless-stopped
+#    image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
   easy_rsa:
     build:
       context: ./easy_rsa
@@ -118,13 +118,15 @@ services:
     volumes:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:
-      - aef-security
       - api-invoker-management
-      - api-provider-management
-      - access-control-policy
-      - service-apis
-      - api-invocation-logs
-      - published-apis
-      - capif-routing-info
-      - capif-security
       - easy_rsa
+#      - aef-security
+#      - api-invoker-management
+#      - api-provider-management
+#      - access-control-policy
+#      - service-apis
+#      - api-invocation-logs
+#      - published-apis
+#      - capif-routing-info
+#      - capif-security
+#      - easy_rsa

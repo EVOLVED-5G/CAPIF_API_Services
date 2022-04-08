@@ -9,3 +9,5 @@ fi
 
 exit $status
 
+#cd ./nginx/certs/
+#sudo rm ca.crt sign_req_body.json server.*
