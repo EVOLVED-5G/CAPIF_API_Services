@@ -1,3 +1,5 @@
+import sys
+
 import pymongo
 import secrets
 from flask import current_app, Flask, Response
@@ -28,8 +30,28 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
         prob = ProblemDetails(title="Forbidden", status=403, detail="Invoker already registered", cause="Identical invoker public key")
         return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
     else:
+
+        import requests
+
+        url = "http://easy_rsa:8080/sign-csr"
+
+        payload = dict()
+        payload['csr'] = apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key
+        payload['mode'] = 'client'
+        payload['filename'] = apiinvokerenrolmentdetail.api_invoker_information
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+
+        sys.stdout.flush()
+        response_payload = json.loads(response.text)
+
         api_invoker_id = secrets.token_hex(15)
         apiinvokerenrolmentdetail.api_invoker_id = api_invoker_id
+        apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = response_payload['certificate']
         mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
         myclient.close()
         res = Response(json.dumps(apiinvokerenrolmentdetail, cls=JSONEncoder), status=201, mimetype='application/json')
