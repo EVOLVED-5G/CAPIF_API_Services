@@ -28,15 +28,15 @@ services:
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
-#  service-apis:
-#    build:
-#      context: ./TS29222_CAPIF_Discover_Service_API
-#    expose:
-#      - "8080"
-#    volumes:
-#      - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
-#    restart: unless-stopped
-#    image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
+  service-apis:
+    build:
+      context: ./TS29222_CAPIF_Discover_Service_API
+    expose:
+      - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
 #  capif-events:
 #    build: TS29222_CAPIF_Events_API/.
 #    expose:
@@ -124,7 +124,7 @@ services:
 #      - api-invoker-management
 #      - api-provider-management
 #      - access-control-policy
-#      - service-apis
+      - service-apis
 #      - api-invocation-logs
 #      - published-apis
 #      - capif-routing-info

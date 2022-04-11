@@ -45,9 +45,6 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
         }
 
         response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-
-        print(response.text)
-        sys.stdout.flush()
         response_payload = json.loads(response.text)
 
         api_invoker_id = secrets.token_hex(15)
@@ -56,7 +53,7 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
         mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
         myclient.close()
         res = Response(json.dumps(apiinvokerenrolmentdetail, cls=JSONEncoder), status=201, mimetype='application/json')
-        res.headers['Location'] = "http://localhost:8080/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
+        res.headers['Location'] = "https://capicore/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
         return res
 
 
