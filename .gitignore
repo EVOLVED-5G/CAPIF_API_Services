@@ -10,3 +10,4 @@ __pycache__/
 *.csr
 *.pem
 *.crt
+services/nginx/certs/sign_req_body.json

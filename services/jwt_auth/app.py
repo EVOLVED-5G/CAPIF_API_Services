@@ -66,21 +66,15 @@ def register():
         user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description)
         obj = user.insert_one(user_info)
 
-        url = "http://easy_rsa:8080/ca-root"
-        response = requests.request("GET", url)
-        response_payload = json.loads(response.text)
-
         if role == "invoker":
             return jsonify(message=role + " registered successfully",
                            id=obj.inserted_id,
                            ccf_onboarding_url="api-invoker-management/v1/onboardedInvokers",
-                           ccf_discover_url="service-apis/v1/allServiceAPIs?api-invoker-id=",
-                           capif_ca_crt=response_payload['certificate']), 201
+                           ccf_discover_url="service-apis/v1/allServiceAPIs?api-invoker-id="), 201
         elif role == "apf":
             return jsonify(message=role + " registered successfully",
                            id=obj.inserted_id,
-                           ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id),
-                           capif_ca_crt=response_payload['certificate']), 201
+                           ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id)), 201
 
 
 @app.route("/gettoken", methods=["POST"])
