@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
-import requests
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 import secrets
-import socket
-import json
 
 
 app = Flask(__name__)
@@ -63,7 +60,8 @@ def register():
         password = request.json["password"]
         role = request.json["role"]
         description = request.json["description"]
-        user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description)
+        cn = request.json["cn"]
+        user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description, cn=cn)
         obj = user.insert_one(user_info)
 
         if role == "invoker":

@@ -47,14 +47,14 @@ services:
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
-#  published-apis:
-#    build: TS29222_CAPIF_Publish_Service_API/.
-#    expose:
-#      - "8080"
-#    volumes:
-#      - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
-#    restart: unless-stopped
-#    image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
+  published-apis:
+    build: TS29222_CAPIF_Publish_Service_API/.
+    expose:
+      - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
 #  capif-routing-info:
 #    build: TS29222_CAPIF_Routing_Info_API/.
 #    expose:
@@ -90,6 +90,8 @@ services:
       - easy_rsa
   mongo:
     image: mongo:latest
+    logging:
+      driver: 'none'
     restart: unless-stopped
     ports:
       - 27017:27017
@@ -98,6 +100,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
   mongo-express:
     image: mongo-express:latest
+    logging:
+      driver: 'none'
     restart: unless-stopped
     ports:
       - 8082:8081
@@ -126,7 +130,7 @@ services:
 #      - access-control-policy
       - service-apis
 #      - api-invocation-logs
-#      - published-apis
+      - published-apis
 #      - capif-routing-info
 #      - capif-security
 #      - easy_rsa
