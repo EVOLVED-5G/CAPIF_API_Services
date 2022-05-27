@@ -61,9 +61,9 @@ Delete Request Capif
     [Return]    ${resp}
 
 Register User At Jwt Auth
-    [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
+    [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing   ${cn}=robot_dummy
 
-    &{body}=    Create Dictionary    password=${password}    username=${username}    role=${role}    description=${description}
+    &{body}=    Create Dictionary    password=${password}    username=${username}    role=${role}    description=${description}  cn=${cn}
 
     Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
@@ -72,10 +72,13 @@ Register User At Jwt Auth
     Should Be Equal As Strings    ${resp.status_code}    201
 
     Set Global Variable    ${APF_ID}    ${resp.json()['id']}
+    ${netappID}=                 Set Variable    ${resp.json()['id']}
+    ${ccf_onboarding_url}=     Set Variable    ${resp.json()['ccf_onboarding_url']}
+    ${ccf_discover_url}=         Set Variable    ${resp.json()['ccf_discover_url']}
 
     ${access_token}=    Get Token For User    ${username}    ${password}   ${role}
 
-    [Return]    ${access_token}
+    [Return]    ${access_token}    ${netappID}   ${ccf_onboarding_url}   ${ccf_discover_url}
 
 Get Token For User
     [Arguments]    ${username}    ${password}   ${role}

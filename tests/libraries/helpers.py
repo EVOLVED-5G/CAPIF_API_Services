@@ -2,6 +2,7 @@ import requests
 import re
 import pandas as pd
 from urllib.parse import urlparse
+from netapp_to_capif import *
 
 
 def parse_url(input):

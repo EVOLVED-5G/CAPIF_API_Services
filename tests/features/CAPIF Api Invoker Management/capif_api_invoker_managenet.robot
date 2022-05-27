@@ -12,6 +12,16 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 
 *** Test Cases ***
+TestJMS
+    [Tags]     jms_test
+	[Setup]
+	Log     Register Netapp
+	Reset Db
+	${access_token}    ${netappID}   ${ccf_onboarding_url}   ${ccf_discover_url}=    Register User At Jwt Auth
+
+	${csr_request}=    Create Csr     cert_req.csr
+
+
 Register NetApp
 	[Tags]    capif_api_invoker_management-1
 
