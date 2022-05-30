@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "aef_security" {
       spec {
         enable_service_links = false
         container {
-          image = "dockerhub.hi.inet/evolved-5g/aef/security_api"
+          image = "dockerhub.hi.inet/evolved-5g/aef/security_api:latest"
           name  = "aef-security"
           resources {
             limits = {
@@ -87,7 +87,7 @@ resource "kubernetes_deployment" "api_invoker_management" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:api_invoker_management_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest"
           name  = "api-invoker-management"
           resources {
             limits = {
@@ -149,7 +149,7 @@ resource "kubernetes_deployment" "api_provider_management" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:api_provider_management_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest"
           name  = "api-provider-management"
           resources {
             limits = {
@@ -211,7 +211,7 @@ resource "kubernetes_deployment" "access_control_policy" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:access_control_policy_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest"
           name  = "access-control-policy"
           resources {
             limits = {
@@ -273,7 +273,7 @@ resource "kubernetes_deployment" "logs" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:auditing_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest"
           name  = "logs"
           resources {
             limits = {
@@ -335,7 +335,7 @@ resource "kubernetes_deployment" "discover_service" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:discover_service_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest"
           name  = "service-apis"
           resources {
             limits = {
@@ -398,7 +398,7 @@ resource "kubernetes_deployment" "events" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:events_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/events_api:latest"
           name  = "capif-events"
           resources {
             limits = {
@@ -460,7 +460,7 @@ resource "kubernetes_deployment" "api_invocation_logs" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:api_invocation_logs_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest"
           name  = "api-invocation-logs"
           resources {
             limits = {
@@ -522,7 +522,7 @@ resource "kubernetes_deployment" "publish_service" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:publish_service_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest"
           name  = "published-apis"
           resources {
             limits = {
@@ -584,7 +584,7 @@ resource "kubernetes_deployment" "routing_info" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:routing_info_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest"
           name  = "capif-routing-info"
           resources {
             limits = {
@@ -646,7 +646,7 @@ resource "kubernetes_deployment" "security" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:security_api"
+          image = "dockerhub.hi.inet/evolved-5g/capif/security_api:latest"
           name  = "capif-security"
           resources {
             limits = {
@@ -708,7 +708,7 @@ resource "kubernetes_deployment" "jwtauth" {
       spec {
         enable_service_links = false
         container {
-          image = "dockerhub.hi.inet/evolved-5g/jwtauth"
+          image = "dockerhub.hi.inet/evolved-5g/jwtauth:latest"
           name  = "jwtauth"
           resources {
             limits = {
@@ -770,7 +770,7 @@ resource "kubernetes_deployment" "mongo" {
       spec {
         enable_service_links = false
         container {
-          image = "mongo"
+          image = "mongo:latest"
           name  = "mongo"
           resources {
             limits = {
@@ -864,7 +864,7 @@ resource "kubernetes_deployment" "mongo-express" {
       spec {
         enable_service_links = false
         container {
-          image = "mongo-express"
+          image = "mongo-express:latest"
           name  = "mongo-express"
           resources {
             limits = {
@@ -945,7 +945,7 @@ resource "kubernetes_deployment" "nginx" {
       spec {
         enable_service_links = false
         container {
-          image = "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:nginx"
+          image = "dockerhub.hi.inet/evolved-5g/capif/nginx"
           name  = "nginx"
           resources {
             limits = {
