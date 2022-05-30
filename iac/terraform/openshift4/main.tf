@@ -1005,7 +1005,6 @@ resource "kubernetes_service" "nginx_service" {
 }
 
 resource "kubernetes_ingress" "nginx_ingress" {
-  wait_for_load_balancer = true
   metadata {
     name      = "nginx-ingress5"
     namespace = "evol5-capif"
