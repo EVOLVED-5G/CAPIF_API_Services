@@ -17,7 +17,6 @@ pipeline {
         BRANCH_NAME = "${params.BRANCH_NAME}"
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
         OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
-        TOKEN
     }
     stages {
         stage('Login openshift') {
@@ -39,7 +38,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '328ab84a-aefc-41c1-aca2-1dfae5b150d2', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                     dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
-                            terraform init                                                           \
+                            terraform init -reconfigure                                              \
                                 -backend-config="bucket=evolved5g-openshift-terraform-states"        \
                                 -backend-config="key=capif"
                             terraform destroy --auto-approve
