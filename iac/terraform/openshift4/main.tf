@@ -1004,30 +1004,30 @@ resource "kubernetes_service" "nginx_service" {
   }
 }
 
-resource "kubernetes_ingress" "nginx_ingress" {
-  metadata {
-    name      = "nginx-ingress5"
-    namespace = "evol5-capif"
-    annotations = {
-      "kubernetes.io/ingress.class"                    = "nginx-ingress"
-      "kubernetes.io/tls-acme"                         = "true"
-      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
-      "nginx.ingress.kubernetes.io/ssl-passthrough"    = "true"
-    }
-  }
+# resource "kubernetes_ingress" "nginx_ingress" {
+#   metadata {
+#     name      = "nginx-ingress5"
+#     namespace = "evol5-capif"
+#     annotations = {
+#       "kubernetes.io/ingress.class"                    = "nginx-ingress"
+#       "kubernetes.io/tls-acme"                         = "true"
+#       "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
+#       "nginx.ingress.kubernetes.io/ssl-passthrough"    = "true"
+#     }
+#   }
 
-  spec {
-    rule {
-      host = "openshift.evolved-5g.eu"
-      http {
-        path {
-          path = "/"
-          backend {
-            service_name = kubernetes_service.nginx_service.spec.0.selector.app
-            service_port = 443
-          }
-        }
-      }
-    }
-  }
-}
+#   spec {
+#     rule {
+#       host = "openshift.evolved-5g.eu"
+#       http {
+#         path {
+#           path = "/"
+#           backend {
+#             service_name = kubernetes_service.nginx_service.spec.0.selector.app
+#             service_port = 443
+#           }
+#         }
+#       }
+#     }
+#   }
+# }

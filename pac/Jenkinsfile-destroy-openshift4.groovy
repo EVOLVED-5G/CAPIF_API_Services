@@ -47,5 +47,14 @@ pipeline {
                 }
             }
         }
+        stage ('Expose routes and service publicly') {
+            steps {
+                dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
+                    sh '''
+                        oc delete route nginx
+                    '''
+                }
+            }
+        }
     }
 }

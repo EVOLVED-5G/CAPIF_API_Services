@@ -54,6 +54,15 @@ pipeline {
                 }
             }
         }
-
+        stage ('Expose routes and service publicly') {
+            steps {
+                dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
+                    sh '''
+                        oc expose service/nginx --hostname=openshift.evolved-5g.eu
+                        oc patch route nginx -p '{"metadata":{"annotations":{"kubernetes.io/tls-acme":"true"}}}'
+                    '''
+                }
+            }
+        }
     }
 }
