@@ -1010,10 +1010,8 @@ resource "kubernetes_ingress" "nginx_ingress" {
     name      = "nginx-ingress5"
     namespace = "evol5-capif"
     annotations = {
-      "kubernetes.io/ingress.class"                    = "nginx-ingress"
-      "kubernetes.io/tls-acme"                         = "true"
-      "nginx.ingress.kubernetes.io/force-ssl-redirect" = "true"
-      "nginx.ingress.kubernetes.io/ssl-passthrough"    = "true"
+      "kubernetes.io/ingress.class" = "nginx-ingress"
+      "kubernetes.io/tls-acme"      = "true"
     }
   }
 
