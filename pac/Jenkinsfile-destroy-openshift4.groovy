@@ -52,6 +52,7 @@ pipeline {
                 dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                     sh '''
                         oc delete route nginx
+                        oc delete route mongo-express 
                     '''
                 }
             }

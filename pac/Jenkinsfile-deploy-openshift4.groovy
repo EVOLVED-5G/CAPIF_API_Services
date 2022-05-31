@@ -59,6 +59,7 @@ pipeline {
                 dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                     sh '''
                         oc expose service/nginx --hostname=openshift.evolved-5g.eu
+                        oc expose service/mongo-express --hostname=mongo-express.apps.ocp-epg.hi.inet
                         oc patch route nginx -p '{"metadata":{"annotations":{"kubernetes.io/tls-acme":"true"}}}'
                     '''
                 }
