@@ -1,0 +1,13 @@
+{
+  "notificationDestination" : "http://X:Y/netapp_callback",
+  "supportedFeatures" : "fffffff",
+  "apiInvokerInformation" : "dummy",
+  "websockNotifConfig" : {
+    "requestWebsocketUri" : true,
+    "websocketUri" : "websocketUri"
+  },
+  "onboardingInformation" : {
+    "apiInvokerPublicKey" : ""
+  },
+  "requestTestNotification" : true
+}

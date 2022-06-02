@@ -32,12 +32,14 @@ Post Request Capif
     [Return]    ${resp}
 
 Post Request Capif Cert
-    [Arguments]    ${endpoint}        ${json}=${EMTPY}    ${server}=${NONE}    ${auth}=${NONE}       ${ca_root}=${NONE}
+    [Arguments]    ${endpoint}        ${json}=${NONE}    ${server}=${NONE}    ${auth}=${NONE}       ${verify}=${FALSE}    ${data}=${NONE}
     [Timeout]      60s
 
     ${headers}=    Create CAPIF Session    ${server}    ${auth}
 
-    ${resp}=    POST On Session    apisession    ${endpoint}    headers=${headers}    json=${json}    expected_status=any    verify=${ca_root}
+    Set To Dictionary   ${headers}     Content-Type=application/json
+
+    ${resp}=    POST On Session    apisession    ${endpoint}    headers=${headers}    json=${json}    expected_status=any    verify=${verify}   data=${data}
 
     [Return]    ${resp}
 
@@ -49,6 +51,16 @@ Get Request Capif
     ${headers}=    Create CAPIF Session    ${server}    ${auth}
 
     ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any
+
+    [Return]    ${resp}
+
+Get Request Capif Cert
+    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}   ${verify}=${FALSE}   ${cert}=${NONE}
+    [Timeout]      60s
+
+    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+
+    ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any  verify=${verify}   cert=${cert}
 
     [Return]    ${resp}
 

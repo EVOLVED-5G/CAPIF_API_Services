@@ -16,7 +16,12 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 TestJMS
     [Tags]     jms_test
 	[Setup]
-    Setup Core Name   127.0.0.1  capifcore
+	Setup Core Name   127.0.0.1  capifcore
+	Reset Db
+    
+
+	# Create certificate and private_key for this machine.
+	${csr_request}=    Create Csr     cert_req.csr  private.key
 
 
 	# Obtain ca root certificate
@@ -28,33 +33,44 @@ TestJMS
 	Log    ${result.stdout}	
 	${result}=   Run Process   cat    -A   ca.crt
     Log    ${result.stdout}
+    
 
-
-	Log     Register Netapp
-	Reset Db
+	#Register Netapp
 	${access_token}    ${netappID}   ${ccf_onboarding_url}   ${ccf_discover_url}=    Register User At Jwt Auth
-
-	${csr_request}=    Create Csr     cert_req.csr
-
-	${result}=   Run Process      ls
-
-	Log    ${result.stdout}
-
+    
+	
+    ${capif_ip}=    Set Variable   capifcore
 	${capif_callback_ip}=    Set Variable   host.docker.internal
     ${capif_callback_port}=    Set Variable   8086
 
-    # ${result}=   Run Process   echo   '172.17.0.1      capifcore' >> /etc/hosts
-    # Log    ${result.stdout}
-	
+	${csr_request_str}=   Convert To String     ${csr_request}
 
-	${result}=   Run Process   cat    /etc/hosts
+    # On Boarding
+	# ${csr_request_value}=    Set Variable     ${csr_request.decode('utf-8')}  
+	${request_body}=    Create Onboarding Notification Body    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback    ${csr_request}
+
+	# ${resp}=            Post Request Capif Cert                   ${ccf_onboarding_url}    data=${request_body}    server=https://${capif_ip}/      verify=ca.crt
+    ${api_invoker_id}=  Onboard Netapp To Capif   ${capif_ip}    ${capif_callback_ip}  ${capif_callback_port}    ${access_token}   ${ccf_onboarding_url}
+
+	# Status Should Be                 201    ${resp}
+	# ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+	# Store dummy signede certificate
+	Store Ca Root   dummy.crt     ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
+
+	${result}=   Run Process   cat    dummy.crt
     Log    ${result.stdout}
-	
 
-	${cert}=   Cert Tuple    cert_req.csr    private.key
+    Run Process     cp     dummy.crt   /opt/robot-tests/results/
+	Run Process     cp     private.key   /opt/robot-tests/results/
+	Run Process     cp     cert_req.csr   /opt/robot-tests/results/
 
-	${request_body}=    Create Onboarding Notification Body    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback    ${csr_request.decode("utf-8")}   
-	${resp}=            Post Request Capif Cert                   ${ccf_onboarding_url}    ${request_body}    server=https://capifcore/      ca_root=ca.crt
+    # Execute discover
+	${cert}=   Cert Tuple    dummy.crt    private.key
+	Get Request Capif Cert  ${ccf_discover_url}${api_invoker_id}  server=https://${capif_ip}/  verify=ca.crt   cert=${cert}
+
+    # Discover Service Apis    ${capif_ip}    ${api_invoker_id}    ${access_token}    ${ccf_discover_url}
+
+
 
 
 Register NetApp

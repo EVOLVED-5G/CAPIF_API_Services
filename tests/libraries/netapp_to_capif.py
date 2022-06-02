@@ -13,10 +13,8 @@ from OpenSSL.SSL import FILETYPE_PEM
 from OpenSSL.crypto import (dump_certificate_request, dump_privatekey, load_publickey, PKey, TYPE_RSA, X509Req, dump_publickey)
 
 
-def create_csr(csr_file_path):
-    private_key_path = "private.key"
-
-    # create public/private key
+def create_csr(csr_file_path, private_key_path):
+     # create public/private key
     key = PKey()
     key.generate_key(TYPE_RSA, 2048)
 
@@ -34,15 +32,18 @@ def create_csr(csr_file_path):
 
     with open(csr_file_path, 'wb+') as f:
         f.write(dump_certificate_request(FILETYPE_PEM, req))
+        f.close()
         csr_request = dump_certificate_request(FILETYPE_PEM, req)
     with open(private_key_path, 'wb+') as f:
         f.write(dump_privatekey(FILETYPE_PEM, key))
+        f.close()
 
     return csr_request
 
 def store_ca_root(ca_root_file_path,ca_root):
-    with open(ca_root_file_path, 'wb+') as f:
+    with open(ca_root_file_path, 'wb') as f:
         f.write(bytes(ca_root,'utf-8'))
+        f.close()
 
 def cert_tuple(cert_file, key_file):
     return  (cert_file,key_file)
@@ -52,13 +53,6 @@ def setup_core_name(ip_address, host_name='capifcore'):
     dns_file = open("/etc/hosts","a")
     dns_file.write("{}\n".format(capif_dns))
     dns_file.close() 
-    # bashCommand = "echo   '172.17.0.1      capifcore' >> /etc/hosts"
-    # process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE)
-    # output, error = process.communicate()
-    # print(output)
-    # return output
-
-
 
 
 def register_netapp_to_capif(capif_ip, capif_port, username, password, role, description, cn):
@@ -108,9 +102,9 @@ def get_capif_token(capif_ip, capif_port, username, password, role):
 def onboard_netapp_to_capif(capif_ip, capif_callback_ip, capif_callback_port, jwt_token, ccf_url):
     url = 'https://{}/{}'.format(capif_ip, ccf_url)
 
-    csr_request = create_csr("cert_req.csr")
+    csr_request = create_csr("cert_req.csr","private.key")
 
-    json_file = open('invoker_details.json', 'rb')
+    json_file = open('/opt/robot-tests/tests/libraries/invoker_details.json', 'rb')
     payload_dict = json.load(json_file)
     payload_dict['onboardingInformation']['apiInvokerPublicKey'] = csr_request.decode("utf-8")
     payload_dict['notificationDestination'] = payload_dict['notificationDestination'].replace("X", capif_callback_ip)
@@ -123,7 +117,7 @@ def onboard_netapp_to_capif(capif_ip, capif_callback_ip, capif_callback_port, jw
     }
 
     try:
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, verify='ca.crt')
         response.raise_for_status()
         response_payload = json.loads(response.text)
         certification_file = open('dummy.crt', 'wb')
