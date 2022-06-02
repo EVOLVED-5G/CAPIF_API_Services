@@ -1,6 +1,6 @@
-def create_onboarding_notification_body():
+def create_onboarding_notification_body(notification_destination="NotificationDestination",api_invoker_public_key="ApiInvokerPublicKey"):
     return {
-        "notificationDestination": "notificationDestination",
+        "notificationDestination": notification_destination,
         "supportedFeatures": "fffffff",
         "apiInvokerInformation": "ROBOT_TESTING",
         "websockNotifConfig": {
@@ -8,7 +8,7 @@ def create_onboarding_notification_body():
             "websocketUri": "websocketUri"
         },
         "onboardingInformation": {
-            "apiInvokerPublicKey": "apiInvokerPublicKey",
+            "apiInvokerPublicKey": api_invoker_public_key,
             "onboardingSecret": "onboardingSecret",
             "apiInvokerCertificate": "apiInvokerCertificate"
         },

@@ -2,6 +2,7 @@
 Resource    /opt/robot-tests/tests/resources/common.resource
 Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
 Library     /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
+Library    Process
 
 Test Setup    Initialize Test And Register    role=invoker
 
@@ -15,11 +16,45 @@ ${API_INVOKER_NOT_REGISTERED}    not-valid
 TestJMS
     [Tags]     jms_test
 	[Setup]
+    Setup Core Name   127.0.0.1  capifcore
+
+
+	# Obtain ca root certificate
+    ${resp}=    Get Request Capif    /ca-root
+	Status Should Be                 201    ${resp}
+	Log   ${resp.json()['certificate']}
+	Store Ca Root    ca.crt    ${resp.json()['certificate']}
+	${result}=   Run Process      ls
+	Log    ${result.stdout}	
+	${result}=   Run Process   cat    -A   ca.crt
+    Log    ${result.stdout}
+
+
 	Log     Register Netapp
 	Reset Db
 	${access_token}    ${netappID}   ${ccf_onboarding_url}   ${ccf_discover_url}=    Register User At Jwt Auth
 
 	${csr_request}=    Create Csr     cert_req.csr
+
+	${result}=   Run Process      ls
+
+	Log    ${result.stdout}
+
+	${capif_callback_ip}=    Set Variable   host.docker.internal
+    ${capif_callback_port}=    Set Variable   8086
+
+    # ${result}=   Run Process   echo   '172.17.0.1      capifcore' >> /etc/hosts
+    # Log    ${result.stdout}
+	
+
+	${result}=   Run Process   cat    /etc/hosts
+    Log    ${result.stdout}
+	
+
+	${cert}=   Cert Tuple    cert_req.csr    private.key
+
+	${request_body}=    Create Onboarding Notification Body    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback    ${csr_request.decode("utf-8")}   
+	${resp}=            Post Request Capif Cert                   ${ccf_onboarding_url}    ${request_body}    server=https://capifcore/      ca_root=ca.crt
 
 
 Register NetApp

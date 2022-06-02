@@ -31,6 +31,17 @@ Post Request Capif
 
     [Return]    ${resp}
 
+Post Request Capif Cert
+    [Arguments]    ${endpoint}        ${json}=${EMTPY}    ${server}=${NONE}    ${auth}=${NONE}       ${ca_root}=${NONE}
+    [Timeout]      60s
+
+    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+
+    ${resp}=    POST On Session    apisession    ${endpoint}    headers=${headers}    json=${json}    expected_status=any    verify=${ca_root}
+
+    [Return]    ${resp}
+
+
 Get Request Capif
     [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}
     [Timeout]      60s

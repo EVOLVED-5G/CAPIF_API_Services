@@ -3,6 +3,7 @@ import json
 import configparser
 import redis
 import os
+import subprocess
 
 # Get environment variables
 REDIS_HOST = os.getenv('REDIS_HOST')
@@ -38,6 +39,26 @@ def create_csr(csr_file_path):
         f.write(dump_privatekey(FILETYPE_PEM, key))
 
     return csr_request
+
+def store_ca_root(ca_root_file_path,ca_root):
+    with open(ca_root_file_path, 'wb+') as f:
+        f.write(bytes(ca_root,'utf-8'))
+
+def cert_tuple(cert_file, key_file):
+    return  (cert_file,key_file)
+
+def setup_core_name(ip_address, host_name='capifcore'):
+    capif_dns="{}      {}".format(ip_address, host_name)
+    dns_file = open("/etc/hosts","a")
+    dns_file.write("{}\n".format(capif_dns))
+    dns_file.close() 
+    # bashCommand = "echo   '172.17.0.1      capifcore' >> /etc/hosts"
+    # process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE)
+    # output, error = process.communicate()
+    # print(output)
+    # return output
+
+
 
 
 def register_netapp_to_capif(capif_ip, capif_port, username, password, role, description, cn):
