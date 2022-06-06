@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, Response
 import json
 import subprocess
 import sys
+import os
 
 app = Flask(__name__)
 
@@ -48,6 +49,26 @@ def sign_csr():
     res = Response(json.dumps(payload), status=201, mimetype='application/json')
 
     return res
+
+@app.route("/certdata", methods=["DELETE"])
+def data_test():
+    filename='ROBOT_TESTING'
+    p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa --batch revoke {}".format(filename),
+                         stdout=subprocess.PIPE, shell=True)
+
+    delete_file('/root/ROBOT_TESTING.csr')
+    delete_file('/root/pki/issued/ROBOT_TESTING.crt')
+    delete_file('/root/pki/reqs/ROBOT_TESTING.req')
+
+    res = Response(json.dumps({'certificate_removed':'ROBOT_TESTING'}), status=200, mimetype='application/json')
+    return res
+
+def delete_file(filePath):
+    # As file at filePath is deleted now, so we should check if file exists or not not before deleting them
+    if os.path.exists(filePath):
+        os.remove(filePath)
+    else:
+        print("Can not delete the file as it doesn't exists")
 
 
 if __name__ == '__main__':

@@ -13,14 +13,14 @@ from OpenSSL.SSL import FILETYPE_PEM
 from OpenSSL.crypto import (dump_certificate_request, dump_privatekey, load_publickey, PKey, TYPE_RSA, X509Req, dump_publickey)
 
 
-def create_csr(csr_file_path, private_key_path):
+def create_csr(csr_file_path, private_key_path,cn='dummy'):
      # create public/private key
     key = PKey()
     key.generate_key(TYPE_RSA, 2048)
 
     # Generate CSR
     req = X509Req()
-    req.get_subject().CN = 'dummy'
+    req.get_subject().CN = cn
     req.get_subject().O = 'Telefonica I+D'
     req.get_subject().OU = 'Innovation'
     req.get_subject().L = 'Madrid'

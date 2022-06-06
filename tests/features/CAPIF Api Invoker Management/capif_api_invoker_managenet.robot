@@ -10,18 +10,25 @@ Test Setup    Initialize Test And Register    role=invoker
 ${API_INVOKER_NOT_REGISTERED}    not-valid
 
 *** Keywords ***
+Testing Teardown
+    Run Process     cp     dummy.crt   /opt/robot-tests/results/
+	Run Process     cp     private.key   /opt/robot-tests/results/
+	Run Process     cp     cert_req.csr   /opt/robot-tests/results/
+
 
 
 *** Test Cases ***
 TestJMS
     [Tags]     jms_test
-	[Setup]
+	[Setup]    Testing Teardown
 	Setup Core Name   127.0.0.1  capifcore
 	Reset Db
+
     
+	${cn}=    Set Variable      robot_dummy
 
 	# Create certificate and private_key for this machine.
-	${csr_request}=    Create Csr     cert_req.csr  private.key
+	${csr_request}=    Create Csr     cert_req.csr  private.key   ${cn}
 
 
 	# Obtain ca root certificate
@@ -36,7 +43,7 @@ TestJMS
     
 
 	#Register Netapp
-	${access_token}    ${netappID}   ${ccf_onboarding_url}   ${ccf_discover_url}=    Register User At Jwt Auth
+	${access_token}    ${netappID}   ${ccf_onboarding_url}   ${ccf_discover_url}=    Register User At Jwt Auth   cn=${cn}
     
 	
     ${capif_ip}=    Set Variable   capifcore
@@ -47,13 +54,13 @@ TestJMS
 
     # On Boarding
 	# ${csr_request_value}=    Set Variable     ${csr_request.decode('utf-8')}  
-	${request_body}=    Create Onboarding Notification Body    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback    ${csr_request}
+	${request_body}=    Create Onboarding Notification Body New    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback    ${csr_request}
 
-	# ${resp}=            Post Request Capif Cert                   ${ccf_onboarding_url}    data=${request_body}    server=https://${capif_ip}/      verify=ca.crt
-    ${api_invoker_id}=  Onboard Netapp To Capif   ${capif_ip}    ${capif_callback_ip}  ${capif_callback_port}    ${access_token}   ${ccf_onboarding_url}
+	${resp}=            Post Request Capif Cert                   ${ccf_onboarding_url}    data=${request_body}    server=https://${capif_ip}/      verify=ca.crt
+    # ${api_invoker_id}=  Onboard Netapp To Capif   ${capif_ip}    ${capif_callback_ip}  ${capif_callback_port}    ${access_token}   ${ccf_onboarding_url}
 
-	# Status Should Be                 201    ${resp}
-	# ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+	Status Should Be                 201    ${resp}
+	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 	# Store dummy signede certificate
 	Store Ca Root   dummy.crt     ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
@@ -66,7 +73,8 @@ TestJMS
 
     # Execute discover
 	${cert}=   Cert Tuple    dummy.crt    private.key
-	Get Request Capif Cert  ${ccf_discover_url}${api_invoker_id}  server=https://${capif_ip}/  verify=ca.crt   cert=${cert}
+	${resp}=   Get Request Capif Cert  ${ccf_discover_url}${api_invoker_id}  server=https://${capif_ip}/  verify=ca.crt   cert=${cert}
+	Status Should Be                 200    ${resp}
 
     # Discover Service Apis    ${capif_ip}    ${api_invoker_id}    ${access_token}    ${ccf_discover_url}
 

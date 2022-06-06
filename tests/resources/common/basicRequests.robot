@@ -58,7 +58,11 @@ Get Request Capif Cert
     [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}   ${verify}=${FALSE}   ${cert}=${NONE}
     [Timeout]      60s
 
-    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+    # ${headers}=    Create CAPIF Session    ${server}    ${auth}
+
+    Create Session    apisession    ${server}            verify=True
+
+    ${headers}=    Create Dictionary    Content-Type=application/json
 
     ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any  verify=${verify}   cert=${cert}
 
@@ -120,5 +124,8 @@ Clean Test Information By HTTP Requests
     Create Session    jwtsession    ${NGINX_HOSTNAME}     verify=True
 
     ${resp}=                      DELETE On Session      jwtsession    /testdata
+    Should Be Equal As Strings    ${resp.status_code}    200
+
+    ${resp}=                      DELETE On Session      jwtsession    /certdata
     Should Be Equal As Strings    ${resp.status_code}    200
 
