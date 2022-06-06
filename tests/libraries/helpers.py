@@ -49,7 +49,7 @@ def add_dns_to_hosts(ip_address, host_name):
     dns_file.write("{}\n".format(capif_dns))
     dns_file.close()
 
-def create_csr(csr_file_path, private_key_path, cn='dummy'):
+def create_csr(csr_file_path, private_key_path, cn):
     # create public/private key
     key = PKey()
     key.generate_key(TYPE_RSA, 2048)

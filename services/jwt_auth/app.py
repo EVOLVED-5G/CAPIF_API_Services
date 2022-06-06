@@ -94,7 +94,7 @@ def testusers():
     splitter_string = '//'
     message_returned = ''
 
-    myquery = {"username": {"$regex": "^robot.*"}}
+    myquery = {"username": {"$regex": "^ROBOT_TESTING.*"}}
     result = user.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No test users present"
@@ -102,7 +102,7 @@ def testusers():
         message_returned += "Deleted " + str(result.deleted_count) + " Test Users"
     message_returned += splitter_string
 
-    myquery = {"description": "ROBOT_TESTING"}
+    myquery = {"description": {"$regex": "^ROBOT_TESTING.*"}}
     result = serviceapidescriptions.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No test services present"
@@ -110,7 +110,7 @@ def testusers():
         message_returned += "Deleted " + str(result.deleted_count) + " Test Services"
     message_returned += splitter_string
 
-    myquery = {"api_invoker_information": "ROBOT_TESTING"}
+    myquery = {"api_invoker_information": {"$regex": "^ROBOT_TESTING.*"}}
     result = invokerdetails.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No test Invokers present"
@@ -118,7 +118,7 @@ def testusers():
         message_returned += "Deleted " + str(result.deleted_count) + " Test Invokers"
     message_returned += splitter_string
 
-    myquery = {"notification_destination": "ROBOT_TESTING"}
+    myquery = {"notification_destination": {"$regex": "^ROBOT_TESTING.*"}}
     result = eventsdetails.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No event subscription present"
@@ -126,7 +126,7 @@ def testusers():
         message_returned += "Deleted " + str(result.deleted_count) + " Event Subscriptions"
     message_returned += splitter_string
 
-    myquery = {"notification_destination": "ROBOT_TESTING"}
+    myquery = {"notification_destination": {"$regex": "^ROBOT_TESTING.*"}}
     result = servicesecurity.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No service security subscription present"
