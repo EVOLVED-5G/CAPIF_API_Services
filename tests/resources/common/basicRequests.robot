@@ -21,17 +21,17 @@ Create CAPIF Session
 
     [Return]    ${headers}
 
+# Post Request Capif
+#     [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${auth}=${NONE}
+#     [Timeout]      60s
+
+#     ${headers}=    Create CAPIF Session    ${server}    ${auth}
+
+#     ${resp}=    POST On Session    apisession    ${endpoint}    headers=${headers}    json=${json}    expected_status=any
+
+#     [Return]    ${resp}
+
 Post Request Capif
-    [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${auth}=${NONE}
-    [Timeout]      60s
-
-    ${headers}=    Create CAPIF Session    ${server}    ${auth}
-
-    ${resp}=    POST On Session    apisession    ${endpoint}    headers=${headers}    json=${json}    expected_status=any
-
-    [Return]    ${resp}
-
-Post Request Capif Cert
     [Arguments]    ${endpoint}        ${json}=${NONE}    ${server}=${NONE}    ${auth}=${NONE}       ${verify}=${FALSE}    ${data}=${NONE}
     [Timeout]      60s
 
@@ -44,25 +44,25 @@ Post Request Capif Cert
     [Return]    ${resp}
 
 
+# Get Request Capif
+#     [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}
+#     [Timeout]      60s
+
+#     ${headers}=    Create CAPIF Session    ${server}    ${auth}
+
+#     ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any
+
+#     [Return]    ${resp}
+
 Get Request Capif
-    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}
+    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}   ${verify}=${FALSE}   ${cert}=${NONE}
     [Timeout]      60s
 
     ${headers}=    Create CAPIF Session    ${server}    ${auth}
 
-    ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any
+    # Create Session    apisession    ${server}            verify=True
 
-    [Return]    ${resp}
-
-Get Request Capif Cert
-    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}   ${verify}=${FALSE}   ${cert}=${NONE}
-    [Timeout]      60s
-
-    # ${headers}=    Create CAPIF Session    ${server}    ${auth}
-
-    Create Session    apisession    ${server}            verify=True
-
-    ${headers}=    Create Dictionary    Content-Type=application/json
+    # ${headers}=    Create Dictionary    Content-Type=application/json
 
     ${resp}=    GET On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any  verify=${verify}   cert=${cert}
 

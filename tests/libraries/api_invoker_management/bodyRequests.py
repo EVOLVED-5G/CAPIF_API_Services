@@ -336,7 +336,7 @@ def create_onboarding_notification_body(notification_destination="NotificationDe
     }
 
     # return json.dumps(data)
-    return data
+    return json.dumps(data)
 
 
 
