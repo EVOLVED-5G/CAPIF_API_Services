@@ -42,7 +42,7 @@ TestJMS
 
     ${resp}=    Post Request Capif
     ...    ${ccf_onboarding_url}
-    ...    data=${request_body}
+    ...    json=${request_body}
     ...    server=https://${capif_ip}/
     ...    verify=ca.crt
     Status Should Be    201    ${resp}

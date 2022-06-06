@@ -1,8 +1,5 @@
-import json
-
-
-def create_onboarding_notification_body(notification_destination="NotificationDestination",api_invoker_public_key="ApiInvokerPublicKey"):
-    data= {
+def create_onboarding_notification_body(notification_destination="NotificationDestination", api_invoker_public_key="ApiInvokerPublicKey"):
+    data = {
         "notificationDestination": notification_destination,
         "supportedFeatures": "fffffff",
         "apiInvokerInformation": "ROBOT_TESTING",
@@ -335,27 +332,4 @@ def create_onboarding_notification_body(notification_destination="NotificationDe
         }]
     }
 
-    # return json.dumps(data)
-    return json.dumps(data)
-
-
-
-def create_onboarding_notification_body_new(notification_destination="NotificationDestination",api_invoker_public_key="ApiInvokerPublicKey"):
-    data= {
-        "notificationDestination": "http://hola.org/callback",
-        "supportedFeatures": "fffffff",
-        "apiInvokerInformation": "ROBOT_TESTING",
-        "websockNotifConfig": {
-            "requestWebsocketUri": True,
-            "websocketUri": "websocketUri"
-        },
-        "onboardingInformation": {
-            "apiInvokerPublicKey": api_invoker_public_key.decode("utf-8"),
-            "onboardingSecret": "onboardingSecret",
-            "apiInvokerCertificate": "apiInvokerCertificate"
-        },
-        "requestTestNotification": True
-   
-    }
-
-    return json.dumps(data)
+    return (data)
