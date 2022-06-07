@@ -4,7 +4,7 @@ Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests
 Library         /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
 Library         Process
 
-Test Setup      Initialize Test And Register    role=invoker
+Test Setup      Reset Testing Environment
 
 
 *** Variables ***
@@ -14,13 +14,10 @@ ${API_INVOKER_NOT_REGISTERED}       not-valid
 *** Test Cases ***
 TestJMS
     [Tags]    jms_test
-    [Setup]    Testing Teardown
-    Prepare environment
+    [Teardown]  Testing Teardown
 
     ${username}=    Set Variable    ROBOT_TESTING_INVOKER
-
-    # Create certificate and private_key for this machine.
-    # ${csr_request}=    Create Csr    cert_req.csr    private.key    ${cn}
+    ${role}=    Set Variable    invoker
 
     #Register Netapp
     ${access_token}
@@ -29,7 +26,7 @@ TestJMS
     ...    ${ccf_discover_url}
     ...    ${csr_request}=
     ...    Register User At Jwt Auth
-    ...    username=${username}
+    ...    username=${username}  role=${INVOKER_ROLE}
 
     ${capif_ip}=    Set Variable    capifcore
     ${capif_callback_ip}=    Set Variable    host.docker.internal
@@ -39,7 +36,7 @@ TestJMS
     ${request_body}=    Create Onboarding Notification Body
     ...    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback
     ...    ${csr_request}
-	...    ${username}
+    ...    ${username}
 
     ${resp}=    Post Request Capif
     ...    ${ccf_onboarding_url}
@@ -54,7 +51,6 @@ TestJMS
     Store In File    ${username}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
     # Execute discover
-    ${cert}=    Cert Tuple    dummy.crt    private.key
     ${resp}=    Get Request Capif
     ...    ${ccf_discover_url}${api_invoker_id}
     ...    server=https://${capif_ip}/
@@ -62,7 +58,6 @@ TestJMS
     ...    cert=${{ ('${username}.crt','${username}.key') }}
     # ...    cert=${cert}
     Status Should Be    200    ${resp}
-
 
 Register NetApp
     [Tags]    capif_api_invoker_management-1
@@ -156,15 +151,4 @@ Testing Teardown
     ${result}=    Run Process    cp    -vvv    *.csr    /opt/robot-tests/results/
     Log    ${result.stdout}
 
-Retrieve Ca Root
-    [Documentation]    This keyword retrieve ca.root from CAPIF and store it at ca.crt in order to use at TLS communications
-    ${resp}=    Get Request Capif    /ca-root
-    Status Should Be    201    ${resp}
-    Log    ${resp.json()['certificate']}
-    Store In File    ca.crt    ${resp.json()['certificate']}
 
-Prepare environment
-    Add Dns To Hosts    127.0.0.1    capifcore
-    Reset Db
-    # Obtain ca root certificate
-    Retrieve Ca Root

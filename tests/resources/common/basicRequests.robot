@@ -32,7 +32,6 @@ Create CAPIF Session
     END
     RETURN    ${headers}
 
-
 Post Request Capif
     [Timeout]    60s
     [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${data}=${NONE}
@@ -51,12 +50,15 @@ Post Request Capif
     ...    data=${data}
     RETURN    ${resp}
 
-
 Get Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}
+    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
 
     ${headers}=    Create CAPIF Session    ${server}    ${auth}
+
+    IF    '${username}' != '${NONE}'
+        ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
+    END
 
     ${resp}=    GET On Session
     ...    apisession
@@ -66,7 +68,6 @@ Get Request Capif
     ...    verify=${verify}
     ...    cert=${cert}
     RETURN    ${resp}
-
 
 Put Request Capif
     [Timeout]    60s
@@ -92,8 +93,8 @@ Delete Request Capif
     RETURN    ${resp}
 
 Register User At Jwt Auth
-    [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
-    
+    [Arguments]    ${username}    ${role}    ${password}=password    ${description}=Testing
+
     # Create certificate and private_key for this machine.
     ${csr_request}=    Create Csr    ${username}.csr    ${username}.key    ${username}
 
@@ -116,8 +117,7 @@ Register User At Jwt Auth
     ${ccf_discover_url}=    Set Variable    ${resp.json()['ccf_discover_url']}
 
     ${access_token}=    Get Token For User    ${username}    ${password}    ${role}
-    RETURN    ${access_token}    ${netappID}    ${ccf_onboarding_url}    ${ccf_discover_url}   ${csr_request}
-
+    RETURN    ${access_token}    ${netappID}    ${ccf_onboarding_url}    ${ccf_discover_url}    ${csr_request}
 
 Get Token For User
     [Arguments]    ${username}    ${password}    ${role}
@@ -130,7 +130,6 @@ Get Token For User
 
     Set Global Variable    ${CAPIF_BEARER}    ${resp.json()["access_token"]}
     RETURN    ${resp.json()["access_token"]}
-
 
 Clean Test Information By HTTP Requests
     Create Session    jwtsession    ${NGINX_HOSTNAME}    verify=True

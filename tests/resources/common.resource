@@ -1,18 +1,31 @@
 *** Settings ***
 Library     /opt/robot-tests/tests/libraries/helpers.py
+Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 
 *** Variables ***
+${INVOKER_USERNAME}         ROBOT_TESTING_INVOKER
+${PUBLISHER_USERNAME}       ROBOT_TESTING_PUBLISHER
+${INVOKER_ROLE}             invoker
+${PUBISHER_ROLE}            apf
+
+${CAPIF_HOSTNAME}           capifcore
+${CAPIF_CALLBACK_IP}        host.docker.internal
+${CAPIF_CALLBACK_PORT}      8086
+
 
 *** Keywords ***
-Initialize Test And Register
-	[Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
+# Initialize Test And Register
+# [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
 
-    Reset Db
-    Register User At Jwt Auth    password=${password}    username=${username}    role=${role}    description=${description}
+# Reset Db
+# Register User At Jwt Auth
+# ...    password=${password}
+# ...    username=${username}
+# ...    role=${role}
+# ...    description=${description}
 
-Reset Db
-	Log            Db capif.invokerdetails collection will be removed in order to isolate each test.
+Reset Testing Environment
+    Log    Db capif.invokerdetails collection will be removed in order to isolate each test.
 
-	Clean Test Information By HTTP Requests
-	
+    Clean Test Information By HTTP Requests
