@@ -8,7 +8,7 @@ ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
 ${PUBLISHER_USERNAME}           ROBOT_TESTING_PUBLISHER
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
-${PUBISHER_ROLE}                apf
+${PUBLISHER_ROLE}                apf
 
 ${CAPIF_HOSTNAME}               capifcore
 ${CAPIF_CALLBACK_IP}            host.docker.internal

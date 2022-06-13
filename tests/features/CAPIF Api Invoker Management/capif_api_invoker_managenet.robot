@@ -1,8 +1,9 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
 Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
-Library         /opt/robot-tests/tests/libraries/api_invoker_management/bodyRequests.py
+Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
+
 
 Test Setup      Reset Testing Environment
 
@@ -48,6 +49,25 @@ ${API_INVOKER_NOT_REGISTERED}       not-valid
 #    # ...    cert=${cert}
 #    Status Should Be    200    ${resp}
 #    [Teardown]    Testing Teardown
+
+# Test JMS APF
+#     [Tags]    jms_test_apf
+#     #Register APF
+#     ${register_user_info}=    Register User At Jwt Auth
+#     ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
+
+#     # Sign certificate
+#     ${request_body}=    Sign Csr Body    ${PUBLISHER_USERNAME}    ${register_user_info['csr_request']}
+#     ${resp}=    Post Request Capif
+#     ...    sign-csr
+#     ...    json=${request_body}
+#     ...    server=http://${CAPIF_HOSTNAME}:8080/
+#     ...    verify=ca.crt
+#     ...    access_token=${register_user_info['access_token']}
+#     Status Should Be    201    ${resp}
+
+#     # Store dummy signede certificate
+#     Store In File    ${PUBLISHER_USERNAME}.crt    ${resp.json()['certificate']}
 
 Register NetApp
     [Tags]    capif_api_invoker_management-1
@@ -102,7 +122,7 @@ Update Registered NetApp
 Update Not Registered NetApp
     [Tags]    capif_api_invoker_management-4
     # Default Invoker Registration and Onboarding
-    ${register_user_info}    ${url}   ${request_body}=    Invoker Default Onboarding
+    ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     ${resp}=    Put Request Capif
     ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
@@ -116,7 +136,7 @@ Update Not Registered NetApp
 Delete Registered NetApp
     [Tags]    capif_api_invoker_management-5
     # Default Invoker Registration and Onboarding
-    ${register_user_info}    ${url}   ${request_body}=    Invoker Default Onboarding
+    ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     ${resp}=    Delete Request Capif
     ...    ${url.path}
@@ -129,7 +149,7 @@ Delete Registered NetApp
 Delete Not Registered NetApp
     [Tags]    capif_api_invoker_management-6
     # Default Invoker Registration and Onboarding
-    ${register_user_info}    ${url}   ${request_body}=    Invoker Default Onboarding
+    ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     ${resp}=    Delete Request Capif
     ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}

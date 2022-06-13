@@ -132,19 +132,16 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    Set Global Variable    ${APF_ID}    ${resp.json()['id']}
-    ${netappID}=    Set Variable    ${resp.json()['id']}
-    ${ccf_onboarding_url}=    Set Variable    ${resp.json()['ccf_onboarding_url']}
-    ${ccf_discover_url}=    Set Variable    ${resp.json()['ccf_discover_url']}
-
+    # Set Global Variable    ${APF_ID}    ${resp.json()['id']}
     ${access_token}=    Get Token For User    ${username}    ${password}    ${role}
 
     ${register_user_info}=    Create Dictionary
     ...    access_token=${access_token}
-    ...    netappID=${netappID}
-    ...    ccf_onboarding_url=${ccf_onboarding_url}
-    ...    ccf_discover_url=${ccf_discover_url}
+    ...    netappID=${resp.json()['id']}
     ...    csr_request=${csr_request}
+    ...    &{resp.json()}
+
+    Log Dictionary    ${register_user_info}
 
     RETURN    ${register_user_info}
 
@@ -191,4 +188,24 @@ Invoker Default Onboarding
 
     ${url}=    Parse Url    ${resp.headers['Location']}
 
-    RETURN    ${register_user_info}    ${url}   ${request_body}
+    RETURN    ${register_user_info}    ${url}    ${request_body}
+
+Publisher Default Registration
+    #Register APF
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
+
+    # Sign certificate
+    ${request_body}=    Sign Csr Body    ${PUBLISHER_USERNAME}    ${register_user_info['csr_request']}
+    ${resp}=    Post Request Capif
+    ...    sign-csr
+    ...    json=${request_body}
+    ...    server=http://${CAPIF_HOSTNAME}:8080/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
+    Status Should Be    201    ${resp}
+
+    # Store dummy signede certificate
+    Store In File    ${PUBLISHER_USERNAME}.crt    ${resp.json()['certificate']}
+
+    RETURN    ${register_user_info}
