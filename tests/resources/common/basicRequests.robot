@@ -191,4 +191,4 @@ Invoker Default Onboarding
 
     ${url}=    Parse Url    ${resp.headers['Location']}
 
-    RETURN    ${register_user_info}    ${url}
+    RETURN    ${register_user_info}    ${url}   ${request_body}
