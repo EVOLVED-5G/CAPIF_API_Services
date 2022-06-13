@@ -4,7 +4,6 @@ Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
 
-
 Test Setup      Reset Testing Environment
 
 

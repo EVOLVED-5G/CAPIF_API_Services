@@ -1,193 +1,204 @@
 *** Settings ***
-Resource    /opt/robot-tests/tests/resources/common.resource
-Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
-Library     /opt/robot-tests/tests/libraries/bodyRequests.py
+Resource        /opt/robot-tests/tests/resources/common.resource
+Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
+Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 
+Test Setup      Reset Testing Environment
+# Test Setup    Initialize Test And Register    role=invoker
 
-Test Setup    Initialize Test And Register    role=invoker
 
 *** Variables ***
-${API_INVOKER_NOT_REGISTERED}    not-valid
-
-*** Keywords ***
+${API_INVOKER_NOT_REGISTERED}       not-valid
 
 
 *** Test Cases ***
 Discover Published service APIs by Authorised API Invoker
-	[Tags]     capif_api_discover_service-1
-	[Setup]    Initialize Test And Register    role=apf
+    [Tags]    capif_api_discover_service-1
+    #Register APF
+    ${register_user_info}=    Publisher Default Registration
 
-	# Publish one api
-	${request_body}=    Create Service Api Description
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    # Publish one api
+    ${request_body}=    Create Service Api Description
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_publish_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Status Should Be    201    ${resp}
 
-	# Change to user with invoker role and register to invoker management
-	Register User At Jwt Auth    username=robot2    role=invoker
+    # Default Invoker Registration and Onboarding
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+    ${resp}=    Get Request Capif
+    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Status Should Be    200    ${resp}
 
-	# Get api invoker id after regiter at api-invoker
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
-
-	${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}
-
-	Should Be Equal As Strings    ${resp.status_code}    200
-
-	# Check returned values
-	Should Not Be Empty    ${resp.json()}
-	Length Should Be       ${resp.json()}    1
+    # Check returned values
+    Should Not Be Empty    ${resp.json()}
+    Length Should Be    ${resp.json()}    1
 
 Discover Published service APIs by Non Authorised API Invoker
-    [Tags]     capif_api_discover_service-2
-    [Setup]    Initialize Test And Register    role=apf
+    [Tags]    capif_api_discover_service-2
+    #Register APF
+    ${register_user_info}=    Publisher Default Registration
 
-	# Publish one api
+    # Publish one api
     ${request_body}=    Create Service Api Description
+	 ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_publish_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
-	${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    Status Should Be    201    ${resp}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+	#Register INVOKER
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-	${apf_role_id}=    Set Variable    ${APF_ID}
-	${apf_token}=      Set Variable    ${CAPIF_BEARER}
+    ${resp}=    Get Request Capif
+    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
-	# Change to user with invoker role and register to invoker management
-	Register User At Jwt Auth    username=robot2    role=invoker
-
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
-
-	Should Be Equal As Strings    ${resp.status_code}    201
-
-	# Get api invoker id after regiter at api-invoker
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
-
-	Get Token For User    username=robot    password=password    role=apf
-
-	${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}
-
-    Should Be Equal As Strings    ${resp.status_code}    401
+	Status Should Be    401    ${resp}
 
 Discover Published service APIs by not registered API Invoker
     [Tags]    capif_api_discover_service-3
+	#Register INVOKER
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${API_INVOKER_NOT_REGISTERED} 
+	 ${resp}=    Get Request Capif
+    ...    ${register_user_info_invoker['ccf_discover_url']}${API_INVOKER_NOT_REGISTERED}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
 
-    Should Be Equal As Strings    ${resp.status_code}    403
+	Status Should Be    403    ${resp}
+	##last updated
 
 Discover Published service APIs by registered API Invoker with 1 result filtered
     [Tags]    capif_api_discover_service-4
+    [Setup]    Initialize Test And Register    role=apf
 
-	[Setup]    Initialize Test And Register    role=apf
+    ${api_name_1}=    Set Variable    apiName1
+    ${api_name_2}=    Set Variable    apiName2
 
-	${api_name_1}=    Set Variable    apiName1
-	${api_name_2}=    Set Variable    apiName2
+    # Publish 2 apis
+    ${request_body}=    Create Service Api Description    ${api_name_1}
+    ${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	# Publish 2 apis
-	${request_body}=    Create Service Api Description    ${api_name_1}
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    ${request_body}=    Create Service Api Description    ${api_name_2}
+    ${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	${request_body}=    Create Service Api Description    ${api_name_2}
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    # Change to invoker role and register at api invoker management
+    Register User At Jwt Auth    username=robot2    role=invoker
 
-	# Change to invoker role and register at api invoker management
-	Register User At Jwt Auth    username=robot2    role=invoker
+    ${request_body}=    Create Onboarding Notification Body
+    ${resp}=    Post Request Capif
+    ...    /api-invoker-management/v1/onboardedInvokers
+    ...    ${request_body}
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+    # Request api 1
 
-	# Request api 1
-
-    ${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}&api-name=${api_name_1}
+    ${resp}=    Get Request Capif
+    ...    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}&api-name=${api_name_1}
 
     Should Be Equal As Strings    ${resp.status_code}    200
 
-	# Check returned values
-	Should Not Be Empty    ${resp.json()}
-	Length Should Be       ${resp.json()}    1
+    # Check returned values
+    Should Not Be Empty    ${resp.json()}
+    Length Should Be    ${resp.json()}    1
 
 Discover Published service APIs by registered API Invoker filtered with no match
-	[Tags]     capif_api_discover_service-5
-	[Setup]    Initialize Test And Register    role=apf
+    [Tags]    capif_api_discover_service-5
+    [Setup]    Initialize Test And Register    role=apf
 
-	${api_name_1}=    Set Variable    apiName1
-	${api_name_2}=    Set Variable    apiName2
+    ${api_name_1}=    Set Variable    apiName1
+    ${api_name_2}=    Set Variable    apiName2
 
-	# Publish 2 apis
-	${request_body}=    Create Service Api Description    ${api_name_1}
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    # Publish 2 apis
+    ${request_body}=    Create Service Api Description    ${api_name_1}
+    ${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	${request_body}=    Create Service Api Description    ${api_name_2}
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    ${request_body}=    Create Service Api Description    ${api_name_2}
+    ${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	# Change to invoker role and register at api invoker management
-	Register User At Jwt Auth    username=robot2    role=invoker
+    # Change to invoker role and register at api invoker management
+    Register User At Jwt Auth    username=robot2    role=invoker
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+    ${request_body}=    Create Onboarding Notification Body
+    ${resp}=    Post Request Capif
+    ...    /api-invoker-management/v1/onboardedInvokers
+    ...    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+    ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
-	# Request api 1
+    # Request api 1
 
-    ${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}&api-name=NOT_VALID_NAME
+    ${resp}=    Get Request Capif
+    ...    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}&api-name=NOT_VALID_NAME
 
     Should Be Equal As Strings    ${resp.status_code}    200
 
-	# Check returned values
-	Should Be Empty    ${resp.json()}
+    # Check returned values
+    Should Be Empty    ${resp.json()}
 
 Discover Published service APIs by registered API Invoker not filtered
-	[Tags]     capif_api_discover_service-6
-	[Setup]    Initialize Test And Register    role=apf
+    [Tags]    capif_api_discover_service-6
+    [Setup]    Initialize Test And Register    role=apf
 
-	${api_name_1}=    Set Variable    apiName1
-	${api_name_2}=    Set Variable    apiName2
+    ${api_name_1}=    Set Variable    apiName1
+    ${api_name_2}=    Set Variable    apiName2
 
-	# Publish 2 apis
-	${request_body}=    Create Service Api Description    ${api_name_1}
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    # Publish 2 apis
+    ${request_body}=    Create Service Api Description    ${api_name_1}
+    ${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	${request_body}=    Create Service Api Description    ${api_name_2}
-	${resp}=            Post Request Capif                /published-apis/v1/${APF_ID}/service-apis    ${request_body}
+    ${request_body}=    Create Service Api Description    ${api_name_2}
+    ${resp}=    Post Request Capif    /published-apis/v1/${APF_ID}/service-apis    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	# Change to invoker role and register at api invoker management
-	Register User At Jwt Auth    username=robot2    role=invoker
+    # Change to invoker role and register at api invoker management
+    Register User At Jwt Auth    username=robot2    role=invoker
 
-	${request_body}=    Create Onboarding Notification Body
-	${resp}=            Post Request Capif                     /api-invoker-management/v1/onboardedInvokers    ${request_body}
+    ${request_body}=    Create Onboarding Notification Body
+    ${resp}=    Post Request Capif
+    ...    /api-invoker-management/v1/onboardedInvokers
+    ...    ${request_body}
 
-	Should Be Equal As Strings    ${resp.status_code}    201
+    Should Be Equal As Strings    ${resp.status_code}    201
 
-	${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
+    ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
     ${resp}=    Get Request Capif    /service-apis/v1/allServiceAPIs?api-invoker-id=${api_invoker_id}
 
     Should Be Equal As Strings    ${resp.status_code}    200
 
-	# Check returned values
-	Should Not Be Empty    ${resp.json()}
-	Length Should Be       ${resp.json()}    2
+    # Check returned values
+    Should Not Be Empty    ${resp.json()}
+    Length Should Be    ${resp.json()}    2
