@@ -14,130 +14,223 @@ ${API_INVOKER_NOT_REGISTERED}       not-valid
 *** Test Cases ***
 TestJMS
     [Tags]    jms_test
-    [Teardown]  Testing Teardown
-
-    ${username}=    Set Variable    ROBOT_TESTING_INVOKER
-    ${role}=    Set Variable    invoker
 
     #Register Netapp
-    ${access_token}
-    ...    ${netappID}
-    ...    ${ccf_onboarding_url}
-    ...    ${ccf_discover_url}
-    ...    ${csr_request}=
-    ...    Register User At Jwt Auth
-    ...    username=${username}  role=${INVOKER_ROLE}
-
-    ${capif_ip}=    Set Variable    capifcore
-    ${capif_callback_ip}=    Set Variable    host.docker.internal
-    ${capif_callback_port}=    Set Variable    8086
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
 
     # On Boarding
     ${request_body}=    Create Onboarding Notification Body
-    ...    http://${capif_callback_ip}:${capif_callback_port}/netapp_callback
-    ...    ${csr_request}
-    ...    ${username}
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
 
     ${resp}=    Post Request Capif
-    ...    ${ccf_onboarding_url}
+    ...    ${register_user_info['ccf_onboarding_url']}
     ...    json=${request_body}
-    ...    server=https://${capif_ip}/
+    ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
     Status Should Be    201    ${resp}
 
     ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
 
     # Store dummy signede certificate
-    Store In File    ${username}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
     # Execute discover
     ${resp}=    Get Request Capif
-    ...    ${ccf_discover_url}${api_invoker_id}
-    ...    server=https://${capif_ip}/
+    ...    ${register_user_info['ccf_discover_url']}${api_invoker_id}
+    ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    cert=${{ ('${username}.crt','${username}.key') }}
+    ...    username=${INVOKER_USERNAME}
+    # ...    cert=${{ ('${username}.crt','${username}.key') }}
     # ...    cert=${cert}
     Status Should Be    200    ${resp}
+    [Teardown]    Testing Teardown
 
 Register NetApp
     [Tags]    capif_api_invoker_management-1
+    #Register Netapp
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
 
+    # Send Onboarding Request
     ${request_body}=    Create Onboarding Notification Body
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
     ${resp}=    Post Request Capif
-    ...    /api-invoker-management/v1/onboardedInvokers
-    ...    ${request_body}
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
 
-    Should Be Equal As Strings    ${resp.status_code}    201
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
 Register NetApp Already registered
     [Tags]    capif_api_invoker_management-2
 
+    #Register Netapp
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
+
+    # Send Onboarding Request
     ${request_body}=    Create Onboarding Notification Body
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
     ${resp}=    Post Request Capif
-    ...    /api-invoker-management/v1/onboardedInvokers
-    ...    ${request_body}
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
 
-    Should Be Equal As Strings    ${resp.status_code}    201
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
-    ${resp}=    Post Request Capif    /api-invoker-management/v1/onboardedInvokers    ${request_body}
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
 
-    Should Be Equal As Strings    ${resp.status_code}    403
+    Status Should Be    403    ${resp}
 
 Update Registered NetApp
     [Tags]    capif_api_invoker_management-3
 
-    ${request_body}=    Create Onboarding Notification Body
-    ${resp}=    Post Request Capif
-    ...    /api-invoker-management/v1/onboardedInvokers
-    ...    ${request_body}
+    #Register Netapp
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
 
-    Should Be Equal As Strings    ${resp.status_code}    201
+    # Send Onboarding Request
+    ${request_body}=    Create Onboarding Notification Body
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
+
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
     ${url}=    Parse Url    ${resp.headers['Location']}
 
-    ${resp}=    Put Request Capif    ${url.path}    ${request_body}    server=${NGINX_HOSTNAME}
+    ${resp}=    Put Request Capif
+    ...    ${url.path}
+    ...    ${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
 
-    Should Be Equal As Strings    ${resp.status_code}    200
+    Status Should Be    200    ${resp}
 
 Update Not Registered NetApp
     [Tags]    capif_api_invoker_management-4
 
-    ${api_invoker_id}=    Set Variable    ${API_INVOKER_NOT_REGISTERED}
+    #Register Netapp
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
 
+    # Send Onboarding Request
     ${request_body}=    Create Onboarding Notification Body
-    ${resp}=    Put Request Capif
-    ...    /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}
-    ...    ${request_body}
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
 
-    Should Be Equal As Strings    ${resp.status_code}    404
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
+
+    ${resp}=    Put Request Capif
+    ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
+    ...    ${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
+
+    Status Should Be    404    ${resp}
 
 Delete Registered NetApp
     [Tags]    capif_api_invoker_management-5
 
-    ${request_body}=    Create Onboarding Notification Body
-    ${resp}=    Post Request Capif
-    ...    /api-invoker-management/v1/onboardedInvokers
-    ...    ${request_body}
+    #Register Netapp
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
 
-    Should Be Equal As Strings    ${resp.status_code}    201
+    # Send Onboarding Request
+    ${request_body}=    Create Onboarding Notification Body
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
+
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
     ${url}=    Parse Url    ${resp.headers['Location']}
 
-    ${request_body}=    Create Onboarding Notification Body
-    ${resp}=    Delete Request Capif    ${url.path}    server=${NGINX_HOSTNAME}
+    ${resp}=    Delete Request Capif
+    ...    ${url.path}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
 
     Should Be Equal As Strings    ${resp.status_code}    204
 
 Delete Not Registered NetApp
     [Tags]    capif_api_invoker_management-6
+    #Register Netapp
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
 
-    ${api_invoker_id}=    Set Variable    ${API_INVOKER_NOT_REGISTERED}
-
+    # Send Onboarding Request
     ${request_body}=    Create Onboarding Notification Body
-    ${resp}=    Delete Request Capif
-    ...    /api-invoker-management/v1/onboardedInvokers/${api_invoker_id}
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
 
-    Should Be Equal As Strings    ${resp.status_code}    404
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
+
+    ${resp}=    Delete Request Capif
+    ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
+
+    Status Should Be    404    ${resp}
 
 
 *** Keywords ***
@@ -150,5 +243,3 @@ Testing Teardown
     Log    ${result.stdout}
     ${result}=    Run Process    cp    -vvv    *.csr    /opt/robot-tests/results/
     Log    ${result.stdout}
-
-

@@ -13,7 +13,9 @@ ${CAPIF_BEARER}
 
 *** Keywords ***
 Create CAPIF Session
-    [Arguments]    ${server}=${NONE}    ${auth}=${NONE}
+    [Documentation]    Create needed session and headers.
+    ...    If server input data is set to NONE, it will try to use NGINX_HOSTNAME variable.
+    [Arguments]    ${server}=${NONE}    ${access_token}=${NONE}
 
     IF    "${server}" != "${NONE}"
         Create Session    apisession    ${server}    verify=True
@@ -21,22 +23,22 @@ Create CAPIF Session
         Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
     END
 
-    IF    "${CAPIF_BEARER}" != ""
-        ${headers}=    Create Dictionary    Authorization=Bearer ${CAPIF_BEARER}
-    ELSE IF    "${auth}" != "${NONE}"
-        ${headers}=    Create Dictionary    Authorization=Basic ${auth}
-    ELSE IF    "${CAPIF_AUTH}" != "${NONE}" and "${CAPIF_AUTH}" != ""
-        ${headers}=    Create Dictionary    Authorization=Basic ${CAPIF_AUTH}
-    ELSE
-        ${headers}=    Create Dictionary
+    ${headers}=    Create Dictionary
+    IF    "${access_token}" != "${NONE}"
+        ${headers}=    Create Dictionary    Authorization=Bearer ${access_token}
     END
+
     RETURN    ${headers}
 
 Post Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${data}=${NONE}
+    [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}    ${data}=${NONE}
 
-    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}
+
+    IF    '${username}' != '${NONE}'
+        ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
+    END
 
     Set To Dictionary    ${headers}    Content-Type=application/json
 
@@ -47,14 +49,15 @@ Post Request Capif
     ...    json=${json}
     ...    expected_status=any
     ...    verify=${verify}
+    ...    cert=${cert}
     ...    data=${data}
     RETURN    ${resp}
 
 Get Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
+    [Arguments]    ${endpoint}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
 
-    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}
 
     IF    '${username}' != '${NONE}'
         ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
@@ -71,9 +74,13 @@ Get Request Capif
 
 Put Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${auth}=${NONE}
+    [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
 
-    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}
+
+    IF    '${username}' != '${NONE}'
+        ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
+    END
 
     ${resp}=    PUT On Session
     ...    apisession
@@ -81,15 +88,29 @@ Put Request Capif
     ...    headers=${headers}
     ...    json=${json}
     ...    expected_status=any
+    ...    verify=${verify}
+    ...    cert=${cert}
+
     RETURN    ${resp}
 
 Delete Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${server}=${NONE}    ${auth}=${NONE}
+    [Arguments]    ${endpoint}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
 
-    ${headers}=    Create CAPIF Session    ${server}    ${auth}
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}
 
-    ${resp}=    DELETE On Session    apisession    ${endpoint}    headers=${headers}    expected_status=any
+    IF    '${username}' != '${NONE}'
+        ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
+    END
+
+    ${resp}=    DELETE On Session
+    ...    apisession
+    ...    ${endpoint}
+    ...    headers=${headers}
+    ...    expected_status=any
+    ...    verify=${verify}
+    ...    cert=${cert}
+
     RETURN    ${resp}
 
 Register User At Jwt Auth
@@ -117,7 +138,15 @@ Register User At Jwt Auth
     ${ccf_discover_url}=    Set Variable    ${resp.json()['ccf_discover_url']}
 
     ${access_token}=    Get Token For User    ${username}    ${password}    ${role}
-    RETURN    ${access_token}    ${netappID}    ${ccf_onboarding_url}    ${ccf_discover_url}    ${csr_request}
+
+    ${register_user_info}=    Create Dictionary
+    ...    access_token=${access_token}
+    ...    netappID=${netappID}
+    ...    ccf_onboarding_url=${ccf_onboarding_url}
+    ...    ccf_discover_url=${ccf_discover_url}
+    ...    csr_request=${csr_request}
+
+    RETURN    ${register_user_info}
 
 Get Token For User
     [Arguments]    ${username}    ${password}    ${role}
@@ -128,7 +157,7 @@ Get Token For User
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    Set Global Variable    ${CAPIF_BEARER}    ${resp.json()["access_token"]}
+    # Set Global Variable    ${CAPIF_BEARER}    ${resp.json()["access_token"]}
     RETURN    ${resp.json()["access_token"]}
 
 Clean Test Information By HTTP Requests
@@ -139,3 +168,27 @@ Clean Test Information By HTTP Requests
 
     ${resp}=    DELETE On Session    jwtsession    /certdata
     Should Be Equal As Strings    ${resp.status_code}    200
+
+Invoker Default Onboarding
+    ${register_user_info}=    Register User At Jwt Auth
+    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
+
+    # Send Onboarding Request
+    ${request_body}=    Create Onboarding Notification Body
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
+    ...    ${register_user_info['csr_request']}
+    ...    ${INVOKER_USERNAME}
+    ${resp}=    Post Request Capif
+    ...    ${register_user_info['ccf_onboarding_url']}
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
+
+    Status Should Be    201    ${resp}
+    # Store dummy signede certificate
+    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
+
+    ${url}=    Parse Url    ${resp.headers['Location']}
+
+    RETURN    ${register_user_info}    ${url}
