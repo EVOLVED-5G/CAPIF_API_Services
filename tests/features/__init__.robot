@@ -5,10 +5,12 @@ Suite Setup     Prepare environment
 
 Force Tags      all
 
+*** Variables ***
+${CAPIF_IP}    127.0.0.1
 
 *** Keywords ***
 Prepare environment
-    Add Dns To Hosts    127.0.0.1    capifcore
+    Add Dns To Hosts    ${CAPIF_IP}    ${CAPIF_HOSTNAME}
     Reset Testing Environment
     # Obtain ca root certificate
     Retrieve Ca Root

@@ -132,7 +132,6 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    # Set Global Variable    ${APF_ID}    ${resp.json()['id']}
     ${access_token}=    Get Token For User    ${username}    ${password}    ${role}
 
     ${register_user_info}=    Create Dictionary
@@ -154,7 +153,6 @@ Get Token For User
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    # Set Global Variable    ${CAPIF_BEARER}    ${resp.json()["access_token"]}
     RETURN    ${resp.json()["access_token"]}
 
 Clean Test Information By HTTP Requests

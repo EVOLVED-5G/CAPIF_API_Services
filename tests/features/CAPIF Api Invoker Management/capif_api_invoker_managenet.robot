@@ -12,62 +12,6 @@ ${API_INVOKER_NOT_REGISTERED}       not-valid
 
 
 *** Test Cases ***
-# TestJMS
-#    [Tags]    jms_test
-
-#    #Register Netapp
-#    ${register_user_info}=    Register User At Jwt Auth
-#    ...    username=${INVOKER_USERNAME}    role=${INVOKER_ROLE}
-
-#    # On Boarding
-#    ${request_body}=    Create Onboarding Notification Body
-#    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_callback
-#    ...    ${register_user_info['csr_request']}
-#    ...    ${INVOKER_USERNAME}
-
-#    ${resp}=    Post Request Capif
-#    ...    ${register_user_info['ccf_onboarding_url']}
-#    ...    json=${request_body}
-#    ...    server=https://${CAPIF_HOSTNAME}/
-#    ...    verify=ca.crt
-#    ...    access_token=${register_user_info['access_token']}
-#    Status Should Be    201    ${resp}
-
-#    ${api_invoker_id}=    Set Variable    ${resp.json()['apiInvokerId']}
-
-#    # Store dummy signede certificate
-#    Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
-
-#    # Execute discover
-#    ${resp}=    Get Request Capif
-#    ...    ${register_user_info['ccf_discover_url']}${api_invoker_id}
-#    ...    server=https://${CAPIF_HOSTNAME}/
-#    ...    verify=ca.crt
-#    ...    username=${INVOKER_USERNAME}
-#    # ...    cert=${{ ('${username}.crt','${username}.key') }}
-#    # ...    cert=${cert}
-#    Status Should Be    200    ${resp}
-#    [Teardown]    Testing Teardown
-
-# Test JMS APF
-#     [Tags]    jms_test_apf
-#     #Register APF
-#     ${register_user_info}=    Register User At Jwt Auth
-#     ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
-
-#     # Sign certificate
-#     ${request_body}=    Sign Csr Body    ${PUBLISHER_USERNAME}    ${register_user_info['csr_request']}
-#     ${resp}=    Post Request Capif
-#     ...    sign-csr
-#     ...    json=${request_body}
-#     ...    server=http://${CAPIF_HOSTNAME}:8080/
-#     ...    verify=ca.crt
-#     ...    access_token=${register_user_info['access_token']}
-#     Status Should Be    201    ${resp}
-
-#     # Store dummy signede certificate
-#     Store In File    ${PUBLISHER_USERNAME}.crt    ${resp.json()['certificate']}
-
 Register NetApp
     [Tags]    capif_api_invoker_management-1
     #Register Netapp

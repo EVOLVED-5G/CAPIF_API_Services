@@ -16,16 +16,6 @@ ${CAPIF_CALLBACK_PORT}          8086
 
 
 *** Keywords ***
-# Initialize Test And Register
-# [Arguments]    ${password}=password    ${username}=robot    ${role}=invoker    ${description}=Testing
-
-# Reset Db
-# Register User At Jwt Auth
-# ...    password=${password}
-# ...    username=${username}
-# ...    role=${role}
-# ...    description=${description}
-
 Reset Testing Environment
     Log    Db capif.invokerdetails collection will be removed in order to isolate each test.
 
