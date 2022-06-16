@@ -8,9 +8,10 @@ ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
 ${PUBLISHER_USERNAME}           ROBOT_TESTING_PUBLISHER
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
-${PUBLISHER_ROLE}                apf
+${PUBLISHER_ROLE}               apf
 
 ${CAPIF_HOSTNAME}               capifcore
+${CAPIF_IP}                     127.0.0.1
 ${CAPIF_CALLBACK_IP}            host.docker.internal
 ${CAPIF_CALLBACK_PORT}          8086
 

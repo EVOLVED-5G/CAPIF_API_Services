@@ -6,7 +6,7 @@ Library             Collections
 
 
 *** Variables ***
-${NGINX_HOSTNAME}       http://localhost:8080
+# ${NGINX_HOSTNAME}       http://localhost:8080
 ${CAPIF_AUTH}
 ${CAPIF_BEARER}
 
@@ -19,8 +19,8 @@ Create CAPIF Session
 
     IF    "${server}" != "${NONE}"
         Create Session    apisession    ${server}    verify=True
-    ELSE
-        Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
+    # ELSE
+    #     Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
     END
 
     ${headers}=    Create Dictionary
@@ -126,7 +126,7 @@ Register User At Jwt Auth
     ...    description=${description}
     ...    cn=${username}
 
-    Create Session    jwtsession    ${NGINX_HOSTNAME}    verify=True
+    Create Session    jwtsession    http://${CAPIF_HOSTNAME}:8080    verify=True
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
@@ -156,7 +156,7 @@ Get Token For User
     RETURN    ${resp.json()["access_token"]}
 
 Clean Test Information By HTTP Requests
-    Create Session    jwtsession    ${NGINX_HOSTNAME}    verify=True
+    Create Session    jwtsession    http://${CAPIF_HOSTNAME}:8080   verify=True
 
     ${resp}=    DELETE On Session    jwtsession    /testdata
     Should Be Equal As Strings    ${resp.status_code}    200
