@@ -10,6 +10,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
         string(name: 'OPENSHIFT_URL', defaultValue: 'https://api.ocp-epg.hi.inet:6443', description: 'openshift url')
+        string(name: 'NGINX_HOSTNAME', defaultValue: 'openshift.evolved-5g.eu', description: 'Nginx eposition route in OpenShift')
         choice(name: "DEPLOYMENT", choices: ["openshift", "kubernetes-athens", "kubernetes-uma"]) 
 
     }
@@ -62,6 +63,17 @@ pipeline {
                         oc expose service/mongo-express --hostname=mongo-express.apps.ocp-epg.hi.inet
                         oc patch route nginx -p '{"metadata":{"annotations":{"kubernetes.io/tls-acme":"true"}}}'
                     '''
+                }
+            }
+        }
+        stage ('Launch robot tests') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    build job: 'Launch_Robot_Tests',
+                        parameters: [
+                            string(name: 'BRANCH_NAME', value: "${BRANCH_NAME}"),
+                            string(name: 'NGINX_HOSTNAME', value: "http://${NGINX_HOSTNAME}")
+                        ]
                 }
             }
         }
