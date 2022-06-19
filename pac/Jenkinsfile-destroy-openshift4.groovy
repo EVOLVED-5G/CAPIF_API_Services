@@ -49,11 +49,14 @@ pipeline {
         }
         stage ('Expose routes and service publicly') {
             steps {
-                dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
-                    sh '''
-                        oc delete route nginx
-                        oc delete route mongo-express 
-                    '''
+                withCredentials([string(credentialsId: 'openshiftv4', variable: 'TOKEN')]) {
+                    dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
+                        sh '''
+                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                            kubectl delete route nginx
+                            kubectl delete route mongo-express 
+                        '''
+                    }
                 }
             }
         }
