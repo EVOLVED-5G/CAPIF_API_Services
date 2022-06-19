@@ -71,7 +71,7 @@ pipeline {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                     build job: 'Launch_Robot_Tests',
                         parameters: [
-                            string(name: 'BRANCH_NAME', value: "${BRANCH_NAME}"),
+                            string(name: 'BRANCH_NAME', value: "develop"),
                             string(name: 'NGINX_HOSTNAME', value: "http://${NGINX_HOSTNAME}")
                         ]
                 }
