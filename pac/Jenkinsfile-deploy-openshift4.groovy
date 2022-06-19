@@ -72,7 +72,7 @@ pipeline {
                     build job: 'Launch_Robot_Tests',
                         parameters: [
                             string(name: 'BRANCH_NAME', value: "develop"),
-                            string(name: 'NGINX_HOSTNAME', value: "http://${NGINX_HOSTNAME}")
+                            string(name: 'NGINX_HOSTNAME', value: "https://${NGINX_HOSTNAME}")
                         ]
                 }
             }
