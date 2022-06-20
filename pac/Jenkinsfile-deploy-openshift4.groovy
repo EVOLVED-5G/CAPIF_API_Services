@@ -66,16 +66,16 @@ pipeline {
                 }
             }
         }
-        stage ('Launch robot tests') {
-            steps {
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                    build job: 'Launch_Robot_Tests',
-                        parameters: [
-                            string(name: 'BRANCH_NAME', value: "develop"),
-                            string(name: 'NGINX_HOSTNAME', value: "https://${NGINX_HOSTNAME}")
-                        ]
-                }
-            }
-        }
+        // stage ('Launch robot tests') {
+        //     steps {
+        //         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+        //             build job: 'Launch_Robot_Tests',
+        //                 parameters: [
+        //                     string(name: 'BRANCH_NAME', value: "develop"),
+        //                     string(name: 'NGINX_HOSTNAME', value: "https://${NGINX_HOSTNAME}")
+        //                 ]
+        //         }
+        //     }
+        // }
     }
 }
