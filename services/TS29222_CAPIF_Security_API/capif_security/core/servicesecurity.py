@@ -106,7 +106,7 @@ def create_servicesecurity(api_invoker_id, service_security):
             services_security.insert_one(rec)
             myclient.close()
             res = Response(json.dumps(service_security, cls=JSONEncoder), status=201, mimetype='application/json')
-            res.headers['Location'] = "http://localhost:8080/capif-security/v1/trustedInvokers/" + str(
+            res.headers['Location'] = "https://openshift.evolved-5g.eu/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
 
@@ -223,7 +223,7 @@ def update_servicesecurity(api_invoker_id, service_security):
             services_security.replace_one(old_object, new_object)
             myclient.close()
             res = Response(json.dumps(service_security, cls=JSONEncoder), status=200, mimetype='application/json')
-            res.headers['Location'] = "http://localhost:8080/capif-security/v1/trustedInvokers/" + str(
+            res.headers['Location'] = "https://openshift.evolved-5g.eu/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
 
