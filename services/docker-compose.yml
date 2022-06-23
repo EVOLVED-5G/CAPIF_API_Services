@@ -118,6 +118,8 @@ services:
       - "8080:8080"
       - "443:443"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
+    environment:
+      - CN=capifcore
     hostname: capifcore
     volumes:
       - ./nginx/certs:/etc/nginx/certs

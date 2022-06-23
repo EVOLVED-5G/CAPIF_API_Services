@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from OpenSSL.crypto import (dump_certificate_request, dump_privatekey,
                             PKey, TYPE_RSA, X509Req)
 from OpenSSL.SSL import FILETYPE_PEM
+import socket
 
 
 def parse_url(input):
@@ -75,3 +76,6 @@ def create_csr(csr_file_path, private_key_path, cn):
         f.close()
 
     return csr_request
+
+def get_ip_from_hostname(hostname):
+    return socket.gethostbyname(hostname)

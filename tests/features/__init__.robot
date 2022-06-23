@@ -6,10 +6,11 @@ Suite Setup     Prepare environment
 Force Tags      all
 
 *** Variables ***
-
+${CAPIF_URL}    localhost
 
 *** Keywords ***
 Prepare environment
+    ${CAPIF_IP}=     Get Ip From Hostname     ${CAPIF_URL}
     Add Dns To Hosts    ${CAPIF_IP}    ${CAPIF_HOSTNAME}
     Reset Testing Environment
     # Obtain ca root certificate
