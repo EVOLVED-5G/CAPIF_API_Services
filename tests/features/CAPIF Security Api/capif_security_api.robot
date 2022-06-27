@@ -278,7 +278,8 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
 	[Tags]    capif_security_api-14
      #Register APF
     ${register_user_info_publisher}=    Publisher Default Registration
-
+    
+    ${request_body}=    Create Service Security Body
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/update
 	...    json=${request_body}
