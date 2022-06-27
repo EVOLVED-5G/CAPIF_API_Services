@@ -37,16 +37,16 @@ services:
       - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
-#  capif-events:
-#    build: TS29222_CAPIF_Events_API/.
-#    expose:
-#      - "8080"
-#    image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
-#  api-invocation-logs:
-#    build: TS29222_CAPIF_Logging_API_Invocation_API/.
-#    expose:
-#      - "8080"
-#    image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
+  capif-events:
+    build: TS29222_CAPIF_Events_API/.
+    expose:
+      - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
+  api-invocation-logs:
+    build: TS29222_CAPIF_Logging_API_Invocation_API/.
+    expose:
+      - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
   published-apis:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
@@ -60,16 +60,16 @@ services:
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
-#  capif-security:
-#    build: TS29222_CAPIF_Security_API/.
-#    expose:
-#      - "8080"
-#    volumes:
-#      - ./TS29222_CAPIF_Security_API:/usr/src/app
-#    restart: unless-stopped
-#    image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
-#    extra_hosts:
-#      - host.docker.internal:host-gateway
+  capif-security:
+    build: TS29222_CAPIF_Security_API/.
+    expose:
+      - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Security_API:/usr/src/app
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
+    extra_hosts:
+      - host.docker.internal:host-gateway
   easy_rsa:
     build:
       context: ./easy_rsa
@@ -121,6 +121,7 @@ services:
     environment:
       - CN=capifcore
     hostname: capifcore
+    # hostname: openshift.evolved-5g.eu
     volumes:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:
@@ -134,5 +135,5 @@ services:
 #      - api-invocation-logs
       - published-apis
 #      - capif-routing-info
-#      - capif-security
-#      - easy_rsa
+      - capif-security
+      - capif-events

@@ -11,6 +11,7 @@ LOCALITY="Madrid"        # Locality Name (e.g. city)
 ORGNAME="Telefonica I+D" # Organization Name (eg, company)
 ORGUNIT="Innovation"                  # Organizational Unit Name (eg. section)
 COMMONNAME="$CN"
+# COMMONNAME="openshift.evolved-5g.eu"
 EMAIL="inno@tid.es"    # certificate's email address
 # optional extra details
 CHALLENGE=""                # challenge password
