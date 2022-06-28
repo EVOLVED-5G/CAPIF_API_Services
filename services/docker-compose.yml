@@ -119,8 +119,8 @@ services:
       - "443:443"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
     environment:
-      - CN=capifcore
-    hostname: capifcore
+      - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
+    hostname: ${CAPIF_HOSTNAME}
     # hostname: openshift.evolved-5g.eu
     volumes:
       - ./nginx/certs:/etc/nginx/certs

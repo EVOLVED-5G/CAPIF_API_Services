@@ -10,6 +10,8 @@ ${CAPIF_URL}    localhost
 
 *** Keywords ***
 Prepare environment
+    Log   ${CAPIF_URL}
+    Log   ${CAPIF_HOSTNAME}
     ${CAPIF_IP}=     Get Ip From Hostname     ${CAPIF_URL}
     Add Dns To Hosts    ${CAPIF_IP}    ${CAPIF_HOSTNAME}
     Reset Testing Environment
