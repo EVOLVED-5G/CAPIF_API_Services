@@ -1,6 +1,7 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
+Library        XML
 Resource        /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 Test Setup      Reset Testing Environment
