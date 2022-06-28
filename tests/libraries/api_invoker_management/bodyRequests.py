@@ -1,14 +1,14 @@
-def create_onboarding_notification_body():
-    return {
-        "notificationDestination": "notificationDestination",
+def create_onboarding_notification_body(notification_destination="NotificationDestination", api_invoker_public_key="ApiInvokerPublicKey",api_invoker_information='ROBOT_TESTING'):
+    data = {
+        "notificationDestination": notification_destination,
         "supportedFeatures": "fffffff",
-        "apiInvokerInformation": "ROBOT_TESTING",
+        "apiInvokerInformation": api_invoker_information,
         "websockNotifConfig": {
             "requestWebsocketUri": True,
             "websocketUri": "websocketUri"
         },
         "onboardingInformation": {
-            "apiInvokerPublicKey": "apiInvokerPublicKey",
+            "apiInvokerPublicKey": api_invoker_public_key.decode("utf-8"),
             "onboardingSecret": "onboardingSecret",
             "apiInvokerCertificate": "apiInvokerCertificate"
         },
@@ -331,3 +331,5 @@ def create_onboarding_notification_body():
             }
         }]
     }
+
+    return (data)
