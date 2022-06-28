@@ -46,7 +46,6 @@ def subscriber_id_subscriptions_post(subscriber_id, body):  # noqa: E501
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    # capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"or": [{"role": "invoker"}, {"role": "apf"}]}]})
     capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"$or": [{"role": "invoker"}, {"role": "apf"}]}]})
     
     if capif_user is None:
