@@ -24,16 +24,14 @@ pipeline {
     stages {
         stage('Login openshift') {
             steps {
-                withCredentials([string(credentialsId: 'openshiftv4', variable: 'TOKEN')]) {
-                    dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
+                withCredentials([string(credentialsId: 'token-os-capif', variable: 'TOKEN')]) {
+                    dir ("${env.WORKSPACE}/iac/terraform/") {
                         sh '''
-                            cp kubeconfigOSv4 ~/kubeconfig
-                            export KUBECONFIG="./kubeconfig"
                             oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                         '''
-                        readFile('kubeconfigOSv4')
                     }
                 }
+
             }
         }
         stage ('Deploy app in kubernetes') {
