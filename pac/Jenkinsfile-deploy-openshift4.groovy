@@ -1,5 +1,34 @@
+def getContext(deployment) {
+    String var = deployment
+    if ('openshift'.equals(var)) {
+        return 'evol5-nef/api-ocp-epg-hi-inet:6443/system:serviceaccount:evol5-nef:deployer'
+    } else {
+        return 'kubernetes-admin@kubernetes'
+    }
+}
+
+def getPath(deployment) {
+    String var = deployment
+    if ('openshift'.equals(var)) {
+        return 'kubeconfig'
+    } else {
+        return '~/kubeconfig'
+    }
+}
+
+def getAgent(deployment) {
+    String var = deployment
+    if ('openshift'.equals(var)) {
+        return 'evol5-openshift'
+    }else if ('kubernetes-athens'.equals(var)) {
+        return 'evol5-athens'
+    }else {
+        return 'evol5-slave'
+    }
+}
+
 pipeline {
-    agent { node {label 'evol5-openshift'}  }
+    agent { node { label 'evol5-openshift' }  }
     options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
@@ -11,15 +40,17 @@ pipeline {
         string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
         string(name: 'OPENSHIFT_URL', defaultValue: 'https://api.ocp-epg.hi.inet:6443', description: 'openshift url')
         string(name: 'NGINX_HOSTNAME', defaultValue: 'openshift.evolved-5g.eu', description: 'Nginx eposition route in OpenShift')
-        choice(name: "DEPLOYMENT", choices: ["openshift", "kubernetes-athens", "kubernetes-uma"]) 
-
+        choice(name: 'DEPLOYMENT', choices: ['openshift', 'kubernetes-athens', 'kubernetes-uma'])
     }
     environment {
         // This is to work around a jenkins bug on the first build of a multi-branch job
         // https://issues.jenkins-ci.org/browse/JENKINS-40574 - it is marked resolved but the last comment says it doesn't work for declaritive pipelines
         BRANCH_NAME = "${params.BRANCH_NAME}"
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
-        OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
+        OPENSHIFT_URL = "${params.OPENSHIFT_URL}"
+        DEPLOYMENT = "${params.DEPLOYMENT}"
+        CONFIG_PATH = getPath("${params.DEPLOYMENT}")
+        CONFIG_CONTEXT = getContext("${params.DEPLOYMENT}")
     }
     stages {
         stage('Login openshift') {
@@ -66,16 +97,16 @@ pipeline {
                 }
             }
         }
-        // stage ('Launch robot tests') {
-        //     steps {
-        //         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-        //             build job: 'Launch_Robot_Tests',
-        //                 parameters: [
-        //                     string(name: 'BRANCH_NAME', value: "develop"),
-        //                     string(name: 'CAPIF_HOSTNAME', value: "NGINX_HOSTNAME")
-        //                 ]
-        //         }
-        //     }
-        // }
+    // stage ('Launch robot tests') {
+    //     steps {
+    //         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+    //             build job: 'Launch_Robot_Tests',
+    //                 parameters: [
+    //                     string(name: 'BRANCH_NAME', value: "develop"),
+    //                     string(name: 'CAPIF_HOSTNAME', value: "NGINX_HOSTNAME")
+    //                 ]
+    //         }
+    //     }
+    // }
     }
 }
