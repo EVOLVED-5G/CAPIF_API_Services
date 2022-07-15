@@ -101,7 +101,7 @@ pipeline {
     //             build job: 'Launch_Robot_Tests',
     //                 parameters: [
     //                     string(name: 'BRANCH_NAME', value: "develop"),
-    //                     string(name: 'CAPIF_HOSTNAME', value: "NGINX_HOSTNAME")
+    //                     string(name: 'CAPIF_HOSTNAME', value: "$NGINX_HOSTNAME")
     //                 ]
     //         }
     //     }
