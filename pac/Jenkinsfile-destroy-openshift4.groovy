@@ -24,11 +24,8 @@ pipeline {
                withCredentials([string(credentialsId: 'token-os-capif', variable: 'TOKEN')]) {
                     dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
-                            cp kubeconfigOSv4 ~/kubeconfig
-                            export KUBECONFIG="./kubeconfig"
                             oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                         '''
-                        readFile('kubeconfigOSv4')
                     }
                 }
             }
