@@ -70,16 +70,18 @@ pipeline {
                 retry(2)
             }
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '328ab84a-aefc-41c1-aca2-1dfae5b150d2', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                    dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
-                        sh '''
-                            terraform init  -reconfigure                                             \
-                                -backend-config="bucket=evolved5g-openshift-terraform-states"        \
-                                -backend-config="key=capif"
-                            terraform validate
-                            terraform plan -var CAPIF_HOSTNAME=${NGINX_HOSTNAME}  -out deployment.tfplan
-                            terraform apply --auto-approve -lock-timeout=15m deployment.tfplan
-                        '''
+                withKubeConfig([credentialsId: 'kubeconfig-os-evol5-capif']) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '328ab84a-aefc-41c1-aca2-1dfae5b150d2', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                        dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
+                            sh '''
+                                terraform init  -reconfigure                                             \
+                                    -backend-config="bucket=evolved5g-openshift-terraform-states"        \
+                                    -backend-config="key=capif"
+                                terraform validate
+                                terraform plan -var CAPIF_HOSTNAME=${NGINX_HOSTNAME}  -out deployment.tfplan
+                                terraform apply --auto-approve -lock-timeout=15m deployment.tfplan
+                            '''
+                        }
                     }
                 }
             }
