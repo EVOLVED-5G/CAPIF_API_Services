@@ -60,10 +60,8 @@ pipeline {
                         sh '''
                             oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                         '''
-                        readFile('kubeconfig-os-evol5-capif')
                     }
                 }
-
             }
         }
         stage ('Deploy app in kubernetes') {
