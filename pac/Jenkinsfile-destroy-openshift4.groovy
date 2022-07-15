@@ -1,3 +1,32 @@
+def getContext(deployment) {
+    String var = deployment
+    if ('openshift'.equals(var)) {
+        return 'evol5-nef/api-ocp-epg-hi-inet:6443/system:serviceaccount:evol5-nef:deployer'
+    } else {
+        return 'kubernetes-admin@kubernetes'
+    }
+}
+
+def getPath(deployment) {
+    String var = deployment
+    if ('openshift'.equals(var)) {
+        return 'kubeconfig'
+    } else {
+        return '~/kubeconfig'
+    }
+}
+
+def getAgent(deployment) {
+    String var = deployment
+    if ('openshift'.equals(var)) {
+        return 'evol5-openshift'
+    }else if ('kubernetes-athens'.equals(var)) {
+        return 'evol5-athens'
+    }else {
+        return 'evol5-slave'
+    }
+}
+
 pipeline {
     agent { node {label 'evol5-openshift'}  }
     options {
@@ -10,6 +39,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
         string(name: 'OPENSHIFT_URL', defaultValue: 'https://api.ocp-epg.hi.inet:6443', description: 'openshift url')
+        choice(name: 'DEPLOYMENT', choices: ['openshift', 'kubernetes-athens', 'kubernetes-uma'])
     }
     environment {
         // This is to work around a jenkins bug on the first build of a multi-branch job
@@ -17,6 +47,9 @@ pipeline {
         BRANCH_NAME = "${params.BRANCH_NAME}"
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
         OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
+        DEPLOYMENT = "${params.DEPLOYMENT}"
+        CONFIG_PATH = getPath("${params.DEPLOYMENT}")
+        CONFIG_CONTEXT = getContext("${params.DEPLOYMENT}")
     }
     stages {
         stage('Login openshift') {
