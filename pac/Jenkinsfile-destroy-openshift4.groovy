@@ -1,32 +1,3 @@
-def getContext(deployment) {
-    String var = deployment
-    if ('openshift'.equals(var)) {
-        return 'evol5-nef/api-ocp-epg-hi-inet:6443/system:serviceaccount:evol5-nef:deployer'
-    } else {
-        return 'kubernetes-admin@kubernetes'
-    }
-}
-
-def getPath(deployment) {
-    String var = deployment
-    if ('openshift'.equals(var)) {
-        return 'kubeconfig'
-    } else {
-        return '~/kubeconfig'
-    }
-}
-
-def getAgent(deployment) {
-    String var = deployment
-    if ('openshift'.equals(var)) {
-        return 'evol5-openshift'
-    }else if ('kubernetes-athens'.equals(var)) {
-        return 'evol5-athens'
-    }else {
-        return 'evol5-slave'
-    }
-}
-
 pipeline {
     agent { node {label 'evol5-openshift'}  }
     options {
@@ -47,9 +18,6 @@ pipeline {
         BRANCH_NAME = "${params.BRANCH_NAME}"
         AWS_DEFAULT_REGION = "${params.AWS_DEFAULT_REGION}"
         OPENSHIFT_URL= "${params.OPENSHIFT_URL}"
-        DEPLOYMENT = "${params.DEPLOYMENT}"
-        CONFIG_PATH = getPath("${params.DEPLOYMENT}")
-        CONFIG_CONTEXT = getContext("${params.DEPLOYMENT}")
     }
     stages {
         stage('Login openshift') {
@@ -57,7 +25,7 @@ pipeline {
                withCredentials([string(credentialsId: 'token-os-capif', variable: 'TOKEN')]) {
                     dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
-                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                        oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                         '''
                     }
                 }
