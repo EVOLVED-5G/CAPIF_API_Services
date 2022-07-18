@@ -920,64 +920,64 @@ resource "kubernetes_service" "mongo-express_service" {
 #############################################
 # EASY RSA
 #############################################
-# resource "kubernetes_deployment" "easy_rsa" {
-#   metadata {
-#     name      = "easy_rsa"
-#     namespace = "evol5-capif"
-#     labels = {
-#       app = "easy_rsa"
-#     }
-#   }
+resource "kubernetes_deployment" "easy_rsa" {
+  metadata {
+    name      = "easy_rsa"
+    namespace = "evol5-capif"
+    labels = {
+      app = "easy_rsa"
+    }
+  }
 
-#   spec {
-#     replicas = 1
-#     selector {
-#       match_labels = {
-#         app = "easy_rsa"
-#       }
-#     }
-#     template {
-#       metadata {
-#         labels = {
-#           app = "easy_rsa"
-#         }
-#       }
-#       spec {
-#         enable_service_links = false
-#         container {
-#           image = "easy_rsa:latest"
-#           name  = "easy_rsa"
-#           resources {
-#             limits = {
-#               cpu    = "125m"
-#               memory = "256Mi"
-#             }
-#             requests = {
-#               cpu    = "65m"
-#               memory = "50Mi"
-#             }
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "easy_rsa"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "easy_rsa"
+        }
+      }
+      spec {
+        enable_service_links = false
+        container {
+          image = "easy_rsa:latest"
+          name  = "easy_rsa"
+          resources {
+            limits = {
+              cpu    = "125m"
+              memory = "256Mi"
+            }
+            requests = {
+              cpu    = "65m"
+              memory = "50Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
-# resource "kubernetes_service" "easy_rsa" {
-#   metadata {
-#     name      = "easy_rsa"
-#     namespace = "evol5-capif"
-#   }
-#   spec {
-#     selector = {
-#       app = kubernetes_deployment.easy_rsa.spec.0.template.0.metadata[0].labels.app
-#     }
-#     port {
-#       port        = 8080
-#       target_port = 8080
-#     }
-#   }
-# }
+resource "kubernetes_service" "easy_rsa" {
+  metadata {
+    name      = "easy_rsa"
+    namespace = "evol5-capif"
+  }
+  spec {
+    selector = {
+      app = kubernetes_deployment.easy_rsa.spec.0.template.0.metadata[0].labels.app
+    }
+    port {
+      port        = 8080
+      target_port = 8080
+    }
+  }
+}
 
 
 
