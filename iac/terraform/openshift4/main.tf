@@ -1081,7 +1081,7 @@ resource "kubernetes_service" "nginx_service" {
      port {
       name = "nginx-https"
       port        = 443
-      target_port = "https"
+      target_port = 443
     }
   }
 }
