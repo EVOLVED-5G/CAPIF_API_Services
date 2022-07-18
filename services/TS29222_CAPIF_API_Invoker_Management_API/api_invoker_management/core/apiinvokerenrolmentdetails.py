@@ -33,7 +33,7 @@ def add_apiinvokerenrolmentdetail(apiinvokerenrolmentdetail):
 
         import requests
 
-        url = "http://easy_rsa:8080/sign-csr"
+        url = "http://easy-rsa:8080/sign-csr"
 
         payload = dict()
         payload['csr'] = apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key

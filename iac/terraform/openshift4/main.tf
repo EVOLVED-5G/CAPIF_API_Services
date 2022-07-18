@@ -920,12 +920,12 @@ resource "kubernetes_service" "mongo-express_service" {
 #############################################
 # EASY RSA
 #############################################
-resource "kubernetes_deployment" "easy_rsa" {
+resource "kubernetes_deployment" "easy-rsa" {
   metadata {
-    name      = "easy_rsa"
+    name      = "easy-rsa"
     namespace = "evol5-capif"
     labels = {
-      app = "easy_rsa"
+      app = "easy-rsa"
     }
   }
 
@@ -933,20 +933,20 @@ resource "kubernetes_deployment" "easy_rsa" {
     replicas = 1
     selector {
       match_labels = {
-        app = "easy_rsa"
+        app = "easy-rsa"
       }
     }
     template {
       metadata {
         labels = {
-          app = "easy_rsa"
+          app = "easy-rsa"
         }
       }
       spec {
         enable_service_links = false
         container {
-          image = "easy_rsa:latest"
-          name  = "easy_rsa"
+          image = "easy-rsa:latest"
+          name  = "easy-rsa"
           resources {
             limits = {
               cpu    = "125m"
@@ -963,14 +963,14 @@ resource "kubernetes_deployment" "easy_rsa" {
   }
 }
 
-resource "kubernetes_service" "easy_rsa" {
+resource "kubernetes_service" "easy-rsa" {
   metadata {
-    name      = "easy_rsa"
+    name      = "easy-rsa"
     namespace = "evol5-capif"
   }
   spec {
     selector = {
-      app = kubernetes_deployment.easy_rsa.spec.0.template.0.metadata[0].labels.app
+      app = kubernetes_deployment.easy-rsa.spec.0.template.0.metadata[0].labels.app
     }
     port {
       port        = 8080

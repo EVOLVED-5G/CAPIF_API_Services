@@ -77,7 +77,7 @@ cd services/
 
 ./run.sh
 
-docker exec -it $(docker ps -aqf "name=nginx") bash -c "curl --request GET 'http://easy_rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt"
+docker exec -it $(docker ps -aqf "name=nginx") bash -c "curl --request GET 'http://easy-rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt"
 ```
 This will build and run all services using docker images, including mongodb and nginx locally and in background, and import ca.crt to nginx.
 
