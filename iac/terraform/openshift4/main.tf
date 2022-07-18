@@ -1074,7 +1074,7 @@ resource "kubernetes_service" "nginx_service" {
     }
     port {
       name = "nginx-http"
-      port        = "http"
+      port        = 80
       target_port = 8080
     }
 
