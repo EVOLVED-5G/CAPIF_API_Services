@@ -121,7 +121,6 @@ services:
     environment:
       - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
     hostname: ${CAPIF_HOSTNAME}
-    # hostname: openshift.evolved-5g.eu
     volumes:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:

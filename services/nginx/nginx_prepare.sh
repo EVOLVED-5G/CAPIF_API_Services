@@ -18,7 +18,7 @@ EMAIL="inno@tid.es"    # certificate's email address
 CHALLENGE=""                # challenge password
 COMPANY=""                  # company name
 
-DAYS="-days 365"
+# DAYS="-days 365"
 
 # create the certificate request
 #cat <<__EOF__ | openssl req -new $DAYS -nodes -keyout client.key -out client.csr

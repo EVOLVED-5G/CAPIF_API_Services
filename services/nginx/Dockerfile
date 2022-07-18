@@ -8,4 +8,6 @@ COPY ./certs/sign_req_body_tmp.json /etc/nginx/certs/sign_req_body_tmp.json
 COPY ./nginx.conf /etc/nginx/nginx.conf
 COPY ./nginx_prepare.sh .
 
+RUN chmod a+x nginx_prepare.sh
+
 CMD ["sh", "nginx_prepare.sh"]
