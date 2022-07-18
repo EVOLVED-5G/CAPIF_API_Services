@@ -945,7 +945,7 @@ resource "kubernetes_deployment" "easy-rsa" {
       spec {
         enable_service_links = false
         container {
-          image = "easy-rsa:latest"
+          image = "dockerhub.hi.inet/evolved-5g/easy-rsa:latest"
           name  = "easy-rsa"
           resources {
             limits = {
@@ -1056,7 +1056,8 @@ resource "kubernetes_deployment" "nginx" {
     kubernetes_service.api_invocation_logs_service,
     kubernetes_service.publish_service_service,
     kubernetes_service.routing_info_service,
-    kubernetes_service.security_service
+    kubernetes_service.security_service,
+    kubernetes_service.easy-rsa
   ]
 }
 
