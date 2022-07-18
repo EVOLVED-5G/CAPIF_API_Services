@@ -5,6 +5,8 @@ cd $folder
 
 openssl genrsa -out server.key 2048
 
+echo "NGINX Hostname is $CAPIF_HOSTNAME"
+
 COUNTRY="ES"                # 2 letter country-code
 STATE="Madrid"            # state or province name
 LOCALITY="Madrid"        # Locality Name (e.g. city)
