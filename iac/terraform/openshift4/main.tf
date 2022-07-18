@@ -1073,11 +1073,13 @@ resource "kubernetes_service" "nginx_service" {
       app = kubernetes_deployment.nginx.spec.0.template.0.metadata[0].labels.app
     }
     port {
+      name = "nginx-http"
       port        = 8080
       target_port = 8080
     }
 
      port {
+      name = "nginx-https"
       port        = 443
       target_port = 443
     }
