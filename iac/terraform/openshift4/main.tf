@@ -1074,14 +1074,14 @@ resource "kubernetes_service" "nginx_service" {
     }
     port {
       name = "nginx-http"
-      port        = 8080
-      target_port = 8080
+      port        = 80
+      target_port = "http"
     }
 
      port {
       name = "nginx-https"
       port        = 443
-      target_port = 443
+      target_port = "https"
     }
   }
 }
