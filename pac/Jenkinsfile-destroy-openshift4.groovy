@@ -52,7 +52,13 @@ pipeline {
                         sh '''
                             oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                             kubectl delete route nginx
-                            kubectl delete route mongo-express 
+                            kubectl delete route ca-root
+                            kubectl delete route cert-data
+                            kubectl delete route gettoken
+                            kubectl delete route register
+                            kubectl delete route sign-csr
+                            kubectl delete route test-data
+                            kubectl delete route mongo-express
                         '''
                     }
                 }
