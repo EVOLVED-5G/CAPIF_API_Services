@@ -21,14 +21,14 @@ Prepare environment
         Log    We will use a local deployment
         Add Dns To Hosts    127.0.0.1    ${CAPIF_HOSTNAME}
     END
-
-    Reset Testing Environment
     # Obtain ca root certificate
     Retrieve Ca Root
 
+    Reset Testing Environment
+
 Retrieve Ca Root
     [Documentation]    This keyword retrieve ca.root from CAPIF and store it at ca.crt in order to use at TLS communications
-    ${resp}=    Get Request Capif    /ca-root    server=http://${CAPIF_HOSTNAME}:8080
+    ${resp}=    Get Request Capif    /ca-root    server=http://${CAPIF_HOSTNAME}
     Status Should Be    201    ${resp}
     Log    ${resp.json()['certificate']}
     Store In File    ca.crt    ${resp.json()['certificate']}
