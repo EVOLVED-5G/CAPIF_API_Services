@@ -9,6 +9,8 @@ from flask import current_app
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 
+mqtt = current_app.config['INSTANCE_MQTT']
+
 @jwt_required()
 def apf_id_service_apis_get(apf_id):  # noqa: E501
     """apf_id_service_apis_get
@@ -63,9 +65,7 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
 
     res = serviceapidescriptions.add_serviceapidescription(apf_id, body)
    
-    if res.status == "201 CREATED":
-        current_app.logger.info("HOLA", "He entrado en la parte de mqtt")
-        mqtt = current_app.config['INSTANCE_MQTT']
+    if res.status_code == 201:
         mqtt.publish("/events","SERVICE_API_AVAILABLE")
     return res
 
@@ -100,6 +100,8 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
 
     res = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
 
+    if res.status_code == 204:
+        mqtt.publish("/events","SERVICE_API_UNAVAILABLE")
     return res
 
 
@@ -159,5 +161,8 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     response = serviceapidescriptions.update_serviceapidescription(service_api_id, apf_id, body)
+
+    if response.status_code == 200:
+        mqtt.publish("/events","SERVICE_API_UPDATE")
     # return response,200
     return response
