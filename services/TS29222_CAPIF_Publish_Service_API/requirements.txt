@@ -11,3 +11,4 @@ setuptools >= 21.0.0
 Flask == 2.0.3
 pymongo == 4.0.1
 flask_jwt_extended
+flask-mqtt

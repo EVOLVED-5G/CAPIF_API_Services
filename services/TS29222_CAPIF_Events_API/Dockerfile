@@ -4,6 +4,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/requirements.txt
+COPY config.yaml /usr/src/app/config.yaml
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 

@@ -5,9 +5,9 @@ from ..core import serviceapidescriptions
 import json
 from flask import Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import current_app
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
-
 
 @jwt_required()
 def apf_id_service_apis_get(apf_id):  # noqa: E501
@@ -62,6 +62,11 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     res = serviceapidescriptions.add_serviceapidescription(apf_id, body)
+   
+    if res.status == "201 CREATED":
+        current_app.logger.info("HOLA", "He entrado en la parte de mqtt")
+        mqtt = current_app.config['INSTANCE_MQTT']
+        mqtt.publish("/events","SERVICE_API_AVAILABLE")
     return res
 
 
