@@ -89,8 +89,14 @@ pipeline {
             steps {
                 dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                     sh '''
-                        oc expose service/nginx --hostname=${NGINX_HOSTNAME}
                         oc expose service/mongo-express --hostname=mongo-express.apps.ocp-epg.hi.inet
+                        oc expose service/nginx --name=ca-root --hostname=${NGINX_HOSTNAME} --path=/ca-root
+                        oc expose service/nginx --name=cert-data --hostname=${NGINX_HOSTNAME} --path=/certdata
+                        oc expose service/nginx --name=gettoken --hostname=${NGINX_HOSTNAME} --path=/gettoken
+                        oc expose service/nginx --name=register --hostname=${NGINX_HOSTNAME} --path=/register
+                        oc expose service/nginx --name=sign-csr --hostname=${NGINX_HOSTNAME} --path=/sign-csr
+                        oc expose service/nginx --name=test-data --hostname=${NGINX_HOSTNAME} --path=/testdata
+                        oc create route passthrough nginx --hostname=nginx.apps.ocp-epg.hi.inet --service=nginx --port=nginx-https --insecure-policy=None
                         oc patch route nginx -p '{"metadata":{"annotations":{"kubernetes.io/tls-acme":"true"}}}'
                     '''
                 }
