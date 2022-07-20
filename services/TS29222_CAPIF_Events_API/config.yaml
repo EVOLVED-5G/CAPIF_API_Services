@@ -1,0 +1,19 @@
+mongo: {
+  'user': 'root',
+  'password': 'example',
+  'db': 'capif',
+  'col': 'eventsdetails',
+  'jwt': 'user',
+  'host': 'mongo',
+  'col_user': 'user',
+  'port': "27017"
+}
+
+mqtt: {
+  'url': 'mosquitto',
+  'port': 1883,
+  'username': '',
+  'password': '',
+  'keepalive': 10,
+  'tls': False
+}

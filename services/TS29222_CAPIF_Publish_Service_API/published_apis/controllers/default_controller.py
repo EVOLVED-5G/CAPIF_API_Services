@@ -5,6 +5,7 @@ from ..core import serviceapidescriptions
 import json
 from flask import Response
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import current_app
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 
@@ -62,6 +63,10 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     res = serviceapidescriptions.add_serviceapidescription(apf_id, body)
+   
+    if res.status_code == 201:
+        mqtt = current_app.config['INSTANCE_MQTT']
+        mqtt.publish("/events","SERVICE_API_AVAILABLE")
     return res
 
 
@@ -87,14 +92,17 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
                               cause="User role must be apf")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    if connexion.request.is_json:
-        body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
+    #if connexion.request.is_json:
+       # body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     # service_apis = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
     # response = service_apis, 204
 
     res = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
 
+    if res.status_code == 204:
+        mqtt = current_app.config['INSTANCE_MQTT']
+        mqtt.publish("/events","SERVICE_API_UNAVAILABLE")
     return res
 
 
@@ -154,5 +162,9 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     response = serviceapidescriptions.update_serviceapidescription(service_api_id, apf_id, body)
+
+    if response.status_code == 200:
+        mqtt = current_app.config['INSTANCE_MQTT']
+        mqtt.publish("/events","SERVICE_API_UPDATE")
     # return response,200
     return response
