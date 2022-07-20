@@ -108,7 +108,9 @@ pipeline {
             steps {
                 dir ("${env.WORKSPACE}") {
                     sh """
+                        echo "Retrieve docker image"
                         docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                        echo "Executing tests"
                         docker run -t \
                             --network="host" \
                             --rm \
