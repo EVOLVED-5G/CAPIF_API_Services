@@ -102,16 +102,17 @@ pipeline {
                 }
             }
         }
-    // stage ('Launch robot tests') {
-    //     steps {
-    //         catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-    //             build job: 'Launch_Robot_Tests',
-    //                 parameters: [
-    //                     string(name: 'BRANCH_NAME', value: "develop"),
-    //                     string(name: 'CAPIF_HOSTNAME', value: "$NGINX_HOSTNAME")
-    //                 ]
-    //         }
-    //     }
-    // }
+        stage ('Launch robot tests') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    build job: 'Launch_Robot_Tests',
+                        parameters: [
+                            string(name: 'BRANCH_NAME', value: "${BRANCH_NAME}"),
+                            booleanParam(name: 'RUN_LOCAL_CAPIF', value: false),
+                            string(name: 'CAPIF_HOSTNAME', value: "${NGINX_HOSTNAME}")
+                        ]
+                }
+            }
+        }
+
     }
-}
