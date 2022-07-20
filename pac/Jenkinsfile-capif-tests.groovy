@@ -18,10 +18,6 @@ String robotTestSelection(String tests, String customTest) {
     return tests == 'NONE' ? ' ' : '--include ' + test_plan[tests]
 }
 
-String setupLocalCapifPort(String localCapif) {
-    return (localCapif) ? ' ' : '8080'
-}
-
 test_plan = [
     'All Capif Services': 'all',
     'CAPIF Api Invoker Management': 'capif_api_invoker_management',
