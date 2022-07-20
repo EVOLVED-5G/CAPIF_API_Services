@@ -15,10 +15,10 @@ ${CAPIF_BEARER}
 Create CAPIF Session
     [Documentation]    Create needed session and headers.
     ...    If server input data is set to NONE, it will try to use NGINX_HOSTNAME variable.
-    [Arguments]    ${server}=${NONE}    ${access_token}=${NONE}
+    [Arguments]    ${server}=${NONE}    ${access_token}=${NONE}   ${verify}=${NONE}
 
     IF    "${server}" != "${NONE}"
-        Create Session    apisession    ${server}    verify=True
+        Create Session    apisession    ${server}    verify=${verify}
     # ELSE
     #     Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
     END
@@ -34,7 +34,7 @@ Post Request Capif
     [Timeout]    60s
     [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}    ${data}=${NONE}
 
-    ${headers}=    Create CAPIF Session    ${server}    ${access_token}
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}   ${verify}
 
     IF    '${username}' != '${NONE}'
         ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
@@ -126,7 +126,7 @@ Register User At Jwt Auth
     ...    description=${description}
     ...    cn=${username}
 
-    Create Session    jwtsession    http://${CAPIF_HOSTNAME}:8080    verify=True
+    Create Session    jwtsession    http://${CAPIF_HOSTNAME}    verify=True
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
@@ -156,7 +156,7 @@ Get Token For User
     RETURN    ${resp.json()["access_token"]}
 
 Clean Test Information By HTTP Requests
-    Create Session    jwtsession    http://${CAPIF_HOSTNAME}:8080   verify=True
+    Create Session    jwtsession    http://${CAPIF_HOSTNAME}   verify=True
 
     ${resp}=    DELETE On Session    jwtsession    /testdata
     Should Be Equal As Strings    ${resp.status_code}    200
@@ -201,7 +201,7 @@ Publisher Default Registration
     ${resp}=    Post Request Capif
     ...    sign-csr
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:8080/
+    ...    server=http://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
     Status Should Be    201    ${resp}

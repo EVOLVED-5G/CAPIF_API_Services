@@ -70,13 +70,13 @@ services:
     image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
     extra_hosts:
       - host.docker.internal:host-gateway
-  easy_rsa:
+  easy-rsa:
     build:
       context: ./easy_rsa
     expose:
       - "8080"
     restart: unless-stopped
-    image: dockerhub.hi.inet/evolved-5g/easy_rsa:latest
+    image: dockerhub.hi.inet/evolved-5g/easy-rsa:latest
   jwtauth:
     build:
       context: ./jwt_auth
@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
     depends_on:
-      - easy_rsa
+      - easy-rsa
   mongo:
     image: mongo:latest
     logging:
@@ -119,14 +119,13 @@ services:
       - "443:443"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
     environment:
-      - CN=capifcore
-    hostname: capifcore
-    # hostname: openshift.evolved-5g.eu
+      - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
+    hostname: ${CAPIF_HOSTNAME}
     volumes:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:
       - api-invoker-management
-      - easy_rsa
+      - easy-rsa
 #      - aef-security
 #      - api-invoker-management
 #      - api-provider-management

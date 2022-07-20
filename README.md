@@ -77,9 +77,14 @@ cd services/
 
 ./run.sh
 
-docker exec -it $(docker ps -aqf "name=nginx") bash -c "curl --request GET 'http://easy_rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt"
+docker exec -it $(docker ps -aqf "name=nginx") bash -c "curl --request GET 'http://easy-rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt"
 ```
 This will build and run all services using docker images, including mongodb and nginx locally and in background, and import ca.crt to nginx.
+
+Nginx deployed by default use capifcore hostname, but can add a parameter when run.sh is executed setting a different hostname, for example,
+```
+./run.sh openshift.evolved-5g.eu
+```
 
 If you want to check if all CAPIF services are running properly in local machine after execute run.sh, we can use:
 ```
