@@ -9,7 +9,7 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 from flask_mqtt import Mqtt
-from .lib.config import Config
+from .db.config import Config
 from .core.notifications import Notifications
 
 

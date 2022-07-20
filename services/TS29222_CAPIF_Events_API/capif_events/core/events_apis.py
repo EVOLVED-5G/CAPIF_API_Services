@@ -7,7 +7,7 @@ import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from bson import json_util
-from ..lib.db import MongoDatabse
+from ..db.db import MongoDatabse
 
 class EventSubscriptionsOperations:
 
