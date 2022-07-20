@@ -19,7 +19,7 @@ String robotTestSelection(String tests, String customTest) {
 }
 
 String setupLocalCapifPort(String localCapif) {
-    return (localCapif) ? '8080' : ''
+    return (localCapif) ? '' : '8080'
 }
 
 test_plan = [
