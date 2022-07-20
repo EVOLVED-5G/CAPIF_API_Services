@@ -18,7 +18,7 @@ String robotTestSelection(String tests, String customTest) {
     return tests == 'NONE' ? ' ' : '--include ' + test_plan[tests]
 }
 
-String setup_local_port(boolean local_capif) {
+String setupLocalCapifPort(boolean local_capif) {
     if (local_capif) {
         return '8080'
     }
@@ -67,7 +67,7 @@ pipeline {
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
         ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/evolved-robot-test-image'
         RUN_LOCAL_CAPIF = "${params.RUN_LOCAL_CAPIF}"
-        CAPIF_HTTP_PORT = setup_local_port("${params.RUN_LOCAL_CAPIF}")
+        CAPIF_HTTP_PORT = setupLocalCapifPort("${params.RUN_LOCAL_CAPIF}")
     }
     stages {
         stage ('Prepare testing tools') {
