@@ -81,11 +81,14 @@ pipeline {
             }
         }
 
-        stage('Launch CAPIF Docker Compose') {
+        stage('Launch CAPIF Local Test') {
             when {
                 expression { RUN_LOCAL_CAPIF == 'true' }
             }
             steps {
+                script {
+                    env.CAPIF_HTTP_PORT = '8080'
+                }
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
                             ./run.sh ${CAPIF_HOSTNAME}
@@ -96,14 +99,37 @@ pipeline {
                             ./check_services_are_running.sh
                            '''
                 }
+                steps {
+                    dir ("${env.WORKSPACE}") {
+                        sh """
+                        echo "Retrieve docker image"
+                        docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                        echo "Executing tests"
+                        docker run -t \
+                            --network="host" \
+                            --rm \
+                            -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
+                            -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
+                            ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} \
+                            --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
+                            --variable CAPIF_HTTP_PORT:${CAPIF_HTTP_PORT} \
+                            ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
+                    """
+                    }
+                }
             }
         }
 
         stage('Launch tests') {
+            when {
+                expression { RUN_LOCAL_CAPIF == 'false' }
+            }
             steps {
                 dir ("${env.WORKSPACE}") {
                     sh """
+                        echo "Retrieve docker image"
                         docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                        echo "Executing tests"
                         docker run -t \
                             --network="host" \
                             --rm \
