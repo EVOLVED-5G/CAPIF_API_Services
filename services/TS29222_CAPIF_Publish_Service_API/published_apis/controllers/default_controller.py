@@ -92,8 +92,8 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
                               cause="User role must be apf")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    if connexion.request.is_json:
-        body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
+    #if connexion.request.is_json:
+       # body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     # service_apis = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
     # response = service_apis, 204
