@@ -18,8 +18,8 @@ String robotTestSelection(String tests, String customTest) {
     return tests == 'NONE' ? ' ' : '--include ' + test_plan[tests]
 }
 
-String setupLocalCapifPort(boolean local_capif) {
-    if (local_capif) {
+String setupLocalCapifPort(String localCapif) {
+    if (localCapif == 'true' ) {
         return '8080'
     }
     return ''
