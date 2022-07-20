@@ -64,7 +64,6 @@ pipeline {
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
         ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/evolved-robot-test-image'
         RUN_LOCAL_CAPIF = "${params.RUN_LOCAL_CAPIF}"
-        CAPIF_HTTP_PORT = setupLocalCapifPort("${params.RUN_LOCAL_CAPIF}")
     }
     stages {
         stage ('Prepare testing tools') {
@@ -91,6 +90,9 @@ pipeline {
                 expression { RUN_LOCAL_CAPIF == 'true' }
             }
             steps {
+                script {
+                    env.CAPIF_HTTP_PORT = "8080"
+                }
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
                             ./run.sh ${CAPIF_HOSTNAME}
