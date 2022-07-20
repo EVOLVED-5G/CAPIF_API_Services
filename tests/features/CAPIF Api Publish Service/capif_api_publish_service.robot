@@ -23,7 +23,7 @@ Publish API by Authorised API Publisher
     ${resp}=    Post Request Capif
     ...    sign-csr
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTP_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
     Status Should Be    201    ${resp}

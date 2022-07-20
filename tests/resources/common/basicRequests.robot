@@ -126,7 +126,7 @@ Register User At Jwt Auth
     ...    description=${description}
     ...    cn=${username}
 
-    Create Session    jwtsession    http://${CAPIF_HOSTNAME}    verify=True
+    Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
@@ -156,7 +156,7 @@ Get Token For User
     RETURN    ${resp.json()["access_token"]}
 
 Clean Test Information By HTTP Requests
-    Create Session    jwtsession    http://${CAPIF_HOSTNAME}   verify=True
+    Create Session    jwtsession    ${CAPIF_HTTP_URL}   verify=True
 
     ${resp}=    DELETE On Session    jwtsession    /testdata
     Should Be Equal As Strings    ${resp.status_code}    200
@@ -201,7 +201,7 @@ Publisher Default Registration
     ${resp}=    Post Request Capif
     ...    sign-csr
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTP_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
     Status Should Be    201    ${resp}
