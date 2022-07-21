@@ -170,7 +170,7 @@ In order to Review results after tests, you can check general report at <PATH_RE
 ![Log](docs/images/robot_log_example.png)
 ## Using Curl
 ### JWT Authentication APIs
-These APIs are triggered by an entity (Invoker or APF for release 1.0) to:
+These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
 - register on the CAPIF Framework
 - get a Json Web Token (JWT) in order to be authorized to call CAPIF APIs
 
@@ -359,7 +359,7 @@ curl --request DELETE 'http://localhost:8080/api-invoker-management/v1/onboarded
 
 ### Publish APIs
 
-These APIs are triggered by an API Publishing Function (APF)
+These APIs are triggered by the API Publishing Function (APF) of an Exposer
 
 #### Publish a new API.
 ```shell

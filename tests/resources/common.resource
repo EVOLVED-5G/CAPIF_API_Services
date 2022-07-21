@@ -8,7 +8,7 @@ ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
 ${PUBLISHER_USERNAME}           ROBOT_TESTING_PUBLISHER
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
-${PUBLISHER_ROLE}               apf
+${PUBLISHER_ROLE}               exposer
 
 ${CAPIF_HOSTNAME}               capifcore
 ${CAPIF_HTTP_PORT}
