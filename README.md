@@ -185,18 +185,18 @@ This version will use TLS communication, for that purpouse we have 2 different s
 
 #### Invoker
 To authenticate an invoker user, we must perform next steps:
-- register on the CAPIF network with invoker role.
-- get a Json Web Token (JWT) in order to request onboarding
-- Retrieve CA certificate from platform.
-- Request onboarding adding public key to request, and 
+- register on the CAPIF network with invoker role. [Register an entity](#register-an-entity)
+- get a Json Web Token (JWT) in order to request onboarding [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+- Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
+- Request onboarding adding public key to request. [Onboard an Invoker](#onboard-an-invoker)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
 #### Publisher
 To authenticate an invoker user, we must perform next steps:
-- register on the CAPIF network with invoker role.
-- get a Json Web Token (JWT) in order to request onboarding
-- Retrieve CA certificate from platform.
-- Request sign the public key to CAPIF including beared with JWT.
+- register on the CAPIF network with invoker role. [Register an entity](#register-an-entity)
+- get a Json Web Token (JWT) in order to request onboarding. [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+- Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
+- Request sign the public key to CAPIF including beared with JWT. [Sign publisher certificate](#sign-publisher-certificate)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
 ### JWT Authentication APIs
