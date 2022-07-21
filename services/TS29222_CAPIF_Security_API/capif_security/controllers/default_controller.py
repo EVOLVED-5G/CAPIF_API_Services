@@ -104,10 +104,10 @@ def trusted_invokers_api_invoker_id_delete(api_invoker_id):  # noqa: E501
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be apf")
+                              cause="User role must be exposer")
         return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     return servicesecurity.delete_servicesecurity(api_invoker_id)
@@ -148,10 +148,10 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be apf")
+                              cause="User role must be exposer")
         return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     if connexion.request.is_json:
@@ -197,10 +197,10 @@ def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=True
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be apf")
+                              cause="User role must be exposer")
         return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
 
     service_security = servicesecurity.get_servicesecurity(api_invoker_id, authentication_info, authorization_info)

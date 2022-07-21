@@ -53,8 +53,8 @@ def register():
     test = user.find_one({"username": username})
     if test:
         return jsonify("User already exists"), 409
-    elif role != "invoker" and role != "apf":
-        return jsonify(message="Role must be invoker or apf"), 409
+    elif role != "invoker" and role != "exposer":
+        return jsonify(message="Role must be invoker or exposer"), 409
     else:
         username = request.json["username"]
         password = request.json["password"]
@@ -69,7 +69,7 @@ def register():
                            id=obj.inserted_id,
                            ccf_onboarding_url="api-invoker-management/v1/onboardedInvokers",
                            ccf_discover_url="service-apis/v1/allServiceAPIs?api-invoker-id="), 201
-        elif role == "apf":
+        elif role == "exposer":
             return jsonify(message=role + " registered successfully",
                            id=obj.inserted_id,
                            ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id)), 201

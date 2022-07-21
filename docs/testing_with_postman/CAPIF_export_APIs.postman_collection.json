@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Register Entity (Invoker or APF)",
+			"name": "Register Entity (Invoker or Exposer)",
 			"request": {
 				"method": "POST",
 				"header": [],

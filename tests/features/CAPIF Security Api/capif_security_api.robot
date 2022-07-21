@@ -42,7 +42,7 @@ Create a security context for an API invoker with AEF entity role
 	#Register APF
     ${register_user_info_publisher}=    Publisher Default Registration
 
-	# Register User At Jwt Auth    username=robot2    role=apf
+	# Register User At Jwt Auth    username=robot2    role=exposer
 
 	${request_body}=    Create Service Security Body
 	${resp}=    Put Request Capif
