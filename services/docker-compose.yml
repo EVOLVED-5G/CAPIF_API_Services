@@ -68,6 +68,8 @@ services:
       - ./TS29222_CAPIF_Security_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
+    environment:
+      - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
     extra_hosts:
       - host.docker.internal:host-gateway
   easy-rsa:

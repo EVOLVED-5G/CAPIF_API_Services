@@ -46,7 +46,7 @@ def apf_id_service_apis_get(apf_id):  # noqa: E501
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         myclient.close()
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -96,7 +96,7 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         myclient.close()
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized", cause="Certificate not authorized")
@@ -145,7 +145,7 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         myclient.close()
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -198,7 +198,7 @@ def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E50
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         myclient.close()
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -250,7 +250,7 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
     mydb = myclient[db]
     capif_users = mydb[cap_users]
 
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "apf"}]})
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
     if capif_user is None:
         myclient.close()
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
