@@ -11,9 +11,14 @@
     - [Tests Execution](#tests-execution)
     - [Test result review](#test-result-review)
   - [Using Curl](#using-curl)
+    - [Authentication](#authentication)
+      - [Invoker](#invoker)
+      - [Publisher](#publisher)
     - [JWT Authentication APIs](#jwt-authentication-apis)
       - [Register an entity](#register-an-entity)
       - [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+      - [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
+      - [Sign publisher certificate](#sign-publisher-certificate)
     - [Invoker Management APIs](#invoker-management-apis)
       - [Onboard an Invoker](#onboard-an-invoker)
       - [Update Invoker Details](#update-invoker-details)
@@ -143,11 +148,13 @@ docker build . -t 5gnow-robot-test:latest
   
 Execute all tests locally:
 ```
-<PATH_TO_REPOSITORY>=path in local machine to repository cloned
-<PATH_RESULT_FOLDER>=path to a folder on local machine to store results of Robot Framework execution
+<PATH_TO_REPOSITORY>=path in local machine to repository cloned.
+<PATH_RESULT_FOLDER>=path to a folder on local machine to store results of Robot Framework execution.
+<CAPIF_HOSTNAME>=Is the hostname set when run.sh is executed, by default it will be capifcore.
+CAPIF_HTTP_PORT>=This is the port to reach when robot framework want to reach CAPIF deployment using http, this should be set to port without TLS set on Nginx, 8080 by default.
 
 To execute all tests run :
-docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable NGINX_HOSTNAME:http://localhost:8080
+docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable CAPIF_HOSTNAME:capifcore --variable CAPIF_HTTP_PORT:8080 --include all
 ```
 
 Execute specific tests locally:
@@ -156,10 +163,12 @@ To run more specific tests, for example, only one functionality:
 <TAG>=Select one from list:
   "capif_api_discover_service",
   "capif_api_invoker_management",
-  "capif_api_publish_service"
+  "capif_api_publish_service",
+  "capif_api_events",
+  "capif_security_api
 
 And Run:
-docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable NGINX_HOSTNAME:http://localhost:8080 --include <TAG>
+docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable CAPIF_HOSTNAME:capifcore --variable CAPIF_HTTP_PORT:8080 --include <TAG>
 ```
 ### Test result review
 
@@ -169,6 +178,27 @@ In order to Review results after tests, you can check general report at <PATH_RE
 * Detailed information:
 ![Log](docs/images/robot_log_example.png)
 ## Using Curl
+### Authentication
+This version will use TLS communication, for that purpouse we have 2 different scenarios, according to role:
+* Invoker
+* Exposer
+
+#### Invoker
+To authenticate an invoker user, we must perform next steps:
+- register on the CAPIF network with invoker role.
+- get a Json Web Token (JWT) in order to request onboarding
+- Retrieve CA certificate from platform.
+- Request onboarding adding public key to request, and 
+- Store certificate signed by CAPIF platform to allow TLS onwards.
+
+#### Publisher
+To authenticate an invoker user, we must perform next steps:
+- register on the CAPIF network with invoker role.
+- get a Json Web Token (JWT) in order to request onboarding
+- Retrieve CA certificate from platform.
+- Request sign the public key to CAPIF including beared with JWT.
+- Store certificate signed by CAPIF platform to allow TLS onwards.
+
 ### JWT Authentication APIs
 These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
 - register on the CAPIF Framework
@@ -177,7 +207,7 @@ These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
 #### Register an entity
 Request
 ```shell
-curl --request POST 'http://localhost:8080/register' --header 'Content-Type: application/json' --data '{
+curl --request POST 'http://<CAPIF_HOSTNAME>/register' --header 'Content-Type: application/json' --data '{
     "username":"...",
     "password":"...",
     "role":"...",
@@ -196,7 +226,7 @@ Response body
 #### Get access token for an existing entity
 Request
 ```shell
-curl --request POST 'http://localhost:8080/gettoken' --header 'Content-Type: application/json' --data '{
+curl --request POST 'http://<CAPIF_HOSTNAME>/gettoken' --header 'Content-Type: application/json' --data '{
     "username":"...",
     "password":"...",
     "role":"..."
@@ -211,6 +241,27 @@ Response body
 }
 ```
 
+#### Retrieve and store CA certificate
+```shell
+curl --request GET 'http://<CAPIF_HOSTNAME>/ca-root' 2>/dev/null | jq -r '.certificate' -j > ca.crt
+```
+
+#### Sign publisher certificate
+```shell
+curl --request POST 'http://<CAPIF_HOSTNAME>/sign-csr' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
+  "csr":  "RAW PUBLIC KEY CREATED BY PUBLISHER",
+  "mode":  "client",
+  "filename": publisher
+}'
+```
+Response
+``` json
+{
+  "certificate": "PUBLISHER CERTIFICATE"
+}
+```
+PUBLISHER CERTIFICATE value must be stored by Publisher entity to next request to CAPIF (publisher.crt for example)
+
 ### Invoker Management APIs
 
 These APIs are triggered by a NetApp (i.e. Invoker)
@@ -218,11 +269,11 @@ These APIs are triggered by a NetApp (i.e. Invoker)
 #### Onboard an Invoker
 
 ```shell
-curl --request POST 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
+curl --request POST 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
   "notificationDestination" : "notificationDestination",
   "supportedFeatures" : "fffffff",
   "onboardingInformation" : {
-    "apiInvokerPublicKey" : "apiInvokerPublicKey1",
+    "apiInvokerPublicKey" : "RAW PUBLIC KEY CREATED BY INVOKER",
     "onboardingSecret" : "onboardingSecret1",
     "apiInvokerCertificate" : "apiInvokerCertificate1"
   },
@@ -283,10 +334,27 @@ curl --request POST 'http://localhost:8080/api-invoker-management/v1/onboardedIn
 }'
 ```
 
+Response Body
+
+``` json
+{
+  "apiInvokerId": "7da0a8d4172d7d86c536c0fbc9c372", "onboardingInformation": {
+    "apiInvokerPublicKey": "RAW PUBLIC KEY CREATED BY INVOKER", 
+    "apiInvokerCertificate": "INVOKER CERTIFICATE", 
+    "onboardingSecret": "onboardingSecret"
+    }, 
+    "notificationDestination": "http://host.docker.internal:8086/netapp_callback", 
+    "requestTestNotification": true, 
+    ...
+}
+```
+
+INVOKER CERTIFICATE value must be stored by Invoker entity to next request to CAPIF (invoker.crt for example)
+
 #### Update Invoker Details
 
 ```shell
-curl --location --request PUT 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
+curl --cert invoker.crt --key invoker.key --cacert ca.crt --location --request PUT 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
   "notificationDestination" : "notificationDestination1",
   "supportedFeatures" : "fffffff",
   "onboardingInformation" : {
@@ -354,7 +422,7 @@ curl --location --request PUT 'http://localhost:8080/api-invoker-management/v1/o
 #### Offboard an Invoker
 
 ```shell
-curl --request DELETE 'http://localhost:8080/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>'
+curl --cert invoker.crt --key invoker.key --cacert ca.crt --request DELETE 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' 
 ```
 
 ### Publish APIs
@@ -363,7 +431,7 @@ These APIs are triggered by the API Publishing Function (APF) of an Exposer
 
 #### Publish a new API.
 ```shell
-curl --request POST 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
+curl --cert publisher.crt --key publisher.key --cacert ca.crt --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'  --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -434,7 +502,7 @@ curl --request POST 'http://localhost:8080/published-apis/v1/<APF Id>/service-ap
 
 #### Update a published service API.
 ```shell
-curl --request PUT 'http://localhost:8080/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
+curl --cert publisher.crt --key publisher.key --cacert ca.crt --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -505,17 +573,17 @@ curl --request PUT 'http://localhost:8080/published-apis/v1/<APIF Id>/service-ap
 
 #### Unpublish a published service API.
 ```shell
-curl --request DELETE 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>'
+curl --cert publisher.crt --key publisher.key --cacert ca.crt --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 #### Retrieve all published APIs
 ```shell
-curl --request GET 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis' --header 'Authorization: Bearer <JWT access token>'
+curl --cert publisher.crt --key publisher.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
 ```
 
 #### Retrieve a published service API.
 ```shell
-curl --request GET 'http://localhost:8080/published-apis/v1/<APF Id>/service-apis/<Service API Id>' --header 'Authorization: Bearer <JWT access token>'
+curl --cert publisher.crt --key publisher.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 ### Discover API
@@ -524,13 +592,13 @@ This API is triggered by a NetApp (or Invoker)
 
 #### Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.
 ```shell
-curl --request GET 'http://localhost:8080/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>' --header 'Authorization: Bearer <JWT acces token>'
+curl --cert invoker.crt --key invoker.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>'
 ```
 
 
 ## Using PostMan
 For more information on how to test the APIs with POSTMAN, follow this [Document](docs/testing_with_postman/EVOLVED-5G%20--%20using%20CCF%20from%20Postman_13.1.2022.pdf).
-Also you have here the [POSTMAN Collection](docs/testing_with_postman/CAPIF_export_APIs.postman_collection.json)
+Also you have here the [POSTMAN Collection](docs/testing_with_postman/CAPIF_export_APIs.postman_collection.json) **TLS NOT ADDED**
 
 # Important urls:
 
@@ -551,3 +619,5 @@ The APIs included in release 1.0 are:
 - CAPIF Invoker Management API
 - CAPIF Publish API
 - CAPIF Discover API
+- CAPIF Security API
+- CAPIF Events API
