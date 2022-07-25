@@ -191,6 +191,9 @@ To authenticate an invoker user, we must perform next steps:
 - Request onboarding adding public key to request. [Onboard an Invoker](#onboard-an-invoker)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
+Flow:
+![Flow](docs/images/invoker_onboarding_flow.png)
+
 #### Exposer
 To authenticate an exposer user, we must perform next steps:
 - Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
@@ -198,6 +201,9 @@ To authenticate an exposer user, we must perform next steps:
 - get a Json Web Token (JWT) in order to request onboarding. [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
 - Request sign the public key to CAPIF including beared with JWT. [Sign exposer certificate](#sign-exposer-certificate)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
+
+Flow:
+![Flow](docs/images/publisher_registry_flow.png)
 
 ### JWT Authentication APIs
 These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
