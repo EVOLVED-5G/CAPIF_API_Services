@@ -13,12 +13,12 @@
   - [Using Curl](#using-curl)
     - [Authentication](#authentication)
       - [Invoker](#invoker)
-      - [Publisher](#publisher)
+      - [Exposer](#exposer)
     - [JWT Authentication APIs](#jwt-authentication-apis)
       - [Register an entity](#register-an-entity)
       - [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
       - [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
-      - [Sign publisher certificate](#sign-publisher-certificate)
+      - [Sign exposer certificate](#sign-exposer-certificate)
     - [Invoker Management APIs](#invoker-management-apis)
       - [Onboard an Invoker](#onboard-an-invoker)
       - [Update Invoker Details](#update-invoker-details)
@@ -179,24 +179,24 @@ In order to Review results after tests, you can check general report at <PATH_RE
 ![Log](docs/images/robot_log_example.png)
 ## Using Curl
 ### Authentication
-This version will use TLS communication, for that purpouse we have 2 different scenarios, according to role:
+This version will use TLS communication, for that purpose we have 2 different scenarios, according to role:
 * Invoker
 * Exposer
 
 #### Invoker
 To authenticate an invoker user, we must perform next steps:
+- Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
 - register on the CAPIF network with invoker role. [Register an entity](#register-an-entity)
 - get a Json Web Token (JWT) in order to request onboarding [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
-- Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
 - Request onboarding adding public key to request. [Onboard an Invoker](#onboard-an-invoker)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
-#### Publisher
-To authenticate an invoker user, we must perform next steps:
-- register on the CAPIF network with invoker role. [Register an entity](#register-an-entity)
-- get a Json Web Token (JWT) in order to request onboarding. [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+#### Exposer
+To authenticate an exposer user, we must perform next steps:
 - Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
-- Request sign the public key to CAPIF including beared with JWT. [Sign publisher certificate](#sign-publisher-certificate)
+- register on the CAPIF network with exposer role. [Register an entity](#register-an-entity)
+- get a Json Web Token (JWT) in order to request onboarding. [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+- Request sign the public key to CAPIF including beared with JWT. [Sign exposer certificate](#sign-exposer-certificate)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
 ### JWT Authentication APIs
@@ -211,9 +211,13 @@ curl --request POST 'http://<CAPIF_HOSTNAME>/register' --header 'Content-Type: a
     "username":"...",
     "password":"...",
     "role":"...",
-    "description":"..."
+    "description":"...",
+    "cn":""
 }'
 ```
+
+* Role: invoker or publisher
+* cn: common name
 
 Response body
 ```json
@@ -246,12 +250,12 @@ Response body
 curl --request GET 'http://<CAPIF_HOSTNAME>/ca-root' 2>/dev/null | jq -r '.certificate' -j > ca.crt
 ```
 
-#### Sign publisher certificate
+#### Sign exposer certificate
 ```shell
 curl --request POST 'http://<CAPIF_HOSTNAME>/sign-csr' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
   "csr":  "RAW PUBLIC KEY CREATED BY PUBLISHER",
   "mode":  "client",
-  "filename": publisher
+  "filename": exposer
 }'
 ```
 Response
@@ -260,7 +264,7 @@ Response
   "certificate": "PUBLISHER CERTIFICATE"
 }
 ```
-PUBLISHER CERTIFICATE value must be stored by Publisher entity to next request to CAPIF (publisher.crt for example)
+PUBLISHER CERTIFICATE value must be stored by Exposer entity to next request to CAPIF (exposer.crt for example)
 
 ### Invoker Management APIs
 
@@ -338,7 +342,8 @@ Response Body
 
 ``` json
 {
-  "apiInvokerId": "7da0a8d4172d7d86c536c0fbc9c372", "onboardingInformation": {
+  "apiInvokerId": "7da0a8d4172d7d86c536c0fbc9c372",
+  "onboardingInformation": {
     "apiInvokerPublicKey": "RAW PUBLIC KEY CREATED BY INVOKER", 
     "apiInvokerCertificate": "INVOKER CERTIFICATE", 
     "onboardingSecret": "onboardingSecret"
@@ -431,7 +436,7 @@ These APIs are triggered by an API Publishing Function (APF)
 
 #### Publish a new API.
 ```shell
-curl --cert publisher.crt --key publisher.key --cacert ca.crt --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'  --header 'Content-Type: application/json' --data '{
+curl --cert exposer.crt --key exposer.key --cacert ca.crt --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'  --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -502,7 +507,7 @@ curl --cert publisher.crt --key publisher.key --cacert ca.crt --request POST 'ht
 
 #### Update a published service API.
 ```shell
-curl --cert publisher.crt --key publisher.key --cacert ca.crt --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
+curl --cert exposer.crt --key exposer.key --cacert ca.crt --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -573,17 +578,17 @@ curl --cert publisher.crt --key publisher.key --cacert ca.crt --request PUT 'htt
 
 #### Unpublish a published service API.
 ```shell
-curl --cert publisher.crt --key publisher.key --cacert ca.crt --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
+curl --cert exposer.crt --key exposer.key --cacert ca.crt --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 #### Retrieve all published APIs
 ```shell
-curl --cert publisher.crt --key publisher.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
+curl --cert exposer.crt --key exposer.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
 ```
 
 #### Retrieve a published service API.
 ```shell
-curl --cert publisher.crt --key publisher.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
+curl --cert exposer.crt --key exposer.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 ### Discover API
