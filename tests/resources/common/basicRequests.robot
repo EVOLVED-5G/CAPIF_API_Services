@@ -203,7 +203,7 @@ Publisher Default Registration
     ...    json=${request_body}
     ...    server=${CAPIF_HTTP_URL}
     ...    verify=ca.crt
-    ...    access_token=${register_user_info['access_token']}
+    # ...    access_token=${register_user_info['access_token']}
     Status Should Be    201    ${resp}
 
     # Store dummy signede certificate

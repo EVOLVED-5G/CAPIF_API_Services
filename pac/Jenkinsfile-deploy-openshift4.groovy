@@ -96,7 +96,7 @@ pipeline {
                         oc expose service/nginx --name=register --hostname=${NGINX_HOSTNAME} --path=/register
                         oc expose service/nginx --name=sign-csr --hostname=${NGINX_HOSTNAME} --path=/sign-csr
                         oc expose service/nginx --name=test-data --hostname=${NGINX_HOSTNAME} --path=/testdata
-                        oc create route passthrough nginx --hostname=nginx.apps.ocp-epg.hi.inet --service=nginx --port=nginx-https --insecure-policy=None
+                        oc create route passthrough nginx --hostname=${NGINX_HOSTNAME} --service=nginx --port=nginx-https --insecure-policy=None
                         oc patch route nginx -p '{"metadata":{"annotations":{"kubernetes.io/tls-acme":"true"}}}'
                     '''
                 }
@@ -105,6 +105,11 @@ pipeline {
         stage ('Launch robot tests') {
             steps {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    dir ("${env.WORKSPACE}/") {
+                        sh '''
+                    sleep 1m
+                '''
+                    }
                     build job: 'Launch_Robot_Tests',
                         parameters: [
                             string(name: 'BRANCH_NAME', value: "${BRANCH_NAME}"),
