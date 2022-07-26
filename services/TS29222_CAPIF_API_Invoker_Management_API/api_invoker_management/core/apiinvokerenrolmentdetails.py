@@ -83,7 +83,8 @@ def update_apiinvokerenrolmentdetail(onboard_id, apiinvokerenrolmentdetail):
 
             apiinvokerenrolmentdetail.api_invoker_id = onboard_id
             mycol.replace_one(old_values, apiinvokerenrolmentdetail.to_dict())
-            return apiinvokerenrolmentdetail, 200
+            res = Response(json.dumps(apiinvokerenrolmentdetail, cls=JSONEncoder), status=200, mimetype='application/json')
+            return res
     except Exception:
         return 'bad request!', 400
     finally:
@@ -113,8 +114,9 @@ def remove_apiinvokerenrolmentdetail(onboard_id):
             return "Please provide an existing Netapp ID", 404
         else:
             mycol.delete_one(myQuery)
-            return " The Netapp matching onboardingId  " + onboard_id + " was offboarded.",204
-                    
+            out =  " The Netapp matching onboardingId  " + onboard_id + " was offboarded."
+            return Response(json.dumps(out, default=str, cls=JSONEncoder), status=204, mimetype='application/json')
+
     except Exception:
         return "An error has ocurred with the" + onboard_id, 400
     finally:

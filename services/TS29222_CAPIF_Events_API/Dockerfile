@@ -4,6 +4,7 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/requirements.txt
+COPY config.yaml /usr/src/app/config.yaml
 
 RUN apk add -U --no-cache gcc build-base linux-headers ca-certificates libffi-dev libressl-dev libxslt-dev
 RUN pip3 install --no-cache-dir -r requirements.txt

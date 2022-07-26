@@ -1,6 +1,6 @@
 import connexion
 from capif_events.models.event_subscription import EventSubscription  # noqa: E501
-from ..core import eventsapis
+from ..core.events_apis import EventSubscriptionsOperations
 import json
 from flask import Response, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -9,6 +9,8 @@ from ..models.problem_details import ProblemDetails
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
+
+events_ops = EventSubscriptionsOperations()
 
 
 def subscriber_id_subscriptions_post(subscriber_id, body):  # noqa: E501
@@ -56,7 +58,7 @@ def subscriber_id_subscriptions_post(subscriber_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = EventSubscription.from_dict(connexion.request.get_json())  # noqa: E501
 
-    res = eventsapis.post_event(subscriber_id, body)
+    res = events_ops.create_event(subscriber_id, body)
 
     return res
 
@@ -105,7 +107,7 @@ def subscriber_id_subscriptions_subscription_id_delete(subscriber_id, subscripti
 
     if connexion.request.is_json:
         body = EventSubscription.from_dict(connexion.request.get_json())  # noqa: E501
-
-    res = eventsapis.delete_event(subscriber_id, subscription_id)
+        
+    res = events_ops.delete_event(subscriber_id, subscription_id)
 
     return res

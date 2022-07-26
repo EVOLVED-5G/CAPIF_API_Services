@@ -4,6 +4,17 @@ services:
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports: 
+      - "1883:1883"
+    volumes:
+      - ./mosquitto:/mosquitto/config
+  aef-security:
+    build: TS29222_AEF_Security_API/.
+    expose:
+      - "8080"
+    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API
@@ -42,6 +53,8 @@ services:
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
+    depends_on:
+      - mosquitto
   api-invocation-logs:
     build: TS29222_CAPIF_Logging_API_Invocation_API/.
     expose:
@@ -55,11 +68,13 @@ services:
       - ./TS29222_CAPIF_Publish_Service_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
-#  capif-routing-info:
-#    build: TS29222_CAPIF_Routing_Info_API/.
-#    expose:
-#      - "8080"
-#    image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
+    depends_on:
+      - mosquitto
+  capif-routing-info:
+    build: TS29222_CAPIF_Routing_Info_API/.
+    expose:
+      - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
   capif-security:
     build: TS29222_CAPIF_Security_API/.
     expose:
