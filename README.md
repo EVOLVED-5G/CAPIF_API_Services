@@ -35,6 +35,7 @@
 - [Important urls:](#important-urls)
   - [Mongo DB Dashboard](#mongo-db-dashboard)
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
+- [CAPIF Tool Release 2.0](#capif-tool-release-20)
 
 
 # Repository structure
@@ -627,6 +628,20 @@ http://<Mongo Express Host IP>:8082/ (if accessed from another host)
 
 The APIs included in release 1.0 are:
 - JWT Authentication APIs
+- CAPIF Invoker Management API
+- CAPIF Publish API
+- CAPIF Discover API
+- CAPIF Security API
+- CAPIF Events API
+  
+
+# CAPIF Tool Release 2.0
+
+CAPIF with TLS
+
+The APIs included in release 2.0 are:
+- JWT Authentication APIs
+- Easy RSA
 - CAPIF Invoker Management API
 - CAPIF Publish API
 - CAPIF Discover API

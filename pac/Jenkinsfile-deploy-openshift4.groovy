@@ -104,6 +104,13 @@ pipeline {
         }
         stage ('Launch robot tests') {
             steps {
+                dir ("${env.WORKSPACE}/") {
+                sh '''
+                    sleep 1m
+                '''
+                }
+            }
+            steps {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                     build job: 'Launch_Robot_Tests',
                         parameters: [
