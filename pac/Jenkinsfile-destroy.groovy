@@ -1,5 +1,5 @@
 pipeline {
-    agent { node {label 'evol5-slave'}  }
+    agent { node {label 'evol5-openshift'}  }
     options {
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
@@ -9,7 +9,8 @@ pipeline {
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         string(name: 'AWS_DEFAULT_REGION', defaultValue: 'eu-central-1', description: 'AWS region')
-        string(name: 'OPENSHIFT_URL', defaultValue: 'https://openshift-epg.hi.inet:443', description: 'openshift url')
+        string(name: 'OPENSHIFT_URL', defaultValue: 'https://api.ocp-epg.hi.inet:6443', description: 'openshift url')
+        choice(name: 'DEPLOYMENT', choices: ['openshift', 'kubernetes-athens', 'kubernetes-uma'])
     }
     environment {
         // This is to work around a jenkins bug on the first build of a multi-branch job
@@ -21,49 +22,43 @@ pipeline {
     stages {
         stage('Login openshift') {
             steps {
-                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
-                    dir ("${env.WORKSPACE}/iac/terraform/") {
+               withCredentials([string(credentialsId: 'token-os-capif', variable: 'TOKEN')]) {
+                    dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
-                            export KUBECONFIG="./kubeconfig"
-                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                        oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
                         '''
-                        readFile('kubeconfig')
                     }
                 }
-
-            }
-        }
-        stage ('Destroy nginx route') {
-            steps {
-                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                        sh '''
-                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
-                            oc delete route nginx
-                        '''
-                    }
-                } 
-            }
-        }
-        stage ('Destroy mongo-express route') {
-            steps {
-                withCredentials([string(credentialsId: '18e7aeb8-5552-4cbb-bf66-2402ca6772de', variable: 'TOKEN')]) {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                        sh '''
-                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
-                            oc delete route mongo-express
-                        '''
-                    }
-                }  
             }
         }
         stage ('Destroy app in kubernetes') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: '328ab84a-aefc-41c1-aca2-1dfae5b150d2', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                    dir ("${env.WORKSPACE}/iac/terraform/") {
+                    dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
                         sh '''
-                            terraform init
+                            terraform init -reconfigure                                              \
+                                -backend-config="bucket=evolved5g-openshift-terraform-states"        \
+                                -backend-config="key=capif"
                             terraform destroy --auto-approve
+                        '''
+                    }
+                }
+            }
+        }
+        stage ('Expose routes and service publicly') {
+            steps {
+                withCredentials([string(credentialsId: 'token-os-capif', variable: 'TOKEN')]) {
+                    dir ("${env.WORKSPACE}/iac/terraform/openshift4") {
+                        sh '''
+                            oc login --insecure-skip-tls-verify --token=$TOKEN $OPENSHIFT_URL
+                            kubectl delete route nginx
+                            kubectl delete route ca-root
+                            kubectl delete route cert-data
+                            kubectl delete route gettoken
+                            kubectl delete route register
+                            kubectl delete route sign-csr
+                            kubectl delete route test-data
+                            kubectl delete route mongo-express
                         '''
                     }
                 }
