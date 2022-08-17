@@ -82,8 +82,6 @@ To run all CAPIF APIs locally using docker and docker-compose you can execute:
 cd services/
 
 ./run.sh
-
-docker exec -it $(docker ps -aqf "name=nginx") bash -c "curl --request GET 'http://easy-rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt"
 ```
 This will build and run all services using docker images, including mongodb and nginx locally and in background, and import ca.crt to nginx.
 
@@ -152,7 +150,7 @@ Execute all tests locally:
 <PATH_TO_REPOSITORY>=path in local machine to repository cloned.
 <PATH_RESULT_FOLDER>=path to a folder on local machine to store results of Robot Framework execution.
 <CAPIF_HOSTNAME>=Is the hostname set when run.sh is executed, by default it will be capifcore.
-CAPIF_HTTP_PORT>=This is the port to reach when robot framework want to reach CAPIF deployment using http, this should be set to port without TLS set on Nginx, 8080 by default.
+<CAPIF_HTTP_PORT>=This is the port to reach when robot framework want to reach CAPIF deployment using http, this should be set to port without TLS set on Nginx, 8080 by default.
 
 To execute all tests run :
 docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable CAPIF_HOSTNAME:capifcore --variable CAPIF_HTTP_PORT:8080 --include all
@@ -187,8 +185,8 @@ This version will use TLS communication, for that purpose we have 2 different sc
 #### Invoker
 To authenticate an invoker user, we must perform next steps:
 - Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
-- register on the CAPIF network with invoker role. [Register an entity](#register-an-entity)
-- get a Json Web Token (JWT) in order to request onboarding [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+- Register on the CAPIF with invoker role. [Register an entity](#register-an-entity)
+- Get a Json Web Token (JWT) in order to request onboarding [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
 - Request onboarding adding public key to request. [Onboard an Invoker](#onboard-an-invoker)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
@@ -198,8 +196,7 @@ Flow:
 #### Exposer
 To authenticate an exposer user, we must perform next steps:
 - Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
-- register on the CAPIF network with exposer role. [Register an entity](#register-an-entity)
-- get a Json Web Token (JWT) in order to request onboarding. [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
+- Register on the CAPIF with exposer role. [Register an entity](#register-an-entity)
 - Request sign the public key to CAPIF including beared with JWT. [Sign exposer certificate](#sign-exposer-certificate)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
