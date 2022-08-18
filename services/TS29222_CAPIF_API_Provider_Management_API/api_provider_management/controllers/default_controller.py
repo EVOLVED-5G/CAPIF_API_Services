@@ -1,7 +1,6 @@
 import connexion
 import six
 
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..core.provider_enrolment_details_api import ProviderManagementOperations
 from api_provider_management.models.api_provider_enrolment_details import APIProviderEnrolmentDetails  # noqa: E501
 from api_provider_management.models.problem_details import ProblemDetails  # noqa: E501
