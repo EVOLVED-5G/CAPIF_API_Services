@@ -1,12 +1,15 @@
+import sys
+
 from ..core import discoveredapis
 import json
-from flask import Response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import Response, request, current_app
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+import pymongo
 
 
-@jwt_required()
 def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_type=None, protocol=None, aef_id=None, data_format=None, api_cat=None, supported_features=None, api_supported_features=None):  # noqa: E501
     """all_service_apis_get
 
@@ -36,14 +39,34 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
     :rtype: DiscoveredAPIs
     """
 
-    identity = get_jwt_identity()
-    username, role = identity.split()
+    cert_tmp = request.headers['X-Ssl-Client-Cert']
+    cert_raw = cert_tmp.replace('\t', '')
+    # print(cert_raw)
+    # sys.stdout.flush()
 
-    if role != "invoker":
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
+    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
+    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
+    # print(cn)
+    # sys.stdout.flush()
+
+    user = current_app.config['MONGODB_SETTINGS']['user']
+    password = current_app.config['MONGODB_SETTINGS']['password']
+    db = current_app.config['MONGODB_SETTINGS']['db']
+    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
+    host = current_app.config['MONGODB_SETTINGS']['host']
+    port = current_app.config['MONGODB_SETTINGS']['port']
+
+    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+
+    myclient = pymongo.MongoClient(uri)
+    mydb = myclient[db]
+    capif_users = mydb[cap_users]
+
+    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "invoker"}]})
+    if capif_user is None:
+        myclient.close()
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized", cause="Certificate not authorized")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
-
-    response = discoveredapis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
-
-    return response
+    else:
+        response = discoveredapis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
+        return response

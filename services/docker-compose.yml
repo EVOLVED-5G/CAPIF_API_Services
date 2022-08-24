@@ -1,4 +1,9 @@
 services:
+#  aef-security:
+#    build: TS29222_AEF_Security_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
   mosquitto:
     image: eclipse-mosquitto:latest
     ports: 
@@ -19,21 +24,21 @@ services:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
-  api-provider-management:
-    build: TS29222_CAPIF_API_Provider_Management_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
-  access-control-policy:
-    build: TS29222_CAPIF_Access_Control_Policy_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
-  logs:
-    build: TS29222_CAPIF_Auditing_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
+#  api-provider-management:
+#    build: TS29222_CAPIF_API_Provider_Management_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
+#  access-control-policy:
+#    build: TS29222_CAPIF_Access_Control_Policy_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
+#  logs:
+#    build: TS29222_CAPIF_Auditing_API/.
+#    expose:
+#      - "8080"
+#    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
   service-apis:
     build:
       context: ./TS29222_CAPIF_Discover_Service_API
@@ -78,24 +83,32 @@ services:
       - ./TS29222_CAPIF_Security_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/security_api:latest
+    environment:
+      - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
     extra_hosts:
       - host.docker.internal:host-gateway
+  easy-rsa:
+    build:
+      context: ./easy_rsa
+    expose:
+      - "8080"
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/easy-rsa:latest
   jwtauth:
     build:
       context: ./jwt_auth
     expose:
       - "8080"
+    volumes:
+      - ./jwt_auth:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
-  easy_rsa:
-    build:
-      context: ./easy_rsa
-    expose:
-      - "22"
-    restart: unless-stopped
-    image: dockerhub.hi.inet/evolved-5g/easy_rsa:latest
+    depends_on:
+      - easy-rsa
   mongo:
     image: mongo:latest
+    logging:
+      driver: 'none'
     restart: unless-stopped
     ports:
       - 27017:27017
@@ -104,6 +117,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
   mongo-express:
     image: mongo-express:latest
+    logging:
+      driver: 'none'
     restart: unless-stopped
     ports:
       - 8082:8081
@@ -118,15 +133,23 @@ services:
       context: ./nginx
     ports:
       - "8080:8080"
+      - "443:443"
     image: dockerhub.hi.inet/evolved-5g/capif/nginx:latest
+    environment:
+      - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
+    hostname: ${CAPIF_HOSTNAME}
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs
     depends_on:
-      - aef-security
       - api-invoker-management
-      - api-provider-management
-      - access-control-policy
+      - easy-rsa
+#      - aef-security
+#      - api-invoker-management
+#      - api-provider-management
+#      - access-control-policy
       - service-apis
-      - api-invocation-logs
+#      - api-invocation-logs
       - published-apis
-      - capif-routing-info
+#      - capif-routing-info
       - capif-security
-      - easy_rsa
+      - capif-events

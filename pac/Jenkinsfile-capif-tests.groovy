@@ -28,10 +28,6 @@ test_plan = [
     'CUSTOM': 'CUSTOM'
     ]
 
-String runCapifLocal(String nginxHost) {
-    return nginxHost.matches('^(http|https)://localhost.*') ? 'true' : 'false'
-}
-
 // ################################################
 // ## Pipeline
 // ################################################
@@ -45,7 +41,8 @@ pipeline {
     }
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
-        string(name: 'NGINX_HOSTNAME', defaultValue: 'http://localhost:8080', description:'Nginx to forward requests')
+        booleanParam(name: 'RUN_LOCAL_CAPIF', defaultValue: true, description: 'Run test on local deployment')
+        string(name: 'CAPIF_HOSTNAME', defaultValue: 'capifcore', description:'Nginx to forward requests')
         choice(name: 'TESTS', choices: test_plan.keySet() as ArrayList, description: 'Select option to run. Prefix')
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
         string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '2.0', description: 'Robot Docker image version')
@@ -57,12 +54,12 @@ pipeline {
         ROBOT_TESTS_DIRECTORY = "${WORKSPACE}/tests"
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
         CUSTOM_TEST = "${params.CUSTOM_TEST}"
-        NGINX_HOSTNAME = "${params.NGINX_HOSTNAME}"
+        CAPIF_HOSTNAME = "${params.CAPIF_HOSTNAME}"
         ROBOT_TEST_OPTIONS = setRobotOptionsValue("${params.ROBOT_TEST_OPTIONS}")
         ROBOT_TESTS_INCLUDE = robotTestSelection("${params.TESTS}", "${params.CUSTOM_TEST}")
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
         ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/evolved-robot-test-image'
-        RUN_LOCAL_CAPIF = runCapifLocal("${params.NGINX_HOSTNAME}")
+        RUN_LOCAL_CAPIF = "${params.RUN_LOCAL_CAPIF}"
     }
     stages {
         stage ('Prepare testing tools') {
@@ -84,14 +81,17 @@ pipeline {
             }
         }
 
-        stage('Launch CAPIF Docker Compose') {
+        stage('Launch CAPIF Local Test') {
             when {
                 expression { RUN_LOCAL_CAPIF == 'true' }
             }
             steps {
+                script {
+                    env.CAPIF_HTTP_PORT = '8080'
+                }
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
-                            ./run.sh
+                            ./run.sh ${CAPIF_HOSTNAME}
                            '''
                 }
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
@@ -99,21 +99,44 @@ pipeline {
                             ./check_services_are_running.sh
                            '''
                 }
-            }
-        }
-
-        stage('Launch tests') {
-            steps {
-                dir ("${env.WORKSPACE}") {
-                    sh """
+                steps {
+                    dir ("${env.WORKSPACE}") {
+                        sh """
+                        echo "Retrieve docker image"
                         docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                        echo "Executing tests"
                         docker run -t \
                             --network="host" \
                             --rm \
                             -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
                             -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
                             ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} \
-                            --variable NGINX_HOSTNAME:${NGINX_HOSTNAME} \
+                            --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
+                            --variable CAPIF_HTTP_PORT:${CAPIF_HTTP_PORT} \
+                            ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
+                    """
+                    }
+                }
+            }
+        }
+
+        stage('Launch tests') {
+            when {
+                expression { RUN_LOCAL_CAPIF == 'false' }
+            }
+            steps {
+                dir ("${env.WORKSPACE}") {
+                    sh """
+                        echo "Retrieve docker image"
+                        docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                        echo "Executing tests"
+                        docker run -t \
+                            --network="host" \
+                            --rm \
+                            -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
+                            -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
+                            ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} \
+                            --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                             ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                     """
                 }
