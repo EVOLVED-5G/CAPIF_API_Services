@@ -23,19 +23,19 @@ class ProviderManagementOperations:
             apiProvDomId = secrets.token_hex(15)
             registrationId = secrets.token_hex(15)
             provider_enrolment_details = dict()
-            provider_enrolment_details["apiProvDomId"] = apiProvDomId
-            provider_enrolment_details["registrationId"] = registrationId
+            provider_enrolment_details["registration_id"] = registrationId
+            api_provider_enrolment_details.api_prov_dom_id = apiProvDomId
 
             provider_enrolment_details.update(api_provider_enrolment_details.to_dict())
             mycol.insert_one(provider_enrolment_details)
 
-            res = Response(json.dumps(api_provider_enrolment_details, cls=JSONEncoder),
+            res = Response(json_util.dumps(api_provider_enrolment_details, cls=JSONEncoder),
                         status=201, mimetype='application/json')
             res.headers['Location'] = "http://localhost:8080/api-provider-management/v1/registrations/" + str(registrationId)
             return res
 
         except Exception as e:
-            print("An exception occurred ::", e)
+            print("An exception occurred ::", e, file=sys.stderr)
             return False
 
     def delete_api_provider_enrolment_details(self, registrationId):
@@ -43,7 +43,7 @@ class ProviderManagementOperations:
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registrationId': registrationId}
+            search_filter = {'registration_id': registrationId}
             provider_enrolment_details = mycol.find_one(search_filter)
 
             if provider_enrolment_details is None:
@@ -62,7 +62,7 @@ class ProviderManagementOperations:
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registrationId': registrationId}
+            search_filter = {'registration_id': registrationId}
             old_provider_enrolment_details = mycol.find_one(search_filter)
 
 
@@ -83,7 +83,7 @@ class ProviderManagementOperations:
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registrationId': registrationId}
+            search_filter = {'registration_id': registrationId}
             old_provider_enrolment_details = mycol.find_one(search_filter)
 
 
