@@ -1,0 +1,17 @@
+{
+  "regSec": "string",
+  "apiProvFuncs": [
+    {
+      "apiProvFuncId": "string",
+      "regInfo": {
+        "apiProvPubKey": "string",
+        "apiProvCert": "string"
+      },
+      "apiProvFuncRole": "AEF",
+      "apiProvFuncInfo": "string"
+    }
+  ],
+  "apiProvDomInfo": "string",
+  "suppFeat": "string",
+  "failReason": "string"
+}
