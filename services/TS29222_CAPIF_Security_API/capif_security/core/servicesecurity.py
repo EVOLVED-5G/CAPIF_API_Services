@@ -11,6 +11,7 @@ from ..models.access_token_rsp import AccessTokenRsp
 from bson import json_util
 import requests
 from ..models.access_token_err import AccessTokenErr
+import os
 
 
 def get_servicesecurity(api_invoker_id, authentication_info=True, authorization_info=True):
@@ -106,8 +107,7 @@ def create_servicesecurity(api_invoker_id, service_security):
             services_security.insert_one(rec)
             myclient.close()
             res = Response(json.dumps(service_security, cls=JSONEncoder), status=201, mimetype='application/json')
-            res.headers['Location'] = "http://localhost:8080/capif-security/v1/trustedInvokers/" + str(
-                api_invoker_id)
+            res.headers['Location'] = "https://{}/capif-security/v1/trustedInvokers/{}".format(os.getenv('CAPIF_HOSTNAME'),str(api_invoker_id))
             return res
 
 
@@ -168,9 +168,6 @@ def return_token(security_id, access_token_req):
     service_security = services_security.find_one({"api_invoker_id": security_id})
     if service_security is None:
         myclient.close()
-        # prob = ProblemDetails(title="Forbidden", status=403, detail="API Invoker does not exist",
-        #                       cause="API Invoker id not found")
-        # return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
         prob = AccessTokenErr(error="invalid_request", error_description="No Security Context for this API Invoker")
         return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
     else:
@@ -223,7 +220,7 @@ def update_servicesecurity(api_invoker_id, service_security):
             services_security.replace_one(old_object, new_object)
             myclient.close()
             res = Response(json.dumps(service_security, cls=JSONEncoder), status=200, mimetype='application/json')
-            res.headers['Location'] = "http://localhost:8080/capif-security/v1/trustedInvokers/" + str(
+            res.headers['Location'] = "https://${CAPIF_HOSTNAME}/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
 

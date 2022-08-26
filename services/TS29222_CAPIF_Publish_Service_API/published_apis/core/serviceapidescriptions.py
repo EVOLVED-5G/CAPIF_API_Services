@@ -30,8 +30,8 @@ def get_serviceapis(apf_id):
     apf_res = user_registry.find_one({'_id': apf_id})
     if apf_res is None:
         myclient.close()
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="APF not existing",
-                              cause="APF id not found")
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
+                              cause="Exposer id not found")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
     else:
         myQuery = {'apf_id': apf_id}
@@ -67,8 +67,8 @@ def add_serviceapidescription(apf_id, serviceapidescription):
 
     if apf_res is None:
         myclient.close()
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="APF not existing",
-                              cause="APF id not found")
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
+                              cause="Exposer id not found")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
     else:
         myParams = [{"api_name": serviceapidescription.api_name}]
@@ -113,8 +113,8 @@ def get_one_serviceapi(service_api_id, apf_id):
     apf_res = user_registry.find_one({'_id': apf_id})
     if apf_res is None:
         myclient.close()
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="APF not existing",
-                              cause="APF id not found")
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
+                              cause="Exposer id not found")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
     else:
         myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
@@ -157,8 +157,8 @@ def delete_serviceapidescription(service_api_id, apf_id):
 
     if apf_res is None:
         myclient.close()
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="APF not existing",
-                                cause="APF id not found")
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
+                                cause="Exposer id not found")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     else:
@@ -199,8 +199,8 @@ def update_serviceapidescription(service_api_id,apf_id, service_api_description)
 
     if apf_res is None:
         myclient.close()
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="APF not existing",
-                                cause="APF id not found")
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
+                                cause="Exposer id not found")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     else:
