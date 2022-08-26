@@ -15,11 +15,9 @@ class ProviderManagementOperations:
         self.db = MongoDatabse()
 
     def register_api_provider_enrolment_details(self, api_provider_enrolment_details):
-
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            # Generate subscriptionID
             apiProvDomId = secrets.token_hex(15)
             registrationId = secrets.token_hex(15)
             provider_enrolment_details = dict()
@@ -39,7 +37,6 @@ class ProviderManagementOperations:
             return False
 
     def delete_api_provider_enrolment_details(self, registrationId):
-
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
