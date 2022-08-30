@@ -16,17 +16,6 @@ app.add_api('openapi.yaml',
             arguments={'title': 'CAPIF_Discover_Service_API'},
             pythonic_params=True)
 
-app.app.config['MONGODB_SETTINGS'] = {
-    'user': 'root',
-    'password': 'example',
-    'db': 'capif',
-    'services': 'serviceapidescriptions',
-    'invokers': 'invokerdetails',
-    'jwt': 'user',
-    'host': 'mongo',
-    'port': 27017,
-}
-
 app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
 
 jwt = JWTManager(app.app)

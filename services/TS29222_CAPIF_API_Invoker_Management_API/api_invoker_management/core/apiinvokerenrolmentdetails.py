@@ -70,7 +70,6 @@ class InvokerManagementOperations:
 
             else:
 
-                apiinvokerenrolmentdetail.api_invoker_id = onboard_id
                 apiinvokerenrolmentdetail = apiinvokerenrolmentdetail.to_dict()
                 apiinvokerenrolmentdetail = {
                     key: value for key, value in apiinvokerenrolmentdetail.items() if value is not None

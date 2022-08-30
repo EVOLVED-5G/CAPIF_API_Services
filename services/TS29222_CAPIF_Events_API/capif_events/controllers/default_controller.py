@@ -62,11 +62,9 @@ def subscriber_id_subscriptions_subscription_id_delete(subscriber_id, subscripti
 
     cert_tmp = request.headers['X-Ssl-Client-Cert']
     cert_raw = cert_tmp.replace('\t', '')
-   
 
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-   
 
     capif_user = check_user.check_capif_user(cn, "invoker", "apf")
 

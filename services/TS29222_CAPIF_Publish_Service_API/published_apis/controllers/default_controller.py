@@ -1,6 +1,8 @@
 import connexion
 from published_apis.models.service_api_description import ServiceAPIDescription  # noqa: E501
 from ..core import serviceapidescriptions
+from ..core.check_user import CapifUsersOperations
+from ..core.serviceapidescriptions import PublishServiceOperations
 
 import json
 from flask import Response, request, current_app
@@ -12,6 +14,9 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
 
+
+check_user = CapifUsersOperations()
+service_operations = PublishServiceOperations()
 
 def apf_id_service_apis_get(apf_id):  # noqa: E501
     """apf_id_service_apis_get
@@ -26,38 +31,20 @@ def apf_id_service_apis_get(apf_id):  # noqa: E501
 
     cert_tmp = request.headers['X-Ssl-Client-Cert']
     cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
+
 
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "exposer")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        myclient.close()
+    if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
                               cause="Certificate not authorized")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    # service_apis = serviceapidescriptions.get_serviceapis(apf_id)
-    # response = service_apis, 200
 
-    res = serviceapidescriptions.get_serviceapis(apf_id)
+    res = service_operations.get_serviceapis(apf_id)
 
     return res
 
@@ -76,37 +63,22 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
     """
     cert_tmp = request.headers['X-Ssl-Client-Cert']
     cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
-
+   
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
+    
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "exposer")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        myclient.close()
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized", cause="Certificate not authorized")
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
-    res = serviceapidescriptions.add_serviceapidescription(apf_id, body)
+    res = service_operations.add_serviceapidescription(apf_id, body)
    
     if res.status_code == 201:
         mqtt = current_app.config['INSTANCE_MQTT']
@@ -129,41 +101,19 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
 
     cert_tmp = request.headers['X-Ssl-Client-Cert']
     cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
 
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "exposer")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        myclient.close()
+    if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
                               cause="Certificate not authorized")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    #if connexion.request.is_json:
-       # body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
-    # service_apis = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
-    # response = service_apis, 204
-
-    res = serviceapidescriptions.delete_serviceapidescription(service_api_id, apf_id)
+    res = service_operations.delete_serviceapidescription(service_api_id, apf_id)
 
     if res.status_code == 204:
         mqtt = current_app.config['INSTANCE_MQTT']
@@ -185,38 +135,20 @@ def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E50
     """
     cert_tmp = request.headers['X-Ssl-Client-Cert']
     cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
 
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+    capif_user = check_user.check_capif_user(cn, "exposer")
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        myclient.close()
+    if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
                               cause="Certificate not authorized")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    # service_apis = serviceapidescriptions.get_one_serviceapi(service_api_id, apf_id)
-    # response = service_apis, 200
 
-    res = serviceapidescriptions.get_one_serviceapi(service_api_id, apf_id)
+    res = service_operations.get_one_serviceapi(service_api_id, apf_id)
 
     return res
 
@@ -237,30 +169,14 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
     """
     cert_tmp = request.headers['X-Ssl-Client-Cert']
     cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
+
 
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "exposer")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        myclient.close()
+    if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
                               cause="Certificate not authorized")
         return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
@@ -268,10 +184,10 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
     if connexion.request.is_json:
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
-    response = serviceapidescriptions.update_serviceapidescription(service_api_id, apf_id, body)
+    response = service_operations.update_serviceapidescription(service_api_id, apf_id, body)
 
     if response.status_code == 200:
         mqtt = current_app.config['INSTANCE_MQTT']
         mqtt.publish("/events","SERVICE_API_UPDATE")
-    # return response,200
+
     return response
