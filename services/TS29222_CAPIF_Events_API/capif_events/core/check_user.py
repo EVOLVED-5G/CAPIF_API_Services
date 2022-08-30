@@ -8,7 +8,7 @@ class CapifUsersOperations:
 
     def check_capif_user(self, common_name, role_invoker, role_apf):
         try:
-            mycol = self.db.get_col_by_name(self.db.capif_users)
+            mycol = self.db.get_col_by_name(self.db.user_collection)
 
             capif_user = mycol.find_one({"$and": [{"cn": common_name}, {"$or": [{"role": role_invoker}, {"role": role_apf}]}]})
 
