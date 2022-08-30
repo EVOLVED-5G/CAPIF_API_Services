@@ -16,16 +16,6 @@ app.add_api('openapi.yaml',
             arguments={'title': 'CAPIF_Publish_Service_API'},
             pythonic_params=True)
 
-app.app.config['MONGODB_SETTINGS'] = {
-    'user': 'root',
-    'password': 'example',
-    'db': 'capif',
-    'col': 'serviceapidescriptions',
-    'jwt': 'user',
-    'host': 'mongo',
-    'port': 27017,
-}
-
 app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
 
 app.app.config['MQTT_BROKER_URL'] = 'mosquitto'  # use the free broker from HIVEMQ
