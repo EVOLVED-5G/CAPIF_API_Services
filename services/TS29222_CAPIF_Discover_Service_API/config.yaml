@@ -4,7 +4,7 @@ mongo: {
   'db': 'capif',
   'col': 'serviceapidescriptions',
   'invokers_col': 'invokerdetails',
-  'capif_users_col': "user"
+  'capif_users_col': "user",
   'host': 'mongo',
   'port': "27017"
 }
