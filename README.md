@@ -211,7 +211,7 @@ These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
 #### Register an entity
 Request
 ```shell
-curl --request POST 'http://<CAPIF_HOSTNAME>:8080/register' --header 'Content-Type: application/json' --data '{
+curl --request POST 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/register' --header 'Content-Type: application/json' --data '{
     "username":"...",
     "password":"...",
     "role":"...",
@@ -234,7 +234,7 @@ Response body
 #### Get access token for an existing entity
 Request
 ```shell
-curl --request POST 'http://<CAPIF_HOSTNAME>:8080/gettoken' --header 'Content-Type: application/json' --data '{
+curl --request POST 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/gettoken' --header 'Content-Type: application/json' --data '{
     "username":"...",
     "password":"...",
     "role":"..."
@@ -251,7 +251,7 @@ Response body
 
 #### Retrieve and store CA certificate
 ```shell
-curl --request GET 'http://<CAPIF_HOSTNAME>:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > <CA Certificate file>
+curl --request GET 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/ca-root' 2>/dev/null | jq -r '.certificate' -j > <CA Certificate file>
 ```
 
 #### Sign exposer certificate

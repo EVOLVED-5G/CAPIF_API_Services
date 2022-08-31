@@ -7,18 +7,19 @@
 
 ##### Set environment variables 
 capifhost="capifcore"
+capifhttpport="8080"
 
 exposerpk="-----BEGIN CERTIFICATE REQUEST-----\nMIIC0TCCAbkCAQAwgYsxEDAOBgNVBAMMB2V4cG9zZXIxFzAVBgNVBAoMDlRlbGVm\nb25pY2EgSStEMRMwEQYDVQQLDApJbm5vdmF0aW9uMQ8wDQYDVQQHDAZNYWRyaWQx\nDzANBgNVBAgMBk1hZHJpZDELMAkGA1UEBhMCRVMxGjAYBgkqhkiG9w0BCQEWC2lu\nbm9AdGlkLmVzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkpJ7FzAI\nkzFYxLKbW54lIsQBNIQz5zQIvRZDFcrO4QLR2jQUps9giBWEDih++47JiBJyM+z1\nWkEh7b+moZhQThj7L9PKgJHRhU1oeHpSE1x/r7479J5F+CFRqFo5v9dC+2zGfP4E\nsSrNfp3MK/KQHsHhMzSt881xAHs+p2/bcM+sd/BlXC4J6E1y6Hk3ogI7kq443fcY\noUHZx9ClUSboOvXa1ZSPVxdCV6xKRraUdAKfhMGn+pYtJDsNp8Gg/BN8NXmYUzl9\ntDhjeuIxr4N38LgW3gRHLNIa8acO9eBctWw9AD20JWzFAXvvmsboBPc2wsOVcsml\ncCbisMRKX4JyKQIDAQABoAAwDQYJKoZIhvcNAQELBQADggEBAIxZ1Sec9ATbqjhi\nRz4rvhX8+myXhyfEw2MQ62jz5tpH4qIVZFtn+cZvU/ULySY10WHaBijGgx8fTaMh\nvjQbc+p3PXmgtnmt1QmoOGjDTFa6vghqpxPLSUjjCUe8yj5y24gkOImY6Cv5rzzQ\nlnTMkNvnGgpDgUeiqWcQNbwwge3zkzp9bVRgogTT+EDxiFnjTTF6iUG80sRtXMGr\nD6sygLsF2zijGGfWoKRo/7aZTQxuCiCixceVFXegMfr+eACkOjV25Kso7hYBoEdP\nkgUf5PNpl5uK3/rmPIrl/TeE0SnGGfCYP7QajE9ELRsBVmVDZJb7ZxUl1A4YydFY\ni0QOM3Y=\n-----END CERTIFICATE REQUEST-----\n"
 
 
 ##### Retrieve and store CA certificate 
 
-curl --request GET "http://$capifhost:8080/ca-root" 2>/dev/null | jq -r '.certificate' -j > ca.crt
+curl --request GET "http://$capifhost:$capifhttpport/ca-root" 2>/dev/null | jq -r '.certificate' -j > ca.crt
 
 
 ##### Register an entity 
 
-exposerid=$(curl --request POST "http://$capifhost:8080/register" --header 'Content-Type: application/json' --data '{
+exposerid=$(curl --request POST "http://$capifhost:$capifhttpport/register" --header 'Content-Type: application/json' --data '{
     "username":"exposer",
     "password":"exposer",
     "role":"exposer",
@@ -29,7 +30,7 @@ exposerid=$(curl --request POST "http://$capifhost:8080/register" --header 'Cont
 
 ##### Get access token
 
-exposertoken=$(curl --request POST "http://$capifhost:8080/gettoken" --header 'Content-Type: application/json' --data '{
+exposertoken=$(curl --request POST "http://$capifhost:$capifhttpport/gettoken" --header 'Content-Type: application/json' --data '{
     "username":"exposer",
     "password":"exposer",
     "role":"exposer"
@@ -38,7 +39,7 @@ exposertoken=$(curl --request POST "http://$capifhost:8080/gettoken" --header 'C
 
 ##### Sign exposer certificate
 
-curl --request POST "http://$capifhost:8080/sign-csr" --header "Authorization: Bearer $exposertoken" --header 'Content-Type: application/json' --data-raw "{
+curl --request POST "http://$capifhost:$capifhttpport/sign-csr" --header "Authorization: Bearer $exposertoken" --header 'Content-Type: application/json' --data-raw "{
   \"csr\":  \"$exposerpk\",
   \"mode\":  \"client\",
   \"filename\": \"exposer\"
