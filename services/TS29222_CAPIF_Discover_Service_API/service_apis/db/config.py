@@ -7,6 +7,7 @@ class Config:
 		self.cached = 0
 		self.file="./config.yaml"
 		self.my_config = {}
+
 		stamp = os.stat(self.file).st_mtime
 		if stamp != self.cached:
 			self.cached = stamp
@@ -16,3 +17,4 @@ class Config:
 
 	def getConfig(self):
 		return self.my_config
+

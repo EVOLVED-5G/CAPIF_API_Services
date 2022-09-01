@@ -17,6 +17,7 @@ class PublishServiceOperations:
         self.db = MongoDatabse()
         self.mimetype = 'application/json'
 
+
     def get_serviceapis(self, apf_id):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
@@ -30,6 +31,7 @@ class PublishServiceOperations:
                 prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
                                     cause="Exposer id not found")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+
             else:
                 myQuery = {'apf_id': apf_id}
                 service_apis = mycol.find(myQuery)
@@ -47,6 +49,7 @@ class PublishServiceOperations:
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
 
 
+
     def add_serviceapidescription(self, apf_id, serviceapidescription):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
@@ -59,6 +62,7 @@ class PublishServiceOperations:
                 prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
                                     cause="Exposer id not found")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+
             else:
                 myParams = [{"api_name": serviceapidescription.api_name}]
                 for i in range(0,len(serviceapidescription.aef_profiles)):
@@ -70,6 +74,7 @@ class PublishServiceOperations:
                     prob = ProblemDetails(title="Forbidden", status=403, detail="Service already published",
                                         cause="Identical API name and AEF Profile IDs")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+
                 else:
                     api_id = secrets.token_hex(15)
                     serviceapidescription.api_id = api_id
@@ -79,12 +84,14 @@ class PublishServiceOperations:
                     mycol.insert_one(rec)
 
                     res = Response(json.dumps(serviceapidescription, cls=JSONEncoder), status=201, mimetype=self.mimetype)
+
                     res.headers['Location'] = "http://localhost:8080/published-apis/v1/" + str(apf_id) + "/service-apis/" + str(api_id)
                     return res
 
         except Exception as e:
             exception = "An exception occurred in add services::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+
 
 
     def get_one_serviceapi(self, service_api_id, apf_id):
@@ -98,6 +105,7 @@ class PublishServiceOperations:
                 prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
                                     cause="Exposer id not found")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+
             else:
                 myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
                 service_api = mycol.find_one(myQuery)
@@ -107,6 +115,7 @@ class PublishServiceOperations:
                     prob = ProblemDetails(title="Not Found", status=404, detail="Service API not found",
                                         cause="No Service with specific credentials exists")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+
                 else:
                     del service_api['apf_id']
                     del service_api['_id']
@@ -116,6 +125,7 @@ class PublishServiceOperations:
         except Exception as e:
             exception = "An exception occurred in get one service::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+
 
 
     def delete_serviceapidescription(self, service_api_id, apf_id):
@@ -132,6 +142,7 @@ class PublishServiceOperations:
                                         cause="Exposer id not found")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
 
+
             else:
                 myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
                 serviceapidescription = mycol.find_one(myQuery)
@@ -144,11 +155,11 @@ class PublishServiceOperations:
 
                 else:
                     mycol.delete_one(myQuery)
-
                     return Response(json.dumps(serviceapidescription, default=str, cls=JSONEncoder), status=204, mimetype=self.mimetype)
         except Exception as e:
             exception = "An exception occurred in delete service::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+
 
 
     def update_serviceapidescription(self, service_api_id, apf_id, service_api_description):
@@ -175,6 +186,7 @@ class PublishServiceOperations:
                     prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
                                         cause="Service API id not found")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+
                 else:
 
                     service_api_description = service_api_description.to_dict()
@@ -183,10 +195,10 @@ class PublishServiceOperations:
                     }
 
                     mycol.update_one(serviceapidescription, {"$set":service_api_description}, upsert=False)
-
                     response = Response(json.dumps(service_api_description, default=str,cls=JSONEncoder), status=200, mimetype=self.mimetype)
 
                     return response
         except Exception as e:
             exception = "An exception occurred in update service::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+

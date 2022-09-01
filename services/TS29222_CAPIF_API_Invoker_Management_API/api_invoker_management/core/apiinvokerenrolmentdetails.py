@@ -25,6 +25,7 @@ class InvokerManagementOperations:
 
             if res is not None:
                 prob = ProblemDetails(title="Forbidden", status=403, detail="Invoker already registered", cause="Identical invoker public key")
+
                 return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
 
             else:
@@ -37,7 +38,9 @@ class InvokerManagementOperations:
                 payload['filename'] = apiinvokerenrolmentdetail.api_invoker_information
 
                 headers = {
+
                     'Content-Type': self.mimetype
+
                 }
 
                 response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
@@ -47,6 +50,7 @@ class InvokerManagementOperations:
                 apiinvokerenrolmentdetail.api_invoker_id = api_invoker_id
                 apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = response_payload['certificate']
                 mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
+
 
                 res = Response(json.dumps(apiinvokerenrolmentdetail, cls=JSONEncoder), status=201, mimetype=self.mimetype)
                 res.headers['Location'] = "/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
@@ -67,7 +71,9 @@ class InvokerManagementOperations:
 
             if old_values is None:
                 prob = ProblemDetails(title="Not Found", status=404, detail="Please provide an existing Netapp ID", cause="Not exist NetappID")
+
                 return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+
 
             else:
 
@@ -78,12 +84,14 @@ class InvokerManagementOperations:
 
                 mycol.update_one(old_values, {"$set":apiinvokerenrolmentdetail}, upsert=False)
 
+
                 res = Response(json.dumps(apiinvokerenrolmentdetail, cls=JSONEncoder), status=200, mimetype=self.mimetype)
                 return res
 
         except Exception as e:
             exception = "An exception occurred in update invoker::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+
 
 
     def remove_apiinvokerenrolmentdetail(self, onboard_id):
@@ -105,4 +113,5 @@ class InvokerManagementOperations:
         except Exception as e:
             exception = "An exception occurred in remove invoker::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+
 

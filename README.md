@@ -211,12 +211,12 @@ These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
 #### Register an entity
 Request
 ```shell
-curl --request POST 'http://<CAPIF_HOSTNAME>/register' --header 'Content-Type: application/json' --data '{
+curl --request POST 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/register' --header 'Content-Type: application/json' --data '{
     "username":"...",
     "password":"...",
     "role":"...",
     "description":"...",
-    "cn":""
+    "cn":"..."
 }'
 ```
 
@@ -234,7 +234,7 @@ Response body
 #### Get access token for an existing entity
 Request
 ```shell
-curl --request POST 'http://<CAPIF_HOSTNAME>/gettoken' --header 'Content-Type: application/json' --data '{
+curl --request POST 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/gettoken' --header 'Content-Type: application/json' --data '{
     "username":"...",
     "password":"...",
     "role":"..."
@@ -251,7 +251,7 @@ Response body
 
 #### Retrieve and store CA certificate
 ```shell
-curl --request GET 'http://<CAPIF_HOSTNAME>/ca-root' 2>/dev/null | jq -r '.certificate' -j > ca.crt
+curl --request GET 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/ca-root' 2>/dev/null | jq -r '.certificate' -j > <CA Certificate file>
 ```
 
 #### Sign exposer certificate
@@ -277,68 +277,18 @@ These APIs are triggered by a NetApp (i.e. Invoker)
 #### Onboard an Invoker
 
 ```shell
-curl --request POST 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
-  "notificationDestination" : "notificationDestination",
+curl --cacert <CA Certificate file> --request POST 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers' --header 'Authorization: Bearer <Invoker JWT access token>' --header 'Content-Type: application/json' --data-raw '{
+  "notificationDestination" : "http://X:Y/netapp_callback",
   "supportedFeatures" : "fffffff",
-  "onboardingInformation" : {
-    "apiInvokerPublicKey" : "RAW PUBLIC KEY CREATED BY INVOKER",
-    "onboardingSecret" : "onboardingSecret1",
-    "apiInvokerCertificate" : "apiInvokerCertificate1"
+  "apiInvokerInformation" : <Invoker CommonName>,
+  "websockNotifConfig" : {
+    "requestWebsocketUri" : true,
+    "websocketUri" : "websocketUri"
   },
-  "apiList" : [ {
-    "serviceAPICategory" : "serviceAPICategory",
-    "ccfId" : "ccfId",
-    "apiName" : "apiName",
-    "shareableInfo" : {
-      "capifProvDoms" : [ "capifProvDoms", "capifProvDoms" ],
-      "isShareable" : true
-    },
-    "supportedFeatures" : "fffffff",
-    "apiSuppFeats" : "fffffff",
-    "apiId" : "apiId",
-    "aefProfiles" : [ {
-      "securityMethods" : ["PSK"],
-      "versions" : [ {
-        "apiVersion" : "apiVersion",
-        "resources" : [ {
-          "operations" : ["GET"],
-          "description" : "description",
-          "resourceName" : "resourceName",
-          "custOpName" : "custOpName",
-          "uri" : "uri",
-          "commType": "REQUEST_RESPONSE"
-        }, {
-          "operations" : ["GET"],
-          "description" : "description",
-          "resourceName" : "resourceName",
-          "custOpName" : "custOpName",
-          "uri" : "uri",
-          "commType": "REQUEST_RESPONSE"
-        } ],
-        "custOperations" : [ {
-          "operations" : ["GET"],
-          "description" : "description",
-          "custOpName" : "custOpName",
-          "commType" : "REQUEST_RESPONSE"
-        }, {
-          "operations" : ["GET"],
-          "description" : "description",
-          "custOpName" : "custOpName",
-          "commType" : "REQUEST_RESPONSE"
-        } ],
-        "expiry" : "2000-01-23T04:56:07.000+00:00"
-      } ],
-      "aefId" : "aefId",
-      "interfaceDescriptions" : [ {
-        "securityMethods" : ["PSK"],
-        "port" : 5248,
-        "ipv4Addr" : "ipv4Addr"
-      } ]
-    } ],
-    "pubApiPath" : {
-      "ccfIds" : [ "ccfIds", "ccfIds" ]
-    }
-  } ]
+  "onboardingInformation" : {
+    "apiInvokerPublicKey" : <RAW PUBLIC KEY CREATED BY INVOKER>
+  },
+  "requestTestNotification" : true
 }'
 ```
 
@@ -363,75 +313,25 @@ INVOKER CERTIFICATE value must be stored by Invoker entity to next request to CA
 #### Update Invoker Details
 
 ```shell
-curl --cert invoker.crt --key invoker.key --cacert ca.crt --location --request PUT 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data '{
-  "notificationDestination" : "notificationDestination1",
+curl --location --request PUT 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' --cert <Invoker Signed Certificate file> --key <Invoker Private Key> --cacert <CA Certificate file> --header 'Content-Type: application/json' --data '{
+  "notificationDestination" : "http://X:Y/netapp_callback2",
   "supportedFeatures" : "fffffff",
-  "onboardingInformation" : {
-    "apiInvokerPublicKey" : "apiInvokerPublicKey1",
-    "onboardingSecret" : "onboardingSecret1",
-    "apiInvokerCertificate" : "apiInvokerCertificate1"
+  "apiInvokerInformation" : <Invoker CommonName>,
+  "websockNotifConfig" : {
+    "requestWebsocketUri" : true,
+    "websocketUri" : "websocketUri2"
   },
-  "apiList" : [ {
-    "serviceAPICategory" : "serviceAPICategory",
-    "ccfId" : "ccfId",
-    "apiName" : "apiName",
-    "shareableInfo" : {
-      "capifProvDoms" : [ "capifProvDoms", "capifProvDoms" ],
-      "isShareable" : true
-    },
-    "supportedFeatures" : "fffffff",
-    "apiSuppFeats" : "fffffff",
-    "apiId" : "apiId",
-    "aefProfiles" : [ {
-      "securityMethods" : ["PSK"],
-      "versions" : [ {
-        "apiVersion" : "apiVersion",
-        "resources" : [ {
-          "operations" : ["GET"],
-          "description" : "description",
-          "resourceName" : "resourceName",
-          "custOpName" : "custOpName",
-          "uri" : "uri",
-          "commType": "REQUEST_RESPONSE"
-        }, {
-          "operations" : ["GET"],
-          "description" : "description",
-          "resourceName" : "resourceName",
-          "custOpName" : "custOpName",
-          "uri" : "uri",
-          "commType": "REQUEST_RESPONSE"
-        } ],
-        "custOperations" : [ {
-          "operations" : ["GET"],
-          "description" : "description",
-          "custOpName" : "custOpName",
-          "commType" : "REQUEST_RESPONSE"
-        }, {
-          "operations" : ["GET"],
-          "description" : "description",
-          "custOpName" : "custOpName",
-          "commType" : "REQUEST_RESPONSE"
-        } ],
-        "expiry" : "2000-01-23T04:56:07.000+00:00"
-      } ],
-      "aefId" : "aefId",
-      "interfaceDescriptions" : [ {
-        "securityMethods" : ["PSK"],
-        "port" : 5248,
-        "ipv4Addr" : "ipv4Addr"
-      } ]
-    } ],
-    "pubApiPath" : {
-      "ccfIds" : [ "ccfIds", "ccfIds" ]
-    }
-  } ]
+  "onboardingInformation" : {
+    "apiInvokerPublicKey" : <RAW PUBLIC KEY CREATED BY INVOKER>
+  },
+  "requestTestNotification" : true
 }'
 ```
 
 #### Offboard an Invoker
 
 ```shell
-curl --cert invoker.crt --key invoker.key --cacert ca.crt --request DELETE 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' 
+curl --cert <Invoker Signed Certificate file> --key <Invoker Private Key> --cacert <CA Certificate file> --request DELETE 'https://<CAPIF_HOSTNAME>/api-invoker-management/v1/onboardedInvokers/<API Invoker ID>' 
 ```
 
 ### Publish APIs
@@ -440,7 +340,7 @@ These APIs are triggered by the API Publishing Function (APF) of an Exposer
 
 #### Publish a new API.
 ```shell
-curl --cert exposer.crt --key exposer.key --cacert ca.crt --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'  --header 'Content-Type: application/json' --data '{
+curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<Exposer Id>/service-apis'  --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -511,7 +411,7 @@ curl --cert exposer.crt --key exposer.key --cacert ca.crt --request POST 'https:
 
 #### Update a published service API.
 ```shell
-curl --cert exposer.crt --key exposer.key --cacert ca.crt --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
+curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -582,17 +482,17 @@ curl --cert exposer.crt --key exposer.key --cacert ca.crt --request PUT 'https:/
 
 #### Unpublish a published service API.
 ```shell
-curl --cert exposer.crt --key exposer.key --cacert ca.crt --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
+curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 #### Retrieve all published APIs
 ```shell
-curl --cert exposer.crt --key exposer.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
+curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
 ```
 
 #### Retrieve a published service API.
 ```shell
-curl --cert exposer.crt --key exposer.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
+curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 ### Discover API
@@ -601,13 +501,16 @@ This API is triggered by a NetApp (or Invoker)
 
 #### Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.
 ```shell
-curl --cert invoker.crt --key invoker.key --cacert ca.crt --request GET 'https://<CAPIF_HOSTNAME>/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>'
+curl --cert <Invoker Signed Certificate file> --key <Invoker Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>'
 ```
 
 
-## Using PostMan
+## Using PostMan (only for release 1.0 of CAPIF)
 For more information on how to test the APIs with POSTMAN, follow this [Document](docs/testing_with_postman/EVOLVED-5G%20--%20using%20CCF%20from%20Postman_13.1.2022.pdf).
 Also you have here the [POSTMAN Collection](docs/testing_with_postman/CAPIF_export_APIs.postman_collection.json) **TLS NOT ADDED**
+
+## Using cURL (TLS supported)
+Follow the instructions and run the commands of the bash scripts in [here](docs/testing_with_curl) to test CAPIF with TLS support.
 
 # Important urls:
 
