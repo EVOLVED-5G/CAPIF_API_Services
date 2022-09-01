@@ -65,7 +65,7 @@ class ProviderManagementOperations:
             if  old_provider_enrolment_details is None:
                 prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
                                     cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype= self.mimetype)
+                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
             else:
                 api_provider_enrolment_details = api_provider_enrolment_details.to_dict()
                 api_provider_enrolment_details = {
@@ -90,7 +90,7 @@ class ProviderManagementOperations:
             if  old_provider_enrolment_details is None:
                 prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
                                     cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype= self.mimetype)
+                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
 
             else:
 
