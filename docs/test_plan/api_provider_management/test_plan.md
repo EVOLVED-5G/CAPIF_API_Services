@@ -6,8 +6,8 @@
   - [Test Case 2: Register Api Provider Already registered](#test-case-2-register-api-provider-already-registered)
   - [Test Case 3: Update Registered Api Provider](#test-case-3-update-registered-api-provider)
   - [Test Case 4: Update Not Registered Api Provider](#test-case-4-update-not-registered-api-provider)
-  - [Test Case 5: Partially Update Registered Api Provider](#test-case-5-update-not-registered-api-provider)
-  - [Test Case 6: Partially Update Not Registered Api Provider](#test-case-6-update-not-registered-api-provider)
+  - [Test Case 5: Partially Update Registered Api Provider](#test-case-5-partially-update-registered-api-provider)
+  - [Test Case 6: Partially Update Not Registered Api Provider](#test-case-6-partially-update-not-registered-api-provider)
   - [Test Case 7: Delete Registered Api Provider](#test-case-7-delete-registered-api-provider)
   - [Test Case 8: Delete Not Registered Api Provider](#test-case-8-delete-not-registered-api-provider)
 
@@ -35,7 +35,8 @@ At this documentation you will have all information and related files and exampl
   
   201 API invoker on-boarded successfully.
 
-  Header Location at response contains the URI of the newly created resource, according to the structure: {apiRoot}/api-provider-management/v1/onboardedInvokers/{registerId}
+  Header Location at response contains the URI of the newly created resource, according to the structure: {apiRoot}/api-provider-management/\<apiVersion\>/registrations/{registrationId}
+
 
 
 ## Test Case 2: Register Api Provider Already registered
@@ -164,6 +165,8 @@ At this documentation you will have all information and related files and exampl
 
 
 
-[request body]: ./provider_details_post_example.json  "API Invoker Request"
+[request body]: ./provider_details_post_example.json  "API Provider Enrolment Request"
+
+[request patch body]: ./provider_details_enrolment_details_patch_example.json  "API Provider Enrolment Patch Request"
 
 [Return To All Test Plans]: ../README.md

@@ -18,3 +18,21 @@ def create_api_provider_enrolment_details_body():
     }
 
     return (data)
+
+def create_api_provider_enrolment_details_patch_body():
+    data = {
+        "apiProvFuncs": [
+            {
+                "apiProvFuncId": "PATCH",
+                "regInfo": {
+                    "apiProvPubKey": "PATCH",
+                    "apiProvCert": "PATCH"
+                },
+                "apiProvFuncRole": "AEF",
+                "apiProvFuncInfo": "PATCH"
+            }
+        ],
+        "apiProvDomInfo": "ROBOT_TESTING",
+    }
+
+    return (data)
