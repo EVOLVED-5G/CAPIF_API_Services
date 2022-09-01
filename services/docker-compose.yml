@@ -24,11 +24,11 @@ services:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
-#  api-provider-management:
-#    build: TS29222_CAPIF_API_Provider_Management_API/.
-#    expose:
-#      - "8080"
-#    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
+  api-provider-management:
+    build: TS29222_CAPIF_API_Provider_Management_API/.
+    expose:
+      - "8080"
+    image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
@@ -145,7 +145,7 @@ services:
       - easy-rsa
 #      - aef-security
 #      - api-invoker-management
-#      - api-provider-management
+      - api-provider-management
 #      - access-control-policy
       - service-apis
 #      - api-invocation-logs
