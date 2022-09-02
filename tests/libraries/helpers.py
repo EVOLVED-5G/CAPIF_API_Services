@@ -33,6 +33,16 @@ def get_subscriber_and_subscription_from_location(input):
     else:
         raise Exception('Host is not present at ' + input)
 
+def get_registration_id(input):
+    p = re.compile('^.*/v1/registrations/([a-zA-Z0-9]+)/?')
+    m = p.match(input)
+    if m:
+        if m.lastindex == 1:
+            return m[1]
+        raise Exception('Only match ' + m.lastindex + ' and the expected is 1')
+    else:
+        raise Exception('registration id is not present at ' + input)
+
 
 def store_in_file(file_path, data):
     with open(file_path, 'wb') as f:

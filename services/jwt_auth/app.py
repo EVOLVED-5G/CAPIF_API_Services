@@ -44,6 +44,7 @@ invokerdetails = mydb['invokerdetails']
 serviceapidescriptions = mydb['serviceapidescriptions']
 eventsdetails = mydb['eventsdetails']
 servicesecurity = mydb['servicesecurity']
+providerenrolmentdetails = mydb['providerenrolmentdetails']
 
 
 @app.route("/register", methods=["POST"])
@@ -132,6 +133,14 @@ def testusers():
         message_returned += "No service security subscription present"
     else:
         message_returned += "Deleted " + str(result.deleted_count) + " service security Subscriptions"
+    message_returned += splitter_string
+
+    myquery = {"api_prov_dom_info": {"$regex": "^ROBOT_TESTING.*"}}
+    result = providerenrolmentdetails.delete_many(myquery)
+    if result.deleted_count == 0:
+        message_returned += "No Provider Enrolment Details present"
+    else:
+        message_returned += "Deleted " + str(result.deleted_count) + " provider enrolment details"
     message_returned += splitter_string
 
     return jsonify(message=message_returned), 200

@@ -65,7 +65,7 @@ class APIProviderFunctionDetails(Model):
     def api_prov_func_id(self):
         """Gets the api_prov_func_id of this APIProviderFunctionDetails.
 
-        API provider domain functionID assigned by the CAPIF core function to the API provider domain function while registering/updating the API provider domain. Shall not be present in the HTTP POST request from the API management function to the CAPIF core function, to register itself. Shall be present in all other HTTP requests and responses.  # noqa: E501
+        API provider domain functionID assigned by the CAPIF core function to the API provider domain function while registering/updating the API provider domain. Shall not be present in the HTTP POST request from the API management function to the CAPIF core function, to register itself. Shall be present in all other HTTP requests and responses.   # noqa: E501
 
         :return: The api_prov_func_id of this APIProviderFunctionDetails.
         :rtype: str
@@ -76,7 +76,7 @@ class APIProviderFunctionDetails(Model):
     def api_prov_func_id(self, api_prov_func_id):
         """Sets the api_prov_func_id of this APIProviderFunctionDetails.
 
-        API provider domain functionID assigned by the CAPIF core function to the API provider domain function while registering/updating the API provider domain. Shall not be present in the HTTP POST request from the API management function to the CAPIF core function, to register itself. Shall be present in all other HTTP requests and responses.  # noqa: E501
+        API provider domain functionID assigned by the CAPIF core function to the API provider domain function while registering/updating the API provider domain. Shall not be present in the HTTP POST request from the API management function to the CAPIF core function, to register itself. Shall be present in all other HTTP requests and responses.   # noqa: E501
 
         :param api_prov_func_id: The api_prov_func_id of this APIProviderFunctionDetails.
         :type api_prov_func_id: str
@@ -134,7 +134,7 @@ class APIProviderFunctionDetails(Model):
     def api_prov_func_info(self):
         """Gets the api_prov_func_info of this APIProviderFunctionDetails.
 
-        Generic information related to the API provider domain function such as details of the API provider applications.  # noqa: E501
+        Generic information related to the API provider domain function such as details of the API provider applications.   # noqa: E501
 
         :return: The api_prov_func_info of this APIProviderFunctionDetails.
         :rtype: str
@@ -145,7 +145,7 @@ class APIProviderFunctionDetails(Model):
     def api_prov_func_info(self, api_prov_func_info):
         """Sets the api_prov_func_info of this APIProviderFunctionDetails.
 
-        Generic information related to the API provider domain function such as details of the API provider applications.  # noqa: E501
+        Generic information related to the API provider domain function such as details of the API provider applications.   # noqa: E501
 
         :param api_prov_func_info: The api_prov_func_info of this APIProviderFunctionDetails.
         :type api_prov_func_info: str

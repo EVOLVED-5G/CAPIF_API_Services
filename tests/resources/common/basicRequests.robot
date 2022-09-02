@@ -93,6 +93,27 @@ Put Request Capif
 
     RETURN    ${resp}
 
+Patch Request Capif
+    [Timeout]    60s
+    [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
+
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}
+
+    IF    '${username}' != '${NONE}'
+        ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
+    END
+
+    ${resp}=    PATCH On Session
+    ...    apisession
+    ...    ${endpoint}
+    ...    headers=${headers}
+    ...    json=${json}
+    ...    expected_status=any
+    ...    verify=${verify}
+    ...    cert=${cert}
+
+    RETURN    ${resp}
+
 Delete Request Capif
     [Timeout]    60s
     [Arguments]    ${endpoint}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}

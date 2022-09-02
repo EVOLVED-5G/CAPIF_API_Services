@@ -1,20 +1,19 @@
 openapi: 3.0.0
 info:
-  description: |
-    API for API provider domain functions management.
-    © 2021, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
-    All rights reserved.
+  description: "API for API provider domain functions management.  \n© 2022, 3GPP\
+    \ Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).  \nAll rights\
+    \ reserved.\n"
   title: CAPIF_API_Provider_Management_API
-  version: 1.1.0-alpha.2
+  version: 1.1.0
 externalDocs:
-  description: 3GPP TS 29.222 V17.2.0 Common API Framework for 3GPP Northbound APIs
-  url: http://www.3gpp.org/ftp/Specs/archive/29_series/29.222/
+  description: 3GPP TS 29.222 V17.5.0 Common API Framework for 3GPP Northbound APIs
+  url: https://www.3gpp.org/ftp/Specs/archive/29_series/29.222/
 servers:
 - url: '{apiRoot}/api-provider-management/v1'
   variables:
     apiRoot:
       default: https://example.com
-      description: apiRoot as defined in subclause 7.5 of 3GPP TS 29.222
+      description: apiRoot as defined in clause 7.5 of 3GPP TS 29.222
 paths:
   /registrations:
     post:
@@ -36,8 +35,8 @@ paths:
           description: API provider domain registered successfully
           headers:
             Location:
-              description: 'Contains the URI of the newly created resource, according
-                to the structure: {apiRoot}/api-provider-management/v1/registrations/{registrationId}'
+              description: |
+                Contains the URI of the newly created resource, according to the structure {apiRoot}/api-provider-management/v1/registrations/{registrationId}
               explode: false
               required: true
               schema:
@@ -184,6 +183,114 @@ paths:
         default:
           description: Generic Error
       x-openapi-router-controller: api_provider_management.controllers.default_controller
+    patch:
+      description: Modify an individual API provider details.
+      operationId: modify_ind_api_provider_enrolment
+      parameters:
+      - explode: false
+        in: path
+        name: registrationId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/APIProviderEnrolmentDetailsPatch'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIProviderEnrolmentDetails'
+          description: |
+            The definition of the service API is modified successfully and a representation of the updated service API is returned in the request body.
+        "204":
+          description: No Content. The definition of the service API is modified successfully.
+        "307":
+          description: Temporary Redirect
+          headers:
+            Location:
+              description: An alternative URI of the resource.
+              required: true
+              schema:
+                type: string
+        "308":
+          description: Permanent Redirect
+          headers:
+            Location:
+              description: An alternative URI of the resource.
+              required: true
+              schema:
+                type: string
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Bad request
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Unauthorized
+        "403":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Forbidden
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Not Found
+        "411":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Length Required
+        "413":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Payload Too Large
+        "415":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Unsupported Media Type
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Too Many Requests
+        "500":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Internal Server Error
+        "503":
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Service Unavailable
+        default:
+          description: Generic Error
+      tags:
+      - Individual API Provider enrolment details
+      x-openapi-router-controller: api_provider_management.controllers.individual_api_provider_enrolment_details_controller
     put:
       description: Updates an API provider domain's registration details.
       operationId: registrations_registration_id_put
@@ -201,8 +308,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/APIProviderEnrolmentDetails'
-        description: Representation of the API provider domain registration details
-          to be updated in CAPIF core function.
+        description: |
+          Representation of the API provider domain registration details to be updated in CAPIF core function.
         required: true
       responses:
         "200":
@@ -315,60 +422,38 @@ components:
         suppFeat: suppFeat
       properties:
         apiProvDomId:
-          description: API provider domain ID assigned by the CAPIF core function
-            to the API management function while registering the API provider domain.
-            Shall not be present in the HTTP POST request from the API Management
-            function to the CAPIF core function, to on-board itself. Shall be present
-            in all other HTTP requests and responses.
+          description: |
+            API provider domain ID assigned by the CAPIF core function to the API management function while registering the API provider domain. Shall not be present in the HTTP POST request from the API Management function to the CAPIF core function, to on-board itself. Shall be present in all other HTTP requests and responses.
           readOnly: true
           title: apiProvDomId
           type: string
         regSec:
-          description: Security information necessary for the CAPIF core function
-            to validate the registration of the API provider domain. Shall be present
-            in HTTP POST request from API management function to CAPIF core function
-            for API provider domain registration.
+          description: |
+            Security information necessary for the CAPIF core function to validate the registration of the API provider domain. Shall be present in HTTP POST request from API management function to CAPIF core function for API provider domain registration.
           title: regSec
           type: string
         apiProvFuncs:
-          description: A list of individual API provider domain functions details.
-            When included by the API management function in the HTTP request message,
-            it lists the API provider domain functions that the API management function
-            intends to register/update in registration or update registration procedure.
-            When included by the CAPIF core function in the HTTP response message,
-            it lists the API domain functions details that are registered or updated
-            successfully.
+          description: |
+            A list of individual API provider domain functions details. When included by the API management function in the HTTP request message, it lists the API provider domain functions that the API management function intends to register/update in registration or update registration procedure. When included by the CAPIF core function in the HTTP response message, it lists the API domain functions details that are registered or updated successfully.
           items:
             $ref: '#/components/schemas/APIProviderFunctionDetails'
           minItems: 1
           title: apiProvFuncs
           type: array
         apiProvDomInfo:
-          description: Generic information related to the API provider domain such
-            as details of the API provider applications.
+          description: |
+            Generic information related to the API provider domain such as details of the API provider applications.
           title: apiProvDomInfo
           type: string
         suppFeat:
-          description: A string used to indicate the features supported by an API
-            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
-            contain a bitmask indicating supported features in hexadecimal representation
-            Each character in the string shall take a value of "0" to "9", "a" to
-            "f" or "A" to "F" and shall represent the support of 4 features as described
-            in table 5.2.2-3. The most significant character representing the highest-numbered
-            features shall appear first in the string, and the character representing
-            features 1 to 4 shall appear last in the string. The list of features
-            and their numbering (starting with 1) are defined separately for each
-            API. If the string contains a lower number of characters than there are
-            defined features for an API, all features that would be represented by
-            characters that are not present in the string are not supported
+          description: |
+            A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of "0" to "9",  "a" to "f" or "A" to "F" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.
           pattern: ^[A-Fa-f0-9]*$
           title: suppFeat
           type: string
         failReason:
-          description: Registration or update specific failure information of failed
-            API provider domain function registrations.Shall be present in the HTTP
-            response body if atleast one of the API provider domain function registration
-            or update registration fails.
+          description: |
+            Registration or update specific failure information of failed API provider domain function registrations.Shall be present in the HTTP response body if atleast one of the API provider domain function registration or update registration fails.
           title: failReason
           type: string
       required:
@@ -385,11 +470,8 @@ components:
           apiProvPubKey: apiProvPubKey
       properties:
         apiProvFuncId:
-          description: API provider domain functionID assigned by the CAPIF core function
-            to the API provider domain function while registering/updating the API
-            provider domain. Shall not be present in the HTTP POST request from the
-            API management function to the CAPIF core function, to register itself.
-            Shall be present in all other HTTP requests and responses.
+          description: |
+            API provider domain functionID assigned by the CAPIF core function to the API provider domain function while registering/updating the API provider domain. Shall not be present in the HTTP POST request from the API management function to the CAPIF core function, to register itself. Shall be present in all other HTTP requests and responses.
           title: apiProvFuncId
           type: string
         regInfo:
@@ -397,8 +479,8 @@ components:
         apiProvFuncRole:
           $ref: '#/components/schemas/ApiProviderFuncRole'
         apiProvFuncInfo:
-          description: Generic information related to the API provider domain function
-            such as details of the API provider applications.
+          description: |
+            Generic information related to the API provider domain function such as details of the API provider applications.
           title: apiProvFuncInfo
           type: string
       required:
@@ -407,8 +489,8 @@ components:
       title: APIProviderFunctionDetails
       type: object
     RegistrationInformation:
-      description: Represents registration information of an individual API provider
-        domain function.
+      description: |
+        Represents registration information of an individual API provider domain function.
       example:
         apiProvCert: apiProvCert
         apiProvPubKey: apiProvPubKey
@@ -432,8 +514,29 @@ components:
           This string provides forward-compatiblity with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
         type: string
       description: |
-        Possible values are - AEF: API provider function is API Exposing Function. - APF: API provider function is API Publishing Function. - AMF: API Provider function is API Management Function.
+        Possible values are:
+        - AEF: API provider function is API Exposing Function.
+        - APF: API provider function is API Publishing Function.
+        - AMF: API Provider function is API Management Function.
       title: ApiProviderFuncRole
+    APIProviderEnrolmentDetailsPatch:
+      description: Represents an API provider domain's enrolment details.
+      properties:
+        apiProvFuncs:
+          description: "A list of individual API provider domain functions details.\
+            \ When included by the API management function in the HTTP request message,\
+            \ it lists the API provider domain functions that the API management function\
+            \ intends to register/update in registration or update registration procedure.\
+            \ \n"
+          items:
+            $ref: '#/components/schemas/APIProviderFunctionDetails'
+          minItems: 1
+          type: array
+        apiProvDomInfo:
+          description: |
+            Generic information related to the API provider domain such as details of the API provider applications.
+          type: string
+      type: object
     ProblemDetails:
       description: Represents additional information and details on an error response.
       properties:
@@ -474,18 +577,8 @@ components:
           title: invalidParams
           type: array
         supportedFeatures:
-          description: A string used to indicate the features supported by an API
-            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
-            contain a bitmask indicating supported features in hexadecimal representation
-            Each character in the string shall take a value of "0" to "9", "a" to
-            "f" or "A" to "F" and shall represent the support of 4 features as described
-            in table 5.2.2-3. The most significant character representing the highest-numbered
-            features shall appear first in the string, and the character representing
-            features 1 to 4 shall appear last in the string. The list of features
-            and their numbering (starting with 1) are defined separately for each
-            API. If the string contains a lower number of characters than there are
-            defined features for an API, all features that would be represented by
-            characters that are not present in the string are not supported
+          description: |
+            A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of "0" to "9",  "a" to "f" or "A" to "F" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.
           pattern: ^[A-Fa-f0-9]*$
           title: suppFeat
           type: string
@@ -512,18 +605,8 @@ components:
       title: InvalidParam
       type: object
     SupportedFeatures:
-      description: A string used to indicate the features supported by an API that
-        is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain
-        a bitmask indicating supported features in hexadecimal representation Each
-        character in the string shall take a value of "0" to "9", "a" to "f" or "A"
-        to "F" and shall represent the support of 4 features as described in table 5.2.2-3.
-        The most significant character representing the highest-numbered features
-        shall appear first in the string, and the character representing features
-        1 to 4 shall appear last in the string. The list of features and their numbering
-        (starting with 1) are defined separately for each API. If the string contains
-        a lower number of characters than there are defined features for an API, all
-        features that would be represented by characters that are not present in the
-        string are not supported
+      description: |
+        A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of "0" to "9",  "a" to "f" or "A" to "F" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.
       pattern: ^[A-Fa-f0-9]*$
       title: suppFeat
       type: string

@@ -19,6 +19,13 @@ class ProviderManagementOperations:
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
+            search_filter = {'reg_sec': api_provider_enrolment_details.reg_sec}
+            my_provider_enrolment_details = mycol.find_one(search_filter)
+
+            if my_provider_enrolment_details is not None:
+                prob = ProblemDetails(title="Forbidden", status=403, detail="Provider already registered", cause="Identical provider reg sec")
+                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+
             apiProvDomId = secrets.token_hex(15)
             registrationId = secrets.token_hex(15)
             provider_enrolment_details = dict()
@@ -65,7 +72,7 @@ class ProviderManagementOperations:
             if  old_provider_enrolment_details is None:
                 prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
                                     cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype= self.mimetype)
+                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
             else:
                 api_provider_enrolment_details = api_provider_enrolment_details.to_dict()
                 api_provider_enrolment_details = {
@@ -90,7 +97,7 @@ class ProviderManagementOperations:
             if  old_provider_enrolment_details is None:
                 prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
                                     cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype= self.mimetype)
+                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
 
             else:
 
