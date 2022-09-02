@@ -30,8 +30,6 @@ Register Api Provider
 
 Register Api Provider Already registered
     [Tags]    capif_api_provider_management-2
-    Skip
-    ...    This Test Case is under study. Is not possible in current implementation to check if provider is previously registered
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Post Request Capif
