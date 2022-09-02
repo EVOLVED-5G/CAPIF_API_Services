@@ -1,3 +1,4 @@
+from email.quoprimime import body_decode
 import connexion
 import six
 
@@ -10,7 +11,7 @@ from api_provider_management import util
 provider_management_ops = ProviderManagementOperations()
 
 
-def modify_ind_api_provider_enrolment(registration_id, api_provider_enrolment_details_patch):  # noqa: E501
+def modify_ind_api_provider_enrolment(registration_id, body):  # noqa: E501
     """modify_ind_api_provider_enrolment
 
     Modify an individual API provider details. # noqa: E501
@@ -23,8 +24,8 @@ def modify_ind_api_provider_enrolment(registration_id, api_provider_enrolment_de
     :rtype: APIProviderEnrolmentDetails
     """
     if connexion.request.is_json:
-        api_provider_enrolment_details_patch = APIProviderEnrolmentDetailsPatch.from_dict(connexion.request.get_json())  # noqa: E501
+        body = APIProviderEnrolmentDetailsPatch.from_dict(connexion.request.get_json())  # noqa: E501
    
-    res = provider_management_ops.patch_api_provider_enrolment_details(registration_id, api_provider_enrolment_details_patch)
+    res = provider_management_ops.patch_api_provider_enrolment_details(registration_id, body)
 
     return res
