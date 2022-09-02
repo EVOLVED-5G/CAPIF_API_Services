@@ -13,6 +13,8 @@ class DiscoverApisOperations:
 
     def __init__(self):
         self.db = MongoDatabse()
+        self.mimetype = 'application/json'
+
 
     def get_discoveredapis(self, api_invoker_id, api_name, api_version, comm_type, protocol, aef_id,
                         data_format, api_cat, supported_features, api_supported_features):
@@ -25,7 +27,8 @@ class DiscoverApisOperations:
             if invoker is None:
 
                 prob = ProblemDetails(title="Forbidden", status=403, detail="API Invoker does not exist", cause="API Invoker id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+
             else:
                 myParams = []
                 myQuery = {}
@@ -57,9 +60,10 @@ class DiscoverApisOperations:
                     del discoved_api['apf_id']
                     json_docs.append(discoved_api)
 
-                res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype='application/json')
+                res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
                 return res
 
         except Exception as e:
-            print("An exception occurred ::", e, file=sys.stderr)
-            return False
+            exception = "An exception occurred in discover services::", e
+            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+

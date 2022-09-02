@@ -75,7 +75,7 @@ class APIProviderEnrolmentDetails(Model):
     def api_prov_dom_id(self):
         """Gets the api_prov_dom_id of this APIProviderEnrolmentDetails.
 
-        API provider domain ID assigned by the CAPIF core function to the API management function while registering the API provider domain. Shall not be present in the HTTP POST request from the API Management function to the CAPIF core function, to on-board itself. Shall be present in all other HTTP requests and responses.  # noqa: E501
+        API provider domain ID assigned by the CAPIF core function to the API management function while registering the API provider domain. Shall not be present in the HTTP POST request from the API Management function to the CAPIF core function, to on-board itself. Shall be present in all other HTTP requests and responses.   # noqa: E501
 
         :return: The api_prov_dom_id of this APIProviderEnrolmentDetails.
         :rtype: str
@@ -86,7 +86,7 @@ class APIProviderEnrolmentDetails(Model):
     def api_prov_dom_id(self, api_prov_dom_id):
         """Sets the api_prov_dom_id of this APIProviderEnrolmentDetails.
 
-        API provider domain ID assigned by the CAPIF core function to the API management function while registering the API provider domain. Shall not be present in the HTTP POST request from the API Management function to the CAPIF core function, to on-board itself. Shall be present in all other HTTP requests and responses.  # noqa: E501
+        API provider domain ID assigned by the CAPIF core function to the API management function while registering the API provider domain. Shall not be present in the HTTP POST request from the API Management function to the CAPIF core function, to on-board itself. Shall be present in all other HTTP requests and responses.   # noqa: E501
 
         :param api_prov_dom_id: The api_prov_dom_id of this APIProviderEnrolmentDetails.
         :type api_prov_dom_id: str
@@ -98,7 +98,7 @@ class APIProviderEnrolmentDetails(Model):
     def reg_sec(self):
         """Gets the reg_sec of this APIProviderEnrolmentDetails.
 
-        Security information necessary for the CAPIF core function to validate the registration of the API provider domain. Shall be present in HTTP POST request from API management function to CAPIF core function for API provider domain registration.  # noqa: E501
+        Security information necessary for the CAPIF core function to validate the registration of the API provider domain. Shall be present in HTTP POST request from API management function to CAPIF core function for API provider domain registration.   # noqa: E501
 
         :return: The reg_sec of this APIProviderEnrolmentDetails.
         :rtype: str
@@ -109,7 +109,7 @@ class APIProviderEnrolmentDetails(Model):
     def reg_sec(self, reg_sec):
         """Sets the reg_sec of this APIProviderEnrolmentDetails.
 
-        Security information necessary for the CAPIF core function to validate the registration of the API provider domain. Shall be present in HTTP POST request from API management function to CAPIF core function for API provider domain registration.  # noqa: E501
+        Security information necessary for the CAPIF core function to validate the registration of the API provider domain. Shall be present in HTTP POST request from API management function to CAPIF core function for API provider domain registration.   # noqa: E501
 
         :param reg_sec: The reg_sec of this APIProviderEnrolmentDetails.
         :type reg_sec: str
@@ -123,7 +123,7 @@ class APIProviderEnrolmentDetails(Model):
     def api_prov_funcs(self):
         """Gets the api_prov_funcs of this APIProviderEnrolmentDetails.
 
-        A list of individual API provider domain functions details. When included by the API management function in the HTTP request message, it lists the API provider domain functions that the API management function intends to register/update in registration or update registration procedure. When included by the CAPIF core function in the HTTP response message, it lists the API domain functions details that are registered or updated successfully.  # noqa: E501
+        A list of individual API provider domain functions details. When included by the API management function in the HTTP request message, it lists the API provider domain functions that the API management function intends to register/update in registration or update registration procedure. When included by the CAPIF core function in the HTTP response message, it lists the API domain functions details that are registered or updated successfully.   # noqa: E501
 
         :return: The api_prov_funcs of this APIProviderEnrolmentDetails.
         :rtype: List[APIProviderFunctionDetails]
@@ -134,7 +134,7 @@ class APIProviderEnrolmentDetails(Model):
     def api_prov_funcs(self, api_prov_funcs):
         """Sets the api_prov_funcs of this APIProviderEnrolmentDetails.
 
-        A list of individual API provider domain functions details. When included by the API management function in the HTTP request message, it lists the API provider domain functions that the API management function intends to register/update in registration or update registration procedure. When included by the CAPIF core function in the HTTP response message, it lists the API domain functions details that are registered or updated successfully.  # noqa: E501
+        A list of individual API provider domain functions details. When included by the API management function in the HTTP request message, it lists the API provider domain functions that the API management function intends to register/update in registration or update registration procedure. When included by the CAPIF core function in the HTTP response message, it lists the API domain functions details that are registered or updated successfully.   # noqa: E501
 
         :param api_prov_funcs: The api_prov_funcs of this APIProviderEnrolmentDetails.
         :type api_prov_funcs: List[APIProviderFunctionDetails]
@@ -148,7 +148,7 @@ class APIProviderEnrolmentDetails(Model):
     def api_prov_dom_info(self):
         """Gets the api_prov_dom_info of this APIProviderEnrolmentDetails.
 
-        Generic information related to the API provider domain such as details of the API provider applications.  # noqa: E501
+        Generic information related to the API provider domain such as details of the API provider applications.   # noqa: E501
 
         :return: The api_prov_dom_info of this APIProviderEnrolmentDetails.
         :rtype: str
@@ -159,7 +159,7 @@ class APIProviderEnrolmentDetails(Model):
     def api_prov_dom_info(self, api_prov_dom_info):
         """Sets the api_prov_dom_info of this APIProviderEnrolmentDetails.
 
-        Generic information related to the API provider domain such as details of the API provider applications.  # noqa: E501
+        Generic information related to the API provider domain such as details of the API provider applications.   # noqa: E501
 
         :param api_prov_dom_info: The api_prov_dom_info of this APIProviderEnrolmentDetails.
         :type api_prov_dom_info: str
@@ -171,7 +171,7 @@ class APIProviderEnrolmentDetails(Model):
     def supp_feat(self):
         """Gets the supp_feat of this APIProviderEnrolmentDetails.
 
-        A string used to indicate the features supported by an API that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\", \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in table 5.2.2-3. The most significant character representing the highest-numbered features shall appear first in the string, and the character representing features 1 to 4 shall appear last in the string. The list of features and their numbering (starting with 1) are defined separately for each API. If the string contains a lower number of characters than there are defined features for an API, all features that would be represented by characters that are not present in the string are not supported  # noqa: E501
+        A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\",  \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.   # noqa: E501
 
         :return: The supp_feat of this APIProviderEnrolmentDetails.
         :rtype: str
@@ -182,7 +182,7 @@ class APIProviderEnrolmentDetails(Model):
     def supp_feat(self, supp_feat):
         """Sets the supp_feat of this APIProviderEnrolmentDetails.
 
-        A string used to indicate the features supported by an API that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\", \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in table 5.2.2-3. The most significant character representing the highest-numbered features shall appear first in the string, and the character representing features 1 to 4 shall appear last in the string. The list of features and their numbering (starting with 1) are defined separately for each API. If the string contains a lower number of characters than there are defined features for an API, all features that would be represented by characters that are not present in the string are not supported  # noqa: E501
+        A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\",  \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.   # noqa: E501
 
         :param supp_feat: The supp_feat of this APIProviderEnrolmentDetails.
         :type supp_feat: str
@@ -196,7 +196,7 @@ class APIProviderEnrolmentDetails(Model):
     def fail_reason(self):
         """Gets the fail_reason of this APIProviderEnrolmentDetails.
 
-        Registration or update specific failure information of failed API provider domain function registrations.Shall be present in the HTTP response body if atleast one of the API provider domain function registration or update registration fails.  # noqa: E501
+        Registration or update specific failure information of failed API provider domain function registrations.Shall be present in the HTTP response body if atleast one of the API provider domain function registration or update registration fails.   # noqa: E501
 
         :return: The fail_reason of this APIProviderEnrolmentDetails.
         :rtype: str
@@ -207,7 +207,7 @@ class APIProviderEnrolmentDetails(Model):
     def fail_reason(self, fail_reason):
         """Sets the fail_reason of this APIProviderEnrolmentDetails.
 
-        Registration or update specific failure information of failed API provider domain function registrations.Shall be present in the HTTP response body if atleast one of the API provider domain function registration or update registration fails.  # noqa: E501
+        Registration or update specific failure information of failed API provider domain function registrations.Shall be present in the HTTP response body if atleast one of the API provider domain function registration or update registration fails.   # noqa: E501
 
         :param fail_reason: The fail_reason of this APIProviderEnrolmentDetails.
         :type fail_reason: str
