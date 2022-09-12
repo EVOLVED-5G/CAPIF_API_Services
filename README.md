@@ -31,7 +31,8 @@
       - [Retrieve a published service API.](#retrieve-a-published-service-api)
     - [Discover API](#discover-api)
       - [Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.](#discover-published-service-apis-and-retrieve-a-collection-of-apis-according-to-certain-filter-criteria)
-  - [Using PostMan](#using-postman)
+  - [Using PostMan (only for release 1.0 of CAPIF)](#using-postman-only-for-release-10-of-capif)
+  - [Using cURL (TLS supported)](#using-curl-tls-supported)
 - [Important urls:](#important-urls)
   - [Mongo DB Dashboard](#mongo-db-dashboard)
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
@@ -537,13 +538,18 @@ The APIs included in release 1.0 are:
 
 # CAPIF Tool Release 2.0
 
-CAPIF with TLS
+This release includes CAPIF with TLS.
 
 The APIs included in release 2.0 are:
-- JWT Authentication APIs
-- Easy RSA
 - CAPIF Invoker Management API
 - CAPIF Publish API
 - CAPIF Discover API
 - CAPIF Security API
 - CAPIF Events API
+- CAPIF Provider Management API
+
+Additional information about this version:
+- JWT Authentication APIs
+- Easy RSA Server
+- TLS Enabled
+- Minor bug fixes
