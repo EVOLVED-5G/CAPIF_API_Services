@@ -1,0 +1,8 @@
+mongo: {
+  'user': 'root',
+  'password': 'example',
+  'db': 'capif',
+  'col': 'user',
+  'host': 'mongo',
+  'port': '27017'
+}
