@@ -3,7 +3,7 @@ mongo: {
   'password': 'example',
   'db': 'capif',
   'col': 'providerenrolmentdetails',
-  'jwt': 'user',
+  'capif_users': 'user',
   'host': 'mongo',
   'port': "27017"
 }

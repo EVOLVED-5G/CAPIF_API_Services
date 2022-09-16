@@ -8,6 +8,7 @@ class MongoDatabse():
         self.config = Config().getConfig()
         self.db = self.__connect()
         self.provider_enrolment_details = self.config['mongo']['col']
+        self.capif_users = self.config['mongo']['capif_users']
 
     def get_col_by_name(self, name):
         return self.db[name]

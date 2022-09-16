@@ -52,7 +52,14 @@ class RegisterOperations:
             exist_user = mycol.find_one({"username": username, "password": password, "role": role})
             if exist_user:
                 access_token = create_access_token(identity=(username + " " + role))
-                return jsonify(message="Token returned successfully", access_token=access_token), 201
+                url = "http://easy-rsa:8080/ca-root"
+                headers = {
+
+                        'Content-Type': self.mimetype
+                }
+                response = requests.request("GET", url, headers=headers)
+                response_payload = json.loads(response.text)
+                return jsonify(message="Token and CA root returned successfully", access_token=access_token, ca_root=response_payload["certificate"]), 201
             else:
                 return jsonify(message="Bad credentials. User not found"), 401
         elif role == "exposer":
