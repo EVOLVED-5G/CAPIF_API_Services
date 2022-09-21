@@ -14,12 +14,16 @@ ${API_PROVIDER_NOT_REGISTERED}      notValid
 *** Test Cases ***
 Register Api Provider
     [Tags]    capif_api_provider_management-1
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
 
@@ -30,12 +34,16 @@ Register Api Provider
 
 Register Api Provider Already registered
     [Tags]    capif_api_provider_management-2
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
 
@@ -47,18 +55,24 @@ Register Api Provider Already registered
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    403    ${resp}
 
 Update Registered Api Provider
     [Tags]    capif_api_provider_management-3
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
 
@@ -72,29 +86,39 @@ Update Registered Api Provider
     ${resp}=    Put Request Capif
     ...    ${location_url.path}
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    200    ${resp}
 
 Update Not Registered Api Provider
     [Tags]    capif_api_provider_management-4
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Put Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    404    ${resp}
 
 Partially Update Registered Api Provider
     [Tags]    capif_api_provider_management-5
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
     # Store dummy signede certificate
@@ -108,29 +132,39 @@ Partially Update Registered Api Provider
     ${resp}=    Patch Request Capif
     ...    ${location_url.path}
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    200    ${resp}
 
 Partially Update Not Registered Api Provider
     [Tags]    capif_api_provider_management-6
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Patch Body
 
     ${resp}=    Patch Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    404    ${resp}
 
 Delete Registered Api Provider
     [Tags]    capif_api_provider_management-7
+    ${register_user_info}=    Publisher Default Registration
+
     ${request_body}=    Create Api Provider Enrolment Details Body
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
 
@@ -138,15 +172,20 @@ Delete Registered Api Provider
 
     ${resp}=    Delete Request Capif
     ...    ${location_url.path}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    204    ${resp}
 
 Delete Not Registered Api Provider
     [Tags]    capif_api_provider_management-8
+    ${register_user_info}=    Publisher Default Registration
 
     ${resp}=    Delete Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}
-    ...    server=http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    404    ${resp}
