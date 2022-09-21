@@ -156,7 +156,7 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    ${get_auth_response}=    Get Token For User    ${username}    ${password}    ${role}
+    ${get_auth_response}=    Get Auth For User    ${username}    ${password}    ${role}
 
     ${register_user_info}=    Create Dictionary
     ...    netappID=${resp.json()['id']}
@@ -175,7 +175,7 @@ Register User At Jwt Auth
 
     RETURN    ${register_user_info}
 
-Get Token For User
+Get Auth For User
     [Arguments]    ${username}    ${password}    ${role}
 
     &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
