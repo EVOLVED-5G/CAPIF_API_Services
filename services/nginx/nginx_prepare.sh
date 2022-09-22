@@ -1,7 +1,7 @@
 curl  --connect-timeout 5 \
     --max-time 10 \
-    --retry-delay 1 \
-    --retry-max-time 100 \
+    --retry-delay 0 \
+    --retry-max-time 300 \
     --request GET 'http://easy-rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt
 
 folder="/etc/nginx/certs"
@@ -41,8 +41,8 @@ __EOF__
 awk -v cert="$(cat server.csr)" 'BEGIN{gsub(/\n/, "\\n", cert)} {sub(/"CERT"/, "\"" cert "\"")} 1' sign_req_body_tmp.json > sign_req_body.json
 curl  --connect-timeout 5 \
     --max-time 10 \
-    --retry-delay 1 \
-    --retry-max-time 100 \
+    --retry-delay 0 \
+    --retry-max-time 300 \
     --location --request POST 'http://easy-rsa:8080/sign-csr' --header 'Content-Type: application/json' -d @./sign_req_body.json | jq -r '.certificate' -j > /etc/nginx/certs/server.crt
 
 nginx
