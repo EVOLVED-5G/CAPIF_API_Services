@@ -69,7 +69,7 @@ class RegisterOperations:
 
             if exist_user:
                 try:
-                    csr_request, private_key = self.create_csr()
+                    csr_request, private_key = self.create_csr(cn=username)
                     publick_key = csr_request.decode("utf-8")
                     url = "http://easy-rsa:8080/sign-csr"
 
@@ -95,7 +95,7 @@ class RegisterOperations:
                 return jsonify(message="Bad credentials. User not found"), 401
 
 
-    def create_csr(self):
+    def create_csr(self,cn):
 
         # create public/private key
         key = PKey()
@@ -103,7 +103,7 @@ class RegisterOperations:
 
         # Generate CSR
         req = X509Req()
-        req.get_subject().CN = 'Exposer'
+        req.get_subject().CN = cn
         req.get_subject().O = 'Telefonica I+D'
         req.get_subject().C = 'ES'
         req.set_pubkey(key)

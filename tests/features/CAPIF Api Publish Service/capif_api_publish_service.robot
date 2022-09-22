@@ -18,18 +18,18 @@ Publish API by Authorised API Publisher
     ${register_user_info}=    Register User At Jwt Auth
     ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
 
-    # Sign certificate
-    ${request_body}=    Sign Csr Body    ${PUBLISHER_USERNAME}    ${register_user_info['csr_request']}
-    ${resp}=    Post Request Capif
-    ...    sign-csr
-    ...    json=${request_body}
-    ...    server=${CAPIF_HTTP_URL}
-    ...    verify=ca.crt
-    # ...    access_token=${register_user_info['access_token']}
-    Status Should Be    201    ${resp}
+    # # Sign certificate
+    # ${request_body}=    Sign Csr Body    ${PUBLISHER_USERNAME}    ${register_user_info['csr_request']}
+    # ${resp}=    Post Request Capif
+    # ...    sign-csr
+    # ...    json=${request_body}
+    # ...    server=${CAPIF_HTTP_URL}
+    # ...    verify=ca.crt
+    # # ...    access_token=${register_user_info['access_token']}
+    # Status Should Be    201    ${resp}
 
-    # Store dummy signede certificate
-    Store In File    ${PUBLISHER_USERNAME}.crt    ${resp.json()['certificate']}
+    # # Store dummy signede certificate
+    # Store In File    ${PUBLISHER_USERNAME}.crt    ${resp.json()['certificate']}
 
     # Test
     ${request_body}=    Create Service Api Description

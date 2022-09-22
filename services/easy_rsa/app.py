@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from flask import Flask, jsonify, request, Response
+from typing import List
+from flask import Flask, jsonify, request, Response, current_app
 import json
 import subprocess
 import sys
@@ -31,6 +32,12 @@ def sign_csr():
     mode = request.json["mode"]
     filename = request.json["filename"]
 
+    app.logger.info("sign-csr for user "+ filename)
+    names = get_files(filename)
+
+    if len(names) != 0:
+        revoke_list(names)
+
     csr_file = open(filename + '.csr', 'wb')
     csr_file.write(bytes(csr, 'utf-8'))
     csr_file.close()
@@ -56,11 +63,15 @@ def sign_csr():
 
 @app.route("/certdata", methods=["DELETE"])
 def data_test():
+    names = get_files('ROBOT_TESTING')
 
+    return revoke_list(names)
+
+def get_files(prefix):
     files = []
     dir_list = os.listdir()
     for file in dir_list:
-        if file.startswith('ROBOT_TESTING'):
+        if file.startswith(prefix):
             files.append(file)
 
     print(files)
@@ -72,13 +83,20 @@ def data_test():
     convert_list_to_set = set(names)
     names = list(convert_list_to_set)
     print("Entities to remove", names)
+    return names
 
+def revoke_cert(name):
+    p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa --batch revoke {}".format(name),
+                        stdout=subprocess.PIPE, shell=True)
+    delete_file('/root/{}.csr'.format(name))
+    delete_file('/root/pki/issued/{}.crt'.format(name))
+    delete_file('/root/pki/reqs/{}.req'.format(name))
+    current_app.logger.info("cert %s removed", name)
+
+
+def revoke_list(names=list):
     for name in names:
-        p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa --batch revoke {}".format(name),
-                            stdout=subprocess.PIPE, shell=True)
-        delete_file('/root/{}.csr'.format(name))
-        delete_file('/root/pki/issued/{}.crt'.format(name))
-        delete_file('/root/pki/reqs/{}.req'.format(name))
+        revoke_cert(name)
 
     res = Response(json.dumps({'certificate_removed': names}),
                    status=200, mimetype='application/json')
