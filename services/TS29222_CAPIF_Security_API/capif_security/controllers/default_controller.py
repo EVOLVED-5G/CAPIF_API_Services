@@ -7,7 +7,8 @@ from capif_security.models.access_token_req import AccessTokenReq  # noqa: E501
 from capif_security.models.security_notification import SecurityNotification  # noqa: E501
 from capif_security.models.service_security import ServiceSecurity  # noqa: E501
 from capif_security import util
-from ..core import servicesecurity
+from ..core.servicesecurity import SecurityOperations
+from ..core.check_user import CapifUsersOperations
 import json
 from flask import Response, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -18,6 +19,8 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
 
+check_user = CapifUsersOperations()
+service_security = SecurityOperations()
 
 def securities_security_id_token_post(security_id, body):  # noqa: E501
     """securities_security_id_token_post
@@ -47,27 +50,16 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     # print(cn)
     # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "invoker")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "invoker"}]})
-    if capif_user is None:
-        prob = AccessTokenErr(error="invalid_client", error_description="Role not authorized for this API route")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501
-    res = servicesecurity.return_token(security_id, body)
+    res = service_security.return_token(security_id, body)
     return res
 
 
@@ -90,27 +82,14 @@ def trusted_invokers_api_invoker_id_delete(api_invoker_id):  # noqa: E501
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
     # print(cn)
     # sys.stdout.flush()
+    capif_user = check_user.check_capif_user(cn, "invoker")
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be exposer")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
-
-    return servicesecurity.delete_servicesecurity(api_invoker_id)
+    return service_security.delete_servicesecurity(api_invoker_id)
 
 
 def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: E501
@@ -135,29 +114,17 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     # print(cn)
     # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "invoker")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be exposer")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
 
-    return servicesecurity.revoke_api_authorization(api_invoker_id, body)
+    return service_security.revoke_api_authorization(api_invoker_id, body)
 
 
 def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=True, authorization_info=True):  # noqa: E501
@@ -184,26 +151,14 @@ def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=True
     # print(cn)
     # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "invoker")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "exposer"}]})
-    if capif_user is None:
-        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be exposer")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
-
-    service_security = servicesecurity.get_servicesecurity(api_invoker_id, authentication_info, authorization_info)
+    service_security = service_security.get_servicesecurity(api_invoker_id, authentication_info, authorization_info)
 
     return service_security
 
@@ -230,28 +185,16 @@ def trusted_invokers_api_invoker_id_put(api_invoker_id, body):  # noqa: E501
     # print(cn)
     # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "invoker")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "invoker"}]})
-    if capif_user is None:
-        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
-    res = servicesecurity.create_servicesecurity(api_invoker_id, body)
+    res = service_security.create_servicesecurity(api_invoker_id, body)
     return res
 
 
@@ -278,26 +221,14 @@ def trusted_invokers_api_invoker_id_update_post(api_invoker_id, body):  # noqa: 
     # print(cn)
     # sys.stdout.flush()
 
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    cap_users = current_app.config['MONGODB_SETTINGS']['jwt']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    capif_user = check_user.check_capif_user(cn, "invoker")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
-
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    capif_users = mydb[cap_users]
-
-    capif_user = capif_users.find_one({"$and": [{"cn": cn}, {"role": "invoker"}]})
-    if capif_user is None:
-        prob = ProblemDetails(title="Forbidden", status=403, detail="Role not authorized for this API route",
-                              cause="User role must be invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
-    res = servicesecurity.update_servicesecurity(api_invoker_id, body)
+    res = service_security.update_servicesecurity(api_invoker_id, body)
     return res
