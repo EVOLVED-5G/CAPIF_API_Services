@@ -1,6 +1,7 @@
 FROM nginx:1.23.1
 RUN apt-get update && apt-get install -y jq && apt-get clean
 RUN apt-get install -y openssl
+RUN apt-get install -y curl=7.74.0-1.3+deb11u3
 
 RUN mkdir -p /etc/nginx/certs
 
