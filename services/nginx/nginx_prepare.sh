@@ -1,4 +1,4 @@
-curl  --retry 10 \
+curl  --retry 30 \
     --retry-all-errors \
     --connect-timeout 5 \
     --max-time 10 \
@@ -41,7 +41,7 @@ $COMPANY
 __EOF__
 
 awk -v cert="$(cat server.csr)" 'BEGIN{gsub(/\n/, "\\n", cert)} {sub(/"CERT"/, "\"" cert "\"")} 1' sign_req_body_tmp.json > sign_req_body.json
-curl  --retry 10 \
+curl  --retry 30 \
     --retry-all-errors \
     --connect-timeout 5 \
     --max-time 10 \
