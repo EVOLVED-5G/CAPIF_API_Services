@@ -31,11 +31,13 @@
       - [Retrieve a published service API.](#retrieve-a-published-service-api)
     - [Discover API](#discover-api)
       - [Discover published service APIs and retrieve a collection of APIs according to certain filter criteria.](#discover-published-service-apis-and-retrieve-a-collection-of-apis-according-to-certain-filter-criteria)
-  - [Using PostMan](#using-postman)
+  - [Using PostMan (only for release 1.0 of CAPIF)](#using-postman-only-for-release-10-of-capif)
+  - [Using cURL (TLS supported)](#using-curl-tls-supported)
 - [Important urls:](#important-urls)
   - [Mongo DB Dashboard](#mongo-db-dashboard)
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
+- [CAPIF Tool Release 2.1](#capif-tool-release-21)
 
 
 # Repository structure
@@ -547,3 +549,28 @@ The APIs included in release 2.0 are:
 - CAPIF Discover API
 - CAPIF Security API
 - CAPIF Events API
+
+# CAPIF Tool Release 2.1
+
+This CAPIF services have many stability improvements:
+- API Provider Management Service adds TLS connection using certificates.
+- Added logs on Services.
+- Easy RSA:
+  - Fix: recreate always when we try to sign a public key. Previously if there are a signed key with same filename causes a MISMATCH error.
+  - Code refactor.
+  - Scripts added for manual remove of signed certificates.
+- JWT Auth Service:
+  - code refactor
+  - New register operation added, distinguish between invoker and exposer logic.
+- NGINX service:
+  - Adjusted rounting information.
+    - TLS over API Provider Management Service.
+    - removed not used endpoints
+    - TLS over some endpoint at JWT Auth Service.
+  - Added retry to obtain ca root certificate over Easy RSA service.
+  - Added check of ca.crt obtained.
+  - nginx_prepare.sh is refactored and parametrized.
+- Robot Framework Test:
+  - Adjusted the register flow for exposer and invoker.
+  - End points used in that flow are changed.
+  - API Provider Management tests adapted to use TLS.
