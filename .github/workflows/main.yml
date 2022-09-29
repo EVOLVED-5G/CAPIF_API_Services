@@ -1,0 +1,40 @@
+
+name: Analyze pull request
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - '!develop'
+      - '**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup sonarqube
+        uses: warchant/setup-sonar-scanner@v1
+
+      - name: 'Checkout repository on branch: ${{ github.REF }}'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.HEAD_REF }}
+
+      - name: Retrieve entire repository history
+        run: |
+          git fetch --prune --unshallow
+      - name: Run an analysis of the PR
+        run: sonar-scanner
+          -Dsonar.host.url=http://195.235.92.134:9000
+          -Dsonar.login=4e9b0b55357cf9f032a887a0c4f22ae974f121cd
+          -Dsonar.projectKey=Evolved5g-CAPIF
+          -Dsonar.pullrequest.key=${{ github.event.number }}
+          -Dsonar.pullrequest.branch=${{ github.HEAD_REF }}
+          -Dsonar.pullrequest.base=${{ github.BASE_REF }}
+          -Dsonar.pullrequest.github.repository=${{ github.repository }}
+          -Dsonar.scm.provider=git
+          -Dsonar.java.binaries=/tmp
+          -Dsonar.language=python 
+          -Dsonar.sourceEncoding=UTF-8
