@@ -35,8 +35,9 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: True
         run: sonar-scanner
           -Dsonar.host.url=http://195.235.92.134:9000
-          -Dsonar.login=4e9b0b55357cf9f032a887a0c4f22ae974f121cd
+          -Dsonar.login=f353f8d8949598ed6edb2a484ee1cbdadf82f8bb
           -Dsonar.projectKey=Evolved5g-CAPIF
+          -Dsonar.sources=. \
           -Dsonar.pullrequest.key=${{ github.event.number }}
           -Dsonar.pullrequest.branch=${{ github.HEAD_REF }}
           -Dsonar.pullrequest.base=${{ github.BASE_REF }}
