@@ -21,6 +21,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.HEAD_REF }}
+      - name: Setup sonarqube
+        uses: actions/setup-python@v2.2.1 
+         
 
       - name: Retrieve entire repository history
         run: |
