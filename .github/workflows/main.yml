@@ -43,6 +43,5 @@ jobs:
           -Dsonar.pullrequest.base=${{ github.BASE_REF }}
           -Dsonar.pullrequest.github.repository=${{ github.repository }}
           -Dsonar.scm.provider=git
-          -Dsonar.java.binaries=/tmp
           -Dsonar.language=python 
           -Dsonar.sourceEncoding=UTF-8
