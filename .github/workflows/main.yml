@@ -29,6 +29,8 @@ jobs:
         run: |
           git fetch --prune --unshallow
       - name: Run an analysis of the PR
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: True
         run: sonar-scanner
           -Dsonar.host.url=http://195.235.92.134:9000
           -Dsonar.login=4e9b0b55357cf9f032a887a0c4f22ae974f121cd
