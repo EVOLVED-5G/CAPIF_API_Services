@@ -37,7 +37,7 @@ jobs:
           -Dsonar.host.url=http://195.235.92.134:9000
           -Dsonar.login=f353f8d8949598ed6edb2a484ee1cbdadf82f8bb
           -Dsonar.projectKey=Evolved5g-CAPIF
-          -Dsonar.sources=. \
+          -Dsonar.sources=.
           -Dsonar.pullrequest.key=${{ github.event.number }}
           -Dsonar.pullrequest.branch=${{ github.HEAD_REF }}
           -Dsonar.pullrequest.base=${{ github.BASE_REF }}
