@@ -539,16 +539,21 @@ The APIs included in release 1.0 are:
 
 # CAPIF Tool Release 2.0
 
-CAPIF with TLS
+This release includes CAPIF Provider Management API and also TLS communication. For TLS communication Easy RSA server was developed, in order to sign certificates.
 
 The APIs included in release 2.0 are:
-- JWT Authentication APIs
-- Easy RSA
 - CAPIF Invoker Management API
 - CAPIF Publish API
 - CAPIF Discover API
 - CAPIF Security API
 - CAPIF Events API
+- CAPIF Provider Management API
+
+Additional information about this version:
+- JWT Authentication Server
+- Easy RSA Server
+- TLS Enabled
+
 
 # CAPIF Tool Release 2.1
 
@@ -574,3 +579,4 @@ This CAPIF services have many stability improvements:
   - Adjusted the register flow for exposer and invoker.
   - End points used in that flow are changed.
   - API Provider Management tests adapted to use TLS.
+
