@@ -3,6 +3,7 @@ Resource        /opt/robot-tests/tests/resources/common.resource
 Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
+Library    Collections
 
 Test Setup      Reset Testing Environment
 
@@ -12,7 +13,7 @@ ${API_INVOKER_NOT_REGISTERED}       not-valid
 
 
 *** Test Cases ***
-Register NetApp
+Onboard NetApp
     [Tags]    capif_api_invoker_management-1
     #Register Netapp
     ${register_user_info}=    Register User At Jwt Auth
@@ -34,7 +35,7 @@ Register NetApp
     # Store dummy signede certificate
     Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
-Register NetApp Already registered
+Register NetApp Already Onboarded
     [Tags]    capif_api_invoker_management-2
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -48,10 +49,12 @@ Register NetApp Already registered
 
     Status Should Be    403    ${resp}
 
-Update Registered NetApp
+Update Onboarded NetApp
     [Tags]    capif_api_invoker_management-3
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Set To Dictionary  ${request_body}   notificationDestination=http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_new_callback
 
     ${resp}=    Put Request Capif
     ...    ${url.path}
@@ -62,7 +65,8 @@ Update Registered NetApp
 
     Status Should Be    200    ${resp}
 
-Update Not Registered NetApp
+
+Update Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-4
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -76,7 +80,7 @@ Update Not Registered NetApp
 
     Status Should Be    404    ${resp}
 
-Delete Registered NetApp
+Delete Onboarded NetApp
     [Tags]    capif_api_invoker_management-5
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -89,7 +93,7 @@ Delete Registered NetApp
 
     Should Be Equal As Strings    ${resp.status_code}    204
 
-Delete Not Registered NetApp
+Delete Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-6
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -102,14 +106,3 @@ Delete Not Registered NetApp
 
     Status Should Be    404    ${resp}
 
-
-*** Keywords ***
-Testing Teardown
-    ${result}=    Run Process    ls
-    Log    ${result.stdout}
-    ${result}=    Run Process    cp    -vvv    *.crt    /opt/robot-tests/results/
-    Log    ${result.stdout}
-    ${result}=    Run Process    cp    -vvv    *.key    /opt/robot-tests/results/
-    Log    ${result.stdout}
-    ${result}=    Run Process    cp    -vvv    *.csr    /opt/robot-tests/results/
-    Log    ${result.stdout}

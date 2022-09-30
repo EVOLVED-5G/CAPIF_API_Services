@@ -2,13 +2,12 @@
 
 - [Test Plan for CAPIF Api Invoker Management](#test-plan-for-capif-api-invoker-management)
 - [Tests](#tests)
-  - [Test Case 1: Register NetApp](#test-case-1-register-netapp)
-  - [Test Case 2: Register NetApp Already registered](#test-case-2-register-netapp-already-registered)
-  - [Test Case 3: Update Registered NetApp](#test-case-3-update-registered-netapp)
-  - [<span style="color:green">**Passed**</span>](#passed)
-  - [Test Case 4: Update Not Registered NetApp](#test-case-4-update-not-registered-netapp)
-  - [Test Case 5: Delete Registered NetApp](#test-case-5-delete-registered-netapp)
-  - [Test Case 6: Delete Not Registered NetApp](#test-case-6-delete-not-registered-netapp)
+  - [Test Case 1: Onboard NetApp](#test-case-1-onboard-netapp)
+  - [Test Case 2: Onboard NetApp Already onboarded](#test-case-2-onboard-netapp-already-onboarded)
+  - [Test Case 3: Update Onboarded NetApp](#test-case-3-update-onboarded-netapp)
+  - [Test Case 4: Update Not Onboarded NetApp](#test-case-4-update-not-onboarded-netapp)
+  - [Test Case 5: Delete Onboarded NetApp](#test-case-5-delete-onboarded-netapp)
+  - [Test Case 6: Delete Not Onboarded NetApp](#test-case-6-delete-not-onboarded-netapp)
 
 
 # Test Plan for CAPIF Api Invoker Management
@@ -16,7 +15,7 @@ At this documentation you will have all information and related files and exampl
 
 # Tests
 
-## Test Case 1: Register NetApp
+## Test Case 1: Onboard NetApp
 * Test ID: ***capif_api_invoker_management-1***
 * Description:
 
@@ -46,19 +45,20 @@ At this documentation you will have all information and related files and exampl
   3. Store signed Certificate
    
 * Expected Result:
-  
-  1. NetApp must receive **201 Created**
-  2. Response Body must accomplish with **APIInvokerEnrolmentDetails** data structure
-  3. Response body must contain:
-     * apiInvokerId created.
-     * onboardingInformation->apiInvokerCertificate must contain the public key signed.
-  4. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+
+  1. Response to Onboard request must accomplish:
+     1. **201 Created**
+     2. Response Body must folloe **APIInvokerEnrolmentDetails** data structure with:
+        * apiInvokerId
+        * onboardingInformation->apiInvokerCertificate must contain the public key signed.
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+
 * Current Status:
   
   <span style="color:green">**Passed**</span>
 
 
-## Test Case 2: Register NetApp Already registered
+## Test Case 2: Onboard NetApp Already onboarded
 
 * Test ID: ***capif_api_invoker_management-2***
 * Description:
@@ -94,24 +94,24 @@ At this documentation you will have all information and related files and exampl
   
 * Expected Result:
   
-  1. First Onboard of NetApp must receive **201 Created**
-  2. Response Body must accomplish with **APIInvokerEnrolmentDetails** data structure
-  3. Response body must contain:
-     * apiInvokerId created.
-     * onboardingInformation->apiInvokerCertificate must contain the public key signed.
-  4. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
-  5. Second Onboard of NetApp must receive **403 Forbidden**
-  6. Check Error Response Body must accomplish with **ProblemDetails** data structure.
-  7. Response Body must contain:
-     * detail with message "Invoker Already registered".
-     * cause with message "Identical invoker public key".
+  1. Response to Onboard request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **APIInvokerEnrolmentDetails** data structure with:
+        * apiInvokerId
+        * onboardingInformation->apiInvokerCertificate must contain the public key signed.
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+  2. Response to Second Onboard of NetApp must accomplish:
+     1. **403 Forbidden**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * detail with message "Invoker Already registered".
+        * cause with message "Identical invoker public key".
 
 
-## Test Case 3: Update Registered NetApp  
+## Test Case 3: Update Onboarded NetApp  
 * Test ID: ***capif_api_invoker_management-3***
 * Description:
 
-  This test will try to update information of previous registered NetApp at CAPIF Core.
+  This test will try to update information of previous onboard NetApp at CAPIF Core.
 * Pre-Conditions:
 
   * NetApp was registered previously
@@ -129,64 +129,81 @@ At this documentation you will have all information and related files and exampl
      * Send POST to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers
      * Reference Request Body: [request body]
      * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
   4. Update information of previously onboarded Invoker:
      * Send PUT to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers/{onboardingId}
      * Reference Request Body is: [put request body]
+       * "notificationDestination": "http://host.docker.internal:8086/netapp_new_callback",
 
 * Execution Steps:
   
   1. Register Invoker at CCF
   2. Onboard Invoker at CCF
   3. Store signed Certificate
+  4. Update Onboarding Information at CCF with a minor change on "notificationDestination"
    
 * Expected Result:
   
-  1. NetApp must receive **201 Created**
-  2. Response Body must accomplish with **APIInvokerEnrolmentDetails** data structure
-  3. Response body must contain:
-     * apiInvokerId created.
-     * onboardingInformation->apiInvokerCertificate must contain the public key signed.
-  4. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+  1. Response to Onboard request must accomplish:
+     1. **201 Created**
+     2. Response Body must folloe **APIInvokerEnrolmentDetails** data structure with:
+        * apiInvokerId
+        * onboardingInformation->apiInvokerCertificate must contain the public key signed.
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+  2. Response to Update Request (PUT) with minor change must contain:
+     1. **200 OK** response.
+     2. notificationDestination on response must contain the new value
+
+
 * Current Status:
   
   <span style="color:green">**Passed**</span>
--------------
-  
-  This test case will check that a Registered NetApp can be updated  
 
+## Test Case 4: Update Not Onboarded NetApp
+* Test ID: ***capif_api_invoker_management-4***
+* Description:
+
+  This test will try to update information of not onboarded NetApp at CAPIF Core.
 * Pre-Conditions:
+
+  * NetApp was registered previously
+  * NetApp was not onboarded previously
   
-  NetApp was registered previously and there is a {onboardingId} for his NetApp in the DB
+* Information of Test:
 
-* Actions:
+  1. Create public and private key at invoker
 
-  Update NetApp onboardingDetails
+  2. Register of Invoker at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [invoker register body]
+
+  3. Update information of not onboarded Invoker:
+     * Send PUT to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers/{INVOKER_NOT_REGISTERED}
+     * Reference Request Body is: [put request body]
+
+* Execution Steps:
   
-  Request Body: [request body]
-
-* Post-Conditions:
+  1. Register Invoker at CCF
+  2. Onboard Invoker at CCF
+  3. Update Onboarding Information at CCF of not onboarded
+   
+* Expected Result:
   
-  200 API invoker details updated successfully.
+  1. Response to Onboard request must accomplish:
+     1. **201 Created**
+  2. Response to Update Request (PUT) must contain:
+     1. **404 Not Found**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * detail with message "Please provide an existing Netapp ID".
+        * cause with message "Not exist NetappID".
 
-## Test Case 4: Update Not Registered NetApp 
+* Current Status:
   
-  This test case will check that a Non-Registered NetApp cannot be updated  
+  <span style="color:green">**Passed**</span>
 
-* Pre-Conditions:
-  
-  NetApp was not registered previously.
+------
 
-* Actions:
-
-  Update NetApp onboardingDetails
-  
-  Request Body: [request body]
-
-* Post-Conditions:
-  
-  404 Not found.
-
-## Test Case 5: Delete Registered NetApp   
+## Test Case 5: Delete Onboarded NetApp   
   
   This test case will check that a Registered NetApp can be deleted  
 
@@ -204,7 +221,7 @@ At this documentation you will have all information and related files and exampl
   
   204 The individual API Invoker matching onboardingId was offboarded.
 
-## Test Case 6: Delete Not Registered NetApp 
+## Test Case 6: Delete Not Onboarded NetApp 
   
   This test case will check that a Non-Registered NetApp cannot be deleted  
 
@@ -226,5 +243,6 @@ At this documentation you will have all information and related files and exampl
 
 [request body]: ./invoker_details_post_example.json  "API Invoker Request"
 [invoker register body]: ./invoker_register_body.json  "Invoker Register Body"
+[put register body]: ./invoker_details_put_example.json  "API Invoker Update Request"
 
 [Return To All Test Plans]: ../README.md
