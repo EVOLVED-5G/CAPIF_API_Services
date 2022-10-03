@@ -32,7 +32,7 @@ def subscriber_id_subscriptions_post(subscriber_id, body):  # noqa: E501
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
 
-    capif_user = check_user.check_capif_user(cn, "invoker", "apf")
+    capif_user = check_user.check_capif_user(cn, "invoker", "exposer") 
 
     if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",

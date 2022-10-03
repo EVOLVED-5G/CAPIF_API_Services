@@ -1,13 +1,28 @@
-curl  --connect-timeout 5 \
+#!/bin/bash
+EASY_RSA_HOSTNAME="easy-rsa"
+EASY_RSA_PORT="8080"
+CERTS_FOLDER="/etc/nginx/certs"
+cd $CERTS_FOLDER
+
+curl  --retry 30 \
+    --retry-all-errors \
+    --connect-timeout 5 \
     --max-time 10 \
-    --retry-delay 0 \
-    --retry-max-time 40 \
-    --request GET 'http://easy-rsa:8080/ca-root' 2>/dev/null | jq -r '.certificate' -j > /etc/nginx/certs/ca.crt
+    --retry-delay 10 \
+    --retry-max-time 300 \
+    --request GET "http://$EASY_RSA_HOSTNAME:$EASY_RSA_PORT/ca-root" 2>/dev/null | jq -r '.certificate' -j > $CERTS_FOLDER/ca.crt
 
-folder="/etc/nginx/certs"
-cd $folder
+openssl verify -CAfile $CERTS_FOLDER/ca.crt $CERTS_FOLDER/ca.crt
+rc=$?
+if [ $rc -eq 0 ]
+then
+    echo "CA root Certificate downloaded successfull"
+else
+    echo "Failure: CA root certificate is not valid"
+    exit $rc
+fi
 
-openssl genrsa -out server.key 2048
+openssl genrsa -out $CERTS_FOLDER/server.key 2048
 
 echo "NGINX Hostname is $CAPIF_HOSTNAME"
 
@@ -26,7 +41,7 @@ COMPANY=""                  # company name
 
 # create the certificate request
 #cat <<__EOF__ | openssl req -new $DAYS -nodes -keyout client.key -out client.csr
-cat <<__EOF__ | openssl req -new $DAYS -key server.key -out server.csr
+cat <<__EOF__ | openssl req -new $DAYS -key $CERTS_FOLDER/server.key -out $CERTS_FOLDER/server.csr
 $COUNTRY
 $STATE
 $LOCALITY
@@ -38,11 +53,13 @@ $CHALLENGE
 $COMPANY
 __EOF__
 
-awk -v cert="$(cat server.csr)" 'BEGIN{gsub(/\n/, "\\n", cert)} {sub(/"CERT"/, "\"" cert "\"")} 1' sign_req_body_tmp.json > sign_req_body.json
-curl  --connect-timeout 5 \
+awk -v cert="$(cat $CERTS_FOLDER/server.csr)" 'BEGIN{gsub(/\n/, "\\n", cert)} {sub(/"CERT"/, "\"" cert "\"")} 1' $CERTS_FOLDER/sign_req_body_tmp.json > $CERTS_FOLDER/sign_req_body.json
+curl  --retry 30 \
+    --retry-all-errors \
+    --connect-timeout 5 \
     --max-time 10 \
-    --retry-delay 0 \
-    --retry-max-time 40 \
-    --location --request POST 'http://easy-rsa:8080/sign-csr' --header 'Content-Type: application/json' -d @./sign_req_body.json | jq -r '.certificate' -j > /etc/nginx/certs/server.crt
+    --retry-delay 10 \
+    --retry-max-time 300 \
+    --location --request POST "http://$EASY_RSA_HOSTNAME:$EASY_RSA_PORT/sign-csr" --header 'Content-Type: application/json' -d @./sign_req_body.json | jq -r '.certificate' -j > $CERTS_FOLDER/server.crt
 
 nginx

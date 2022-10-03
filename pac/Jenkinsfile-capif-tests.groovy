@@ -38,6 +38,8 @@ pipeline {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
         ansiColor('xterm')
+        timeout(time: 15, unit: 'MINUTES')
+        retry(2)
     }
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
