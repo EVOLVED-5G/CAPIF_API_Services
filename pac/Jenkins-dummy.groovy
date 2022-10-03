@@ -33,8 +33,8 @@ pipeline {
             steps {
                 dir ("${WORKSPACE}/") {
                     sh '''
-                    mkdir ${env.NETAPP_NAME}
-                    cd ${env.NETAPP_NAME}
+                    mkdir NETAPP_NAME
+                    cd NETAPP_NAME
                     git clone --single-branch --branch $CHANGE_BRANCH $GIT_CAPIF_URL .
                     '''
                 }
