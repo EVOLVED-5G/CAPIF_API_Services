@@ -16,7 +16,6 @@ pipeline {
 
     parameters {
         string(name: 'GIT_CAPIF_URL', defaultValue: 'https://github.com/EVOLVED-5G/CAPIF_API_Services', description: 'URL of the Github Repository')
-        string(name: 'GIT_CAPIF_BRANCH', defaultValue: 'develop', description: 'NETAPP branch name')
     }
 
     environment {
@@ -36,7 +35,7 @@ pipeline {
                     sh '''
                     mkdir $NETAPP_NAME
                     cd $NETAPP_NAME
-                    git clone --single-branch --branch $GIT_CAPIF_BRANCH $GIT_CAPIF_URL .
+                    git clone --single-branch --branch $CHANGE_BRANCH $GIT_CAPIF_URL .
                     '''
                 }
            }
@@ -47,12 +46,12 @@ pipeline {
                 withSonarQubeEnv('Evol5-SonarQube') {
                     sh '''
                         ${SCANNERHOME}/bin/sonar-scanner -X \
-                            -Dsonar.projectKey=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
+                            -Dsonar.projectKey=${NETAPP_NAME}-${CHANGE_BRANCH} \
                             -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
                             -Dsonar.sources="${WORKSPACE}/${NETAPP_NAME}/services/" \
                             -Dsonar.host.url=http://195.235.92.134:9000 \
                             -Dsonar.login=$SQ_TOKEN \
-                            -Dsonar.projectName=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
+                            -Dsonar.projectName=${NETAPP_NAME}-${CHANGE_BRANCH} \
                             -Dsonar.language=python \
                             -Dsonar.sourceEncoding=UTF-8
                     '''
