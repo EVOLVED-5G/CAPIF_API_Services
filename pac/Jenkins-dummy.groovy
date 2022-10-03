@@ -44,36 +44,34 @@ pipeline {
         //TODO: Create a project for each NETAPP
         stage('SonarQube Analysis and Wait for Quality Gate') {
             steps {
-                 dir ("${WORKSPACE}/") {
-                    withSonarQubeEnv('Evol5-SonarQube') {
-                        sh '''
-                            ${SCANNERHOME}/bin/sonar-scanner -X \
-                                -Dsonar.projectKey=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
-                                -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
-                                -Dsonar.sources="${NETAPP_NAME}/services/" \
-                                -Dsonar.host.url=http://195.235.92.134:9000 \
-                                -Dsonar.login=$SQ_TOKEN \
-                                -Dsonar.projectName=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
-                                -Dsonar.language=python \
-                                -Dsonar.sourceEncoding=UTF-8
-                        '''
-                    }
+                withSonarQubeEnv('Evol5-SonarQube') {
+                    sh '''
+                        ${SCANNERHOME}/bin/sonar-scanner -X \
+                            -Dsonar.projectKey=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
+                            -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
+                            -Dsonar.sources="${WORKSPACE}/${NETAPP_NAME}/services/" \
+                            -Dsonar.host.url=http://195.235.92.134:9000 \
+                            -Dsonar.login=$SQ_TOKEN \
+                            -Dsonar.projectName=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
+                            -Dsonar.language=python \
+                            -Dsonar.sourceEncoding=UTF-8
+                    '''
                 }
             }
         }
     }
-    post {
-        cleanup{
-            /* clean up our workspace */
-            deleteDir()
-            /* clean up tmp directory */
-            dir("${env.workspace}@tmp") {
-                deleteDir()
-            }
-            /* clean up script directory */
-            dir("${env.workspace}@script") {
-                deleteDir()
-            }
-        }
-    }
+    // post {
+    //     cleanup{
+    //         /* clean up our workspace */
+    //         deleteDir()
+    //         /* clean up tmp directory */
+    //         dir("${env.workspace}@tmp") {
+    //             deleteDir()
+    //         }
+    //         /* clean up script directory */
+    //         dir("${env.workspace}@script") {
+    //             deleteDir()
+    //         }
+    //     }
+    // }
 }
