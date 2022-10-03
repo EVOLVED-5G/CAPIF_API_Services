@@ -34,7 +34,6 @@ pipeline {
             steps {
                 dir ("${WORKSPACE}/") {
                     sh '''
-                    rm -rf $NETAPP_NAME
                     mkdir $NETAPP_NAME
                     cd $NETAPP_NAME
                     git clone --single-branch --branch $GIT_CAPIF_BRANCH $GIT_CAPIF_URL .
@@ -49,12 +48,12 @@ pipeline {
                     withSonarQubeEnv('Evol5-SonarQube') {
                         sh '''
                             ${SCANNERHOME}/bin/sonar-scanner -X \
-                                -Dsonar.projectKey=${NETAPP_NAME}-${GIT_NETAPP_BRANCH} \
+                                -Dsonar.projectKey=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
                                 -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
-                                -Dsonar.sources="${WORKSPACE}/${NETAPP_NAME}/services/" \
+                                -Dsonar.sources="${NETAPP_NAME}/services/" \
                                 -Dsonar.host.url=http://195.235.92.134:9000 \
                                 -Dsonar.login=$SQ_TOKEN \
-                                -Dsonar.projectName=${NETAPP_NAME}-${GIT_NETAPP_BRANCH} \
+                                -Dsonar.projectName=${NETAPP_NAME}-${GIT_CAPIF_BRANCH} \
                                 -Dsonar.language=python \
                                 -Dsonar.sourceEncoding=UTF-8
                         '''
