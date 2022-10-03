@@ -20,7 +20,7 @@ pipeline {
 
     environment {
         SCANNERHOME = tool 'Sonar Scanner 5';
-        NETAPP_NAME = netappName("${params.GIT_NETAPP_URL}").toLowerCase()
+        NETAPP_NAME = netappName("${params.GIT_CAPIF_URL}").toLowerCase()
         SQ_TOKEN=credentials('SONARQUBE_TOKEN')
     }
 
