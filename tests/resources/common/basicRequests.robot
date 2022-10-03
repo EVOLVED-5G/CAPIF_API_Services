@@ -3,10 +3,10 @@ Documentation       This resource file contains the basic requests used by Capif
 
 Library             RequestsLibrary
 Library             Collections
+Library             OperatingSystem
 
 
 *** Variables ***
-# ${NGINX_HOSTNAME}       http://localhost:8080
 ${CAPIF_AUTH}
 ${CAPIF_BEARER}
 
@@ -15,12 +15,10 @@ ${CAPIF_BEARER}
 Create CAPIF Session
     [Documentation]    Create needed session and headers.
     ...    If server input data is set to NONE, it will try to use NGINX_HOSTNAME variable.
-    [Arguments]    ${server}=${NONE}    ${access_token}=${NONE}   ${verify}=${NONE}
+    [Arguments]    ${server}=${NONE}    ${access_token}=${NONE}    ${verify}=${NONE}
 
     IF    "${server}" != "${NONE}"
         Create Session    apisession    ${server}    verify=${verify}
-    # ELSE
-    #     Create Session    apisession    ${NGINX_HOSTNAME}    verify=True
     END
 
     ${headers}=    Create Dictionary
@@ -34,7 +32,7 @@ Post Request Capif
     [Timeout]    60s
     [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}    ${data}=${NONE}
 
-    ${headers}=    Create CAPIF Session    ${server}    ${access_token}   ${verify}
+    ${headers}=    Create CAPIF Session    ${server}    ${access_token}    ${verify}
 
     IF    '${username}' != '${NONE}'
         ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
@@ -138,7 +136,11 @@ Register User At Jwt Auth
     [Arguments]    ${username}    ${role}    ${password}=password    ${description}=Testing
 
     # Create certificate and private_key for this machine.
-    ${csr_request}=    Create Csr    ${username}.csr    ${username}.key    ${username}
+    IF    "${role}" == "${INVOKER_ROLE}"
+        ${csr_request}=    Create Csr    ${username}.csr    ${username}.key    ${username}
+    ELSE
+        ${csr_request}=    Set Variable    ${None}
+    END
 
     &{body}=    Create Dictionary
     ...    password=${password}
@@ -153,36 +155,42 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    ${access_token}=    Get Token For User    ${username}    ${password}    ${role}
+    ${get_auth_response}=    Get Auth For User    ${username}    ${password}    ${role}
 
     ${register_user_info}=    Create Dictionary
-    ...    access_token=${access_token}
     ...    netappID=${resp.json()['id']}
     ...    csr_request=${csr_request}
     ...    &{resp.json()}
+    ...    &{get_auth_response}
 
     Log Dictionary    ${register_user_info}
 
+    IF    "cert" in @{register_user_info.keys()}
+        Store In File    ${username}.crt    ${register_user_info['cert']}
+    END
+    IF    "private_key" in @{register_user_info.keys()}
+        Store In File    ${username}.key    ${register_user_info['private_key']}
+    END
+
     RETURN    ${register_user_info}
 
-Get Token For User
+Get Auth For User
     [Arguments]    ${username}    ${password}    ${role}
 
     &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
 
-    ${resp}=    POST On Session    jwtsession    /gettoken    json=${body}
+    ${resp}=    POST On Session    jwtsession    /getauth    json=${body}
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    RETURN    ${resp.json()["access_token"]}
+    # Should Be Equal As Strings    ${resp.json()['message']}    Certificate created successfuly
+
+    RETURN    ${resp.json()}
 
 Clean Test Information By HTTP Requests
-    Create Session    jwtsession    ${CAPIF_HTTP_URL}   verify=True
+    Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
 
     ${resp}=    DELETE On Session    jwtsession    /testdata
-    Should Be Equal As Strings    ${resp.status_code}    200
-
-    ${resp}=    DELETE On Session    jwtsession    /certdata
     Should Be Equal As Strings    ${resp.status_code}    200
 
 Invoker Default Onboarding
@@ -216,18 +224,5 @@ Publisher Default Registration
     #Register Exposer
     ${register_user_info}=    Register User At Jwt Auth
     ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
-
-    # Sign certificate
-    ${request_body}=    Sign Csr Body    ${PUBLISHER_USERNAME}    ${register_user_info['csr_request']}
-    ${resp}=    Post Request Capif
-    ...    sign-csr
-    ...    json=${request_body}
-    ...    server=${CAPIF_HTTP_URL}
-    ...    verify=ca.crt
-    # ...    access_token=${register_user_info['access_token']}
-    Status Should Be    201    ${resp}
-
-    # Store dummy signede certificate
-    Store In File    ${PUBLISHER_USERNAME}.crt    ${resp.json()['certificate']}
 
     RETURN    ${register_user_info}

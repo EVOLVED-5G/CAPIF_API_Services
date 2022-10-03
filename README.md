@@ -37,6 +37,7 @@
   - [Mongo DB Dashboard](#mongo-db-dashboard)
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
+- [CAPIF Tool Release 2.1](#capif-tool-release-21)
 
 
 # Repository structure
@@ -552,4 +553,30 @@ Additional information about this version:
 - JWT Authentication Server
 - Easy RSA Server
 - TLS Enabled
-hola
+
+
+# CAPIF Tool Release 2.1
+
+This CAPIF services have many stability improvements:
+- API Provider Management Service adds TLS connection using certificates.
+- Added logs on Services.
+- Easy RSA:
+  - Fix: recreate always when we try to sign a public key. Previously if there are a signed key with same filename causes a MISMATCH error.
+  - Code refactor.
+  - Scripts added for manual remove of signed certificates.
+- JWT Auth Service:
+  - code refactor
+  - New register operation added, distinguish between invoker and exposer logic.
+- NGINX service:
+  - Adjusted rounting information.
+    - TLS over API Provider Management Service.
+    - removed not used endpoints
+    - TLS over some endpoint at JWT Auth Service.
+  - Added retry to obtain ca root certificate over Easy RSA service.
+  - Added check of ca.crt obtained.
+  - nginx_prepare.sh is refactored and parametrized.
+- Robot Framework Test:
+  - Adjusted the register flow for exposer and invoker.
+  - End points used in that flow are changed.
+  - API Provider Management tests adapted to use TLS.
+

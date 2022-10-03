@@ -7,8 +7,8 @@ class MongoDatabse():
     def __init__(self):
         self.config = Config().getConfig()
         self.db = self.__connect()
-        self.provider_enrolment_details = self.config['mongo']['col']
-        self.capif_users = self.config['mongo']['capif_users']
+        self.capif_users = self.config['mongo']['col']
+
 
     def get_col_by_name(self, name):
         return self.db[name]
@@ -24,5 +24,3 @@ class MongoDatabse():
         except Exception as e:
             print("An exception occurred ::", e)
             return None
-
-

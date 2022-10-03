@@ -2,8 +2,7 @@ mongo: {
   'user': 'root',
   'password': 'example',
   'db': 'capif',
-  'col': 'providerenrolmentdetails',
-  'capif_users': 'user',
+  'col': 'user',
   'host': 'mongo',
-  'port': "27017"
+  'port': '27017'
 }
