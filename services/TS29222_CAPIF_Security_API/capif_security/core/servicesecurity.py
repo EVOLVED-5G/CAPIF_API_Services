@@ -12,6 +12,7 @@ from ..models.access_token_rsp import AccessTokenRsp
 from bson import json_util
 import requests
 from ..models.access_token_err import AccessTokenErr
+from ..models.service_security import ServiceSecurity
 import os
 
 class SecurityOperations:
@@ -21,13 +22,13 @@ class SecurityOperations:
         self.mimetype = 'application/json'
 
     def get_servicesecurity(self, api_invoker_id, authentication_info=True, authorization_info=True):
-       
+
         mycol = self.db.get_col_by_name(self.db.security_info)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
+        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
         try:
 
-            invoker = users_col.find_one({"api_invoker_id": api_invoker_id})
+            invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
             if invoker is None:
                 prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
                                     cause="API Invoker not exists or invalid ID")
@@ -40,21 +41,24 @@ class SecurityOperations:
                                         cause="API Invoker has no security context")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
 
-                json_docs = []
+                print("HOLAAA", file=sys.stderr)
+                print(type(services_security_object), file=sys.stderr)
+
+                # json_docs = []
 
                 del services_security_object['_id']
                 del services_security_object['api_invoker_id']
-                if not authentication_info:
-                    for securityInfo_obj in services_security_object['security_info']:
-                        del securityInfo_obj['authentication_info']
-                if not authorization_info:
-                    for securityInfo_obj in services_security_object['security_info']:
-                        del securityInfo_obj['authorization_info']
+                # if not authentication_info:
+                #     for securityInfo_obj in services_security_object['security_info']:
+                #         del securityInfo_obj['authentication_info']
+                # if not authorization_info:
+                #     for securityInfo_obj in services_security_object['security_info']:
+                #         del securityInfo_obj['authorization_info']
 
-                json_doc = json.dumps(services_security_object, default=json_util.default)
-                json_docs.append(json_doc)
+                # json_doc = json.dumps(services_security_object, default=json_util.default)
+                # json_docs.append(json_doc)
 
-                res = Response(json_docs, status=200, mimetype='application/json')
+                res = Response(json.dumps(services_security_object, cls=JSONEncoder), status=200, mimetype='application/json')
                 return res
         except Exception as e:
             exception = "An exception occurred in get security info::", e
@@ -62,29 +66,18 @@ class SecurityOperations:
 
 
     def create_servicesecurity(self, api_invoker_id, service_security):
-        
+
         mycol = self.db.get_col_by_name(self.db.security_info)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
+        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
         try:
-            invoker = users_col.find_one({"api_invoker_id": api_invoker_id})
+            invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
             if invoker is None:
 
                 prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
                                     cause="API Invoker not exists or invalid ID")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
             else:
-                # myParams = []
-                # for i in range(0, len(service_security.security_info)):
-                #     myParams.append({"security_info." + str(i) + ".aef_id": service_security.security_info[i].aef_id})
-                # myQuery = {"$and": myParams}
-                # res = mycol.find(myQuery)
-                # res_size = len(list(res))
-                # if res_size != 0:
-
-                #     prob = ProblemDetails(title="Forbidden", status=403, detail="Security method already defined",
-                #                         cause="Identical AEF Profile IDs")
-                #     return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
                 services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id})
 
                 if services_security_object is not None:
@@ -93,6 +86,14 @@ class SecurityOperations:
                                         cause="Identical AEF Profile IDs")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
                 else:
+
+                    for service_instance in service_security.security_info:
+                        security_methods = service_instance.interface_details.security_methods
+                        pref_security_methods = service_instance.pref_security_methods
+                        valid_security_method = set(security_methods) & set(pref_security_methods)
+                        service_instance.sel_security_method = list(valid_security_method)[0]
+
+
                     rec = dict()
                     rec['api_invoker_id'] = api_invoker_id
                     rec.update(service_security.to_dict())
@@ -101,18 +102,19 @@ class SecurityOperations:
                     res = Response(json.dumps(service_security, cls=JSONEncoder), status=201, mimetype='application/json')
                     res.headers['Location'] = "https://{}/capif-security/v1/trustedInvokers/{}".format(os.getenv('CAPIF_HOSTNAME'),str(api_invoker_id))
                     return res
+
         except Exception as e:
             exception = "An exception occurred in create security info::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
 
 
     def delete_servicesecurity(self, api_invoker_id):
-        
+
         mycol = self.db.get_col_by_name(self.db.security_info)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
+        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
         try:
-            invoker = users_col.find_one({"api_invoker_id": api_invoker_id})
+            invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
             if invoker is None:
 
                 prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
@@ -160,10 +162,10 @@ class SecurityOperations:
 
     def update_servicesecurity(self, api_invoker_id, service_security):
         mycol = self.db.get_col_by_name(self.db.security_info)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
+        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
         try:
-            invoker = users_col.find_one({"api_invoker_id": api_invoker_id})
+            invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
             if invoker is None:
 
                 prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
@@ -212,9 +214,9 @@ class SecurityOperations:
     def revoke_api_authorization(self, api_invoker_id, security_notification):
         
         mycol = self.db.get_col_by_name(self.db.security_info)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
+        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
-        invoker = users_col.find_one({"api_invoker_id": api_invoker_id})
+        invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
         if invoker is None:
 
             prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",

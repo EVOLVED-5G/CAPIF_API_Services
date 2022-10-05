@@ -40,4 +40,5 @@ class SecurityMethodAnyOf(Model):
         :return: The SecurityMethod_anyOf of this SecurityMethodAnyOf.  # noqa: E501
         :rtype: SecurityMethodAnyOf
         """
+        print(dikt)
         return util.deserialize_model(dikt, cls)

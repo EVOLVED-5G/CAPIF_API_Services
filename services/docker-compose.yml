@@ -8,11 +8,6 @@ services:
     build: ./mosquitto
     ports: 
       - "1883:1883"
-  aef-security:
-    build: TS29222_AEF_Security_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API

@@ -9,6 +9,7 @@ class MongoDatabse():
         self.db = self.__connect()
         self.security_info = self.config['mongo']['col']
         self.capif_users = self.config['mongo']['capif_users_col']
+        self.capif_invokers = self.config['mongo']['capif_invokers']
 
 
     def get_col_by_name(self, name):
