@@ -3,7 +3,7 @@ Resource        /opt/robot-tests/tests/resources/common.resource
 Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
-Library    Collections
+Library         Collections
 
 Test Setup      Reset Testing Environment
 
@@ -32,7 +32,8 @@ Onboard NetApp
     ...    access_token=${register_user_info['access_token']}
 
     Status Should Be    201    ${resp}
-    # Store dummy signede certificate
+    Check Api Invoker Enrolment Details Response    ${resp.json()}
+    # Store dummy signed certificate
     Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
 Register NetApp Already Onboarded
@@ -48,13 +49,16 @@ Register NetApp Already Onboarded
     ...    access_token=${register_user_info['access_token']}
 
     Status Should Be    403    ${resp}
+    Check Problem Details Schema    ${resp.json()}
 
 Update Onboarded NetApp
     [Tags]    capif_api_invoker_management-3
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    Set To Dictionary  ${request_body}   notificationDestination=http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_new_callback
+    Set To Dictionary
+    ...    ${request_body}
+    ...    notificationDestination=http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_new_callback
 
     ${resp}=    Put Request Capif
     ...    ${url.path}
@@ -64,7 +68,7 @@ Update Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    200    ${resp}
-
+    Check Api Invoker Enrolment Details Response    ${resp.json()}
 
 Update Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-4
@@ -79,6 +83,7 @@ Update Not Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
+    Check Problem Details Schema    ${resp.json()}
 
 Offboard NetApp
     [Tags]    capif_api_invoker_management-5
@@ -105,4 +110,10 @@ Offboard Not Previously Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
+    Check Problem Details Schema    ${resp.json()}
 
+# CHECKING JMS
+#    [Tags]    jms_test
+#    [Setup]    NONE
+
+#    Check Problem Details
