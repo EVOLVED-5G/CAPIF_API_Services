@@ -80,7 +80,7 @@ Update Not Onboarded NetApp
 
     Status Should Be    404    ${resp}
 
-Delete Onboarded NetApp
+Offboard NetApp
     [Tags]    capif_api_invoker_management-5
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -93,7 +93,7 @@ Delete Onboarded NetApp
 
     Should Be Equal As Strings    ${resp.status_code}    204
 
-Delete Not Onboarded NetApp
+Offboard Not Previously Onboarded NetApp
     [Tags]    capif_api_invoker_management-6
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
