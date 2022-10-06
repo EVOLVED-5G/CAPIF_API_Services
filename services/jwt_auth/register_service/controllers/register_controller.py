@@ -17,22 +17,21 @@ def register():
     description = request.json["description"]
     role = request.json["role"]
     cn = request.json["cn"]
-    if role != "invoker" and role != "exposer":
-        return jsonify(message="Role must be invoker or exposer"), 400
+    if role != "invoker" and role != "provider":
+        return jsonify(message="Role must be invoker or provider"), 400
 
     if role == "invoker":
         return register_operation.register_invoker(username, password, description, cn, role)
 
-    elif role == "exposer":
-        return register_operation.register_aef(username, password, description, cn, role)
+    elif role == "provider":
+        return register_operation.register_provider(username, password, description, cn, role)
 
 @register_routes.route("/getauth", methods=["POST"])
 def getauth():
     username = request.json["username"]
     password = request.json["password"]
-    role = request.json["role"]
 
-    return register_operation.get_auth(username, password, role)
+    return register_operation.get_auth(username, password)
 
 #Pending to remove
 @register_routes.route("/testdata", methods=["DELETE"])
