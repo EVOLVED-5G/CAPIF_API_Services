@@ -112,8 +112,3 @@ Offboard Not Previously Onboarded NetApp
     Status Should Be    404    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
 
-# CHECKING JMS
-#     [Tags]    jms_test
-#     [Setup]    NONE
-
-#     Check Jms
