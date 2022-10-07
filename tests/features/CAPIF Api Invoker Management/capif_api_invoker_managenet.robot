@@ -32,7 +32,7 @@ Onboard NetApp
     ...    access_token=${register_user_info['access_token']}
 
     Status Should Be    201    ${resp}
-    Check Api Invoker Enrolment Details Response    ${resp.json()}
+    Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
     # Store dummy signed certificate
     Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
@@ -49,7 +49,7 @@ Register NetApp Already Onboarded
     ...    access_token=${register_user_info['access_token']}
 
     Status Should Be    403    ${resp}
-    Check Problem Details Schema    ${resp.json()}
+    Check Variable    ${resp.json()}    ProblemDetails
 
 Update Onboarded NetApp
     [Tags]    capif_api_invoker_management-3
@@ -68,7 +68,7 @@ Update Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    200    ${resp}
-    Check Api Invoker Enrolment Details Response    ${resp.json()}
+    Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
 
 Update Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-4
@@ -83,7 +83,7 @@ Update Not Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
-    Check Problem Details Schema    ${resp.json()}
+    Check Variable    ${resp.json()}    ProblemDetails
 
 Offboard NetApp
     [Tags]    capif_api_invoker_management-5
@@ -110,10 +110,10 @@ Offboard Not Previously Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
-    Check Problem Details Schema    ${resp.json()}
+    Check Variable    ${resp.json()}    ProblemDetails
 
 # CHECKING JMS
-#    [Tags]    jms_test
-#    [Setup]    NONE
+#     [Tags]    jms_test
+#     [Setup]    NONE
 
-#    Check Problem Details
+#     Check Jms
