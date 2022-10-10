@@ -8,7 +8,6 @@ from capif_security.models.security_notification import SecurityNotification  # 
 from capif_security.models.service_security import ServiceSecurity  # noqa: E501
 from capif_security import util
 from ..core.servicesecurity import SecurityOperations
-from ..core.check_user import CapifUsersOperations
 import json
 from flask import Response, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -19,7 +18,6 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
 
-check_user = CapifUsersOperations()
 service_security_ops = SecurityOperations()
 
 
@@ -42,23 +40,6 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     :rtype: AccessTokenRsp
     """
 
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
-
     if connexion.request.is_json:
         body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501
     res = service_security_ops.return_token(security_id, body)
@@ -75,21 +56,6 @@ def trusted_invokers_api_invoker_id_delete(api_invoker_id):  # noqa: E501
 
     :rtype: None
     """
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     return service_security_ops.delete_servicesecurity(api_invoker_id)
 
@@ -106,22 +72,6 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
 
     :rtype: None
     """
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
@@ -143,22 +93,7 @@ def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=Fals
 
     :rtype: Union[ServiceSecurity, Tuple[ServiceSecurity, int], Tuple[ServiceSecurity, int, Dict[str, str]]
     """
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
 
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     res = service_security_ops.get_servicesecurity(api_invoker_id, authentication_info, authorization_info)
 
@@ -177,22 +112,6 @@ def trusted_invokers_api_invoker_id_put(api_invoker_id, body):  # noqa: E501
 
     :rtype: Union[ServiceSecurity, Tuple[ServiceSecurity, int], Tuple[ServiceSecurity, int, Dict[str, str]]
     """
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
@@ -212,23 +131,6 @@ def trusted_invokers_api_invoker_id_update_post(api_invoker_id, body):  # noqa: 
 
     :rtype: ServiceSecurity
     """
-    
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-    # print(cert_raw)
-    # sys.stdout.flush()
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    # print(cn)
-    # sys.stdout.flush()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501

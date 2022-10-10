@@ -1,6 +1,5 @@
 import sys
 
-from ..core.check_user import CapifUsersOperations
 from ..core.discoveredapis import DiscoverApisOperations
 import json
 from flask import Response, request, current_app
@@ -10,7 +9,6 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
 
-check_user = CapifUsersOperations()
 discover_apis = DiscoverApisOperations()
 
 def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_type=None, protocol=None, aef_id=None, data_format=None, api_cat=None, supported_features=None, api_supported_features=None):  # noqa: E501

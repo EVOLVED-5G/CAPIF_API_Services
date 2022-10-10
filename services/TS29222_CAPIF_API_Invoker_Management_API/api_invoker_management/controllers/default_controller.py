@@ -2,7 +2,7 @@ import connexion
 
 from api_invoker_management.models.api_invoker_enrolment_details import APIInvokerEnrolmentDetails  # noqa: E501
 from ..core.apiinvokerenrolmentdetails import InvokerManagementOperations
-from ..core.check_user import CapifUsersOperations
+
 
 import json
 from flask import Response, request, current_app
@@ -13,7 +13,6 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
 
-check_user = CapifUsersOperations()
 invoker_operations = InvokerManagementOperations()
 
 def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
@@ -26,20 +25,6 @@ def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
 
     :rtype: None
     """
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
-
 
     res = invoker_operations.remove_apiinvokerenrolmentdetail(onboarding_id)
 
@@ -62,19 +47,6 @@ def onboarded_invokers_onboarding_id_put(onboarding_id, body):  # noqa: E501
 
     :rtype: APIInvokerEnrolmentDetails
     """
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
-
     if connexion.request.is_json:
         body = APIInvokerEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
     res = invoker_operations.update_apiinvokerenrolmentdetail(onboarding_id,body)
@@ -99,7 +71,7 @@ def onboarded_invokers_post(body):  # noqa: E501
     """
 
     identity = get_jwt_identity()
-    username, role = identity.split()
+    _, role = identity.split()
 
     if role != "invoker":
         prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
