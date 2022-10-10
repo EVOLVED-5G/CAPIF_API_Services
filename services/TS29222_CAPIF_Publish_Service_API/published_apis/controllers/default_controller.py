@@ -36,7 +36,7 @@ def apf_id_service_apis_get(apf_id):  # noqa: E501
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
 
-    capif_user = check_user.check_capif_user(cn, "exposer")
+    capif_user = check_user.check_capif_user(cn, "provider")
 
     if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -68,7 +68,7 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
     
 
-    capif_user = check_user.check_capif_user(cn, "exposer")
+    capif_user = check_user.check_capif_user(cn, "provider")
 
     if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -105,7 +105,7 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
 
-    capif_user = check_user.check_capif_user(cn, "exposer")
+    capif_user = check_user.check_capif_user(cn, "provider")
 
     if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -140,7 +140,7 @@ def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E50
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
 
 
-    capif_user = check_user.check_capif_user(cn, "exposer")
+    capif_user = check_user.check_capif_user(cn, "provider")
 
     if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
@@ -174,7 +174,7 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
     cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
     cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
 
-    capif_user = check_user.check_capif_user(cn, "exposer")
+    capif_user = check_user.check_capif_user(cn, "provider")
 
     if not capif_user:
         prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",

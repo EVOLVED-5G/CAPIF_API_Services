@@ -129,7 +129,7 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     return service_security_ops.revoke_api_authorization(api_invoker_id, body)
 
 
-def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=True, authorization_info=True):  # noqa: E501
+def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=False, authorization_info=False):  # noqa: E501
     """trusted_invokers_api_invoker_id_get
 
      # noqa: E501

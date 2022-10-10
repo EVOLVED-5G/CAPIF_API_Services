@@ -4,11 +4,7 @@ from ..db.db import MongoDatabse
 import secrets
 import requests
 import json
-
-from OpenSSL.SSL import FILETYPE_PEM
-from OpenSSL.crypto import (dump_certificate_request, dump_privatekey, load_publickey, PKey, TYPE_RSA, X509Req, dump_publickey)
-
-
+import sys
 
 class RegisterOperations:
 
@@ -49,23 +45,28 @@ class RegisterOperations:
     def get_auth(self, username, password):
 
         mycol = self.db.get_col_by_name(self.db.capif_users)
-        exist_user = mycol.find_one({"username": username, "password": password})
 
-        if exist_user is None:
-            return jsonify("Not exister user with this credentials"), 400
+        try:
 
-        if exist_user["role"] == "invoker":
+            exist_user = mycol.find_one({"username": username, "password": password})
 
-            access_token = create_access_token(identity=(username + " " + exist_user["role"]))
-            url = "http://easy-rsa:8080/ca-root"
-            headers = {
+            if exist_user is None:
+                return jsonify("Not exister user with this credentials"), 400
 
-                    'Content-Type': self.mimetype
-            }
-            response = requests.request("GET", url, headers=headers)
-            response_payload = json.loads(response.text)
-            return jsonify(message="Token and CA root returned successfully", access_token=access_token, ca_root=response_payload["certificate"]), 201
+            if exist_user["role"] == "invoker":
 
-        elif exist_user == "provider":
-            access_token = create_access_token(identity=(username + " " + exist_user["role"]))
-            return jsonify(message="Token returned successfully", access_token=access_token), 201
+                access_token = create_access_token(identity=(username + " " + exist_user["role"]))
+                url = "http://easy-rsa:8080/ca-root"
+                headers = {
+
+                        'Content-Type': self.mimetype
+                }
+                response = requests.request("GET", url, headers=headers)
+                response_payload = json.loads(response.text)
+                return jsonify(message="Token and CA root returned successfully", access_token=access_token, ca_root=response_payload["certificate"]), 200
+
+            elif exist_user["role"] == "provider":
+                access_token = create_access_token(identity=(username + " " + exist_user["role"]))
+                return jsonify(message="Token returned successfully", access_token=access_token), 200
+        except Exception as e:
+            return jsonify(message=f"Errors when try getting auth: {e}"), 500

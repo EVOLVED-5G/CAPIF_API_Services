@@ -18,7 +18,7 @@ check_user = CapifUsersOperations()
 provider_management_ops = ProviderManagementOperations()
 
 
-def modify_ind_api_provider_enrolment(registration_id, body):  # noqa: E501
+def modify_ind_api_provider_enrolment(api_prov_dom_id, body):  # noqa: E501
     """modify_ind_api_provider_enrolment
 
     Modify an individual API provider details. # noqa: E501
@@ -47,6 +47,6 @@ def modify_ind_api_provider_enrolment(registration_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = APIProviderEnrolmentDetailsPatch.from_dict(connexion.request.get_json())  # noqa: E501
    
-    res = provider_management_ops.patch_api_provider_enrolment_details(registration_id, body)
+    res = provider_management_ops.patch_api_provider_enrolment_details(api_prov_dom_id, body)
 
     return res

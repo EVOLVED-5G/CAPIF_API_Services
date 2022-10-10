@@ -3,6 +3,7 @@
 import connexion
 
 from api_provider_management import encoder
+from flask_jwt_extended import JWTManager
 
 
 def main():
@@ -11,6 +12,10 @@ def main():
     app.add_api('openapi.yaml',
                 arguments={'title': 'CAPIF_API_Provider_Management_API'},
                 pythonic_params=True)
+
+    app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
+    JWTManager(app.app)
+
 
     app.run(port=8080, debug=True)
 

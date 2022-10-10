@@ -6,8 +6,10 @@ from flask import current_app, Flask, Response
 import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from ..core.sign_certificate import sign_certificate
 from bson import json_util
 from ..db.db import MongoDatabse
+import sys
 
 class ProviderManagementOperations:
 
@@ -26,29 +28,30 @@ class ProviderManagementOperations:
                 prob = ProblemDetails(title="Forbidden", status=403, detail="Provider already registered", cause="Identical provider reg sec")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
 
-            apiProvDomId = secrets.token_hex(15)
-            registrationId = secrets.token_hex(15)
-            provider_enrolment_details = dict()
-            provider_enrolment_details["registration_id"] = registrationId
-            api_provider_enrolment_details.api_prov_dom_id = apiProvDomId
+            api_provider_enrolment_details.api_prov_dom_id = secrets.token_hex(15)
 
-            provider_enrolment_details.update(api_provider_enrolment_details.to_dict())
-            mycol.insert_one(provider_enrolment_details)
+            for api_provider_func in api_provider_enrolment_details.api_prov_funcs:
+                api_provider_func.api_prov_func_id = secrets.token_hex(15)
+                certificate = sign_certificate(api_provider_func.reg_info.api_prov_pub_key, api_provider_func.api_prov_func_info)
+                api_provider_func.reg_info.api_prov_cert = certificate
+
+
+            mycol.insert_one(api_provider_enrolment_details.to_dict())
 
             res = Response(json_util.dumps(api_provider_enrolment_details, cls=JSONEncoder),
                         status=201, mimetype= self.mimetype)
-            res.headers['Location'] = "/api-provider-management/v1/registrations/" + str(registrationId)
+            res.headers['Location'] = "/api-provider-management/v1/registrations/" + str(api_provider_enrolment_details.api_prov_dom_id)
             return res
 
         except Exception as e:
             exception = "An exception occurred in register provider::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
 
-    def delete_api_provider_enrolment_details(self, registrationId):
+    def delete_api_provider_enrolment_details(self, api_prov_dom_id):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registration_id': registrationId}
+            search_filter = {'api_prov_dom_id': api_prov_dom_id}
             provider_enrolment_details = mycol.find_one(search_filter)
 
             if provider_enrolment_details is None:
@@ -63,10 +66,10 @@ class ProviderManagementOperations:
             exception = "An exception occurred in delete provider::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
 
-    def update_api_provider_enrolment_details(self, registrationId, api_provider_enrolment_details):
+    def update_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
-            search_filter = {'registration_id': registrationId}
+            search_filter = {'api_prov_dom_id': api_prov_dom_id}
             old_provider_enrolment_details = mycol.find_one(search_filter)
 
             if  old_provider_enrolment_details is None:
@@ -86,11 +89,11 @@ class ProviderManagementOperations:
             exception = "An exception occurred in update provider::", e
             return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
 
-    def patch_api_provider_enrolment_details(self, registrationId, api_provider_enrolment_details_patch):
+    def patch_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details_patch):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registration_id': registrationId}
+            search_filter = {'api_prov_dom_id': api_prov_dom_id}
             old_provider_enrolment_details = mycol.find_one(search_filter)
 
 

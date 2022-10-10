@@ -41,22 +41,15 @@ class SecurityOperations:
                                         cause="API Invoker has no security context")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
 
-                print("HOLAAA", file=sys.stderr)
-                print(type(services_security_object), file=sys.stderr)
-
-                # json_docs = []
-
                 del services_security_object['_id']
                 del services_security_object['api_invoker_id']
-                # if not authentication_info:
-                #     for securityInfo_obj in services_security_object['security_info']:
-                #         del securityInfo_obj['authentication_info']
-                # if not authorization_info:
-                #     for securityInfo_obj in services_security_object['security_info']:
-                #         del securityInfo_obj['authorization_info']
+                if not authentication_info:
+                    for securityInfo_obj in services_security_object['security_info']:
+                        del securityInfo_obj['authentication_info']
+                if not authorization_info:
+                    for securityInfo_obj in services_security_object['security_info']:
+                        del securityInfo_obj['authorization_info']
 
-                # json_doc = json.dumps(services_security_object, default=json_util.default)
-                # json_docs.append(json_doc)
 
                 res = Response(json.dumps(services_security_object, cls=JSONEncoder), status=200, mimetype='application/json')
                 return res
@@ -88,11 +81,14 @@ class SecurityOperations:
                 else:
 
                     for service_instance in service_security.security_info:
-                        security_methods = service_instance.interface_details.security_methods
-                        pref_security_methods = service_instance.pref_security_methods
-                        valid_security_method = set(security_methods) & set(pref_security_methods)
-                        service_instance.sel_security_method = list(valid_security_method)[0]
-
+                        if service_instance.interface_details != None:
+                            security_methods = service_instance.interface_details.security_methods
+                            pref_security_methods = service_instance.pref_security_methods
+                            valid_security_method = set(security_methods) & set(pref_security_methods)
+                            service_instance.sel_security_method = list(valid_security_method)[0]
+                        else:
+                            #In this plasce its needed implement the consult to the security methods using apiId and aefId
+                            continue
 
                     rec = dict()
                     rec['api_invoker_id'] = api_invoker_id
