@@ -40,35 +40,74 @@ pipeline {
                 }
            }
         }
-        //TODO: Create a project for each NETAPP
-        stage('SonarQube Analysis and Wait for Quality Gate') {
+
+        stage('Get CAPIF Services') {
             steps {
                 dir ("${WORKSPACE}/${NETAPP_NAME}/services/") {
-                    withSonarQubeEnv('Evol5-SonarQube') {
-                    sh '''#! /bin/bash
-                        array=(*/)
-                        for dir in "${array[@]}"
-                        do
-                            name=$(echo $dir|sed 's/.$//') 
-                            if [ $name == nginx ]
-                            then
-                                continue
-                            elif [ $name == mosquitto ]
-                            then
-                                continue
-                            fi
-                            ${SCANNERHOME}/bin/sonar-scanner -X \
-                                -Dsonar.projectKey=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
-                                -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
-                                -Dsonar.sources=${WORKSPACE}/${NETAPP_NAME}/services/$dir \
-                                -Dsonar.host.url=http://195.235.92.134:9000 \
-                                -Dsonar.login=$SQ_TOKEN \
-                                -Dsonar.projectName=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
-                                -Dsonar.language=python \
-                                -Dsonar.sourceEncoding=UTF-8
-                                -Dsonar.qualitygate.wait=true
-                        done
-                    '''
+                    script{
+                        def list = sh(returnStdout: true, script: "ls -d */ | sed 's#/##'").trim().split('\n')
+                        list.each{ a->
+                            println "Analyze this CAPIF repo=${a}"
+                        }
+                    }
+                }
+            }
+        }
+            
+        stage('Analyze') {
+            steps {
+                dir ("${WORKSPACE}/${NETAPP_NAME}/services/") {
+                    script{
+                        def list = sh(returnStdout: true, script: "ls -d */ | sed 's#/##'").trim().split('\n')
+                            list.each { array ->
+                                if(array=="nginx"){
+                                    return
+                                }
+                                if(array=="mosquitto"){
+                                    return
+                                }
+                                stage ("Analyze this CAPIF repo ${array}") {
+                                    script {
+                                        dir("${WORKSPACE}/${NETAPP_NAME}/.scannerwork"){
+                                        withSonarQubeEnv('Evol5-SonarQube') {
+                                        sh '''#! /bin/bash
+                                        name=$(echo '''+array+''')
+                                        
+                                        echo $name
+                                        ${SCANNERHOME}/bin/sonar-scanner -X \
+                                            -Dsonar.projectKey=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
+                                            -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
+                                            -Dsonar.sources=${WORKSPACE}/${NETAPP_NAME}/services/$name \
+                                            -Dsonar.host.url=http://195.235.92.134:9000 \
+                                            -Dsonar.login=$SQ_TOKEN \
+                                            -Dsonar.projectName=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
+                                            -Dsonar.language=python \
+                                            -Dsonar.sourceEncoding=UTF-8
+                                    '''
+                                        }
+                                    }
+                                }
+                            }
+                            stage("Quality gate ${array}") {
+                                script {
+                                    def tries = 0
+                                    def sonarResultStatus = "PENDING"
+                                    while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 10) {
+                                        try {
+                                            timeout(time: 5, unit: 'SECONDS') {
+                                                sonarResult = waitForQualityGate abortPipeline: false
+                                                sonarResultStatus = sonarResult.status
+                                            }
+                                        } catch(ex) {
+                                            echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
+                                        }
+                                    }
+                                    if (sonarResultStatus != 'OK') {
+                                        error "Quality gate failure for SonarQube: ${sonarResultStatus}"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
