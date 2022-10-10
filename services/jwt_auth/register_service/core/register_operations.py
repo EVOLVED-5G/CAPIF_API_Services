@@ -40,7 +40,7 @@ class RegisterOperations:
         return jsonify(message="provider" + " registered successfully",
                     id=obj.inserted_id,
                     ccf_api_onboarding_url="api-provider-management/v1/registrations",
-                    ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id)), 201
+                    ccf_publish_url="published-apis/v1/<apfId>/service-apis"), 201
 
     def get_auth(self, username, password):
 
