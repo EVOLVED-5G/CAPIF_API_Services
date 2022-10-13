@@ -10,6 +10,8 @@ Library             OperatingSystem
 ${CAPIF_AUTH}
 ${CAPIF_BEARER}
 
+${LOCATION_INVOKER_RESOURCE_REGEX}   ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
+
 
 *** Keywords ***
 Create CAPIF Session
@@ -212,7 +214,10 @@ Invoker Default Onboarding
     Set To Dictionary    ${register_user_info}    apiInvokerId=${resp.json()['apiInvokerId']}
     Log Dictionary    ${register_user_info}
 
+    # Assertions
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
+    Check Location Header    ${resp}    ${LOCATION_INVOKER_RESOURCE_REGEX}
     # Store dummy signede certificate
     Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 

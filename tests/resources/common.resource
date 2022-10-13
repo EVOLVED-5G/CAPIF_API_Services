@@ -23,3 +23,12 @@ Reset Testing Environment
 
     Clean Test Information By HTTP Requests
 
+Check Location Header
+    [Documentation]    This keyword will check location header at response according to regular expression provided as argument
+    [Arguments]    ${resp}    ${regular_expression}
+
+    ${event_url}=    Parse Url    ${resp.headers['Location']}
+    Log    ${event_url.path}
+
+    Should Match Regexp    ${event_url.path}    ${regular_expression}
+

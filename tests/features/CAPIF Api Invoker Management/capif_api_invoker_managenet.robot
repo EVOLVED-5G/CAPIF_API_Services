@@ -31,8 +31,11 @@ Onboard NetApp
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
+    # Assertions
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
+    Check Location Header    ${resp}    ${LOCATION_INVOKER_RESOURCE_REGEX}
+
     # Store dummy signed certificate
     Store In File    ${INVOKER_USERNAME}.crt    ${resp.json()['onboardingInformation']['apiInvokerCertificate']}
 
@@ -48,17 +51,22 @@ Register NetApp Already Onboarded
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
+    # Assertions
     Status Should Be    403    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
+    Should Match    ${resp.json()['detail']}    Invoker already registered
+    Should Match    ${resp.json()['cause']}    Identical invoker public key
 
 Update Onboarded NetApp
     [Tags]    capif_api_invoker_management-3
+    ${new_notification_destination}=    Set Variable
+    ...    http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_new_callback
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     Set To Dictionary
     ...    ${request_body}
-    ...    notificationDestination=http://${CAPIF_CALLBACK_IP}:${CAPIF_CALLBACK_PORT}/netapp_new_callback
+    ...    notificationDestination=${new_notification_destination}
 
     ${resp}=    Put Request Capif
     ...    ${url.path}
@@ -69,6 +77,7 @@ Update Onboarded NetApp
 
     Status Should Be    200    ${resp}
     Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
+    Should Match    ${resp.json()['notificationDestination']}    ${${new_notification_destination}}
 
 Update Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-4
@@ -84,6 +93,8 @@ Update Not Onboarded NetApp
 
     Status Should Be    404    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
+    Should Match    ${resp.json()['detail']}    Please provide an existing Netapp ID
+    Should Match    ${resp.json()['cause']}    Not exist NetappID
 
 Offboard NetApp
     [Tags]    capif_api_invoker_management-5
@@ -111,4 +122,5 @@ Offboard Not Previously Onboarded NetApp
 
     Status Should Be    404    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
-
+    Should Match    ${resp.json()['detail']}    Please provide an existing Netapp ID
+    Should Match    ${resp.json()['cause']}    Not exist NetappID

@@ -51,7 +51,7 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **APIInvokerEnrolmentDetails** data structure with:
         * apiInvokerId
         * onboardingInformation->apiInvokerCertificate must contain the public key signed.
-     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
 * Current Status:
   
@@ -99,7 +99,7 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **APIInvokerEnrolmentDetails** data structure with:
         * apiInvokerId
         * onboardingInformation->apiInvokerCertificate must contain the public key signed.
-     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
   2. Response to Second Onboard of NetApp must accomplish:
      1. **403 Forbidden**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
@@ -149,7 +149,7 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **APIInvokerEnrolmentDetails** data structure with:
         * apiInvokerId
         * onboardingInformation->apiInvokerCertificate must contain the public key signed.
-     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/<apiVersion>/onboardedInvokers/{onboardingId}*
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
   2. Response to Update Request (PUT) with minor change must contain:
      1. **200 OK** response.
      2. notificationDestination on response must contain the new value
