@@ -101,6 +101,9 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    403    ${resp}
+    Check Variable    ${resp.json()}    ProblemDetails
+    Check Problem Details     ${resp}   status=403   detail=Event API not existing   cause=Event Subscriptions are not stored in CAPIF Database
+
 
 Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     [Tags]    capif_api_events-5
@@ -127,3 +130,6 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
+    Check Variable    ${resp.json()}    ProblemDetails
+    Check Problem Details     ${resp}   status=404   detail=Service API not existing   cause=Event API subscription id not found
+
