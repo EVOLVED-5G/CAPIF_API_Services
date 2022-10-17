@@ -10,7 +10,8 @@ Library             OperatingSystem
 ${CAPIF_AUTH}
 ${CAPIF_BEARER}
 
-${LOCATION_INVOKER_RESOURCE_REGEX}   ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
+${LOCATION_INVOKER_RESOURCE_REGEX}      ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
+${LOCATION_EVENT_RESOURCE_REGEX}        ^/capif-events/v1/[0-9a-zA-Z]+/subscriptions/[0-9a-zA-Z]+
 
 
 *** Keywords ***

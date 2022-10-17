@@ -54,8 +54,10 @@ Register NetApp Already Onboarded
     # Assertions
     Status Should Be    403    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
-    Should Match    ${resp.json()['detail']}    Invoker already registered
-    Should Match    ${resp.json()['cause']}    Identical invoker public key
+    Check Problem Details    ${resp}
+    ...    status=403
+    ...    detail=Invoker already registered
+    ...    cause=Identical invoker public key
 
 Update Onboarded NetApp
     [Tags]    capif_api_invoker_management-3
@@ -93,8 +95,10 @@ Update Not Onboarded NetApp
 
     Status Should Be    404    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
-    Should Match    ${resp.json()['detail']}    Please provide an existing Netapp ID
-    Should Match    ${resp.json()['cause']}    Not exist NetappID
+    Check Problem Details    ${resp}
+    ...    status=404
+    ...    detail=Please provide an existing Netapp ID
+    ...    cause=Not exist NetappID
 
 Offboard NetApp
     [Tags]    capif_api_invoker_management-5
@@ -122,5 +126,7 @@ Offboard Not Previously Onboarded NetApp
 
     Status Should Be    404    ${resp}
     Check Variable    ${resp.json()}    ProblemDetails
-    Should Match    ${resp.json()['detail']}    Please provide an existing Netapp ID
-    Should Match    ${resp.json()['cause']}    Not exist NetappID
+    Check Problem Details    ${resp}
+    ...    status=404
+    ...    detail=Please provide an existing Netapp ID
+    ...    cause=Not exist NetappID

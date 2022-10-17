@@ -28,7 +28,22 @@ Check Location Header
     [Arguments]    ${resp}    ${regular_expression}
 
     ${event_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${event_url.path}
 
     Should Match Regexp    ${event_url.path}    ${regular_expression}
+    RETURN    ${event_url}
 
+Check Event Location Header
+    [Arguments]    ${resp}
+
+    ${event_url}=    Check Location Header    ${resp}    ${LOCATION_EVENT_RESOURCE_REGEX}
+
+    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
+
+    RETURN     ${subscriber_id}    ${subscription_id}
+
+Check Problem Details
+    [Arguments]   ${resp}    &{input_parameters}
+    FOR   ${input}   IN   @{input_parameters}
+        Log    ${input}=${input_parameters['${input}']}
+        Should Match    "${resp.json()['${input}']}"   "${input_parameters['${input}']}"
+    END

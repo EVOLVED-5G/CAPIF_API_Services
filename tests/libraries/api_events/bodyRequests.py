@@ -17,11 +17,11 @@ def create_events_subscription():
             "immRep": True,
             "maxReportNbr": 0,
             "monDur": "2000-01-23T04:56:07+00:00",
-            "partitionCriteria": ["string1", "string2"],
+            "partitionCriteria": ["TAC", "GEOAREA"],
             "repPeriod": 6,
             "sampRatio": 15
         },
-        "events": ["event_name_id_1", "event_name_id_2"],
+        "events": ["SERVICE_API_AVAILABLE", "API_INVOKER_ONBOARDED"],
         "notificationDestination": "ROBOT_TESTING",
         "requestTestNotification": True,
         "supportedFeatures": "aaa",

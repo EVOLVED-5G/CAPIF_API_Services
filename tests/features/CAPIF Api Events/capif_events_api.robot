@@ -1,8 +1,9 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
-Library        XML
+Library         XML
 Resource        /opt/robot-tests/tests/resources/common/basicRequests.robot
+Resource        ../../resources/common.resource
 
 Test Setup      Reset Testing Environment
 
@@ -27,14 +28,10 @@ Creates a new individual CAPIF Event Subscription
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
+    # Assertions
     Status Should Be    201    ${resp}
-
-    ${event_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${event_url.path}
-
-    Should Match Regexp    ${event_url.path}    ^/capif-events/v1/[0-9a-zA-Z]+/subscriptions/[0-9a-zA-Z]+
-
-    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
+    Check Variable    ${resp.json()}    EventSubscription
+    ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
 Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     [Tags]    capif_api_events-2
@@ -49,7 +46,10 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
+    # Assertions
     Status Should Be    403    ${resp}
+    Check Variable    ${resp.json()}    ProblemDetails
+    Check Problem Details     ${resp}   status=403   detail=Event API not existing   cause=Event Subscriptions are not stored in CAPIF Database
 
 Deletes an individual CAPIF Event Subscription
     [Tags]    capif_api_events-3
@@ -65,11 +65,9 @@ Deletes an individual CAPIF Event Subscription
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    EventSubscription
 
-    ${event_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${event_url.path}
-
-    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
+    ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${subscriber_id}/subscriptions/${subscription_id}
@@ -94,10 +92,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
 
     Status Should Be    201    ${resp}
 
-    ${event_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${event_url.path}
-
-    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
+    ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${SUBSCRIBER_ID_NOT_VALID}/subscriptions/${subscription_id}
@@ -123,10 +118,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
 
     Status Should Be    201    ${resp}
 
-    ${event_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${event_url.path}
-
-    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
+    ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${subscriber_id}/subscriptions/${SUBSCRIPTION_ID_NOT_VALID}
@@ -135,4 +127,3 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
-

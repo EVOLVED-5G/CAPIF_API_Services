@@ -199,5 +199,66 @@
     "optional_attributes": {
       "ccfIds": "string"
     }
+  },
+  "EventSubscription": {
+    "mandatory_attributes": {
+      "events": "CAPIFEvent",
+      "notificationDestination": "string"
+    },
+    "optional_attributes": {
+      "eventFilters": "CAPIFEventFilter",
+      "eventReq": "ReportingInformation",
+      "requestTestNotification": "boolean",
+      "websockNotifConfig": "WebsockNotifConfig",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "CAPIFEvent": {
+    "enum": [
+      "SERVICE_API_AVAILABLE",
+      "SERVICE_API_UNAVAILABLE",
+      "SERVICE_API_UPDATE",
+      "API_INVOKER_ONBOARDED",
+      "API_INVOKER_OFFBOARDED",
+      "SERVICE_API_INVOCATION_SUCCESS",
+      "SERVICE_API_INVOCATION_FAILURE",
+      "ACCESS_CONTROL_POLICY_UPDATE",
+      "ACCESS_CONTROL_POLICY_UNAVAILABLE",
+      "API_INVOKER_AUTHORIZATION_REVOKED",
+      "API_INVOKER_UPDATED",
+      "API_TOPOLOGY_HIDING_CREATED",
+      "API_TOPOLOGY_HIDING_REVOKED"
+    ]
+  },
+  "CAPIFEventFilter": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "apiIds": "string",
+      "apiInvokerIds": "string",
+      "aefIds": "string"
+    }
+  },
+  "ReportingInformation": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "immRep": "boolean",
+      "notifMethod": "NotificationMethod",
+      "maxReportNbr": "integer",
+      "monDur": "string",
+      "repPeriod": "integer",
+      "sampRatio": "integer",
+      "partitionCriteria": "PartitioningCriteria",
+      "grpRepTime": "integer",
+      "notifFlag": "NotificationFlag"
+    }
+  },
+  "NotificationMethod": {
+    "enum": ["PERIODIC", "ONE_TIME", "ON_EVENT_DETECTION"]
+  },
+  "PartitioningCriteria": {
+    "enum": ["TAC", "SUBPLMN", "GEOAREA", "SNSSAI", "DNN"]
+  },
+  "NotificationFlag": {
+    "enum": ["ACTIVATE", "DEACTIVATE", "RETRIEVAL"]
   }
 }

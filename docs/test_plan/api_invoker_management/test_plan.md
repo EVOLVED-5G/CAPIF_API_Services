@@ -53,10 +53,6 @@ At this documentation you will have all information and related files and exampl
         * onboardingInformation->apiInvokerCertificate must contain the public key signed.
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
-* Current Status:
-  
-  <span style="color:green">**Passed**</span>
-
 
 ## Test Case 2: Onboard NetApp Already onboarded
 
@@ -155,10 +151,6 @@ At this documentation you will have all information and related files and exampl
      2. notificationDestination on response must contain the new value
 
 
-* Current Status:
-  
-  <span style="color:green">**Passed**</span>
-
 ## Test Case 4: Update Not Onboarded NetApp
 * Test ID: ***capif_api_invoker_management-4***
 * Description:
@@ -197,9 +189,6 @@ At this documentation you will have all information and related files and exampl
         * detail with message "Please provide an existing Netapp ID".
         * cause with message "Not exist NetappID".
 
-* Current Status:
-  
-  <span style="color:green">**Passed**</span>
 
 
 ## Test Case 5: Offboard NetApp
@@ -241,10 +230,6 @@ At this documentation you will have all information and related files and exampl
      1. **201 Created**
   2. Response to Offboard Request (DELETE) must contain:
      1. **204 No Content**
-     
-* Current Status:
-
-  <span style="color:green">**Passed**</span>
 
 
 ## Test Case 6: Offboard Not previsouly Onboarded NetApp
@@ -282,10 +267,6 @@ At this documentation you will have all information and related files and exampl
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
      * detail with message "Please provide an existing Netapp ID".
      * cause with message "Not exist NetappID".
-
-* Current Status:
-
-  <span style="color:green">**Passed**</span>
 
 
 
