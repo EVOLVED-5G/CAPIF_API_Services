@@ -968,6 +968,7 @@ components:
       title: SecurityNotification
       type: object
     AccessTokenReq:
+      type: object
       description: Represents the access token request information.
       format: x-www-form-urlencoded
       properties:

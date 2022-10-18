@@ -8,7 +8,7 @@ class MongoDatabse():
         self.config = Config().getConfig()
         self.db = self.__connect()
         self.security_info = self.config['mongo']['col']
-        self.capif_users = self.config['mongo']['capif_users_col']
+        self.capif_service_col = self.config['mongo']['capif_service_col']
         self.capif_invokers = self.config['mongo']['capif_invokers']
 
 
