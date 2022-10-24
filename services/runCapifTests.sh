@@ -8,6 +8,7 @@ TEST_FOLDER=$REPOSITORY_BASE_FOLDER/tests
 RESULT_FOLDER=$REPOSITORY_BASE_FOLDER/results
 ROBOT_DOCKER_FILE_FOLDER=$REPOSITORY_BASE_FOLDER/tools/robot
 
+# nginx Hostname and http port (80 by default) to reach for tests
 CAPIF_HOSTNAME=capifcore
 CAPIF_HTTP_PORT=8080
 
