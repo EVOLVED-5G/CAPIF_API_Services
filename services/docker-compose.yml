@@ -22,11 +22,15 @@ services:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
+    depends_on:
+    - mongo
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
+    depends_on:
+      - mongo
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
@@ -46,6 +50,8 @@ services:
       - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
+    depends_on:
+    - mongo
   capif-events:
     build: TS29222_CAPIF_Events_API/.
     expose:
@@ -53,6 +59,7 @@ services:
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
       - mosquitto
+      - mongo
   api-invocation-logs:
     build: TS29222_CAPIF_Logging_API_Invocation_API/.
     expose:
@@ -68,6 +75,7 @@ services:
     image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
     depends_on:
       - mosquitto
+      - mongo
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
@@ -103,8 +111,9 @@ services:
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
     depends_on:
       - easy-rsa
+      - mongo
   mongo:
-    image: mongo:5.0
+    image: mongo:6.0.2
     logging:
       driver: 'none'
     restart: unless-stopped
