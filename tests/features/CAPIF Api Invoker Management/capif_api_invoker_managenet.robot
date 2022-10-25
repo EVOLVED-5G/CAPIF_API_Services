@@ -53,7 +53,6 @@ Register NetApp Already Onboarded
 
     # Assertions
     Status Should Be    403    ${resp}
-    Check Variable    ${resp.json()}    ProblemDetails
     Check Problem Details    ${resp}
     ...    status=403
     ...    detail=Invoker already registered
@@ -94,7 +93,6 @@ Update Not Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
-    Check Variable    ${resp.json()}    ProblemDetails
     Check Problem Details    ${resp}
     ...    status=404
     ...    detail=Please provide an existing Netapp ID
@@ -125,7 +123,6 @@ Offboard Not Previously Onboarded NetApp
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
-    Check Variable    ${resp.json()}    ProblemDetails
     Check Problem Details    ${resp}
     ...    status=404
     ...    detail=Please provide an existing Netapp ID

@@ -43,6 +43,7 @@ Check Event Location Header
 
 Check Problem Details
     [Arguments]   ${resp}    &{input_parameters}
+    Check Variable    ${resp.json()}    ProblemDetails
     FOR   ${input}   IN   @{input_parameters}
         Log    ${input}=${input_parameters['${input}']}
         Should Match    "${resp.json()['${input}']}"   "${input_parameters['${input}']}"

@@ -1,6 +1,7 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
 Resource        ../../resources/common/basicRequests.robot
+Resource        ../../resources/common.resource
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 
 Test Setup      Reset Testing Environment
@@ -28,6 +29,9 @@ Publish API by Authorised API Publisher
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
 Publish API by NON Authorised API Publisher
     [Tags]    capif_api_publish_service-2
@@ -43,6 +47,12 @@ Publish API by NON Authorised API Publisher
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    401    ${resp}
+    Check Problem Details
+    ...    ${resp}
+    ...    title=Unauthorized
+    ...    status=401
+    ...    detail=Exposer not existing
+    ...    cause=Exposer id not found
 
 Retrieve all APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-3
@@ -50,26 +60,32 @@ Retrieve all APIs Published by Authorised apfId
     ${register_user_info}=    Publisher Default Registration
 
     # Register One Service
-    ${request_body}=    Create Service Api Description
-    ${resp}=    Post Request Capif
+    ${request_body}=    Create Service Api Description    service_1
+    ${resp_service_1}=    Post Request Capif
     ...    ${register_user_info['ccf_publish_url']}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Status Should Be    201    ${resp_service_1}
+    Check Variable    ${resp_service_1.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp_service_1.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Register Other Service
-    ${request_body}=    Create Service Api Description    other_service
-    ${resp}=    Post Request Capif
+    ${request_body}=    Create Service Api Description    service_2
+    ${resp_service_2}=    Post Request Capif
     ...    ${register_user_info['ccf_publish_url']}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Status Should Be    201    ${resp_service_2}
+    Check Variable    ${resp_service_2.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp_service_2.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Retrieve Services published
     ${resp}=    Get Request Capif
@@ -79,8 +95,12 @@ Retrieve all APIs Published by Authorised apfId
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    200    ${resp}
+    Check Variable    ${resp.json()}    ServiceAPIDescription
 
     Log List    ${resp.json()}
+
+    List Should Contain Value    ${resp.json()}    ${resp_service_1.json()}
+    List Should Contain Value    ${resp.json()}    ${resp_service_2.json()}
 
 Retrieve all APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-4
@@ -95,37 +115,49 @@ Retrieve all APIs Published by NON Authorised apfId
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    401    ${resp}
-
-    Log List    ${resp.json()}
+    Check Problem Details
+    ...    ${resp}
+    ...    title=Unauthorized
+    ...    status=401
+    ...    detail=Exposer not existing
+    ...    cause=Exposer id not found
 
 Retrieve single APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-5
     #Register APF
     ${register_user_info}=    Publisher Default Registration
 
-    ${request_body}=    Create Service Api Description    first_service
-    ${resp}=    Post Request Capif
+    ${request_body}=    Create Service Api Description    service_1
+    ${resp_service_1}=    Post Request Capif
     ...    ${register_user_info['ccf_publish_url']}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Status Should Be    201    ${resp_service_1}
+    Check Variable    ${resp_service_1.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp_service_1.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
-    ${serviceApiId1}=    Set Variable    ${resp.json()['apiId']}
+    # Store apiId1
+    ${serviceApiId1}=    Set Variable    ${resp_service_1.json()['apiId']}
 
-    ${request_body}=    Create Service Api Description    other_service
-    ${resp}=    Post Request Capif
+    ${request_body}=    Create Service Api Description    service_2
+    ${resp_service_2}=    Post Request Capif
     ...    ${register_user_info['ccf_publish_url']}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Status Should Be    201    ${resp_service_2}
+    Check Variable    ${resp_service_2.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp_service_2.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
-    ${serviceApiId2}=    Set Variable    ${resp.json()['apiId']}
+    # Store apiId2
+    ${serviceApiId2}=    Set Variable    ${resp_service_2.json()['apiId']}
 
     # Retrieve Services 1
     ${resp}=    Get Request Capif
@@ -135,8 +167,8 @@ Retrieve single APIs Published by Authorised apfId
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    200    ${resp}
-
-    Should Be Equal    ${resp.json()['api_name']}    first_service
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionaries Should Be Equal  ${resp.json()}    ${resp_service_1.json()}
 
     # Retrieve Services 1
     ${resp}=    Get Request Capif
@@ -146,8 +178,8 @@ Retrieve single APIs Published by Authorised apfId
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    200    ${resp}
-
-    Should Be Equal    ${resp.json()['api_name']}    other_service
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionaries Should Be Equal  ${resp.json()}    ${resp_service_2.json()}
 
 Retrieve single APIs non Published by Authorised apfId
     [Tags]    capif_api_publish_service-6
@@ -298,16 +330,16 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
 
 Delete APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-13
-	#Register APF
+    #Register APF
     ${register_user_info}=    Publisher Default Registration
 
     #Register INVOKER
     ${register_user_info_invoker}=    Invoker Default Onboarding
 
-	${resp}=    Delete Request Capif
+    ${resp}=    Delete Request Capif
     ...    ${register_user_info['ccf_publish_url']}/${SERVICE_API_ID_NOT_VALID}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-	Status Should Be    401    ${resp}
+    Status Should Be    401    ${resp}
