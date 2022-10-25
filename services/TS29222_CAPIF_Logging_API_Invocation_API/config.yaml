@@ -1,0 +1,11 @@
+mongo: {
+  'user': 'root',
+  'password': 'example',
+  'db': 'capif',
+  'col': 'invocationlogs',
+  'col2': 'invokerdetails',
+  'col3': 'providerenrolmentdetails',
+  'capif_users_col': "user",
+  'host': 'mongo',
+  'port': "27017"
+}
