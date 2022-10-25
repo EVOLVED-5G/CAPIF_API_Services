@@ -63,9 +63,9 @@ docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-te
 
 In order to Review results after tests, you can check general report at <PATH_RESULT_FOLDER>/report.html or if you need more detailed information <PATH_RESULT_FOLDER>/log.html, example:
 * Report:
-![Report](../docs/images/robot_report_example.png)
+![Report](../images/robot_report_example.png)
 * Detailed information:
-![Log](../docs/images/robot_log_example.png)
+![Log](../images/robot_log_example.png)
 
 
 [Return To Main]: ../../README.md#robot-framework
