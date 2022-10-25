@@ -117,7 +117,7 @@ Test suite implemented accomplish requirements described under test plan at [Tes
 Complete documentation of tests is here: [Test Plan Directory]
 
 #### Execution
-**Previously Steps**
+
 To run any test locally you will need docker and docker-compose installed in order run services and execute test plan. Steps will be:
 * **Run All Services**: See section [Run All CAPIF Services](#run-all-capif-services-locally-with-docker-images)
 * **Run desired tests**: At this point we have 2 options:
