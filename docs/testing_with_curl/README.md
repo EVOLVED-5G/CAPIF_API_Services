@@ -1,3 +1,4 @@
+[**[Return To Main]**]
 # Testing Using Curl
 
 - [Testing Using Curl](#testing-using-curl)
@@ -357,3 +358,7 @@ This API is triggered by a NetApp (or Invoker)
 ```shell
 curl --cert <Invoker Signed Certificate file> --key <Invoker Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/service-apis/v1/allServiceAPIs?api-invoker-id=<API Invoker Id>&api-name=<API Name>&api-version=<API version e.g. v1>&aef-id=<AEF Id>&api-cat=<Service API Category>&supported-features=<SuppFeat>&api-supported-features=<API Suppfeat>'
 ```
+
+
+
+[Return To Main]: ../../README.md#using-curl
