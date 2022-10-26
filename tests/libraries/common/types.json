@@ -260,5 +260,12 @@
   },
   "NotificationFlag": {
     "enum": ["ACTIVATE", "DEACTIVATE", "RETRIEVAL"]
+  },
+  "DiscoveredAPIs": {
+    "mandatory_attributes":{
+    },
+    "optional_attributes":{
+      "serviceAPIDescriptions": "ServiceAPIDescription"
+    }
   }
 }

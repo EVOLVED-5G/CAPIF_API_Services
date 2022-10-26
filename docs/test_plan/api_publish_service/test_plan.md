@@ -61,7 +61,7 @@ At this documentation you will have all information and related files and exampl
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
 
-  3. Published Service API is stored in CAPIF Database
+  2. Published Service API is stored in CAPIF Database
 
 ## Test Case 2: Publish API by NON Authorised API Publisher
 * Test ID: ***capif_api_publish_service-2***
@@ -95,7 +95,7 @@ At this documentation you will have all information and related files and exampl
 * Expected Result:
 
   1. Response to Publish request must accomplish:
-     1. **401 Non Authorized**
+     1. **401 Unauthorized**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
         * status 401
         * title with message "Unauthorized"
