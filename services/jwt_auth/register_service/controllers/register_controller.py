@@ -75,7 +75,7 @@ def testusers():
         message_returned += "Deleted " + str(result.deleted_count) + " Test Invokers"
     message_returned += splitter_string
 
-    myquery = {"notification_destination": {"$regex": "^ROBOT_TESTING.*"}}
+    myquery = {"notification_destination": {"$regex": "^http://robot.testing.*"}}
     result = eventsdetails.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No event subscription present"
@@ -83,7 +83,7 @@ def testusers():
         message_returned += "Deleted " + str(result.deleted_count) + " Event Subscriptions"
     message_returned += splitter_string
 
-    myquery = {"notification_destination": {"$regex": "^ROBOT_TESTING.*"}}
+    myquery = {"notification_destination": {"$regex": "^http://robot.testing.*"}}
     result = servicesecurity.delete_many(myquery)
     if result.deleted_count == 0:
         message_returned += "No service security subscription present"

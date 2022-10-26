@@ -28,11 +28,13 @@ Create a security context for an API invoker
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable   ${resp.json()}    ServiceSecurity
+    ${resource_url}=   Check Location Header    ${resp}    ${LOCATION_SECURITY_RESOURCE_REGEX}
 
-	${url_security}=    Parse Url    ${resp.headers['Location']}
+	# ${url_security}=    Parse Url    ${resp.headers['Location']}
 
-    Log                    ${url_security.path}
-    Should Match Regexp    ${url_security.path}    ^/capif-security/v1/trustedInvokers/[0-9a-zA-Z]+
+    # Log                    ${url_security.path}
+    # Should Match Regexp    ${url_security.path}    ^/capif-security/v1/trustedInvokers/[0-9a-zA-Z]+
 
 Create a security context for an API invoker with AEF entity role
 	[Tags]    capif_security_api-2

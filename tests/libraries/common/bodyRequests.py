@@ -2,6 +2,7 @@ from operator import contains
 import re
 import json
 from xmlrpc.client import boolean
+import rfc3987
 
 f = open('/opt/robot-tests/tests/libraries/common/types.json')
 capif_types = json.load(f)
@@ -29,8 +30,14 @@ def check_variable(input, data_type):
             return True
         else:
             raise Exception("variable is not integer type")
-    elif data_type == "SupportedFeatures":
-        check_supported_features(input)
+    # elif data_type == "SupportedFeatures":
+    #     check_supported_features(input)
+    #     return True
+    elif data_type == "URI":
+        check_uri(input,data_type)
+        return True
+    elif data_type == "URI_reference":
+        check_uri(input, data_type)
         return True
     elif data_type not in capif_types.keys():
         raise Exception("ERROR, type " + data_type +
@@ -46,6 +53,9 @@ def check_variable(input, data_type):
         else:
             raise Exception("value (" + input + ") is not present at enum (" +
                             ','.join(capif_types[data_type]["enum"]) + ")")
+    if "regex" in capif_types[data_type].keys():
+        check_regex(input, capif_types[data_type]["regex"])
+        return True
     # Check Structure
     all_attributes = check_attributes_dict(input, data_type)
 
@@ -72,6 +82,26 @@ def check_attributes_dict(body, data_type):
             if mandatory_key not in body.keys():
                 raise Exception('Mandatory Attribute "' + mandatory_key +
                                 '" is not present at body under check')
+
+    if 'oneOf' in capif_types[data_type].keys():
+        one_of = capif_types[data_type]["oneOf"]
+        # print('oneOf type for input ('+ ','.join(body) + ')' )
+        count = 0
+        for body_key in body.keys():
+            # print('Count' + str(count))
+            if body_key in one_of:
+                # print('body key ' + body_key + ' match with oneOf ' + ','.join(one_of))
+                count = count+1
+        # print('Before check Count ' + str(count))
+        # print('count is instance int ' + str(isinstance(count, int)))
+
+        if count == 0:
+            raise Exception('Mandatory oneOf [' + ','.join(one_of) +
+                            '] is not present at body (' + ','.join(body.keys()) + ')')
+        elif count > 1:
+            raise Exception('More than one oneOf [' + ','.join(
+                one_of) + '] is present at body (' + ','.join(body.keys()) + ')')
+
     return all_attributes
 
 
@@ -84,10 +114,24 @@ def sign_csr_body(username, public_key):
     return data
 
 
-def check_supported_features(input):
-    matched = re.match("^[A-Fa-f0-9]*$", input)
+# def check_supported_features(input):
+#     matched = re.match("^[A-Fa-f0-9]*$", input)
+#     is_match = bool(matched)
+#     if is_match:
+#         print("Valid Supported Features")
+#     else:
+#         raise Exception("Supported Features(" + input + ") is not valid.")
+
+def check_uri(input,rule):
+    if rfc3987.match(input, rule=rule) is not None:
+        return input
+    else:
+        raise Exception(rule + " is not accomplish rfc3986 rule ("+input+")")
+
+def check_regex(input, regex):
+    matched = re.match(regex, input)
     is_match = bool(matched)
     if is_match:
-        print("Valid Supported Features")
+        print("Regex match")
     else:
-        raise Exception("Supported Features(" + input + ") is not valid.")
+        raise Exception("Input(" + input + ") not match regex (" + regex + ")")

@@ -1,5 +1,5 @@
 {
-    "notificationDestination": "ROBOT_TESTING",
+    "notificationDestination": "http://robot.testing",
     "supportedFeatures": "fffffff",
     "securityInfo": [{
         "authenticationInfo": "authenticationInfo",

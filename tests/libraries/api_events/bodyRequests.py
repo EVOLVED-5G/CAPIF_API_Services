@@ -22,7 +22,7 @@ def create_events_subscription():
             "sampRatio": 15
         },
         "events": ["SERVICE_API_AVAILABLE", "API_INVOKER_ONBOARDED"],
-        "notificationDestination": "ROBOT_TESTING",
+        "notificationDestination": "http://robot.testing",
         "requestTestNotification": True,
         "supportedFeatures": "aaa",
         "websockNotifConfig": {

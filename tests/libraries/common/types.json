@@ -24,7 +24,7 @@
     "mandatory_attributes": {
       "apiInvokerId": "string",
       "onboardingInformation": "OnboardingInformation",
-      "notificationDestination": "string"
+      "notificationDestination": "URI"
     },
     "optional_attributes": {
       "requestTestNotification": "boolean",
@@ -46,7 +46,7 @@
   "WebsockNotifConfig": {
     "mandatory_attributes": {},
     "optional_attributes": {
-      "websocketUri": "string",
+      "websocketUri": "URI_reference",
       "requestWebsocketUri": "boolean"
     }
   },
@@ -78,7 +78,8 @@
       "domainName": "string",
       "interfaceDescriptions": "InterfaceDescription",
       "aefLocation": "AefLocation"
-    }
+    },
+    "oneOf": ["interfaceDescriptions", "domainName"]
   },
   "Version": {
     "mandatory_attributes": {
@@ -94,7 +95,7 @@
     "mandatory_attributes": {
       "resourceName": "string",
       "commType": "CommunicationType",
-      "uri": "string"
+      "uri": "URI_reference"
     },
     "optional_attributes": {
       "custOpName": "string",
@@ -134,7 +135,8 @@
       "ipv6Addr": "string",
       "port": "integer",
       "securityMethods": "SecurityMethod"
-    }
+    },
+    "oneOf": ["ipv4Addr", "ipv6Addr"]
   },
   "AefLocation": {
     "mandatory_attributes": {},
@@ -203,7 +205,7 @@
   "EventSubscription": {
     "mandatory_attributes": {
       "events": "CAPIFEvent",
-      "notificationDestination": "string"
+      "notificationDestination": "URI"
     },
     "optional_attributes": {
       "eventFilters": "CAPIFEventFilter",
@@ -262,10 +264,37 @@
     "enum": ["ACTIVATE", "DEACTIVATE", "RETRIEVAL"]
   },
   "DiscoveredAPIs": {
-    "mandatory_attributes":{
-    },
-    "optional_attributes":{
+    "mandatory_attributes": {},
+    "optional_attributes": {
       "serviceAPIDescriptions": "ServiceAPIDescription"
     }
+  },
+  "ServiceSecurity": {
+    "mandatory_attributes": {
+      "securityInfo": "SecurityInformation",
+      "notificationDestination": "URI"
+    },
+    "optional_attributes": {
+      "requestTestNotification": "boolean",
+      "websockNotifConfig": "WebsockNotifConfig",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "SecurityInformation": {
+    "mandatory_attributes": {
+      "prefSecurityMethods": "SecurityMethod"
+    },
+    "optional_attributes": {
+      "interfaceDetails": "InterfaceDescription",
+      "aefId": "string",
+      "apiId": "string",
+      "selSecurityMethod": "SecurityMethod",
+      "authenticationInfo": "string",
+      "authorizationInfo": "string"
+    },
+    "oneOf": ["interfaceDetails", "aefId"]
+  },
+  "SupportedFeatures": {
+    "regex": "^[A-Fa-f0-9]*$"
   }
 }
