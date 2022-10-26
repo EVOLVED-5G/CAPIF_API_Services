@@ -147,7 +147,6 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 
     ${service_api_description_published_1}=    Set Variable    ${resp.json()}
 
-
     ${request_body}=    Create Service Api Description    ${api_name_2}
     ${resp}=    Post Request Capif
     ...    ${register_user_info['ccf_publish_url']}
@@ -218,6 +217,12 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+
+    ${service_api_description_published_1}=    Set Variable    ${resp.json()}
+
 
     ${request_body}=    Create Service Api Description    ${api_name_2}
     ${resp}=    Post Request Capif
@@ -228,9 +233,31 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+
+    ${service_api_description_published_2}=    Set Variable    ${resp.json()}
 
     # Change to invoker role and register at api invoker management
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    # Request all APIs for Invoker
+    ${resp}=    Get Request Capif
+    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
+
+    Status Should Be    200    ${resp}
+    Check Variable    ${resp.json()}    DiscoveredAPIs
+    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+
+    # Check returned values
+    Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
+    Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
+    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
+    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
 
     # Request api 1
     ${resp}=    Get Request Capif
@@ -240,9 +267,11 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    200    ${resp}
+    Check Variable    ${resp.json()}    DiscoveredAPIs
+    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
 
     # Check returned values
-    Should Be Empty    ${resp.json()}
+    Should Be Empty    ${resp.json()['serviceAPIDescriptions']}
 
 Discover Published service APIs by registered API Invoker not filtered
     [Tags]    capif_api_discover_service-6
@@ -262,6 +291,12 @@ Discover Published service APIs by registered API Invoker not filtered
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+
+    ${service_api_description_published_1}=    Set Variable    ${resp.json()}
+
 
     ${request_body}=    Create Service Api Description    ${api_name_2}
     ${resp}=    Post Request Capif
@@ -272,17 +307,28 @@ Discover Published service APIs by registered API Invoker not filtered
     ...    username=${PUBLISHER_USERNAME}
 
     Status Should Be    201    ${resp}
+    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
-    #Register INVOKER
+    ${service_api_description_published_2}=    Set Variable    ${resp.json()}
+
+    # Change to invoker role and register at api invoker management
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    # Request api 1
+    # Request all APIs for Invoker
     ${resp}=    Get Request Capif
     ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
+    Status Should Be    200    ${resp}
+    Check Variable    ${resp.json()}    DiscoveredAPIs
+    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+
     # Check returned values
-    Should Not Be Empty    ${resp.json()}
-    Length Should Be    ${resp.json()}    2
+    Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
+    Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
+    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
+    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
