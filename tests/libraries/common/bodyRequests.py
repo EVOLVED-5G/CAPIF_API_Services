@@ -114,14 +114,6 @@ def sign_csr_body(username, public_key):
     return data
 
 
-# def check_supported_features(input):
-#     matched = re.match("^[A-Fa-f0-9]*$", input)
-#     is_match = bool(matched)
-#     if is_match:
-#         print("Valid Supported Features")
-#     else:
-#         raise Exception("Supported Features(" + input + ") is not valid.")
-
 def check_uri(input,rule):
     if rfc3987.match(input, rule=rule) is not None:
         return input
