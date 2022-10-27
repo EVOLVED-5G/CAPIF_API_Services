@@ -8,6 +8,19 @@ from logs.models.problem_details import ProblemDetails  # noqa: E501
 from logs.models.protocol import Protocol  # noqa: E501
 from logs import util
 
+from ..core.check_user import CapifUsersOperations
+from ..core.auditoperations import AuditOperations
+import json
+from flask import Response, request, current_app
+from ..encoder import JSONEncoder
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+import pymongo
+
+
+check_user = CapifUsersOperations()
+audit_operations = AuditOperations()
+
 
 def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=None, time_range_end=None, api_id=None, api_name=None, api_version=None, protocol=None, operation=None, result=None, resource_name=None, src_interface=None, dest_interface=None, supported_features=None):  # noqa: E501
     """api_invocation_logs_get
@@ -55,4 +68,23 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
         src_interface =  InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
         dest_interface =  InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+    # cert_tmp = request.headers['X-Ssl-Client-Cert']
+    # cert_raw = cert_tmp.replace('\t', '')
+    #
+    # cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
+    # cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
+    #
+    # capif_user = check_user.check_capif_user(cn, "invoker")
+    #
+    # if not capif_user:
+    #     prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+    #                           cause="Certificate not authorized")
+    #     return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+    #
+    # else:
+    #     response = discover_apis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
+    #     return response
+
+    response = audit_operations.get_logs(aef_id, api_invoker_id, time_range_start, time_range_end, api_id, api_name, api_version, protocol, operation, result, resource_name, src_interface, dest_interface, supported_features)
+    return response

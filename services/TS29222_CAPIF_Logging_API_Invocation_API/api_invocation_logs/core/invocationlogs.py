@@ -50,12 +50,26 @@ class LoggingInvocationOperations:
                 #     return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
                 #
                 # else:
+
+                ####### Implementation 1: Each Log entry is stored as different InvocationLog #######
                 log_id = secrets.token_hex(15)
-                invocationlog.log_id = log_id
-                rec = dict()
-                rec['log_id'] = log_id
-                rec.update(invocationlog.to_dict())
-                mycol.insert_one(rec)
+                invocationlog_copy = invocationlog.to_dict()
+                del invocationlog_copy['logs']
+                for i in range(0, len(invocationlog.logs)):
+                    print(invocationlog.logs[i])
+                    rec = dict()
+                    rec['log_id'] = log_id
+                    rec['logs'] = [invocationlog.logs[i].to_dict()]
+                    rec.update(invocationlog_copy)
+                    mycol.insert_one(rec)
+
+                ####### Implementation 2: A Log array is stored as 1 InvocationLog #######
+                # log_id = secrets.token_hex(15)
+                # invocationlog.log_id = log_id
+                # rec = dict()
+                # rec['log_id'] = log_id
+                # rec.update(invocationlog.to_dict())
+                # mycol.insert_one(rec)
 
                 res = Response(json.dumps(invocationlog, cls=JSONEncoder), status=201, mimetype=self.mimetype)
 
