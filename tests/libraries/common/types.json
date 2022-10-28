@@ -310,7 +310,7 @@
   "Cause": {
     "enum": ["OVERLIMIT_USAGE", "UNEXPECTED_REASON"]
   },
-  "AccessTokenReqAccessTokenReq": {
+  "AccessTokenReq": {
     "mandatory_attributes": {
       "grant_type": "GrantType",
       "client_id": "string"
@@ -335,5 +335,24 @@
   },
   "TokenType": {
     "enum": ["Bearer"]
+  },
+  "AccessTokenErr": {
+    "mandatory_attributes": {
+      "error": "ErrorType"
+    },
+    "optional_attributes": {
+      "error_description": "string",
+      "error_uri": "string"
+    }
+  },
+  "ErrorType": {
+    "enum": [
+      "invalid_request",
+      "invalid_client",
+      "invalid_grant",
+      "unauthorized_client",
+      "unsupported_grant_type",
+      "invalid_scope"
+    ]
   }
 }

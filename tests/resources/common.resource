@@ -39,12 +39,21 @@ Check Event Location Header
 
     ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
 
-    RETURN     ${subscriber_id}    ${subscription_id}
+    RETURN    ${subscriber_id}    ${subscription_id}
 
 Check Problem Details
-    [Arguments]   ${resp}    &{input_parameters}
+    [Arguments]    ${resp}    &{input_parameters}
     Check Variable    ${resp.json()}    ProblemDetails
-    FOR   ${input}   IN   @{input_parameters}
+    FOR    ${input}    IN    @{input_parameters}
         Log    ${input}=${input_parameters['${input}']}
-        Should Match    "${resp.json()['${input}']}"   "${input_parameters['${input}']}"
+        Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
+    END
+
+Check Response Variable Type And Values
+    [Arguments]    ${resp}    ${status}    ${variable_type}    &{input_parameters}
+    Status Should Be    ${status}    ${resp}
+    Check Variable    ${resp.json()}    ${variable_type}
+    FOR    ${input}    IN    @{input_parameters}
+        Log    ${input}=${input_parameters['${input}']}
+        Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
     END

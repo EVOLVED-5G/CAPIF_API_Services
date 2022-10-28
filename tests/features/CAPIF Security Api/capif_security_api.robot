@@ -460,7 +460,6 @@ Revoke the authorization of the API invoker for APIs
     ...    detail=Invoker not found
     ...    cause=API Invoker not exists or invalid ID
 
-
 Revoke the authorization of the API invoker for APIs without valid apfID.
     [Tags]    capif_security_api-17
     # Default Invoker Registration and Onboarding
@@ -573,6 +572,7 @@ Retrieve access token
 
     Status Should Be    201    ${resp}
 
+    # Retrieve Token from CCF
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['apiInvokerId']}/token
@@ -581,9 +581,13 @@ Retrieve access token
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    200    AccessTokenRsp
+    ...    token_type=Bearer
 
-Retrieve access token by AEF
+    Should Not Be Empty    ${resp.json()['access_token']}
+
+Retrieve access token by Exposer
     [Tags]    capif_security_api-20
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -598,7 +602,7 @@ Retrieve access token by AEF
 
     Status Should Be    201    ${resp}
 
-    #Register APF
+    #Register Exposer
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${request_body}=    Create Access Token Req Body
@@ -609,12 +613,12 @@ Retrieve access token by AEF
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    400    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
+    ...    error=invalid_client
+    ...    error_description=Role not authorized for this API route
 
-    Should Be Equal As Strings    ${resp.json()['error']}    invalid_client
-    Should Be Equal As Strings    ${resp.json()['error_description']}    Role not authorized for this API route
-
-Retrieve access token by AEF with invalid apiInvokerId
+Retrieve access token by Exposer with invalid apiInvokerId
     [Tags]    capif_security_api-21
     #Register APF
     ${register_user_info_publisher}=    Publisher Default Registration
@@ -627,10 +631,10 @@ Retrieve access token by AEF with invalid apiInvokerId
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    400    ${resp}
-
-    Should Be Equal As Strings    ${resp.json()['error']}    invalid_client
-    Should Be Equal As Strings    ${resp.json()['error_description']}    Role not authorized for this API route
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
+    ...    error=invalid_client
+    ...    error_description=Role not authorized for this API route
 
 Retrieve access token with invalid apiInvokerId
     [Tags]    capif_security_api-22
@@ -645,7 +649,7 @@ Retrieve access token with invalid apiInvokerId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    400    ${resp}
-
-    Should Be Equal As Strings    ${resp.json()['error']}    invalid_request
-    Should Be Equal As Strings    ${resp.json()['error_description']}    No Security Context for this API Invoker
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
+    ...    error=invalid_request
+    ...    error_description=No Security Context for this API Invoker

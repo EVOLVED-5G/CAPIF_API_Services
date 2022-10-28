@@ -30,9 +30,6 @@ def check_variable(input, data_type):
             return True
         else:
             raise Exception("variable is not integer type")
-    # elif data_type == "SupportedFeatures":
-    #     check_supported_features(input)
-    #     return True
     elif data_type == "URI":
         check_uri(input,data_type)
         return True
@@ -85,15 +82,10 @@ def check_attributes_dict(body, data_type):
 
     if 'oneOf' in capif_types[data_type].keys():
         one_of = capif_types[data_type]["oneOf"]
-        # print('oneOf type for input ('+ ','.join(body) + ')' )
         count = 0
         for body_key in body.keys():
-            # print('Count' + str(count))
             if body_key in one_of:
-                # print('body key ' + body_key + ' match with oneOf ' + ','.join(one_of))
                 count = count+1
-        # print('Before check Count ' + str(count))
-        # print('count is instance int ' + str(isinstance(count, int)))
 
         if count == 0:
             raise Exception('Mandatory oneOf [' + ','.join(one_of) +
