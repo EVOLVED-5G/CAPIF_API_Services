@@ -296,5 +296,44 @@
   },
   "SupportedFeatures": {
     "regex": "^[A-Fa-f0-9]*$"
+  },
+  "SecurityNotification": {
+    "mandatory_attributes": {
+      "apiInvokerId": "string",
+      "apiIds": "string",
+      "cause": "Cause"
+    },
+    "optional_attributes": {
+      "aefId": "string"
+    }
+  },
+  "Cause": {
+    "enum": ["OVERLIMIT_USAGE", "UNEXPECTED_REASON"]
+  },
+  "AccessTokenReqAccessTokenReq": {
+    "mandatory_attributes": {
+      "grant_type": "GrantType",
+      "client_id": "string"
+    },
+    "optional_attributes": {
+      "client_secret": "string",
+      "scope": "string"
+    }
+  },
+  "AccessTokenRsp": {
+    "mandatory_attributes": {
+      "access_token": "string",
+      "token_type": "TokenType",
+      "expires_in": "integer"
+    },
+    "optional_attributes": {
+      "scope": "string"
+    }
+  },
+  "GrantType": {
+    "enum": ["client_credentials"]
+  },
+  "TokenType": {
+    "enum": ["Bearer"]
   }
 }
