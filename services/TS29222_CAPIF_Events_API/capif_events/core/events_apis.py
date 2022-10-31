@@ -8,6 +8,7 @@ from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from bson import json_util
 from ..db.db import MongoDatabse
+from ..util import dict_to_camel_case
 
 class EventSubscriptionsOperations:
 
@@ -98,7 +99,9 @@ class EventSubscriptionsOperations:
             else:
                 json_docs=[]
                 for subscription in subscriptions:
-                    json_docs.append(subscription)
+                    properyly_json= json.dumps(subscription, default=json_util.default)
+                    my_event_subscription = dict_to_camel_case(json.loads(properyly_json))
+                    json_docs.append(my_event_subscription)
 
                 return json_docs
 

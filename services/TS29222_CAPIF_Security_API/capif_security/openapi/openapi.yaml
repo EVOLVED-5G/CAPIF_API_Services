@@ -985,6 +985,7 @@ components:
       required:
       - client_id
       - grant_type
+      - scope
     AccessTokenRsp:
       description: Represents the access token response information.
       example:

@@ -9,6 +9,7 @@ from pymongo import response
 from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from ..util import dict_to_camel_case
 from bson import json_util
 
 
@@ -52,7 +53,7 @@ class PublishServiceOperations:
             if result != None:
                 return result
 
-            service = mycol.find({"apf_id": apf_id})
+            service = mycol.find({"apf_id": apf_id}, {"apf_id":0, "_id":0})
             if service is None:
                 prob = ProblemDetails(title="Services not exist", status=404, detail="Not exist published services for this apf_id",
                                     cause="Not exist service with this apf_id")
@@ -60,9 +61,9 @@ class PublishServiceOperations:
             else:
                 json_docs = []
                 for serviceapi in service:
-                    del serviceapi['apf_id']
-                    del serviceapi['_id']
-                    json_docs.append(serviceapi)
+                    properyly_json= json.dumps(serviceapi, default=json_util.default)
+                    my_service_api = dict_to_camel_case(json.loads(properyly_json))
+                    json_docs.append(my_service_api)
 
                 res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
                 return res
@@ -135,19 +136,16 @@ class PublishServiceOperations:
                 return result
 
             myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-            service_api = mycol.find_one(myQuery)
-            print(service_api)
-            sys.stdin.flush()
+            service_api = mycol.find_one(myQuery, {"apf_id":0, "_id":0})
             if service_api is None:
                 prob = ProblemDetails(title="Not Found", status=404, detail="Service API not found",
                                     cause="No Service with specific credentials exists")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
 
             else:
-                del service_api['apf_id']
-                del service_api['_id']
-
-                res = Response(json.dumps(service_api, default=json_util.default), status=200, mimetype=self.mimetype)
+                properyly_json= json.dumps(service_api, default=json_util.default)
+                my_service_api = dict_to_camel_case(json.loads(properyly_json))
+                res = Response(json.dumps(my_service_api, default=json_util.default), status=200, mimetype=self.mimetype)
                 return res
         except Exception as e:
             exception = "An exception occurred in get one service::", e

@@ -3,9 +3,11 @@ import sys
 import pymongo
 from flask import current_app, Flask, Response
 import json
-from ..db.db import MongoDatabse
-from ..encoder import JSONEncoder
-from ..models.problem_details import ProblemDetails
+from service_apis.db.db import MongoDatabse
+from service_apis.encoder import JSONEncoder
+from service_apis.models.problem_details import ProblemDetails
+from service_apis.models.service_api_description import ServiceAPIDescription
+from service_apis.util import dict_to_camel_case
 from bson import json_util
 
 
@@ -14,7 +16,6 @@ class DiscoverApisOperations:
     def __init__(self):
         self.db = MongoDatabse()
         self.mimetype = 'application/json'
-
 
     def get_discoveredapis(self, api_invoker_id, api_name, api_version, comm_type, protocol, aef_id,
                         data_format, api_cat, supported_features, api_supported_features):
@@ -53,12 +54,13 @@ class DiscoverApisOperations:
                 if myParams:
                     myQuery = {"$and": myParams}
 
-                discoved_apis = services.find(myQuery)
+                discoved_apis = services.find(myQuery, {"_id":0, "apf_id":0})
                 json_docs = []
                 for discoved_api in discoved_apis:
-                    del discoved_api['_id']
-                    del discoved_api['apf_id']
-                    json_docs.append(discoved_api)
+
+                    properyly_json= json.dumps(discoved_api, default=json_util.default)
+                    my_api = dict_to_camel_case(json.loads(properyly_json))
+                    json_docs.append(my_api)
 
                 res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
                 return res

@@ -1,10 +1,10 @@
 import sys
 
-from ..core.discoveredapis import DiscoverApisOperations
+from service_apis.core.discoveredapis import DiscoverApisOperations
 import json
 from flask import Response, request, current_app
-from ..encoder import JSONEncoder
-from ..models.problem_details import ProblemDetails
+from service_apis.encoder import JSONEncoder
+from service_apis.models.problem_details import ProblemDetails
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
@@ -40,19 +40,6 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
     :rtype: DiscoveredAPIs
     """
 
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
 
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-
-    capif_user = check_user.check_capif_user(cn, "invoker")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
-
-    else:
-        response = discover_apis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
-        return response
+    response = discover_apis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
+    return response

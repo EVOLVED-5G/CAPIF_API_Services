@@ -1,8 +1,34 @@
 import datetime
 
+import sys
 import six
 import typing
 from service_apis import typing_utils
+
+def dict_to_camel_case(my_dict):
+
+
+        result = {}
+
+        for attr, value in my_dict.items():
+
+            my_key = ''.join(word.title() for word in attr.split('_'))
+            my_key= ''.join([my_key[0].lower(), my_key[1:]])
+
+            if isinstance(value, list):
+                result[my_key] = list(map(
+                    lambda x: dict_to_camel_case(x) if isinstance(x, dict) else x, value ))
+
+            elif hasattr(value, "to_dict"):
+                result[my_key] = dict_to_camel_case(value)
+
+            elif isinstance(value, dict):
+                value = dict_to_camel_case(value)
+                result[my_key] = value
+            else:
+                result[my_key] = value
+
+        return result
 
 
 def _deserialize(data, klass):
@@ -13,6 +39,7 @@ def _deserialize(data, klass):
 
     :return: object.
     """
+
     if data is None:
         return None
 
@@ -67,9 +94,10 @@ def deserialize_date(string):
     :return: date.
     :rtype: date
     """
+
     if string is None:
       return None
-    
+
     try:
         from dateutil.parser import parse
         return parse(string).date()
@@ -87,9 +115,10 @@ def deserialize_datetime(string):
     :return: datetime.
     :rtype: datetime
     """
+
     if string is None:
       return None
-    
+
     try:
         from dateutil.parser import parse
         return parse(string)
