@@ -354,5 +354,37 @@
       "unsupported_grant_type",
       "invalid_scope"
     ]
+  },
+  "APIProviderEnrolmentDetails": {
+    "mandatory_attributes": {
+      "regSec": "string"
+    },
+    "optional_attributes": {
+      "apiProvFuncs": "APIProviderFunctionDetails",
+      "apiProvDomInfo": "string",
+      "suppFeat": "SupportedFeatures",
+      "failReason": "string"
+    }
+  },
+  "APIProviderFunctionDetails": {
+    "mandatory_attributes": {
+      "regInfo": "RegistrationInformation",
+      "apiProvFuncRole": "ApiProviderFuncRole"
+    },
+    "optional_attributes": {
+      "apiProvFuncId": "string",
+      "apiProvFuncInfo": "string"
+    }
+  },
+  "RegistrationInformation": {
+    "mandatory_attributes": {
+      "apiProvPubKey": "string"
+    },
+    "optional_attributes": {
+      "apiProvCert": "string"
+    }
+  },
+  "ApiProviderFuncRole": {
+    "enum": ["AEF", "APF", "AMF"]
   }
 }

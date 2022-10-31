@@ -50,8 +50,8 @@ Check Problem Details
     END
 
 Check Response Variable Type And Values
-    [Arguments]    ${resp}    ${status}    ${variable_type}    &{input_parameters}
-    Status Should Be    ${status}    ${resp}
+    [Arguments]    ${resp}    ${status_code}    ${variable_type}    &{input_parameters}
+    Status Should Be    ${status_code}    ${resp}
     Check Variable    ${resp.json()}    ${variable_type}
     FOR    ${input}    IN    @{input_parameters}
         Log    ${input}=${input_parameters['${input}']}

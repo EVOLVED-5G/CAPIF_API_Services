@@ -18,155 +18,310 @@ At this documentation you will have all information and related files and exampl
 # Tests
 
 ## Test Case 1: Register Api Provider
+* **Test ID**: ***capif_api_provider_management-1***
+* **Description**:
   
-  This test case will check that Api Provider can be registered 
-
-* Pre-Conditions:
+  This test case will check that Api Provider can be registered con CCF by API Provider
+* **Pre-Conditions**:
   
-  Api Provider was not registered previously.
+  * Exposer is pre-authorised (has valid certificate from CAPIF Authority)
 
-* Actions:
+* **Information of Test**:
 
-  Register Api Provider
+  1. Create public and private key at exposer
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
+
+  3. Register Exposer at Provider Management:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+
+* **Execution Steps**:
   
-  Request Body: [request body]
+  1. Register Exposer at CCF
+  3. Register Exposer at Provider Management
+   
+* **Expected Result**:
 
-* Post-Conditions:
-  
-  201 API invoker on-boarded successfully.
-
-  Header Location at response contains the URI of the newly created resource, according to the structure: {apiRoot}/api-provider-management/\<apiVersion\>/registrations/{registrationId}
-
+  1. Register Exposer at Provider Management:
+     1. **201 Created** response.
+     2. body returned must accomplish **APIProviderEnrolmentDetails** data structure.
+     3. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
 
 
 ## Test Case 2: Register Api Provider Already registered
+* **Test ID**: ***capif_api_provider_management-2***
+* **Description**:
   
-  This test case will check that a Api Provider previously registered canot be re-registered
-
-* Pre-Conditions:
+  This test case will check that a Api Provider previously registered cannot be re-registered
+* **Pre-Conditions**:
   
-  Api Provider was registered previously and there is a {registerId} for his Api Provider in the DB
+  * Api Provider was registered previously and there is a {registerId} for his Api Provider in the DB
 
-* Actions:
+* **Information of Test**:
 
-  Register Api Provider
+  1. Create public and private key at exposer
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
+
+  3. Register Exposer at Provider Management:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+
+* **Execution Steps**:
   
-  Request Body: [request body]
+  1. Register Exposer at CCF
+  3. Register Exposer at Provider Management
+  4. Re-Register Exposer at Provider Management
+   
+* **Expected Result**:
 
-* Post-Conditions:
-  
-  403 Forbidden returned.
+  1. Re-Register Exposer at Provider Management:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Provider already registered".
+        * cause with message "Identical provider reg sec".
 
 ## Test Case 3: Update Registered Api Provider  
+* **Test ID**: ***capif_api_provider_management-3***
+* **Description**:
   
-  This test case will check that a Registered Api Provider can be updated  
-
-* Pre-Conditions:
+  This test case will check that a Registered Api Provider can be updated
+* **Pre-Conditions**:
   
-  Api Provider was registered previously and there is a {registerId} for his Api Provider in the DB
+  * Api Provider was registered previously and there is a {registerId} for his Api Provider in the DB
 
-* Actions:
+* **Information of Test**:
 
-  Update Api Provider onboardingDetails
+  1. Create public and private key at invoker
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
+
+  3. Register Exposer at Provider Management:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+     * Get Resource URL from Location
+
+  4. Update Exposer at Provider Management:
+     * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body] with apiProvDomInfo set to ROBOT_TESTING_MOD
+
+
+* **Execution Steps**:
   
-  Request Body: [request body]
+  1. Register Exposer at CCF
+  2. Register Exposer at Provider Management
+  4. Re-Register Exposer at Provider Management
+   
+* **Expected Result**:
+  1. Register Exposer at Provider Management:
+     1. **201 Created** response.
+     2. body returned must accomplish **APIProviderEnrolmentDetails** data structure.
+     3. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
 
-* Post-Conditions:
-  
-  200 API invoker details updated successfully.
+
+  2. Re-Register Exposer at Provider Management:
+     1. **200 OK** response.
+     2. body returned must accomplish **APIProviderEnrolmentDetails** data structure, with:
+        * apiProvDomInfo set to ROBOT_TESTING_MOD
+
 
 ## Test Case 4: Update Not Registered Api Provider 
+* **Test ID**: ***capif_api_provider_management-4***
+* **Description**:
   
-  This test case will check that a Non-Registered Api Provider cannot be updated  
-
-* Pre-Conditions:
+  This test case will check that a Non-Registered Api Provider cannot be updated
+* **Pre-Conditions**:
   
-  Api Provider was not registered previously.
+  * Api Provider was not registered previously
 
-* Actions:
+* **Information of Test**:
 
-  Update Api Provider onboardingDetails
+  1. Create public and private key at invoker
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
+
+  3. Update Exposer at Provider Management:
+     * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+
+* **Execution Steps**:
   
-  Request Body: [request body]
+  1. Register Exposer at CCF
+  3. Update Exposer at Provider Management
+   
+* **Expected Result**:
 
-* Post-Conditions:
-  
-  404 Not found.
+  1. Re-Register Exposer at Provider Management:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Not Exist Provider Enrolment Details".
+        * cause with message "Not found registrations to send this api provider details".
 
 ## Test Case 5: Partially Update Registered Api Provider  
+* **Test ID**: ***capif_api_provider_management-5***
+* **Description**:
   
-  This test case will check that a Registered Api Provider can be partially updated  
-
-* Pre-Conditions:
+  This test case will check that a Registered Api Provider can be partially updated
+* **Pre-Conditions**:
   
-  Api Provider was registered previously and there is a {registerId} for his Api Provider in the DB
+  * Api Provider was registered previously and there is a {registerId} for his Api Provider in the DB
 
-* Actions:
+* **Information of Test**:
 
-  Update Api Provider onboardingDetails
+  1. Create public and private key at invoker
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
+
+  3. Register Exposer at Provider Management:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+     * Get resource from Location header
+
+  4. Partial update exposer at Provider Management:
+     * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
+     * body [provider request patch body]
+
+* **Execution Steps**:
   
-  Request Body: [request body]
+  1. Register Exposer at CCF
+  2. Register Exposer at Provider Management
+  3. Partial update exposer at Provider Management
+   
+* **Expected Result**:
 
-* Post-Conditions:
-  
-  200 API invoker details updated successfully.
+  1. Partial update exposer at Provider Management:
+     1. **200 OK** response.
+     2. body returned must accomplish **APIProviderEnrolmentDetails** data structure, with:
+        * apiProvDomInfo with "ROBOT_TESTING_MOD"
 
 ## Test Case 6: Partially Update Not Registered Api Provider 
+* **Test ID**: ***capif_api_provider_management-6***
+* **Description**:
   
   This test case will check that a Non-Registered Api Provider cannot be partially updated  
 
-* Pre-Conditions:
+* **Pre-Conditions**:
   
-  Api Provider was not registered previously.
+  * Api Provider was not registered previously
 
-* Actions:
+* **Information of Test**:
 
-  Update Api Provider onboardingDetails
+  1. Create public and private key at invoker
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
+
+  3. Partial update exposer at Provider Management:
+     * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_API_PROVIDER_NOT_REGISTERED}*
+     * body [provider request patch body]
   
-  Request Body: [request body]
 
-* Post-Conditions:
+* **Execution Steps**:
   
-  404 Not found.
+  1. Register Exposer at CCF
+  2. Register Exposer at Provider Management
+  3. Partial update exposer at Provider Management
+   
+* **Expected Result**:
+
+  1. Partial update exposer at Provider Management:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Not Exist Provider Enrolment Details".
+        * cause with message "Not found registrations to send this api provider details".
 
 ## Test Case 7: Delete Registered Api Provider   
+* **Test ID**: ***capif_api_provider_management-7***
+* **Description**:
   
-  This test case will check that a Registered Api Provider can be deleted  
-
-* Pre-Conditions:
+  This test case will check that a Registered Api Provider can be deleted
+* **Pre-Conditions**:
   
-  Api Provider was registered previously.
+  * Api Provider was registered previously
 
-* Actions:
+* **Information of Test**:
 
-  Delete Api Provider 
+  1. Create public and private key at exposer
 
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
 
-* Post-Conditions:
+  3. Register Exposer at Provider Management:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+     * Get resource from Location header
 
-  204 The individual API Invoker matching registerId was offboarded.
+  4. Delete registered exposer at Provider Management:
+     * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
+
+* **Execution Steps**:
+  
+  1. Register Exposer at CCF
+  2. Register Exposer at Provider Management
+  3. Delete Exposer at Provider Management
+   
+* **Expected Result**:
+
+  1. Delete Exposer at Provider Management:
+     1. **204 No Content** response.
 
 ## Test Case 8: Delete Not Registered Api Provider
-
+* **Test ID**: ***capif_api_provider_management-8***
+* **Description**:
+  
   This test case will check that a Non-Registered Api Provider cannot be deleted
+* **Pre-Conditions**:
+  
+  * Api Provider was not registered previously
 
-* Pre-Conditions:
+* **Information of Test**:
 
-  Api Provider was not registered previously.
+  1. Create public and private key at exposer
 
-* Actions:
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [exposer register body]
 
-  Delete Api Provider
+  3. Delete registered exposer at Provider Management:
+     * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_PROVIDER_NOT_REGISTERED}*
+
+* **Execution Steps**:
+  
+  1. Register Exposer at CCF
+  2. Delete Exposer at Provider Management
+   
+* **Expected Result**:
+
+  1. Delete Exposer at Provider Management:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Not Exist Provider Enrolment Details".
+        * cause with message "Not found registrations to send this api provider details".
 
 
-* Post-Conditions:
+[provider request body]: ./provider_details_post_example.json  "API Provider Enrolment Request"
 
-  404 Not Found.
-
-
-
-[request body]: ./provider_details_post_example.json  "API Provider Enrolment Request"
-
-[request patch body]: ./provider_details_enrolment_details_patch_example.json  "API Provider Enrolment Patch Request"
+[provider request patch body]: ./provider_details_enrolment_details_patch_example.json  "API Provider Enrolment Patch Request"
 
 [Return To All Test Plans]: ../README.md

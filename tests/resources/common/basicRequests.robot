@@ -20,6 +20,8 @@ ${LOCATION_PUBLISH_RESOURCE_REGEX}
 ...    ^/published-apis/v1/[0-9a-zA-Z]+/service-apis/[0-9a-zA-Z]+
 ${LOCATION_SECURITY_RESOURCE_REGEX}
 ...    ^/capif-security/v1/trustedInvokers/[0-9a-zA-Z]+
+${LOCATION_PROVIDER_RESOURCE_REGEX}
+...    ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
 
 
 *** Keywords ***
