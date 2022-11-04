@@ -4,6 +4,7 @@ python_dateutil >= 2.6.0
 setuptools >= 21.0.0
 Flask == 2.0.3
 pymongo == 4.0.1
+elasticsearch == 8.4.3
 flask_jwt_extended
 pyopenssl
 flask-mqtt

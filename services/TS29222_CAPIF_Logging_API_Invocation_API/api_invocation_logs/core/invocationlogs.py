@@ -10,6 +10,7 @@ from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from bson import json_util
+from elasticsearch import Elasticsearch
 
 
 class LoggingInvocationOperations:
@@ -17,6 +18,48 @@ class LoggingInvocationOperations:
     def __init__(self):
         self.db = MongoDatabse()
         self.mimetype = 'application/json'
+        # self.es = Elasticsearch(
+        #     hosts=['http://elasticsearch:9200'],
+        #     basic_auth=('elastic', 'changeme'),
+        # )
+        # mappings = {
+        #     "properties": {
+        #         "logId": {"type": "text", "analyzer": "standard"},
+        #         "aefId": {"type": "text", "analyzer": "standard"},
+        #         "apiInvokerId": {"type": "text", "analyzer": "standard"},
+        #         "apiId": {"type": "text", "analyzer": "standard"},
+        #         "apiName": {"type": "text", "analyzer": "standard"},
+        #         "apiVersion": {"type": "text", "analyzer": "standard"},
+        #         "resourceName": {"type": "text", "analyzer": "standard"},
+        #         "uri": {"type": "text", "analyzer": "standard"},
+        #         "protocol": {"type": "text", "analyzer": "standard"},
+        #         "operation": {"type": "text", "analyzer": "standard"},
+        #         "result": {"type": "text", "analyzer": "standard"},
+        #         "invocationTime": {"type": "date", "format": "dd-MM-yyyy HH:mm:ss"},
+        #         "invocationLatency": {"type": "integer"},
+        #         "inputParameters": {"type": "text", "analyzer": "standard"},
+        #         "outputParameters": {"type": "text", "analyzer": "standard"},
+        #         "srcInterface": {
+        #             "properties": {
+        #                 "ipv4Addr": {"type": "text", "analyzer": "standard"},
+        #                 "ipv6Addr": {"type": "text", "analyzer": "standard"},
+        #                 "port": {"type": "text", "analyzer": "standard"},
+        #                 "securityMethods": {"type": "text", "analyzer": "standard"}
+        #             }
+        #         },
+        #         "destInterface": {
+        #             "properties": {
+        #                 "ipv4Addr": {"type": "text", "analyzer": "standard"},
+        #                 "ipv6Addr": {"type": "text", "analyzer": "standard"},
+        #                 "port": {"type": "text", "analyzer": "standard"},
+        #                 "securityMethods": {"type": "text", "analyzer": "standard"}
+        #             }
+        #         },
+        #         "fwdInterface": {"type": "text", "analyzer": "standard"},
+        #         "supportedFeatures": {"type": "text", "analyzer": "standard"}
+        #     }
+        # }
+        # self.es.indices.create(index="logs", mappings=mappings)
 
     def add_invocationlog(self, aef_id, invocationlog):
 
@@ -70,6 +113,35 @@ class LoggingInvocationOperations:
                 # rec['log_id'] = log_id
                 # rec.update(invocationlog.to_dict())
                 # mycol.insert_one(rec)
+
+                ####### Implementation 3: A Log array is stored as different InvocationLog in Elasticsearch #######
+                # for i in range(0, len(invocationlog.logs)):
+                #     doc = dict()
+                #     doc['logId'] = secrets.token_hex(15)
+                #     doc['aefId'] = aef_id
+                #     doc['apiInvokerId'] = invocationlog.api_invoker_id
+                #     doc['apiId'] = invocationlog.logs[i].api_id
+                #     doc['apiName'] = invocationlog.logs[i].api_name
+                #     doc['apiVersion'] = invocationlog.logs[i].api_version
+                #     doc = {
+                #         "logId": secrets.token_hex(15),
+                #         "aefId": aef_id,
+                #         "apiInvokerId": invocationlog.api_invoker_id,
+                #         "apiId": invocationlog.logs[i].api_id,
+                #         "apiName": invocationlog.logs[i].api_name,
+                #         "apiVersion": invocationlog.logs[i].api_version,
+                #         "resourceName": invocationlog.logs[i].resource_name,
+                #         "uri": invocationlog.logs[i].uri,
+                #         "protocol": ,
+                #         "operation": ,
+                #         "result": ,
+                #         "invocationTime": ,
+                #         "invocationLatency": ,
+                #         "inputParameters": ,
+                #         "outputParameters": ,
+                #     }
+                #
+                # es.index(index="movies", id=i, document=doc)
 
                 res = Response(json.dumps(invocationlog, cls=JSONEncoder), status=201, mimetype=self.mimetype)
 
