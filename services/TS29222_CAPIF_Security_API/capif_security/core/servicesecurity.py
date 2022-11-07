@@ -7,6 +7,7 @@ from flask import current_app, Flask, Response
 from flask_jwt_extended import create_access_token
 from datetime import datetime, timedelta
 import json
+
 from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
@@ -17,6 +18,7 @@ import requests
 from ..models.access_token_err import AccessTokenErr
 from ..models.service_security import ServiceSecurity
 from ..util import dict_to_camel_case
+from .responses import not_found_error, make_response, bad_request_error, internal_server_error, forbidden_error
 from .notification import Notifications
 import os
 
@@ -31,9 +33,8 @@ class SecurityOperations:
         invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
         invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
         if invoker is None:
-            prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                                cause="API Invoker not exists or invalid ID")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+            return not_found_error(detail="Invoker not found", cause="API Invoker not exists or invalid ID")
+
         return None
 
     def __check_scope(self, scope, security_context):
@@ -42,7 +43,7 @@ class SecurityOperations:
             header = scope[0:4]
             if header != "3gpp":
                 token_error = AccessTokenErr(error="invalid_scope", error_description="The first characters must be '3gpp'")
-                return Response(json.dumps(token_error, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+                return make_response(object=token_error, status=400)
 
             _, body = scope.split("#")
 
@@ -55,19 +56,19 @@ class SecurityOperations:
                 aef_id, api_names = group.split(":")
                 if aef_id not in aef_security_context:
                     token_error = AccessTokenErr(error="invalid_scope", error_description="One of aef_id not belongs of your security context")
-                    return Response(json.dumps(token_error, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+                    return make_response(object=token_error, status=400)
                 api_names = api_names.split(",")
                 for api_name in api_names:
                     service = capif_service_col.find_one({"$and": [{"api_name":api_name},{"aef_profiles.aef_id":aef_id}]})
                     if service is None:
                         token_error = AccessTokenErr(error="invalid_scope", error_description="One of the api names does not exist or is not associated with the aef id provided")
-                        return Response(json.dumps(token_error, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+                        return make_response(object=token_error, status=400)
 
             return None
 
         except Exception as e:
             token_error = AccessTokenErr(error="invalid_scope", error_description="malformed scope")
-            return Response(json.dumps(token_error, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+            return make_response(object=token_error, status=400)
 
     def get_servicesecurity(self, api_invoker_id, authentication_info=True, authorization_info=True):
 
@@ -82,9 +83,7 @@ class SecurityOperations:
                 services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id}, {"_id":0, "api_invoker_id":0})
 
                 if services_security_object is None:
-                    prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
-                                        cause="API Invoker has no security context")
-                    return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+                    return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
 
                 if not authentication_info:
                     for securityInfo_obj in services_security_object['security_info']:
@@ -95,11 +94,12 @@ class SecurityOperations:
 
                 properyly_json= json.dumps(services_security_object, default=json_util.default)
                 my_service_security = dict_to_camel_case(json.loads(properyly_json))
-                res = Response(json.dumps(my_service_security, cls=JSONEncoder), status=200, mimetype=self.mimetype)
+                res = make_response(object=my_service_security, status=200)
+
                 return res
         except Exception as e:
-            exception = "An exception occurred in get security info::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in get security info"
+            return internal_server_error(detail=exception, cause=e)
 
 
     def create_servicesecurity(self, api_invoker_id, service_security):
@@ -113,17 +113,14 @@ class SecurityOperations:
 
             if not re.match("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$", service_security.notification_destination):
 
-                prob = ProblemDetails(title="Malformed notidication destination", status=403, detail="Malformed notification destination param",
-                                    cause="Bad URL Format")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+                return bad_request_error(detail="Bad Param", cause = "Detected Bad formar of param", invalid_params=[{"param": "notificationDestination", "reason": "Not valid URL format"}])
 
             services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id})
 
             if services_security_object is not None:
 
-                prob = ProblemDetails(title="Forbidden", status=403, detail="Security method already defined",
-                                    cause="Identical AEF Profile IDs")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+                return forbidden_error(detail="Security method already defined", cause="Identical AEF Profile IDs")
+
 
             for service_instance in service_security.security_info:
                 if service_instance.interface_details is not None:
@@ -132,9 +129,9 @@ class SecurityOperations:
                     valid_security_method = set(security_methods) & set(pref_security_methods)
 
                     if len(list(valid_security_method)):
-                        prob = ProblemDetails(title="Pref Security Methods Error", status=400, detail="Not found compatible security method with pref security method",
-                            cause="Error pref security method")
-                        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+
+                        return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
+
 
                     service_instance.sel_security_method = list(valid_security_method)[0]
                 else:
@@ -142,18 +139,14 @@ class SecurityOperations:
                     services_security_object = capif_service_col.find_one({"api_id":service_instance.api_id, "aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
-                        prob = ProblemDetails(title="Service Not found", status=404, detail="Service with this aefId not found",
-                                cause="Not found Service")
-                        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+                        return not_found_error(detail="Service with this aefId not found", cause="Not found Service")
 
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
                     valid_security_method = set(valid_security_methods) & set(pref_security_methods)
 
                     if len(list(valid_security_method)):
-                        prob = ProblemDetails(title="Pref Security Methods Error", status=400, detail="Not found compatible security method with pref security method",
-                            cause="Error pref security method")
-                        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+                         return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
 
                     service_instance.sel_security_method = list(valid_security_method)[0]
 
@@ -162,13 +155,13 @@ class SecurityOperations:
             rec.update(service_security.to_dict())
             mycol.insert_one(rec)
 
-            res = Response(json.dumps(service_security, cls=JSONEncoder), status=201, mimetype=self.mimetype)
+            res = make_response(object=service_security, status=201)
             res.headers['Location'] = "https://{}/capif-security/v1/trustedInvokers/{}".format(os.getenv('CAPIF_HOSTNAME'),str(api_invoker_id))
             return res
 
         except Exception as e:
-            exception = "An exception occurred in create security info::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in create security info"
+            return internal_server_error(detail=exception, cause=e)
 
 
     def delete_servicesecurity(self, api_invoker_id):
@@ -184,16 +177,15 @@ class SecurityOperations:
                 services_security_count = mycol.count_documents(myQuery)
 
                 if services_security_count == 0:
-
-                    prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
-                                        cause="API Invoker has no security context")
-                    return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+                    return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
 
                 mycol.delete_many(myQuery)
-                return "The security info of Netapp with Netapp ID " + api_invoker_id + " were deleted.", 204
+                out= "The security info of Netapp with Netapp ID " + api_invoker_id + " were deleted.", 204
+                return make_response(out, status=204)
+
         except Exception as e:
-            exception = "An exception occurred in create security info::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in create security info"
+            return internal_server_error(detail=exception, cause = e)
 
 
     def return_token(self, security_id, access_token_req):
@@ -209,8 +201,7 @@ class SecurityOperations:
             service_security = mycol.find_one({"api_invoker_id": security_id})
             if service_security is None:
 
-                prob = AccessTokenErr(error="invalid_request", error_description="No Security Context for this API Invoker")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+                return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
             else:
 
                 result = self.__check_scope(access_token_req["scope"], service_security)
@@ -225,11 +216,11 @@ class SecurityOperations:
                 access_token = create_access_token(identity = access_token_req["client_id"] , additional_claims=claims.to_dict())
                 access_token_resp = AccessTokenRsp(access_token=access_token, token_type="bearer", expires_in=expire_time.total_seconds(), scope=access_token_req["scope"])
 
-                res = Response(json.dumps(access_token_resp, cls=JSONEncoder), status=200, mimetype=self.mimetype)
+                res = make_response(object=access_token_resp, status=200)
                 return res
         except Exception as e:
-            exception = "An exception occurred in return token::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in return token"
+            return internal_server_error(detail=exception, cause=e)
 
 
     def update_servicesecurity(self, api_invoker_id, service_security):
@@ -243,9 +234,7 @@ class SecurityOperations:
 
             if old_object is None:
 
-                prob = ProblemDetails(title="Not found", status=404, detail="Service API not existing",
-                                    cause="Not exist securiy information for this invoker")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+                return not_found_error(detail="Service API not existing", cause="Not exist securiy information for this invoker")
 
             for service_instance in service_security.security_info:
                 if service_instance.interface_details is not None:
@@ -258,10 +247,7 @@ class SecurityOperations:
                     services_security_object = capif_service_col.find_one({"aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
-                        prob = ProblemDetails(title="Service Not found", status=404, detail="Service with this aefId not found",
-                                cause="Not found Service")
-                        return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
-
+                        return not_found_error(detail="Service with this aefId not found", cause="Not found Service")
 
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
@@ -275,35 +261,29 @@ class SecurityOperations:
 
             mycol.update_one(old_object, {"$set":service_security}, upsert=False)
 
-            res = Response(json.dumps(service_security, cls=JSONEncoder), status=200, mimetype=self.mimetype)
+            res= make_response(object=service_security, status=200)
             res.headers['Location'] = "https://${CAPIF_HOSTNAME}/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
         except Exception as e:
-            exception = "An exception occurred in update security info::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in update security info"
+            return internal_server_error(detail=exception, cause=e)
 
 
     def revoke_api_authorization(self, api_invoker_id, security_notification):
 
         mycol = self.db.get_col_by_name(self.db.security_info)
-        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
-        invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
-        if invoker is None:
 
-            prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                                cause="API Invoker not exists or invalid ID")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+        result = self.__check_invoker(api_invoker_id)
+        if result != None:
+            return result
 
         myQuery = {'api_invoker_id': api_invoker_id}
         services_security_context = mycol.find_one(myQuery)
 
-        if services_security_context == None:
-
-            prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
-                                cause="API Invoker has no security context")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+        if services_security_context is None:
+            return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
 
         updated_security_context = services_security_context.copy()
         for context in services_security_context["security_info"]:
@@ -315,4 +295,5 @@ class SecurityOperations:
 
         self.notification.send_notification(services_security_context["notificationDestination"], security_notification)
 
-        return "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
+        out= "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
+        return make_response(out, status=204)

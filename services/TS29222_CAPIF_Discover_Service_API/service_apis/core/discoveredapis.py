@@ -3,6 +3,7 @@ import sys
 import pymongo
 from flask import current_app, Flask, Response
 import json
+from service_apis.core.responses import internal_server_error, forbidden_error ,make_response
 from service_apis.db.db import MongoDatabse
 from service_apis.encoder import JSONEncoder
 from service_apis.models.problem_details import ProblemDetails
@@ -15,7 +16,6 @@ class DiscoverApisOperations:
 
     def __init__(self):
         self.db = MongoDatabse()
-        self.mimetype = 'application/json'
 
     def get_discoveredapis(self, api_invoker_id, api_name, api_version, comm_type, protocol, aef_id,
                         data_format, api_cat, supported_features, api_supported_features):
@@ -27,45 +27,43 @@ class DiscoverApisOperations:
             invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
             if invoker is None:
 
-                prob = ProblemDetails(title="Forbidden", status=403, detail="API Invoker does not exist", cause="API Invoker id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+                return forbidden_error(detail="API Invoker does not exist", cause="API Invoker id not found")
 
-            else:
-                myParams = []
-                myQuery = {}
-                if api_name is not None:
-                    myParams.append({"api_name": api_name})
-                if api_version is not None:
-                    myParams.append({"aef_profiles.0.versions.0.api_version": api_version})
-                if comm_type is not None:
-                    myParams.append({"aef_profiles.0.versions.0.resources.0.comm_type": comm_type})
-                if protocol is not None:
-                    myParams.append({"aef_profiles.0.protocol": protocol})
-                if aef_id is not None:
-                    myParams.append({"aef_profiles.0.aef_id": aef_id})
-                if data_format is not None:
-                    myParams.append({"aef_profiles.0.data_format": data_format})
-                if api_cat is not None:
-                    myParams.append({"service_api_category": api_cat})
-                if supported_features is not None:
-                    myParams.append({"supported_features": supported_features})
-                if api_supported_features is not None:
-                    myParams.append({"api_supp_feats": api_supported_features})
-                if myParams:
-                    myQuery = {"$and": myParams}
+            myParams = []
+            myQuery = {}
+            if api_name is not None:
+                myParams.append({"api_name": api_name})
+            if api_version is not None:
+                myParams.append({"aef_profiles.0.versions.0.api_version": api_version})
+            if comm_type is not None:
+                myParams.append({"aef_profiles.0.versions.0.resources.0.comm_type": comm_type})
+            if protocol is not None:
+                myParams.append({"aef_profiles.0.protocol": protocol})
+            if aef_id is not None:
+                myParams.append({"aef_profiles.0.aef_id": aef_id})
+            if data_format is not None:
+                myParams.append({"aef_profiles.0.data_format": data_format})
+            if api_cat is not None:
+                myParams.append({"service_api_category": api_cat})
+            if supported_features is not None:
+                myParams.append({"supported_features": supported_features})
+            if api_supported_features is not None:
+                myParams.append({"api_supp_feats": api_supported_features})
+            if myParams:
+                myQuery = {"$and": myParams}
 
-                discoved_apis = services.find(myQuery, {"_id":0, "apf_id":0})
-                json_docs = []
-                for discoved_api in discoved_apis:
+            discoved_apis = services.find(myQuery, {"_id":0, "apf_id":0})
+            json_docs = []
+            for discoved_api in discoved_apis:
 
-                    properyly_json= json.dumps(discoved_api, default=json_util.default)
-                    my_api = dict_to_camel_case(json.loads(properyly_json))
-                    json_docs.append(my_api)
+                properyly_json= json.dumps(discoved_api, default=json_util.default)
+                my_api = dict_to_camel_case(json.loads(properyly_json))
+                json_docs.append(my_api)
 
-                res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
-                return res
+            res = make_response(object=json_docs, status=200)
+            return res
 
         except Exception as e:
-            exception = "An exception occurred in discover services::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in discover services"
+            return internal_server_error(detail=exception, cause=e)
 

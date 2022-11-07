@@ -10,37 +10,30 @@ from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
+from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
 from bson import json_util
-
-
 
 
 class PublishServiceOperations:
 
     def __init__(self):
         self.db = MongoDatabse()
-        self.mimetype = 'application/json'
 
-    def check_apf(self, apf_id):
+    def __check_apf(self, apf_id):
         providers_col = self.db.get_col_by_name(self.db.capif_provider_col)
-        try:
+        provider = providers_col.find_one({"api_prov_funcs.api_prov_func_id": apf_id})
 
-            provider = providers_col.find_one({"api_prov_funcs.api_prov_func_id": apf_id})
+        if provider is None:
 
-            if provider is None:
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Publisher not existing",
-                                    cause="Publisher id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            return unauthorized_error(detail = "Publisher not existing", cause = "Publisher id not found")
 
-            list_apf_ids =  [func["api_prov_func_id"] for func in provider["api_prov_funcs"] if func["api_prov_func_role"] == "APF"]
-            if apf_id not in list_apf_ids:
-                 prob = ProblemDetails(title="Unauthorized", status=401, detail="You are not a publisher",
-                                    cause="This API is only available for publishers")
-                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+        list_apf_ids =  [func["api_prov_func_id"] for func in provider["api_prov_funcs"] if func["api_prov_func_role"] == "APF"]
+        if apf_id not in list_apf_ids:
 
-            return None
-        except Exception as e:
-            return e
+            return unauthorized_error(detail ="You are not a publisher", cause ="This API is only available for publishers")
+
+        return None
+
 
     def get_serviceapis(self, apf_id):
 
@@ -48,80 +41,58 @@ class PublishServiceOperations:
 
         try:
 
-            result = self.check_apf(apf_id)
+            result = self.__check_apf(apf_id)
 
             if result != None:
                 return result
 
             service = mycol.find({"apf_id": apf_id}, {"apf_id":0, "_id":0})
             if service is None:
-                prob = ProblemDetails(title="Services not exist", status=404, detail="Not exist published services for this apf_id",
-                                    cause="Not exist service with this apf_id")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
-            else:
-                json_docs = []
-                for serviceapi in service:
-                    properyly_json= json.dumps(serviceapi, default=json_util.default)
-                    my_service_api = dict_to_camel_case(json.loads(properyly_json))
-                    json_docs.append(my_service_api)
+                return not_found_error(detail="Not exist published services for this apf_id", cause="Not exist service with this apf_id")
 
-                res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
-                return res
+            json_docs = []
+            for serviceapi in service:
+                properyly_json= json.dumps(serviceapi, default=json_util.default)
+                my_service_api = dict_to_camel_case(json.loads(properyly_json))
+                json_docs.append(my_service_api)
+
+            res = make_response(object=json_docs, status=200)
+            return res
 
         except Exception as e:
-            exception = "An exception occurred in get services::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
-
+            exception = "An exception occurred in get services"
+            return internal_server_error(detail=exception, cause=e)
 
     def add_serviceapidescription(self, apf_id, serviceapidescription):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
-        providers_col = self.db.get_col_by_name(self.db.capif_provider_col)
 
         try:
-            provider = providers_col.find_one({"api_prov_funcs.api_prov_func_id": apf_id})
 
-            if provider is None:
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Publisher not existing",
-                                    cause="Publisher id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            result = self.__check_apf(apf_id)
 
-            list_apf_ids =  [func["api_prov_func_id"] for func in provider["api_prov_funcs"] if func["api_prov_func_role"] == "APF"]
-            if apf_id not in list_apf_ids:
-                 prob = ProblemDetails(title="Unauthorized", status=401, detail="You are not a publisher",
-                                    cause="This API is only available for publishers")
-                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            if result != None:
+                return result
 
             service = mycol.find_one({"api_name": serviceapidescription.api_name})
             if service is not None:
-                prob = ProblemDetails(title="Service exist", status=409, detail="Already registered service with same api name",
-                                    cause="Found service with same api name")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+                return forbidden_error(detail="Already registered service with same api name", cause="Found service with same api name")
 
-            else:
-                list_aef_ids = [func["api_prov_func_id"] for func in provider["api_prov_funcs"] if func["api_prov_func_role"] == "AEF"]
-                for aef_profile in serviceapidescription.aef_profiles:
-                    if aef_profile.aef_id not in list_aef_ids:
-                        prob = ProblemDetails(title="Aef Id not exist", status=404, detail="Not exist aef with these id",
-                                    cause="aef id not exist")
-                        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            api_id = secrets.token_hex(15)
+            serviceapidescription.api_id = api_id
+            rec = dict()
+            rec['apf_id'] = apf_id
+            rec.update(serviceapidescription.to_dict())
+            mycol.insert_one(rec)
 
-                api_id = secrets.token_hex(15)
-                serviceapidescription.api_id = api_id
-                rec = dict()
-                rec['apf_id'] = apf_id
-                rec.update(serviceapidescription.to_dict())
-                mycol.insert_one(rec)
+            res = make_response(object=serviceapidescription, status=201)
+            res.headers['Location'] = "http://localhost:8080/published-apis/v1/" + str(apf_id) + "/service-apis/" + str(api_id)
 
-                res = Response(json.dumps(serviceapidescription, cls=JSONEncoder), status=201, mimetype=self.mimetype)
-
-                res.headers['Location'] = "http://localhost:8080/published-apis/v1/" + str(apf_id) + "/service-apis/" + str(api_id)
-                return res
+            return res
 
         except Exception as e:
-            exception = "An exception occurred in add services::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in add services"
+            return internal_server_error(detail=exception, cause=e)
 
 
 
@@ -130,7 +101,7 @@ class PublishServiceOperations:
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
 
         try:
-            result = self.check_apf(apf_id)
+            result = self.__check_apf(apf_id)
 
             if result != None:
                 return result
@@ -138,20 +109,17 @@ class PublishServiceOperations:
             myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
             service_api = mycol.find_one(myQuery, {"apf_id":0, "_id":0})
             if service_api is None:
-                prob = ProblemDetails(title="Not Found", status=404, detail="Service API not found",
-                                    cause="No Service with specific credentials exists")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+                return not_found_error(detail="Service API not found", cause="No Service with specific credentials exists")
 
-            else:
-                properyly_json= json.dumps(service_api, default=json_util.default)
-                my_service_api = dict_to_camel_case(json.loads(properyly_json))
-                res = Response(json.dumps(my_service_api, default=json_util.default), status=200, mimetype=self.mimetype)
-                return res
+            properyly_json= json.dumps(service_api, default=json_util.default)
+            my_service_api = dict_to_camel_case(json.loads(properyly_json))
+
+            res = make_response(object=my_service_api, status=200)
+            return res
+
         except Exception as e:
-            exception = "An exception occurred in get one service::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
-
+            exception = "An exception occurred in get one service"
+            return internal_server_error(detail=exception, cause=e)
 
     def delete_serviceapidescription(self, service_api_id, apf_id):
 
@@ -159,7 +127,7 @@ class PublishServiceOperations:
 
         try:
 
-            result = self.check_apf(apf_id)
+            result = self.__check_apf(apf_id)
 
             if result != None:
                 return result
@@ -168,18 +136,15 @@ class PublishServiceOperations:
             serviceapidescription = mycol.find_one(myQuery)
 
             if serviceapidescription is None:
+                return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
-                prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
-                                    cause="Service API id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+            mycol.delete_one(myQuery)
+            out =  "The service matching api_id " + service_api_id + " was deleted."
+            return make_response(out, status=204)
 
-            else:
-                mycol.delete_one(myQuery)
-                return Response(json.dumps(serviceapidescription, default=str, cls=JSONEncoder), status=204, mimetype=self.mimetype)
         except Exception as e:
-            exception = "An exception occurred in delete service::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
+            exception = "An exception occurred in delete service"
+            return internal_server_error(detail=exception, cause=e)
 
 
     def update_serviceapidescription(self, service_api_id, apf_id, service_api_description):
@@ -188,7 +153,7 @@ class PublishServiceOperations:
 
         try:
 
-            result = self.check_apf(apf_id)
+            result = self.__check_apf(apf_id)
 
             if result != None:
                 return result
@@ -198,22 +163,19 @@ class PublishServiceOperations:
 
             if serviceapidescription is None:
 
-                prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
-                                    cause="Service API id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+               return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
-            else:
+            service_api_description = service_api_description.to_dict()
+            service_api_description = {
+                key: value for key, value in service_api_description.items() if value is not None
+            }
 
-                service_api_description = service_api_description.to_dict()
-                service_api_description = {
-                    key: value for key, value in service_api_description.items() if value is not None
-                }
+            mycol.update_one(serviceapidescription, {"$set":service_api_description}, upsert=False)
+            response = make_response(object=service_api_description, status=200)
 
-                mycol.update_one(serviceapidescription, {"$set":service_api_description}, upsert=False)
-                response = Response(json.dumps(service_api_description, default=str,cls=JSONEncoder), status=200, mimetype=self.mimetype)
+            return response
 
-                return response
         except Exception as e:
-            exception = "An exception occurred in update service::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in update service"
+            return internal_server_error(detail=exception, cause=e)
 

@@ -8,7 +8,8 @@ class MongoDatabse():
         self.config = Config().getConfig()
         self.db = self.__connect()
         self.event_collection = self.config['mongo']['col']
-        self.user_collection = self.config['mongo']['capif_users_col']
+        self.invoker_collection = self.config['mongo']['capif_invokers_col']
+        self.provider_collection = self.config['mongo']['capif_providers_col']
 
     def get_col_by_name(self, name):
         return self.db[name]
