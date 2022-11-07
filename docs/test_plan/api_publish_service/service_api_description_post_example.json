@@ -1,5 +1,5 @@
 {
-  "apiName": "3gpp-monitoring-event",
+  "apiName": "service_1",
   "aefProfiles": [
     {
       "aefId": "string",

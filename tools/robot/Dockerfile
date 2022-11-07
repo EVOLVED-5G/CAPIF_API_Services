@@ -54,11 +54,11 @@ RUN apt-get install -y --no-install-recommends  \
 
 RUN add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get update
-RUN apt-get install -y --fix-missing python3.9 python3.9-venv python3.9-dev
+RUN apt-get install -y --fix-missing python3.10 python3.10-venv python3.10-dev
 
 
 RUN mkdir /opt/venv
-RUN python3.9 -m venv /opt/venv
+RUN python3.10 -m venv /opt/venv
 
 ADD basicRequirements.txt /root/
 

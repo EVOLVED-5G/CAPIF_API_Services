@@ -1,6 +1,6 @@
-def create_service_security_body():
+def create_service_security_body(notificationDestination='http://robot.testing'):
     return {
-        "notificationDestination": "ROBOT_TESTING",
+        "notificationDestination": notificationDestination,
         "supportedFeatures": "fffffff",
         "securityInfo": [{
             "authenticationInfo": "authenticationInfo",
