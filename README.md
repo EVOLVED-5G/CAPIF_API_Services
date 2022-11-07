@@ -189,7 +189,6 @@ This CAPIF services have many stability improvements:
   - API Provider Management tests adapted to use TLS.
 
 
-
 [Open API Descriptions of 3GPP 5G APIs]: https://github.com/jdegre/5GC_APIs  "Open API Descriptions of 3GPP 5G APIs"
 [Test Plan Directory]: ./docs/test_plan/README.md  "Test Plan Directory"
 [Testing Using Curl]: ./docs/testing_with_curl/README.md  "Testing Using Curl"
