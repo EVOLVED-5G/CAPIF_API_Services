@@ -23,3 +23,37 @@ Reset Testing Environment
 
     Clean Test Information By HTTP Requests
 
+Check Location Header
+    [Documentation]    This keyword will check location header at response according to regular expression provided as argument
+    [Arguments]    ${resp}    ${regular_expression}
+
+    ${event_url}=    Parse Url    ${resp.headers['Location']}
+
+    Should Match Regexp    ${event_url.path}    ${regular_expression}
+    RETURN    ${event_url}
+
+Check Event Location Header
+    [Arguments]    ${resp}
+
+    ${event_url}=    Check Location Header    ${resp}    ${LOCATION_EVENT_RESOURCE_REGEX}
+
+    ${subscriber_id}    ${subscription_id}=    Get Subscriber And Subscription From Location    ${event_url.path}
+
+    RETURN    ${subscriber_id}    ${subscription_id}
+
+Check Problem Details
+    [Arguments]    ${resp}    &{input_parameters}
+    Check Variable    ${resp.json()}    ProblemDetails
+    FOR    ${input}    IN    @{input_parameters}
+        Log    ${input}=${input_parameters['${input}']}
+        Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
+    END
+
+Check Response Variable Type And Values
+    [Arguments]    ${resp}    ${status_code}    ${variable_type}    &{input_parameters}
+    Status Should Be    ${status_code}    ${resp}
+    Check Variable    ${resp.json()}    ${variable_type}
+    FOR    ${input}    IN    @{input_parameters}
+        Log    ${input}=${input_parameters['${input}']}
+        Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
+    END

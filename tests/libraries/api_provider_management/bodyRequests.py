@@ -1,4 +1,4 @@
-def create_api_provider_enrolment_details_body():
+def create_api_provider_enrolment_details_body(apiProvDomInfo="ROBOT_TESTING"):
     data = {
         "regSec": "string",
         "apiProvFuncs": [
@@ -12,14 +12,14 @@ def create_api_provider_enrolment_details_body():
                 "apiProvFuncInfo": "string"
             }
         ],
-        "apiProvDomInfo": "ROBOT_TESTING",
+        "apiProvDomInfo": apiProvDomInfo,
         "suppFeat": "fffffff",
         "failReason": "string"
     }
 
     return (data)
 
-def create_api_provider_enrolment_details_patch_body():
+def create_api_provider_enrolment_details_patch_body(apiProvDomInfo="ROBOT_TESTING"):
     data = {
         "apiProvFuncs": [
             {
@@ -32,7 +32,7 @@ def create_api_provider_enrolment_details_patch_body():
                 "apiProvFuncInfo": "PATCH"
             }
         ],
-        "apiProvDomInfo": "ROBOT_TESTING",
+        "apiProvDomInfo": apiProvDomInfo,
     }
 
     return (data)

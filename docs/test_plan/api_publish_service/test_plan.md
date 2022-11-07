@@ -23,259 +23,701 @@ At this documentation you will have all information and related files and exampl
 # Tests
 
 ## Test Case 1: Publish API by Authorised API Publisher
+* Test ID: ***capif_api_publish_service-1***
+* Description:
   
   This test case will check that an API Publisher can Publish an API 
-
-* Pre-Conditions: 
+* Pre-Conditions:
   
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
 
-* Actions:
+* Information of Test:
 
-  POST Publish API
-    
-  Request Body: [request body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
+
+* Execution Steps:
   
-  API details are stored in CAPIF Database
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API
+  4. Retrieve {apiId} from body and Location header with new resource created from response
+   
+* Expected Result:
 
-  201 API Published 
+  1. Response to Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
 
-  Service API published successfully The URI of the created resource shall be returned in the "Location" HTTP header. 
-
-  Location Contains the URI of the newly created resource, according to the structure: {apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}
+  2. Published Service API is stored in CAPIF Database
 
 ## Test Case 2: Publish API by NON Authorised API Publisher
+* Test ID: ***capif_api_publish_service-2***
+* Description:
   
-  This test case will check that an API Publisher cannot Publish an API withot valid apfId
-
-* Pre-Conditions:  
+  This test case will check that an API Publisher cannot Publish an API withot valid apfId 
+* Pre-Conditions:
   
-  API Publisher is NOT pre-authorised to publish APIs and has invalid apfId
+  * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
-* Actions:
+* Information of Test:
 
-  POST Publish API
-    
-  Request Body: [request body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis
+     * body [service api description] with apiName service_1
+
+* Execution Steps:
   
-  API is not included in the Database
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API
+   
+* Expected Result:
 
-  401 Unauthorised
-  
+  1. Response to Publish request must accomplish:
+     1. **401 Unauthorized**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 401
+        * title with message "Unauthorized"
+        * detail with message "Exposer not existing".
+        * cause with message "Exposer id not found".
+
+  2. Service API is NOT stored in CAPIF Database
+
+
 ## Test Case 3: Retrieve all APIs Published by Authorised apfId 
+* Test ID: ***capif_api_publish_service-3***
+* Description:
   
-  This test case will check that an API Publisher can Retrieve all API published 
-
-* Pre-Conditions: 
+  This test case will check that an API Publisher can Retrieve all API published
+* Pre-Conditions:
   
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+  * At least 2 service APIs are published.
 
-* Actions:
+* Information of Test:
 
-  GET Retrieve APIs
-    
-  Request Body: [request body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
   
-  200 Definition of all service API(s) published by the API publishing function.
+  4. Publish Other Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_2
+     * Get apiId
+
+  5. Retrieve all published APIs:
+     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+
+* Execution Steps:
+  
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API service_1
+  4. Retrieve {apiId1} from body and Location header with new resource created from response
+  5. Publish Service API service_2
+  6. Retrieve {apiId2} from body and Location header with new resource created from response
+  7. Retrieve All published APIs and check if both are present.
+
+
+* Expected Result:
+
+  1. Response to service 1 Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId1}*
+  2. Response to service 2 Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId2}*
+  3. Published Service APIs are stored in CAPIF Database 
+  4. Response to Retrieve all published APIs:
+     1. **200 OK**
+     2. Response body must return an array of **ServiceAPIDescription** data.
+     3. Array must contain all previously published APIs.
 
 ## Test Case 4: Retrieve all APIs Published by NON Authorised apfId 
+* Test ID: ***capif_api_publish_service-4***
+* Description:
   
   This test case will check that an API Publisher cannot Retrieve API published when apfId is not authorised 
-
-* Pre-Conditions: 
+* Pre-Conditions:
   
-  API Publisher with apgId is not authorised to publish APIs
+  * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
-* Actions:
+* Information of Test:
 
-  GET Retrieve APIs
-    
-  Request Body: [request body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Retrieve all published APIs:
+     * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis
+
+* Execution Steps:
   
-  401 Unauthorized
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Retrieve All published APIs
+   
+* Expected Result:
 
-## Test Case 5: Retrieve single APIs Published by Authorised apfId 
+  1. Response to Publish request must accomplish:
+     1. **401 Non Authorized**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 401
+        * title with message "Unauthorized"
+        * detail with message "Exposer not existing".
+        * cause with message "Exposer id not found".
+
+  2. Service API is NOT stored in CAPIF Database
+
+## Test Case 5: Retrieve single APIs Published by Authorised apfId
+* Test ID: ***capif_api_publish_service-5***
+* Description:
   
-  This test case will check that an API Publisher can Retrieve an API published details
-
-* Pre-Conditions: 
+  This test case will check that an API Publisher can Retrieve API published one by one
+* Pre-Conditions:
   
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+  * At least 2 service APIs are published.
 
-  API has been published an has valid serviceApiId
+* Information of Test:
+
+  1. Create public and private key at publisher
+
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
   
-* Actions:
+  4. Publish Other Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_2
+     * Get apiId
 
-  GET Retrieve API details for serviceApiId
-    
-  Request Body: [request body]
+  5. Retrieve service_1 published APIs detail:
+     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId1}
 
-* Post-Conditions:
+  6. Retrieve service_2 published APIs detail:
+     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId2}
+
+* Execution Steps:
   
-  200 Definition of serviceApiId service API published by the API publishing function.
+  1. Register Publisher at CCF.
+  2. Store signed Certificate.
+  3. Publish Service API service_1.
+  4. Retrieve {apiId1} from body and Location header with new resource created from response.
+  5. Publish Service API service_2.
+  6. Retrieve {apiId2} from body and Location header with new resource created from response.
+  7. Retrieve service_1 API Detail.
+  8. Retrieve service_2 API Detail.
+
+
+* Expected Result:
+
+  1. Response to service 1 Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId1}*
+  2. Response to service 2 Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId2}*
+
+  3. Published Service APIs are stored in CAPIF Database 
+  4. Response to Retrieve service_1 published API using apiId1:
+     1. **200 OK**
+     2. Response body must return a **ServiceAPIDescription** data.
+     3. Array must contain same information than service_1 published registration response.
+  5. Response to Retrieve service_2 published API using apiId2:
+     1. **200 OK**
+     2. Response body must return a **ServiceAPIDescription** data.
+     3. Array must contain same information than service_2 published registration response.
+
 
 ## Test Case 6: Retrieve single APIs non Published by Authorised apfId 
+* Test ID: ***capif_api_publish_service-6***
+* Description:
   
-  This test case will check that an API Publisher cannot Retrieve API published when apfId is not authorised 
-
-* Pre-Conditions: 
+  This test case will check that an API Publisher try to get detail of not published api.
+* Pre-Conditions:
   
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+  * No published api
 
-  API has not been published an has in valid serviceApiId
+* Information of Test:
 
-* Actions:
+  1. Create public and private key at publisher
 
-  GET Retrieve API details for serviceApiId
-    
-  Request Body: [request body]
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
 
-* Post-Conditions:
+  3. Retrieve not published APIs detail:
+     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
+
+* Execution Steps:
   
-  404 Not Found
+  1. Register Publisher at CCF.
+  2. Store signed Certificate.
+  7. Retrieve not published API Detail.
+
+
+* Expected Result:
+
+  1. Response to Retrieve for NOT published API must accomplish:
+     1. **404 Not Found**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Service API not found".
+        * cause with message "No Service with specific credentials exists".
+
 
 ## Test Case 7: Retrieve single APIs Published by NON Authorised apfId 
+* Test ID: ***capif_api_publish_service-7***
+* Description:
   
-  This test case will check that an API Publisher cannot Retrieve API details of non published APIs 
-
-* Pre-Conditions: 
+  This test case will check that an API Publisher cannot Retrieve detailed API published when apfId is not authorised 
+* Pre-Conditions:
   
-  API Publisher is non-authorised to publish APIs and has an invalid apfId 
+  * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
-* Actions:
+* Information of Test:
 
-  GET Retrieve API details for serviceApiId
-    
-  Request Body: [request body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
   
-  401 Unauthorized
+  4. Create public and private key at invoker
 
-## Test Case 8: Update API Published by Authorised apfId with valid serviceApiId 
+  5. Register of Invoker at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [invoker register body]
+
+  6. Onboard Invoker:
+     * Send POST to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  7. Retrieve detailed published APIs:
+     * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/${apiId}
+     * Use invoker certificate
+
+* Execution Steps:
   
-  This test case will check that an API Publisher can Update published API with a valid serviceApiId
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API at CCF
+  4. Retrieve {apiId} from body and Location header with new resource created from response.
+  5. Register and onboard Invoker at CCF
+  6. Store signed Invoker Certificate
+  7. Retrieve detailed published API acting as Invoker
+   
+* Expected Result:
 
-* Pre-Conditions: 
+  1. Response to Retrieve Detailed published API acting as Invoker must accomplish:
+     1. **401 Unauthorized**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status **401**
+        * title with message "Unauthorized"
+        * detail with message "User not authorized".
+        * cause with message "Certificate not authorized".
+
+  2. Service API is NOT stored in CAPIF Database
+
+
+## Test Case 8: Update API Published by Authorised apfId with valid serviceApiId
+* Test ID: ***capif_api_publish_service-8***
+* Description:
   
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
-
-  API has been published an has valid serviceApiId
-
-* Actions:
-
-  PUT Update APIs
-    
-  Request Body: [request body]
-
-* Post-Conditions:
+  This test case will check that an API Publisher can Update published API with a valid serviceApiId 
+* Pre-Conditions:
   
-  200 Definition of service API updated successfully.
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+  * A service APIs is published.
+
+* Information of Test:
+
+  1. Create public and private key at publisher
+
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
+     * get resource url from location Header.
+
+  4. Update published API at CCF:
+     * Send PUT to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}
+     * body [service api description] with overrided apiName to service_1_modified
+  
+  5. Retrieve detail of service API:
+     * Send Get to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}
+     * check apiName is service_1_modified
+
+
+* Execution Steps:
+  
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API
+  4. Retrieve {apiId} from body and Location header with new resource url created from response
+  5. Update published Service API.
+  6. Retrieve detail of Service API
+   
+* Expected Result:
+
+  1. Response to Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
+  2. Response to Update Published Service API:
+     1. **200 OK**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiName service_1_modified
+
+  3. Response to Retrieve detail of Service API:
+     1. **200 OK**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiName service_1_modified.
+  
 
 ## Test Case 9: Update APIs Published by Authorised apfId with invalid serviceApiId  
+* Test ID: ***capif_api_publish_service-9***
+* Description:
   
-  This test case will check that an API Publisher cannot Update API published when API has not been published 
-
-* Pre-Conditions: 
-
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
-
-  API has not been published an has invalid serviceApiId
-* Actions:
-
-  PUT Update APIs
-    
-  Request Body: [request body]
-
-* Post-Conditions:
+  This test case will check that an API Publisher cannot Update published API with a invalid serviceApiId
+* Pre-Conditions:
   
-  404 Not Found
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+
+* Information of Test:
+
+  1. Create public and private key at publisher
+
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  4. Update published API at CCF:
+     * Send PUT to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
+     * body [service api description] with overrided apiName to ***service_1_modified***
+
+* Execution Steps:
+  
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Update published Service API.
+   
+* Expected Result:
+
+  1. Response to Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
+  2. Response to Update Published Service API:
+     1. **404 Not Found**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Service API not found".
+        * cause with message "No Service with specific credentials exists".
 
   ## Test Case 10: Update APIs Published by NON Authorised apfId  
+* Test ID: ***capif_api_publish_service-10***
+* Description:
   
-  This test case will check that an API Publisher cannot Update API published when apfId is not authorised 
-
-* Pre-Conditions: 
+  This test case will check that an API Publisher cannot Update API published when apfId is not authorised
+* Pre-Conditions:
   
-  API Publisher is non-authorised to publish APIs and has invalid apfId  
+  * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
-* Actions:
+* Information of Test:
 
-  PUT Update APIs
-    
-  Request Body: [request body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
   
-  401 Unauthorized
+  4. Create public and private key at invoker
+
+  5. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
+     * body [invoker register body]
+
+  6. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Update published API at CCF:
+     * Send PUT to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+     * body [service api description] with overrided apiName to ***service_1_modified***
+     * Use invoker certificate
+
+  5. Retrieve detail of service API:
+     * Send Get to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
+     * check apiName is service_1
+
+
+* Execution Steps:
+  
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API at CCF
+  4. Retrieve {apiId} from body and Location header with new resource created from response.
+  5. Register and onboard Invoker at CCF
+  6. Store signed Invoker Certificate
+  7. Update published API at CCF as Invoker
+  8. Retrieve detail of Service API as publisher
+   
+* Expected Result:
+
+  1. Response to Update published API acting as Invoker must accomplish:
+     1. **401 Non Authorized**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 401
+        * title with message "Unauthorized"
+        * detail with message "User not authorized".
+        * cause with message "Certificate not authorized".
+
+  2. Response to Retrieve Detail of Service API:
+     1. **200 OK**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiName service_1.
+
 
 ## Test Case 11: Delete API Published by Authorised apfId with valid serviceApiId
+* Test ID: ***capif_api_publish_service-11***
+* Description:
   
   This test case will check that an API Publisher can Delete published API with a valid serviceApiId
-
-* Pre-Conditions: 
+* Pre-Conditions:
   
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
+  * A service APIs is published.
 
-  API has been published an has valid serviceApiId
+* Information of Test:
 
-* Actions:
+  1. Create public and private key at publisher
 
-  DELETE API
-    
-  Request Body: [request body]
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
 
-* Post-Conditions:
+  3. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Get apiId
+
+  4. Remove published Service API at CCF:
+     * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
+  5. Retrieve detail of service API:
+     * Send Get to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
+
+* Execution Steps:
   
-  204 The individual published service API matching the serviceAPiId is deleted.
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Publish Service API
+  4. Retrieve {apiId} from body and Location header with new resource created from response
+  5. Remove published API at CCF
+  6. Try to retreive deleted service API from CCF
+   
+* Expected Result:
+
+  1. Response to Publish request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **ServiceAPIDescription** data structure with:
+        * apiId
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
+  2. Published Service API is stored in CAPIF Database
+  3. Response to Remove published Service API at CCF:
+     1. **204 No Content**
+
+  4. Response to Retrieve for DELETED published API must accomplish:
+     1. **404 Not Found**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Service API not found".
+        * cause with message "No Service with specific credentials exists".
+
 
 ## Test Case 12: Delete APIs Published by Authorised apfId with invalid serviceApiId
+* Test ID: ***capif_api_publish_service-12***
+* Description:
   
-  This test case will check that an API Publisher cannot Delete API published when API has not been published 
-
-* Pre-Conditions: 
-
-  API Publisher is pre-authorised to publish APIs by getting a valid apfId from CAPIF Authority 
-
-  API has not been published an has invalid serviceApiId
-* Actions:
-
-  DELETE API
-    
-  Request Body: [request body]
-
-* Post-Conditions:
+  This test case will check that an API Publisher cannot Delete with invalid serviceApiId
+* Pre-Conditions:
   
-  404 Not Found
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
 
-## Test Case 13: Delete APIs Published by NON Authorised apfId 
+* Information of Test:
+
+  1. Create public and private key at publisher
+
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Remove published Service API at CCF with invalid serviceId:
+     * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
+
+* Execution Steps:
   
-  This test case will check that an API Publisher cannot Delete API published when apfId is not authorised 
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  5. Remove published API at CCF with invalid serviceId
+   
+* Expected Result:
 
-* Pre-Conditions: 
+  1. Response to Remove published Service API at CCF:
+     1. **404 Not Found**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Service API not found".
+        * cause with message "No Service with specific credentials exists".
+
+
+## Test Case 13: Delete APIs Published by NON Authorised apfId
+* Test ID: ***capif_api_publish_service-12***
+* Description:
   
-  API Publisher is non-authorised to publish APIs and has invalid apfId  
-
-* Actions:
-
-  DELETE API
-    
-  Request Body: [request body]
-
-* Post-Conditions:
+  This test case will check that an API Publisher cannot Delete API published when apfId is not authorised
+* Pre-Conditions:
   
-  401 Unauthorized
+  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
+
+* Information of Test:
+
+  1. Create public and private key at publisher
+
+  2. Register of Publisher at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [publisher register body]
+     * Get subscriberId
+     * Get ccf_publish_url
+
+  3. Create public and private key at invoker
+
+  4. Register of Invoker at CCF:
+     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
+     * body [invoker register body]
+
+  5. Onboard Invoker:
+     * Send POST to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  6. Remove published Service API at CCF with invalid serviceId as Invoker:
+     * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
+     * User invoker certificate.
+
+* Execution Steps:
+  
+  1. Register Publisher at CCF
+  2. Store signed Certificate
+  3. Register Invoker and onboard Invoker at CCF
+  4. Remove published API at CCF with invalid serviceId as Invoker
+   
+* Expected Result:
+
+  1. Response to Remove published Service API at CCF:
+     1. **401 Unauthorized**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status **401**
+        * title with message "Unauthorized"
+        * detail with message "User not authorized".
+        * cause with message "Certificate not authorized".
 
 
-  [request body]: ./service_api_description_post_example.json  "Service API Description Request"
+  [service api description]: ./service_api_description_post_example.json  "Service API Description Request"
+  [publisher register body]: ./publisher_register_body.json  "Publish register Body"
+  [invoker onboarding body]: ../api_invoker_management/invoker_details_post_example.json  "API Invoker Request"
+  [invoker register body]: ../api_invoker_management/invoker_register_body.json  "Invoker Register Body"
 
 
   [Return To All Test Plans]: ../README.md

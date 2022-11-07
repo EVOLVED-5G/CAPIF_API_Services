@@ -3,8 +3,8 @@
 - [Test Plan for CAPIF Api Security Service](#test-plan-for-capif-api-security-service)
 - [Tests](#tests)
   - [Test Case 1: Create a security context for an API invoker](#test-case-1-create-a-security-context-for-an-api-invoker)
-  - [Test Case 2: Create a security context for an API invoker with AEF entity role](#test-case-2-create-a-security-context-for-an-api-invoker-with-aef-entity-role)
-  - [Test Case 3: Create a security context for an API invoker with AEF entity role and invalid apiInvokerId](#test-case-3-create-a-security-context-for-an-api-invoker-with-aef-entity-role-and-invalid-apiinvokerid)
+  - [Test Case 2: Create a security context for an API invoker with Exposer role](#test-case-2-create-a-security-context-for-an-api-invoker-with-exposer-role)
+  - [Test Case 3: Create a security context for an API invoker with Exposer entity role and invalid apiInvokerId](#test-case-3-create-a-security-context-for-an-api-invoker-with-exposer-entity-role-and-invalid-apiinvokerid)
   - [Test Case 4: Create a security context for an API invoker with Invoker entity role and invalid apiInvokerId](#test-case-4-create-a-security-context-for-an-api-invoker-with-invoker-entity-role-and-invalid-apiinvokerid)
   - [Test Case 5: Retrieve the Security Context of an API Invoker](#test-case-5-retrieve-the-security-context-of-an-api-invoker)
   - [Test Case 6: Retrieve the Security Context of an API Invoker with invalid apiInvokerID](#test-case-6-retrieve-the-security-context-of-an-api-invoker-with-invalid-apiinvokerid)
@@ -14,15 +14,15 @@
   - [Test Case 10: Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID](#test-case-10-delete-the-security-context-of-an-api-invoker-with-invoker-entity-role-and-invalid-apiinvokerid)
   - [Test Case 11: Delete the Security Context of an API Invoker with invalid apiInvokerID](#test-case-11-delete-the-security-context-of-an-api-invoker-with-invalid-apiinvokerid)
   - [Test Case 12: Update the Security Context of an API Invoker](#test-case-12-update-the-security-context-of-an-api-invoker)
-  - [Test Case 13: Update the Security Context of an API Invoker with AEF entity role](#test-case-13-update-the-security-context-of-an-api-invoker-with-aef-entity-role)
+  - [Test Case 13: Update the Security Context of an API Invoker with Exposer entity role](#test-case-13-update-the-security-context-of-an-api-invoker-with-exposer-entity-role)
   - [Test Case 14: Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId](#test-case-14-update-the-security-context-of-an-api-invoker-with-aef-entity-role-and-invalid-apiinvokerid)
   - [Test Case 15: Update the Security Context of an API Invoker with invalid apiInvokerID](#test-case-15-update-the-security-context-of-an-api-invoker-with-invalid-apiinvokerid)
   - [Test Case 16: Revoke the authorization of the API invoker for APIs.](#test-case-16-revoke-the-authorization-of-the-api-invoker-for-apis)
   - [Test Case 17: Revoke the authorization of the API invoker for APIs without valid apfID.](#test-case-17-revoke-the-authorization-of-the-api-invoker-for-apis-without-valid-apfid)
   - [Test Case 18: Revoke the authorization of the API invoker for APIs with invalid apiInvokerId.](#test-case-18-revoke-the-authorization-of-the-api-invoker-for-apis-with-invalid-apiinvokerid)
   - [Test Case 19: Retrieve access token](#test-case-19-retrieve-access-token)
-  - [Test Case 20: Retrieve access token by AEF](#test-case-20-retrieve-access-token-by-aef)
-  - [Test Case 21: Retrieve access token by AEF with invalid apiInvokerId](#test-case-21-retrieve-access-token-by-aef-with-invalid-apiinvokerid)
+  - [Test Case 20: Retrieve access token by Exposer](#test-case-20-retrieve-access-token-by-exposer)
+  - [Test Case 21: Retrieve access token by Exposer with invalid apiInvokerId](#test-case-21-retrieve-access-token-by-exposer-with-invalid-apiinvokerid)
   - [Test Case 22: Retrieve access token with invalid apiInvokerId](#test-case-22-retrieve-access-token-with-invalid-apiinvokerid)
  
 
@@ -33,471 +33,1096 @@ At this documentation you will have all information and related files and exampl
 # Tests
 
 ## Test Case 1: Create a security context for an API invoker
+* **Test ID**: ***capif_security_api-1***
+* **Description**:
   
-  This test case will check that an API Invoker can create a Security context 
-
-* Pre-Conditions: 
+  This test case will check that an API Invoker can create a Security context
+* **Pre-Conditions**:
   
-  API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) 
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority)
 
-* Actions:
+* **Information of Test**:
 
-  PUT /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is stored in CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Store signed Certificate
+  3. Create Security Context
+   
+* **Expected Result**:
 
-  201 Successful created. 
+  1. Create security context:
+     1. **201 Created** response.
+     2. body returned must accomplish **ServiceSecurity** data structure.
+     3. Location Header must contain the new resource URL *{apiRoot}/capif-security/v1/trustedInvokers/{apiInvokerId}*
 
-  Security Context created sucessfully The URI of the created resource shall be returned in the "Location" HTTP header. 
 
-  Location Contains the URI of the newly created resource, according to the structure: {apiRoot}/capif-security/v1/trustedInvokers/{apiInvokerId}
-
-## Test Case 2: Create a security context for an API invoker with AEF entity role
+## Test Case 2: Create a security context for an API invoker with Exposer role
+* **Test ID**: ***capif_security_api-2***
+* **Description**:
   
-  This test case will check that an API Exposure Function cannot create a Security context without valid apiInvokerID
-
-* Pre-Conditions: 
+  This test case will check that an Exposer cannot create a Security context with valid apiInvokerId.
+* **Pre-Conditions**:
   
-  API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context has AEF role
+  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with Exposer role
 
-* Actions:
+* **Information of Test**:
 
-  PUT /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create public and private key at publisher
+
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  6. Create Security Context for this Invoker but using Exposer certificate.
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Exposer certificate
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is not stored in CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context using Exposer certificate
+   
+* **Expected Result**:
 
-  403 Forbidden
-## Test Case 3: Create a security context for an API invoker with AEF entity role and invalid apiInvokerId
+  1. Create security context using Exposer certificate:
+     1. **403 Forbiddent** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be invoker".
+
+  2. No context stored at DB
+
+## Test Case 3: Create a security context for an API invoker with Exposer entity role and invalid apiInvokerId
+* **Test ID**: ***capif_security_api-3***
+* **Description**:
+
+  This test case will check that an Exposer cannot create a Security context with invalid apiInvokerID.
+* **Pre-Conditions**:
   
-  This test case will check that an API Exposure Function cannot create a Security context without valid apiInvokerID
+  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with Exposer role
 
-* Pre-Conditions: 
+* **Information of Test**:
+
+  1. Create public and private key at publisher
+
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  3. Create Security Context for this not valid apiInvokerId and using Exposer certificate.
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
+     * body [service security body]
+     * Using Exposer certificate
+
+* **Execution Steps**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerID) and user user that create Security Context has AEF role
+  1. Register Exposer at CCF
+  2. Create Security Context using Exposer certificate
+   
+* **Expected Result**:
 
-* Actions:
-
-  PUT /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
-
-* Post-Conditions:
-  
-  Security Context for API Invoker is not stored in CAPIF Database
-
-  403 Forbidden 
+  1. Create security context using Exposer certificate:
+     1. **403 Forbiddent** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be invoker".
+  2. No context stored at DB
 
 ## Test Case 4: Create a security context for an API invoker with Invoker entity role and invalid apiInvokerId
+* **Test ID**: ***capif_security_api-4***
+* **Description**:
   
-  This test case will check that an API Invoker cannot create a Security context without valid apiInvokerID
-
-* Pre-Conditions: 
+  This test case will check that an Invoker cannot create a Security context with valid apiInvokerId.
+* **Pre-Conditions**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerID) 
+  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with invalid apiInvokerId
 
-* Actions:
+* **Information of Test**:
 
-  PUT /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
+     * body [service security body]
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is not stored in CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Create Security Context using Exposer certificate
+   
+* **Expected Result**:
 
-  404 Not found
+  1. Create security context using Exposer certificate:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
+
+  2. No context stored at DB
+
   
 ## Test Case 5: Retrieve the Security Context of an API Invoker
+* **Test ID**: ***capif_security_api-5***
+* **Description**:
   
-  This test case will check that an API Exposure Function can retrieve the Security context of an API Invoker
-
-* Pre-Conditions: 
+  This test case will check that an exposer can retrieve the Security context of an API Invoker
+* **Pre-Conditions**:
   
-  API Exposure Function is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
+  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
-* Actions:
+* **Information of Test**:
 
-  GET /trustedInvokers/{apiInvokerId}:
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker but using Exposer certificate.
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Exposer certificate
+
+  5. Create public and private key at publisher
+
+  6. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  7. Retrieve Security Context of Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is returned from CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context using Exposer certificate
+  4. Retrieve Security Context by exposer
+   
+* **Expected Result**:
+  1. Retrieve security context:
+     1. **200 OK** response.
+     2. body returned must accomplish **ServiceSecurity** data structure.
 
-  200 The security related information of the API Invoker based on the request from the API exposing function.
 
 ## Test Case 6: Retrieve the Security Context of an API Invoker with invalid apiInvokerID
+* **Test ID**: ***capif_security_api-6***
+* **Description**:
   
-  This test case will check that an API Exposure Function cannot retrieve the Security context of an API Invoker without valid apiInvokerID
-
-* Pre-Conditions: 
+  This test case will check that an exposer can retrieve the Security context of an API Invoker
+* **Pre-Conditions**:
   
-  API Exposure Function is pre-authorised (has valid apfId from CAPIF Authority) but API Invoker has not created a valid Security Context
+  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
-* Actions:
+* **Information of Test**:
 
-  GET /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  3. Retrieve Security Context of invalid Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
+
+* **Execution Steps**:
   
-  Security Context is not found in CAPIF Database
+  2. Register Exposer at CCF
+  3. Create Security Context using Exposer certificate
+  4. Retrieve Security Context by exposer of invalid invoker
+   
+* **Expected Result**:
+  1. Retrieve security context:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
 
-  404 Not Found
 
 ## Test Case 7: Retrieve the Security Context of an API Invoker with invalid apfId
+* **Test ID**: ***capif_security_api-7***
+* **Description**:
   
-  This test case will check that an API Exposure Function cannot retrieve the Security context of an API Invoker without valid apfId
-
-* Pre-Conditions: 
+  This test case will check that an Exposer cannot retrieve the Security context of an API Invoker without valid apfId
+* **Pre-Conditions**:
   
-  API Exposure Function is not pre-authorised (has invalid apfId )
+  * API Exposure Function is not pre-authorised (has invalid apfId)
 
-* Actions:
+* **Information of Test**:
 
-  GET /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+
+  5. Retrieve Security Context as Invoker role:
+     1. Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+
+* **Execution Steps**:
   
-  apfId is not found in CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Store signed Certificate
+  3. Create Security Context
+  4. Retrieve Security Context as Exposer.
+   
+* **Expected Result**:
 
-  403 Forbidden
+  1. Create security context:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be exposer".
+
 
 ## Test Case 8: Delete the Security Context of an API Invoker
+* **Test ID**: ***capif_security_api-8***
+* **Description**:
   
-  This test case will check that an API Exposure Function can delete a Security context 
-
-* Pre-Conditions: 
+  This test case will check that an Exposer can delete a Security context
+* **Pre-Conditions**:
   
-  API Exposure Function is pre-authorised (has valid apfID) 
+  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
-* Actions:
+* **Information of Test**:
 
-  DELETE /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker but using Exposer certificate.
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Exposer certificate
+
+  5. Create public and private key at publisher
+
+  6. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  7. Delete Security Context of Invoker by Exposer:
+     * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * Use exposer certificate
+
+  8. Retrieve Security Context of Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is deleted in CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context using Exposer certificate
+  4. Delete Security Context by exposer
+   
+* **Expected Result**:
 
-  204 No Content (Successful deletion of the existing subscription) 
+  1. Delete security context:
+     1. **204 No Content** response.
+
+  2. Retrieve security context:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
+
 
 ## Test Case 9: Delete the Security Context of an API Invoker with Invoker entity role
+* **Test ID**: ***capif_security_api-9***
+* **Description**:
   
-  This test case will check that an API Invoker cannot delete a Security context
-
-* Pre-Conditions: 
+  This test case will check that an Invoker cannot delete a Security context
+* **Pre-Conditions**:
   
-  API Invoker is pre-authorised (has valid apiInvokerID)
+  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
-* Actions:
+* **Information of Test**:
 
-  DELETE /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker but using Exposer certificate.
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Exposer certificate
+
+  7. Delete Security Context of Invoker by Exposer:
+     * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * Use invoker certificate
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is not deleted in CAPIF Database
+  1. Register Exposer at CCF
+  2. Create Security Context using Exposer certificate
+  3. Delete Security Context by invoker
+   
+* **Expected Result**:
 
-  403 Forbidden
+  1. Delete security context:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be exposer".
+
 
 ## Test Case 10: Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
+* **Test ID**: ***capif_security_api-10***
+* **Description**:
   
-  This test case will check that an API Invoker cannot delete a Security context
-
-* Pre-Conditions: 
+  This test case will check that an Invoker cannot delete a Security context with invalid 
+* **Pre-Conditions**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerID)
+  * Invoker is pre-authorised.
 
-* Actions:
+* **Information of Test**:
 
-  DELETE /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Delete Security Context of Invoker by Exposer:
+     * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
+     * Use invoker certificate
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is not deleted in CAPIF Database
+  1. Register Exposer at CCF
+  3. Delete Security Context by invoker
+   
+* **Expected Result**:
 
-  403 Forbidden
+  1. Delete security context:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be exposer".
+
 
 ## Test Case 11: Delete the Security Context of an API Invoker with invalid apiInvokerID
+* **Test ID**: ***capif_security_api-11***
+* **Description**:
   
-  This test case will check that an API Exposure Function cannot delete a Security context of invalid apiInvokerId
-
-* Pre-Conditions: 
+  This test case will check that an Exposer cannot delete a Security context of invalid apiInvokerId
+* **Pre-Conditions**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerID)
+  * Exposer is pre-authorised (has valid apfId from CAPIF Authority).
 
-* Actions:
+* **Information of Test**:
 
-  DELETE /trustedInvokers/{apiInvokerId}:
-    
-  Request Body: [service security body]
+  1. Create public and private key at publisher
 
-* Post-Conditions:
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  3. Delete Security Context of Invoker by Exposer:
+     * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
+     * Use exposer certificate
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is not deleted in CAPIF Database
+  1. Register Exposer at CCF
+  2. Delete Security Context by exposer
+   
+* **Expected Result**:
 
-  404 Forbidden
+  1. Retrieve security context:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
+
 
 ## Test Case 12: Update the Security Context of an API Invoker 
+* **Test ID**: ***capif_security_api-12***
+* **Description**:
   
-  This test case will check that an API Invoker can update a Security context 
-
-* Pre-Conditions: 
+  This test case will check that an API Invoker can update a Security context
+* **Pre-Conditions**:
   
-  API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) 
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
 
-* Actions:
+* **Information of Test**:
 
-  POST  /trustedInvokers/{apiInvokerId}/update: 
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create public and private key at publisher
   
-  Security Context for API Invoker is updated in CAPIF Database
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
 
-  200 Successful updated.
+  6. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+ 
+  7. Update Security Context of Invoker:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/update*
+     * body [service security body] but with notification destination modified to http://robot.testing2
 
-Create a security context for an API invoker with Invoker entity role and invalid apiInvokerId
+  8. Retrieve Security Context of Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
-## Test Case 13: Update the Security Context of an API Invoker with AEF entity role
+* **Execution Steps**:
   
-  This test case will check that an API Exposure Function cannot update a Security context
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context
+  4. Update Security Context
+  5. Retrieve Security Context
+   
+* **Expected Result**:
 
-* Pre-Conditions: 
+  1. Update security context:
+     1. **200 OK** response.
+     2. body returned must accomplish **ServiceSecurity** data structure.
+ 
+  2. Retrieve security context:
+     1. **200 OK** response.
+     2. body returned must accomplish **ServiceSecurity** data structure.
+        1. Check is this returned object match with modified one.
+
+
+## Test Case 13: Update the Security Context of an API Invoker with Exposer entity role
+* **Test ID**: ***capif_security_api-13***
+* **Description**:
   
-  API Invoker is pre-authorised (has valid apiInvokerID) 
+  This test case will check that an Exposer cannot update a Security context
 
-* Actions:
-
-  POST  /trustedInvokers/{apiInvokerId}/update: 
-    
-  Request Body: [service security body]
-
-* Post-Conditions:
+* **Pre-Conditions**:
   
-  Security Context for API Invoker is not updated in CAPIF Database
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized.
+  * Invoker has created the Security Context previously.
 
-  403 Forbidden
+* **Information of Test**:
+
+  1. Create public and private key at invoker
+
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create public and private key at publisher
+  
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  6. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+ 
+  7. Update Security Context of Invoker:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/update*
+     * body [service security body] but with notification destination modified to http://robot.testing2
+     * Using Exposer Certificate
+
+* **Execution Steps**:
+  
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context
+  4. Update Security Context as Exposer
+   
+* **Expected Result**:
+
+  1. Update security context:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be invoker". 
+
 
 ## Test Case 14: Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId
+* **Test ID**: ***capif_security_api-14***
+* **Description**:
   
-  This test case will check that an API Exposure Function cannot update a Security context
+  This test case will check that an Exposer cannot update a Security context of invalid apiInvokerId
 
-* Pre-Conditions: 
+* **Pre-Conditions**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerID) 
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized.
+  * Invoker has created the Security Context previously.
 
-* Actions:
+* **Information of Test**:
 
-  POST  /trustedInvokers/{apiInvokerId}/update: 
-    
-  Request Body: [service security body]
-
-* Post-Conditions:
+  1. Create public and private key at publisher
   
-  Security Context for API Invoker is not updated in CAPIF Database
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+ 
+  3. Update Security Context of Invoker:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/update*
+     * body [service security body]
+     * Using Exposer Certificate
 
-  403 Forbidden
+* **Execution Steps**:
+  
+  1. Register Exposer at CCF
+  2. Update Security Context as Exposer
+   
+* **Expected Result**:
+
+  1. Update security context:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be invoker". 
+
 
 ## Test Case 15: Update the Security Context of an API Invoker with invalid apiInvokerID
+* **Test ID**: ***capif_security_api-15***
+* **Description**:
   
-  This test case will check that an API Invoker cannot update a Security context without valid apiInvokerId
-
-* Pre-Conditions: 
+  This test case will check that an API Invoker cannot update a Security context not valid apiInvokerId
+* **Pre-Conditions**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerID) 
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority)
 
-* Actions:
+* **Information of Test**:
 
-  POST  /trustedInvokers/{apiInvokerId}/update: 
-    
-  Request Body: [service security body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+ 
+  4. Update Security Context of Invoker:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/update*
+     * body [service security body] but with notification destination modified to http://robot.testing2
+
+* **Execution Steps**:
   
-  Security Context for API Invoker is not updated in CAPIF Database
+  1. Register and onboard Invoker at CCF
+  2. Update Security Context
+   
+* **Expected Result**:
 
-  404 Not Found
+1. Retrieve security context:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
 
 
 ## Test Case 16: Revoke the authorization of the API invoker for APIs.
+* **Test ID**: ***capif_security_api-16***
+* **Description**:
   
-  This test case will check that an API Exposure Function can revoke the authorization for APIs
+  This test case will check that an Exposer can revoke the authorization for APIs
 
-* Pre-Conditions: 
+* **Pre-Conditions**:
   
-  API Exposure Function is pre-authorised (has valid apfID) 
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
 
-* Actions:
+* **Information of Test**:
 
-  POST  /trustedInvokers/{apiInvokerId}/delete: 
-    
-  Request Body: [security notification body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create public and private key at publisher
   
-  Security Context for API Invoker to access APIs of APIE Exposure Function is deleted in CAPIF Database
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
 
-  204 Successful revoked.
+  6. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+ 
+  7. Revoke Authorization:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/delete*
+     * body [security notification body]
+
+  8. Retrieve Security Context of Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+
+
+* **Execution Steps**:
+  
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context
+  4. Revoke Security Context by exposer
+  5. Retrieve Security Context
+   
+* **Expected Result**:
+
+  1. Revoke Authorization:
+     1. **204 No Content** response.
+
+  2. Retrieve security context:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
+
 
 ## Test Case 17: Revoke the authorization of the API invoker for APIs without valid apfID.
+* **Test ID**: ***capif_security_api-17***
+* **Description**:
   
-  This test case will check that an API Exposure Function cannot revoke the authorization for APIs without valid apfId
+  This test case will check that an Invoker can't revoke the authorization for APIs
 
-* Pre-Conditions: 
+* **Pre-Conditions**:
   
-  API Exposure Function is not pre-authorised (has invalid apfID) 
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
 
-* Actions:
+* **Information of Test**:
 
-  POST  /trustedInvokers/{apiInvokerId}/delete: 
-    
-  Request Body: [security notification body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create public and private key at publisher
   
-  Security Context for API Invoker to access APIs of APIE Exposure Function is not deleted in CAPIF Database
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
 
-  403 Forbidden
+  6. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+ 
+  7. Revoke Authorization by invoker:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/delete*
+     * body [security notification body]
+     * using invoker certificate
+
+  8. Retrieve Security Context of Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+
+
+* **Execution Steps**:
+  
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context
+  4. Revoke Security Context by invoker
+  5. Retrieve Security Context
+   
+* **Expected Result**:
+
+  1. Revoke Security Context by invoker:
+     1. **403 Forbidden** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 403
+        * title with message "Forbidden"
+        * detail with message "Role not authorized for this API route".
+        * cause with message "User role must be exposer". 
+
+  3. Retrieve security context:
+     1. **200 OK** response.
+     2. body returned must accomplish **ServiceSecurity** data structure.
+        1. Check is this returned object match with created one.
+
 
 ## Test Case 18: Revoke the authorization of the API invoker for APIs with invalid apiInvokerId.
+* **Test ID**: ***capif_security_api-18***
+* **Description**:
   
   This test case will check that an API Exposure Function cannot revoke the authorization for APIs for invalid apiInvokerId
 
-* Pre-Conditions: 
+* **Pre-Conditions**:
   
-  API Exposure Function is  pre-authorised (has valid apfID) but apiIvokerId has no Security Context
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
 
-* Actions:
+* **Information of Test**:
 
-  POST  /trustedInvokers/{apiInvokerId}/delete: 
-    
-  Request Body: [security notification body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create public and private key at publisher
   
-  Security Context for API Invoker to access APIs of APIE Exposure Function is not deleted in CAPIF Database
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
 
-  404 Not Found
+  6. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+ 
+  7. Revoke Authorization by exposer:
+     * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/delete*
+     * body [security notification body]
+
+  8. Retrieve Security Context of Invoker by Exposer:
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+
+
+* **Execution Steps**:
+  
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context
+  4. Revoke Security Context by exposer
+  5. Retrieve Security Context
+   
+* **Expected Result**:
+
+  1. Revoke Security Context by invoker:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails** data structure, with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker not found".
+        * cause with message "API Invoker not exists or invalid ID".
+
+  3. Retrieve security context:
+     1. **200 OK** response.
+     2. body returned must accomplish **ServiceSecurity** data structure.
+        1. Check is this return one object that match with created one.
+
 
 ## Test Case 19: Retrieve access token
+* **Test ID**: ***capif_security_api-19***
+* **Description**:
   
-  This test case will check that an API Invoker can retrieve a security access token 
-
-* Pre-Conditions: 
+  This test case will check that an API Invoker can retrieve a security access token OAuth 2.0.
+* **Pre-Conditions**:
   
-  API Invoker is pre-authorised (has valid apiInvokerId)
+  * API Invoker is pre-authorised (has valid apiInvokerId)
 
-* Actions:
+* **Information of Test**:
 
-  POST /securities/{securityId}/token: //securityId will be the apiInvokerId
-    
-  Request Body: [access token req body]
+  1. Create public and private key at invoker
 
-* Post-Conditions:
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
+
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
+
+  4. Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
   
-  OAuth 2.0 access token is provided to API Invoker
-
-  200 Successful Access Token Request
-
-## Test Case 20: Retrieve access token by AEF
+  5. Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * grant_type=client_credentials
   
-  This test case will check that an API Exposure Function cannot retrieve a security access token
-
-* Pre-Conditions: 
+* **Execution Steps**:
   
-  API Invoker is not pre-authorised (has invalid apiInvokerId)
+  1. Register and onboard Invoker at CCF
+  2. Store signed Certificate
+  3. Create Security Context
+  4. Request Access Token
+   
+* **Expected Result**:
 
-* Actions:
+  1. Response to Request of Access Token:
+     1. **200 OK**
+     2. body must follow **AccessTokenRsp** with:
+        1. access_token present
+        2. token_type=Bearer
 
-  POST /securities/{securityId}/token: //securityId will be the apiInvokerId
-    
-  Request Body: [access token req body]
-
-* Post-Conditions:
+## Test Case 20: Retrieve access token by Exposer
+* **Test ID**: ***capif_security_api-20***
+* **Description**:
   
-  OAuth 2.0 access token is not provided to API Invoker
+  This test case will check that an API Exposure Function cannot revoke the authorization for APIs for invalid apiInvokerId
 
-  400 with next body:
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
 
-  400 BAD REQUEST with next body:
+* **Information of Test**:
 
-```
-{
-  "error": "invalid_client", 
-  "error_description": "Role not authorized for this API route"
-} 
-```
-  ## Test Case 21: Retrieve access token by AEF with invalid apiInvokerId
+  1. Create public and private key at invoker
 
-  is test case will check that an API Exposure Function cannot retrieve a security access token without valid apiInvokerId
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
 
-* Pre-Conditions:
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
 
-  API Invoker is not pre-authorised (has invalid apiInvokerId)
+  4. Create public and private key at publisher
+  
+  5. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
 
-* Actions:
+  6. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
 
-  POST /securities/{securityId}/token: //securityId will be the apiInvokerId
+  7. Request Access Token by exposer:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * grant_type=client_credentials
+     * using exposer certificate
 
-  Request Body: [access token req body]
+* **Execution Steps**:
+  
+  1. Register and onboard Invoker at CCF
+  2. Register Exposer at CCF
+  3. Create Security Context
+  4. Request Access Token by exposer
+   
+* **Expected Result**:
 
-* Post-Conditions:
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error "invalid_client"
+        * error_description with message "Role not authorized for this API route"
 
-  OAuth 2.0 access token is not provided to API Invoker
 
+## Test Case 21: Retrieve access token by Exposer with invalid apiInvokerId
+* **Test ID**: ***capif_security_api-21***
+* **Description**:
+  
+  This test case will check that an API Exposure Function cannot retrieve a security access token without valid apiInvokerId
 
-  400 BAD REQUEST with next body:
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised and Exposer is also authorized
 
-```
-{
-  "error": "invalid_client", 
-  "error_description": "Role not authorized for this API route"
-} 
-```
+* **Information of Test**:
+
+  1. Create public and private key at publisher
+  
+  2. Register of Exposer at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [publisher register body]
+     * Get subscriberId
+
+  3. Request Access Token to invalid Invoker by exposer:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
+     * body [access token req body]
+     * securityId is API_INVOKER_NOT_VALID
+     * grant_type=client_credentials
+     * using exposer certificate
+
+* **Execution Steps**:
+  
+  1. Register Exposer at CCF
+  2. Create Security Context
+  3. Request Access Token by exposer
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error "invalid_client"
+        * error_description with message "Role not authorized for this API route"
+
 
 ## Test Case 22: Retrieve access token with invalid apiInvokerId
-
+* **Test ID**: ***capif_security_api-22***
+* **Description**:
+  
   This test case will check that an API Invoker can't retrieve a security access token without valid apiInvokerId
 
-* Pre-Conditions:
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised (has valid apiInvokerId)
 
-  API Invoker is pre-authorised (has valid apiInvokerId)
+* **Information of Test**:
 
-* Actions:
+  1. Create public and private key at invoker
 
-  POST /securities/{securityId}/token: //securityId will be the apiInvokerId
+  2. Register of Invoker at CCF:
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * body [invoker register body]
 
-  Request Body: [access token req body]
+  3. Onboard Invoker:
+     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
+     * Reference Request Body: [invoker onboarding body]
+     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
 
-* Post-Conditions:
+  4. Create Security Context for this Invoker:
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
 
-  OAuth 2.0 access token is provided to API Invoker
+  5. Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
+     * body [access token req body]
+     * securityId is API_INVOKER_NOT_VALID
+     * grant_type=client_credentials
+     * using exposer certificate
 
-  400 BAD REQUEST with next body:
+* **Execution Steps**:
+  
+  1. Register and onboard Invoker at CCF
+  2. Create Security Context
+  3. Request Access Token by invoker
+   
+* **Expected Result**:
 
-```
-{
-  "error": "invalid_request", 
-  "error_description": "No Security Context for this API Invoker"} 
-} 
-```
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error "invalid_request"
+        * error_description with message "No Security Context for this API Invoker"
+
+
 
   [Return To All Test Plans]: ../README.md
 
@@ -506,3 +1131,6 @@ Create a security context for an API invoker with Invoker entity role and invali
   [service security body]: ./service_security.json  "Service Security Request"
   [security notification body]: ./security_notification.json  "Security Notification Request"
   [access token req body]: ./access_token_req.json  "Access Token Request"
+  [invoker onboarding body]: ../api_invoker_management/invoker_details_post_example.json  "API Invoker Request"
+  [invoker register body]: ../api_invoker_management/invoker_register_body.json  "Invoker Register Body"
+

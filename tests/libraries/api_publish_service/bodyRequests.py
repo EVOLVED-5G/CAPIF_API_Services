@@ -1,4 +1,4 @@
-def create_service_api_description(api_name="3gpp-monitoring-event"):
+def create_service_api_description(api_name="service_1"):
     return {
         "apiName": api_name,
         "aefProfiles": [

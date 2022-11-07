@@ -1,5 +1,5 @@
 {
-  "notificationDestination": "http://host.docker.internal:8086/netapp_callback",
+  "notificationDestination": "http://host.docker.internal:8086/netapp_new_callback",
   "supportedFeatures": "fffffff",
   "apiInvokerInformation": "ROBOT_TESTING_INVOKER",
   "websockNotifConfig": {
