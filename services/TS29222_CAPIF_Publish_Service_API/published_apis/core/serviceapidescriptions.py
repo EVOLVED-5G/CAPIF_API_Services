@@ -93,10 +93,10 @@ class PublishServiceOperations:
                                     cause="This API is only available for publishers")
                  return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
 
-            service = mycol.find_one({"apf_id": apf_id})
+            service = mycol.find_one({"api_name": serviceapidescription.api_name})
             if service is not None:
-                prob = ProblemDetails(title="Service exist", status=409, detail="Already registered service with same apf id",
-                                    cause="Found service with same aef id")
+                prob = ProblemDetails(title="Service exist", status=409, detail="Already registered service with same api name",
+                                    cause="Found service with same api name")
                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
 
             else:

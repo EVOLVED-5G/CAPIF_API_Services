@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import connexion
+import sys
 
 from capif_events import encoder
 
@@ -24,9 +25,6 @@ app.add_api('openapi.yaml',
 config = Config()
 config.chargeMQTTConfig(app)
 
-app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
-
-
 notifications = Notifications()
 jwt = JWTManager(app.app)
 mqtt = Mqtt(app.app)
@@ -34,12 +32,11 @@ mqtt = Mqtt(app.app)
 
 @mqtt.on_connect()
 def handle_connect(client, userdata, flags, rc):
-    app.app.logger.info("Subscribe to topic")
-    mqtt.subscribe('/events')
+    if rc == 0:
+       mqtt.subscribe('/events')
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
-    app.app.logger.info("Receive Event")
     data = dict(
         topic=message.topic,
         payload=message.payload.decode()

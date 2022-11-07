@@ -76,7 +76,11 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     if connexion.request.is_json:
         body = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
 
-    return service_security_ops.revoke_api_authorization(api_invoker_id, body)
+    res = service_security_ops.revoke_api_authorization(api_invoker_id, body)
+    if res.status_code == 204:
+        mqtt = current_app.config['INSTANCE_MQTT']
+        mqtt.publish("/events","API_INVOKER_AUTHORIZATION_REVOKED")
+    return res
 
 
 def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=False, authorization_info=False):  # noqa: E501

@@ -45,6 +45,8 @@ services:
     build: TS29222_CAPIF_Events_API/.
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Events_API:/usr/src/app
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
       - mosquitto

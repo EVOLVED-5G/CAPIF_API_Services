@@ -17,11 +17,13 @@ import requests
 from ..models.access_token_err import AccessTokenErr
 from ..models.service_security import ServiceSecurity
 from ..util import dict_to_camel_case
+from .notification import Notifications
 import os
 
 class SecurityOperations:
 
     def __init__(self):
+        self.notification = Notifications()
         self.db = MongoDatabse()
         self.mimetype = 'application/json'
 
@@ -128,10 +130,16 @@ class SecurityOperations:
                     security_methods = service_instance.interface_details.security_methods
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_method = set(security_methods) & set(pref_security_methods)
+
+                    if len(list(valid_security_method)):
+                        prob = ProblemDetails(title="Pref Security Methods Error", status=400, detail="Not found compatible security method with pref security method",
+                            cause="Error pref security method")
+                        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+
                     service_instance.sel_security_method = list(valid_security_method)[0]
                 else:
                     capif_service_col = self.db.get_col_by_name(self.db.capif_service_col)
-                    services_security_object = capif_service_col.find_one({"aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
+                    services_security_object = capif_service_col.find_one({"api_id":service_instance.api_id, "aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
                         prob = ProblemDetails(title="Service Not found", status=404, detail="Service with this aefId not found",
@@ -141,6 +149,12 @@ class SecurityOperations:
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
                     valid_security_method = set(valid_security_methods) & set(pref_security_methods)
+
+                    if len(list(valid_security_method)):
+                        prob = ProblemDetails(title="Pref Security Methods Error", status=400, detail="Not found compatible security method with pref security method",
+                            cause="Error pref security method")
+                        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype=self.mimetype)
+
                     service_instance.sel_security_method = list(valid_security_method)[0]
 
             rec = dict()
@@ -283,12 +297,22 @@ class SecurityOperations:
             return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
 
         myQuery = {'api_invoker_id': api_invoker_id}
-        services_security_count = mycol.count_documents(myQuery)
+        services_security_context = mycol.find_one(myQuery)
 
-        if services_security_count == 0:
+        if services_security_context == None:
 
             prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
                                 cause="API Invoker has no security context")
             return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
-        mycol.delete_many(myQuery)
+
+        updated_security_context = services_security_context.copy()
+        for context in services_security_context["security_info"]:
+            index = context.index()
+            if security_notification.aef_id == context["aef_id"] or context["api_id"] in security_notification.api_ids:
+                updated_security_context["security_info"].pop(index)
+
+        mycol.replace_one(myQuery, updated_security_context)
+
+        self.notification.send_notification(services_security_context["notificationDestination"], security_notification)
+
         return "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
