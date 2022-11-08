@@ -4,6 +4,7 @@ import sys
 import rfc3987
 import re
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 import requests
 from .responses import bad_request_error, not_found_error, forbidden_error, internal_server_error, make_response
@@ -99,10 +100,10 @@ class InvokerManagementOperations:
                 key: value for key, value in apiinvokerenrolmentdetail_update.items() if value is not None
             }
 
-            result = mycol.update_one(result, {"$set":apiinvokerenrolmentdetail_update}, upsert=False)
+            result = mycol.find_one_and_update(result, {"$set":apiinvokerenrolmentdetail_update}, return_document=ReturnDocument.AFTER ,upsert=False)
 
             current_app.logger.debug("Invoker Resource inserted in database")
-            res = make_response(object=dict_to_camel_case(result.raw_result), status=200)
+            res = make_response(object=dict_to_camel_case(result), status=200)
             return res
 
         except Exception as e:
