@@ -12,6 +12,7 @@ import json
 from ..encoder import JSONEncoder
 from ..db.db import MongoDatabse
 from ..models.problem_details import ProblemDetails
+from ..util import dict_to_camel_case
 
 class InvokerManagementOperations:
 
@@ -98,10 +99,10 @@ class InvokerManagementOperations:
                 key: value for key, value in apiinvokerenrolmentdetail_update.items() if value is not None
             }
 
-            mycol.update_one(result, {"$set":apiinvokerenrolmentdetail_update}, upsert=False)
+            result = mycol.update_one(result, {"$set":apiinvokerenrolmentdetail_update}, upsert=False)
 
             current_app.logger.debug("Invoker Resource inserted in database")
-            res = make_response(object=apiinvokerenrolmentdetail, status=200)
+            res = make_response(object=dict_to_camel_case(result.raw_result), status=200)
             return res
 
         except Exception as e:
