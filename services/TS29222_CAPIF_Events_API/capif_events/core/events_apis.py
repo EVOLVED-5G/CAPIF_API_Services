@@ -1,5 +1,6 @@
 import sys
 
+import rfc3987
 import pymongo
 import secrets
 import re
@@ -21,6 +22,8 @@ class EventSubscriptionsOperations:
         mycol_invoker= self.db.get_col_by_name(self.db.invoker_collection)
         mycol_provider= self.db.get_col_by_name(self.db.provider_collection)
 
+        current_app.logger.debug("Cheking subscriber id")
+
         invoker_query = {"api_invoker_id":subscriber_id}
 
         invoker = mycol_invoker.find_one(invoker_query)
@@ -30,6 +33,7 @@ class EventSubscriptionsOperations:
         provider = mycol_provider.find_one(provider_query)
 
         if invoker is None and provider is None:
+            current_app.logger.error("Not found invoker or provider with this subscriber id")
             return not_found_error(detail="Not found Subscriber", cause="Not found Invoker or APF or AEF or AMF")
 
         return None
@@ -39,8 +43,10 @@ class EventSubscriptionsOperations:
         try:
             mycol = self.db.get_col_by_name(self.db.event_collection)
 
-            if not re.match("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$", event_subscription.notification_destination):
+            current_app.logger.debug("Creating event")
 
+            if rfc3987.match(event_subscription.notification_destination, rule="URI") is None:
+                current_app.logger.error("Bad url format")
                 return bad_request_error(detail="Bad Param", cause = "Detected Bad formar of param", invalid_params=[{"param": "notificationDestination", "reason": "Not valid URL format"}])
 
             ## Verify that this subscriberID exist in publishers or invokers
@@ -60,20 +66,26 @@ class EventSubscriptionsOperations:
             evnt.update(event_subscription.to_dict())
             mycol.insert_one(evnt)
 
+            current_app.logger.debug("Event Subscription inserted in database")
 
             res = make_response(object=event_subscription, status=201)
             res.headers['Location'] = "http://localhost:8080/capif-events/v1/" + \
                 str(subscriber_id) + "/subscriptions/" + str(subscription_id)
+
             return res
 
         except Exception as e:
             exception = "An exception occurred in create event"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)
 
     def delete_event(self, subscriber_id, subscription_id):
 
         try:
             mycol = self.db.get_col_by_name(self.db.event_collection)
+
+            current_app.logger.debug("Removing event subscription")
+
             result = self.__check_subscriber_id(subscriber_id)
 
 
@@ -85,12 +97,16 @@ class EventSubscriptionsOperations:
             eventdescription = mycol.find_one(myQuery)
 
             if eventdescription is None:
-                return not_found_error(detail="Service API not existing", cause="Event API subscription id not found")
+                current_app.logger.error("Event subscription not found")
+                return not_found_error(detail="Event subscription not exist", cause="Event API subscription id not found")
 
             mycol.delete_one(myQuery)
+            current_app.logger.debug("Event subscription removed from database")
+
             out =  "The event matching subscriptionId  " + subscription_id + " was deleted."
             return make_response(out, status=204)
 
         except Exception as e:
             exception= "An exception occurred in delete event"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)

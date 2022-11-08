@@ -26,6 +26,7 @@ def apf_id_service_apis_get(apf_id):  # noqa: E501
 
     :rtype: ServiceAPIDescription
     """
+    current_app.logger.info("Obtainig all service published")
     res = service_operations.get_serviceapis(apf_id)
 
     return res
@@ -44,12 +45,14 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
     :rtype: ServiceAPIDescription
     """
 
+    current_app.logger.info("Publishing service")
     if connexion.request.is_json:
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     res = service_operations.add_serviceapidescription(apf_id, body)
-   
+
     if res.status_code == 201:
+        current_app.logger.info("Service published")
         mqtt = current_app.config['INSTANCE_MQTT']
         mqtt.publish("/events","SERVICE_API_AVAILABLE")
     return res
@@ -68,9 +71,11 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
     :rtype: None
     """
 
+    current_app.logger.info("Removing service published")
     res = service_operations.delete_serviceapidescription(service_api_id, apf_id)
 
     if res.status_code == 204:
+        current_app.logger.info("Removed service published")
         mqtt = current_app.config['INSTANCE_MQTT']
         mqtt.publish("/events","SERVICE_API_UNAVAILABLE")
     return res
@@ -89,6 +94,7 @@ def apf_id_service_apis_service_api_id_get(service_api_id, apf_id):  # noqa: E50
     :rtype: ServiceAPIDescription
     """
 
+    current_app.logger.info("Obtaining service api with id: " + service_api_id)
     res = service_operations.get_one_serviceapi(service_api_id, apf_id)
 
     return res
@@ -108,6 +114,8 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
 
     :rtype: ServiceAPIDescription
     """
+
+    current_app.logger.info("Updating service api id with id: " + service_api_id)
 
     if connexion.request.is_json:
         body = ServiceAPIDescription.from_dict(connexion.request.get_json())  # noqa: E501

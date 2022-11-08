@@ -40,6 +40,6 @@ def all_service_apis_get(api_invoker_id, api_name=None, api_version=None, comm_t
     :rtype: DiscoveredAPIs
     """
 
-
+    current_app.logger.info("Discovering service apis")
     response = discover_apis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
     return response

@@ -6,7 +6,7 @@ import json
 mimetype = "application/json"
 
 def make_response(object, status):
-    res = Response(json.dumps(object, default=str, cls=JSONEncoder), status=status, mimetype=mimetype)
+    res = Response(json.dumps(object, cls=JSONEncoder), status=status, mimetype=mimetype)
 
     return res
 

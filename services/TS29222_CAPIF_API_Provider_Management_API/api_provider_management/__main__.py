@@ -1,10 +1,32 @@
 #!/usr/bin/env python3
 
 import connexion
+import logging
 
 from api_provider_management import encoder
 from flask_jwt_extended import JWTManager
 
+
+def configure_logging(app):
+    del app.logger.handlers[:]
+    loggers = [app.logger, ]
+    handlers = []
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(verbose_formatter())
+    handlers.append(console_handler)
+
+    for l in loggers:
+        for handler in handlers:
+            l.addHandler(handler)
+        l.propagate = False
+        l.setLevel(logging.DEBUG)
+
+def verbose_formatter():
+    return logging.Formatter(
+        '[%(asctime)s.%(msecs)d]\t %(levelname)s \t[%(name)s.%(funcName)s:%(lineno)d]\t %(message)s',
+        datefmt='%d/%m/%Y %H:%M:%S'
+    )
 
 def main():
     app = connexion.App(__name__, specification_dir='./openapi/')
@@ -13,6 +35,7 @@ def main():
                 arguments={'title': 'CAPIF_API_Provider_Management_API'},
                 pythonic_params=True)
 
+    configure_logging(app.app)
     app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
     JWTManager(app.app)
 

@@ -3,13 +3,14 @@ import sys
 import pymongo
 from flask import current_app, Flask, Response
 import json
-from service_apis.core.responses import internal_server_error, forbidden_error ,make_response
+from service_apis.core.responses import internal_server_error, forbidden_error ,make_response, not_found_error
 from service_apis.db.db import MongoDatabse
 from service_apis.encoder import JSONEncoder
 from service_apis.models.problem_details import ProblemDetails
 from service_apis.models.service_api_description import ServiceAPIDescription
 from service_apis.util import dict_to_camel_case
 from bson import json_util
+
 
 
 class DiscoverApisOperations:
@@ -23,11 +24,13 @@ class DiscoverApisOperations:
         services = self.db.get_col_by_name(self.db.service_api_descriptions)
         invokers = self.db.get_col_by_name(self.db.invoker_col)
 
+        current_app.logger.debug("Discovering services apis")
+
         try:
             invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
             if invoker is None:
-
-                return forbidden_error(detail="API Invoker does not exist", cause="API Invoker id not found")
+                current_app.logger.error("Api invoker not found in database")
+                return not_found_error(detail="API Invoker does not exist", cause="API Invoker id not found")
 
             myParams = []
             myQuery = {}
@@ -61,9 +64,11 @@ class DiscoverApisOperations:
                 json_docs.append(my_api)
 
             res = make_response(object=json_docs, status=200)
+            current_app.logger.debug("Discovered APIs")
             return res
 
         except Exception as e:
             exception = "An exception occurred in discover services"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)
 

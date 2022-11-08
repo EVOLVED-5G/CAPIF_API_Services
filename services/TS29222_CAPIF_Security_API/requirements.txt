@@ -7,4 +7,5 @@ pymongo == 4.0.1
 flask_jwt_extended
 flask-mqtt
 pyjwt
+rfc3987
 pyopenssl
