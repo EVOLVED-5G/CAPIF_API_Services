@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Register Entity (Invoker or Exposer)",
+			"name": "Register Entity (Invoker or Provider)",
 			"request": {
 				"method": "POST",
 				"header": [],

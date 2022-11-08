@@ -99,8 +99,8 @@ At this documentation you will have all information and related files and exampl
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
         * status 401
         * title with message "Unauthorized"
-        * detail with message "Exposer not existing".
-        * cause with message "Exposer id not found".
+        * detail with message "Provider not existing".
+        * cause with message "Provider id not found".
 
   2. Service API is NOT stored in CAPIF Database
 
@@ -202,8 +202,8 @@ At this documentation you will have all information and related files and exampl
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
         * status 401
         * title with message "Unauthorized"
-        * detail with message "Exposer not existing".
-        * cause with message "Exposer id not found".
+        * detail with message "Provider not existing".
+        * cause with message "Provider id not found".
 
   2. Service API is NOT stored in CAPIF Database
 

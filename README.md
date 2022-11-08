@@ -17,6 +17,7 @@
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
 - [CAPIF Tool Release 2.1](#capif-tool-release-21)
+- [CAPIF Tool Release 2.2](#capif-tool-release-22)
 
 
 # Repository structure
@@ -187,6 +188,11 @@ This CAPIF services have many stability improvements:
   - Adjusted the register flow for exposer and invoker.
   - End points used in that flow are changed.
   - API Provider Management tests adapted to use TLS.
+
+# CAPIF Tool Release 2.2
+
+This CAPIF services have several changes:
+ - exposer is changed to provider, according to specs.
 
 
 [Open API Descriptions of 3GPP 5G APIs]: https://github.com/jdegre/5GC_APIs  "Open API Descriptions of 3GPP 5G APIs"

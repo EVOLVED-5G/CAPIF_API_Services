@@ -34,12 +34,12 @@ Create a security context for an API invoker
     Check Variable    ${resp.json()}    ServiceSecurity
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_SECURITY_RESOURCE_REGEX}
 
-Create a security context for an API invoker with Exposer role
+Create a security context for an API invoker with Provider role
     [Tags]    capif_security_api-2
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    # Register Exposer
+    # Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     # Create Security Context
@@ -59,7 +59,7 @@ Create a security context for an API invoker with Exposer role
     ...    detail=Role not authorized for this API route
     ...    cause=User role must be invoker
 
-Create a security context for an API invoker with Exposer entity role and invalid apiInvokerId
+Create a security context for an API invoker with Provider entity role and invalid apiInvokerId
     [Tags]    capif_security_api-3
     # Register APF
     ${register_user_info_publisher}=    Publisher Default Registration
@@ -181,7 +181,7 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be exposer
+    ...    cause=User role must be provider
 
 Delete the Security Context of an API Invoker
     [Tags]    capif_security_api-8
@@ -251,7 +251,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be exposer
+    ...    cause=User role must be provider
 
 Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
     [Tags]    capif_security_api-10
@@ -270,11 +270,11 @@ Delete the Security Context of an API Invoker with Invoker entity role and inval
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be exposer
+    ...    cause=User role must be provider
 
 Delete the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-11
-    # Register Exposer
+    # Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${resp}=    Delete Request Capif
@@ -296,7 +296,7 @@ Update the Security Context of an API Invoker
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    # Register Exposer
+    # Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${request_body}=    Create Service Security Body
@@ -341,7 +341,7 @@ Update the Security Context of an API Invoker
     Check Variable    ${resp.json()}    ServiceSecurity
     Dictionaries Should Be Equal    ${resp.json()}    ${security_context_modified}
 
-Update the Security Context of an API Invoker with Exposer entity role
+Update the Security Context of an API Invoker with Provider entity role
     [Tags]    capif_security_api-13
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -357,7 +357,7 @@ Update the Security Context of an API Invoker with Exposer entity role
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceSecurity
 
-    #Register Exposer
+    #Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${resp}=    Post Request Capif
@@ -377,7 +377,7 @@ Update the Security Context of an API Invoker with Exposer entity role
 
 Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId
     [Tags]    capif_security_api-14
-    #Register Exposer
+    #Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${request_body}=    Create Service Security Body
@@ -432,7 +432,7 @@ Revoke the authorization of the API invoker for APIs
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceSecurity
 
-    # Register Exposer
+    # Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['apiInvokerId']}
@@ -478,7 +478,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
 
     ${security_context}=    Set Variable    ${resp.json()}
 
-    # Register Exposer
+    # Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     # Revoke Security Context by Invoker
@@ -496,7 +496,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be exposer
+    ...    cause=User role must be provider
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
@@ -527,7 +527,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
 
     ${security_context}=    Set Variable    ${resp.json()}
 
-    #Register Exposer
+    #Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}
@@ -587,7 +587,7 @@ Retrieve access token
 
     Should Not Be Empty    ${resp.json()['access_token']}
 
-Retrieve access token by Exposer
+Retrieve access token by Provider
     [Tags]    capif_security_api-20
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -602,7 +602,7 @@ Retrieve access token by Exposer
 
     Status Should Be    201    ${resp}
 
-    #Register Exposer
+    #Register Provider
     ${register_user_info_publisher}=    Publisher Default Registration
 
     ${request_body}=    Create Access Token Req Body
@@ -618,7 +618,7 @@ Retrieve access token by Exposer
     ...    error=invalid_client
     ...    error_description=Role not authorized for this API route
 
-Retrieve access token by Exposer with invalid apiInvokerId
+Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
     #Register APF
     ${register_user_info_publisher}=    Publisher Default Registration

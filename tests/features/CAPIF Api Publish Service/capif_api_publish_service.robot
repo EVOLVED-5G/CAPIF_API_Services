@@ -51,8 +51,8 @@ Publish API by NON Authorised API Publisher
     ...    ${resp}
     ...    title=Unauthorized
     ...    status=401
-    ...    detail=Exposer not existing
-    ...    cause=Exposer id not found
+    ...    detail=Provider not existing
+    ...    cause=Provider id not found
 
 Retrieve all APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-3
@@ -119,8 +119,8 @@ Retrieve all APIs Published by NON Authorised apfId
     ...    ${resp}
     ...    title=Unauthorized
     ...    status=401
-    ...    detail=Exposer not existing
-    ...    cause=Exposer id not found
+    ...    detail=Provider not existing
+    ...    cause=Provider id not found
 
 Retrieve single APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-5

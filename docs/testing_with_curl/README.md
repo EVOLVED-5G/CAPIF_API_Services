@@ -6,12 +6,12 @@
   - [cURL manual execution](#curl-manual-execution)
     - [Authentication](#authentication)
       - [Invoker](#invoker)
-      - [Exposer](#exposer)
+      - [Provider](#provider)
     - [JWT Authentication APIs](#jwt-authentication-apis)
       - [Register an entity](#register-an-entity)
       - [Get access token for an existing entity](#get-access-token-for-an-existing-entity)
       - [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
-      - [Sign exposer certificate](#sign-exposer-certificate)
+      - [Sign provider certificate](#sign-provider-certificate)
     - [Invoker Management APIs](#invoker-management-apis)
       - [Onboard an Invoker](#onboard-an-invoker)
       - [Update Invoker Details](#update-invoker-details)
@@ -27,7 +27,7 @@
 
 ## cURL scripts (TLS supported)
 Also you can follow the instructions and run the commands of the bash scripts:
-* [exposer](./capif_tls_curls_exposer.sh) to test CAPIF as exposer with TLS support.
+* [provider](./capif_tls_curls_exposer.sh) to test CAPIF as provider with TLS support.
 * [invoker](./capif_tls_curls_invoker.sh) to test CAPIF as invoker with TLS support.
 
 ## cURL manual execution
@@ -35,7 +35,7 @@ Also you can follow the instructions and run the commands of the bash scripts:
 ### Authentication
 This version will use TLS communication, for that purpose we have 2 different scenarios, according to role:
 * Invoker
-* Exposer
+* Provider
 
 #### Invoker
 To authenticate an invoker user, we must perform next steps:
@@ -48,18 +48,18 @@ To authenticate an invoker user, we must perform next steps:
 Flow:
 ![Flow](../images/invoker_onboarding_flow.png)
 
-#### Exposer
-To authenticate an exposer user, we must perform next steps:
+#### Provider
+To authenticate an provider user, we must perform next steps:
 - Retrieve CA certificate from platform. [Retrieve and store CA certificate](#retrieve-and-store-ca-certificate)
-- Register on the CAPIF with exposer role. [Register an entity](#register-an-entity)
-- Request sign the public key to CAPIF including beared with JWT. [Sign exposer certificate](#sign-exposer-certificate)
+- Register on the CAPIF with provider role. [Register an entity](#register-an-entity)
+- Request sign the public key to CAPIF including beared with JWT. [Sign provider certificate](#sign-provider-certificate)
 - Store certificate signed by CAPIF platform to allow TLS onwards.
 
 Flow:
 ![Flow](../images/publisher_registry_flow.png)
 
 ### JWT Authentication APIs
-These APIs are triggered by an entity (Invoker or Exposer for release 1.0) to:
+These APIs are triggered by an entity (Invoker or Provider for release 1.0) to:
 - register on the CAPIF Framework
 - get a Json Web Token (JWT) in order to be authorized to call CAPIF APIs
 
@@ -109,12 +109,12 @@ Response body
 curl --request GET 'http://<CAPIF_HOSTNAME>:<CAPIF_HTTP_PORT>/ca-root' 2>/dev/null | jq -r '.certificate' -j > <CA Certificate file>
 ```
 
-#### Sign exposer certificate
+#### Sign provider certificate
 ```shell
 curl --request POST 'http://<CAPIF_HOSTNAME>/sign-csr' --header 'Authorization: Bearer <JWT access token>' --header 'Content-Type: application/json' --data-raw '{
   "csr":  "RAW PUBLIC KEY CREATED BY PUBLISHER",
   "mode":  "client",
-  "filename": exposer
+  "filename": provider
 }'
 ```
 Response
@@ -123,7 +123,7 @@ Response
   "certificate": "PUBLISHER CERTIFICATE"
 }
 ```
-PUBLISHER CERTIFICATE value must be stored by Exposer entity to next request to CAPIF (exposer.crt for example)
+PUBLISHER CERTIFICATE value must be stored by Provider entity to next request to CAPIF (provider.crt for example)
 
 ### Invoker Management APIs
 
@@ -191,11 +191,11 @@ curl --cert <Invoker Signed Certificate file> --key <Invoker Private Key> --cace
 
 ### Publish APIs
 
-These APIs are triggered by the API Publishing Function (APF) of an Exposer
+These APIs are triggered by the API Publishing Function (APF) of an Provider
 
 #### Publish a new API.
 ```shell
-curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<Exposer Id>/service-apis'  --header 'Content-Type: application/json' --data '{
+curl --cert <Provider Signed Certificate file> --key <Provider Private Key> --cacert <CA Certificate file> --request POST 'https://<CAPIF_HOSTNAME>/published-apis/v1/<Provider Id>/service-apis'  --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -266,7 +266,7 @@ curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cace
 
 #### Update a published service API.
 ```shell
-curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
+curl --cert <Provider Signed Certificate file> --key <Provider Private Key> --cacert <CA Certificate file> --request PUT 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APIF Id>/service-apis/<Service API Id>' --header 'Content-Type: application/json' --data '{
   "apiName": "3gpp-monitoring-event",
   "aefProfiles": [
     {
@@ -337,17 +337,17 @@ curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cace
 
 #### Unpublish a published service API.
 ```shell
-curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
+curl --cert <Provider Signed Certificate file> --key <Provider Private Key> --cacert <CA Certificate file> --request DELETE 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 #### Retrieve all published APIs
 ```shell
-curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
+curl --cert <Provider Signed Certificate file> --key <Provider Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis'
 ```
 
 #### Retrieve a published service API.
 ```shell
-curl --cert <Exposer Signed Certificate file> --key <Exposer Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
+curl --cert <Provider Signed Certificate file> --key <Provider Private Key> --cacert <CA Certificate file> --request GET 'https://<CAPIF_HOSTNAME>/published-apis/v1/<APF Id>/service-apis/<Service API Id>'
 ```
 
 ### Discover API

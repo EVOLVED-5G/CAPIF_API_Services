@@ -241,7 +241,7 @@ Invoker Default Onboarding
     RETURN    ${register_user_info}    ${url}    ${request_body}
 
 Publisher Default Registration
-    #Register Exposer
+    #Register Provider
     ${register_user_info}=    Register User At Jwt Auth
     ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
 
