@@ -10,6 +10,7 @@ capif_types = json.load(f)
 
 def check_variable(input, data_type):
     print(input)
+    print(type(input))
     print(data_type)
     if isinstance(input, list):
         for one in input:
@@ -53,8 +54,11 @@ def check_variable(input, data_type):
     if "regex" in capif_types[data_type].keys():
         check_regex(input, capif_types[data_type]["regex"])
         return True
+
     # Check Structure
     all_attributes = check_attributes_dict(input, data_type)
+
+    print(all_attributes)
 
     print('Check Variable type')
     # Check Variable type
