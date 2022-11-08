@@ -3,6 +3,7 @@ import sys
 import pymongo
 import secrets
 import re
+import rfc3987
 from flask import current_app, Flask, Response
 from flask_jwt_extended import create_access_token
 from datetime import datetime, timedelta
@@ -31,8 +32,11 @@ class SecurityOperations:
 
     def __check_invoker(self, api_invoker_id):
         invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
+
+        current_app.logger.debug("Checking api invoker with id: " + api_invoker_id)
         invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
         if invoker is None:
+            current_app.logger.error("Invoker not found")
             return not_found_error(detail="Invoker not found", cause="API Invoker not exists or invalid ID")
 
         return None
@@ -40,8 +44,11 @@ class SecurityOperations:
     def __check_scope(self, scope, security_context):
 
         try:
+
+            current_app.logger.debug("Checking scope")
             header = scope[0:4]
             if header != "3gpp":
+                current_app.logger.error("Bad format scope")
                 token_error = AccessTokenErr(error="invalid_scope", error_description="The first characters must be '3gpp'")
                 return make_response(object=token_error, status=400)
 
@@ -55,18 +62,21 @@ class SecurityOperations:
             for group in groups:
                 aef_id, api_names = group.split(":")
                 if aef_id not in aef_security_context:
+                    current_app.logger.error("Bad format Scope, not valid aef id ")
                     token_error = AccessTokenErr(error="invalid_scope", error_description="One of aef_id not belongs of your security context")
                     return make_response(object=token_error, status=400)
                 api_names = api_names.split(",")
                 for api_name in api_names:
                     service = capif_service_col.find_one({"$and": [{"api_name":api_name},{"aef_profiles.aef_id":aef_id}]})
                     if service is None:
+                        current_app.logger.error("Bad format Scope, not valid api name")
                         token_error = AccessTokenErr(error="invalid_scope", error_description="One of the api names does not exist or is not associated with the aef id provided")
                         return make_response(object=token_error, status=400)
 
             return None
 
         except Exception as e:
+            current_app.logger.error("Bad format Scope: " + e)
             token_error = AccessTokenErr(error="invalid_scope", error_description="malformed scope")
             return make_response(object=token_error, status=400)
 
@@ -76,6 +86,7 @@ class SecurityOperations:
 
         try:
 
+            current_app.logger.debug("Obtainig security context with id: " + api_invoker_id)
             result = self.__check_invoker(api_invoker_id)
             if result != None:
                 return result
@@ -83,6 +94,7 @@ class SecurityOperations:
                 services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id}, {"_id":0, "api_invoker_id":0})
 
                 if services_security_object is None:
+                    current_app.logger.error("Not found security context")
                     return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
 
                 if not authentication_info:
@@ -94,11 +106,15 @@ class SecurityOperations:
 
                 properyly_json= json.dumps(services_security_object, default=json_util.default)
                 my_service_security = dict_to_camel_case(json.loads(properyly_json))
+
+                current_app.logger.debug("Obtained security context from database")
+        
                 res = make_response(object=my_service_security, status=200)
 
                 return res
         except Exception as e:
             exception = "An exception occurred in get security info"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)
 
 
@@ -107,18 +123,21 @@ class SecurityOperations:
         mycol = self.db.get_col_by_name(self.db.security_info)
 
         try:
+
+            current_app.logger.debug("Creating security context")
             result = self.__check_invoker(api_invoker_id)
             if result != None:
                 return result
 
-            if not re.match("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$", service_security.notification_destination):
-
+            if rfc3987.match(service_security.notification_destination, rule="URI") is None:
+                current_app.logger.error("Bad url format")
                 return bad_request_error(detail="Bad Param", cause = "Detected Bad formar of param", invalid_params=[{"param": "notificationDestination", "reason": "Not valid URL format"}])
 
             services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id})
 
             if services_security_object is not None:
 
+                current_app.logger.error("Already security context defined with same api invoker id")
                 return forbidden_error(detail="Security method already defined", cause="Identical AEF Profile IDs")
 
 
@@ -128,8 +147,8 @@ class SecurityOperations:
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_method = set(security_methods) & set(pref_security_methods)
 
-                    if len(list(valid_security_method)):
-
+                    if len(list(valid_security_method)) == 0:
+                        current_app.logger.error("Not found comptaible security method with pref security method")
                         return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
 
 
@@ -139,14 +158,16 @@ class SecurityOperations:
                     services_security_object = capif_service_col.find_one({"api_id":service_instance.api_id, "aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
+                        current_app.logger.error("Not found service with this aef id: " + service_instance.aef_id)
                         return not_found_error(detail="Service with this aefId not found", cause="Not found Service")
 
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
                     valid_security_method = set(valid_security_methods) & set(pref_security_methods)
 
-                    if len(list(valid_security_method)):
-                         return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
+                    if len(list(valid_security_method)) == 0:
+                        current_app.logger.error("Not found comptaible security method with pref security method")
+                        return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
 
                     service_instance.sel_security_method = list(valid_security_method)[0]
 
@@ -155,12 +176,15 @@ class SecurityOperations:
             rec.update(service_security.to_dict())
             mycol.insert_one(rec)
 
+            current_app.logger.debug("Inserted security context in database")
+
             res = make_response(object=service_security, status=201)
             res.headers['Location'] = "https://{}/capif-security/v1/trustedInvokers/{}".format(os.getenv('CAPIF_HOSTNAME'),str(api_invoker_id))
             return res
 
         except Exception as e:
             exception = "An exception occurred in create security info"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)
 
 
@@ -169,6 +193,9 @@ class SecurityOperations:
         mycol = self.db.get_col_by_name(self.db.security_info)
 
         try:
+
+            current_app.logger.debug("Removing security context")
+
             result = self.__check_invoker(api_invoker_id)
             if result != None:
                 return result
@@ -177,14 +204,18 @@ class SecurityOperations:
                 services_security_count = mycol.count_documents(myQuery)
 
                 if services_security_count == 0:
+                    current_app.logger.error("Security context not found")
                     return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
 
                 mycol.delete_many(myQuery)
+
+                current_app.logger.debug("Removed security context from database")
                 out= "The security info of Netapp with Netapp ID " + api_invoker_id + " were deleted.", 204
                 return make_response(out, status=204)
 
         except Exception as e:
             exception = "An exception occurred in create security info"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause = e)
 
 
@@ -194,38 +225,44 @@ class SecurityOperations:
 
         try:
 
+            current_app.logger.debug("Generating access token")
             result = self.__check_invoker(access_token_req["client_id"])
             if result != None:
                 return result
 
             service_security = mycol.find_one({"api_invoker_id": security_id})
             if service_security is None:
-
+                current_app.logger.error("Not found securoty context with id: " + security_id)
                 return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
-            else:
+           
 
-                result = self.__check_scope(access_token_req["scope"], service_security)
+            result = self.__check_scope(access_token_req["scope"], service_security)
 
-                if result != None:
-                    return result
+            if result != None:
+                return result
 
-                expire_time = timedelta(minutes=10)
-                now=datetime.now()
+            expire_time = timedelta(minutes=10)
+            now=datetime.now()
 
-                claims = AccessTokenClaims(iss = access_token_req["client_id"], scope=access_token_req["scope"], exp=int((now+expire_time).timestamp()))
-                access_token = create_access_token(identity = access_token_req["client_id"] , additional_claims=claims.to_dict())
-                access_token_resp = AccessTokenRsp(access_token=access_token, token_type="bearer", expires_in=expire_time.total_seconds(), scope=access_token_req["scope"])
+            claims = AccessTokenClaims(iss = access_token_req["client_id"], scope=access_token_req["scope"], exp=int((now+expire_time).timestamp()))
+            access_token = create_access_token(identity = access_token_req["client_id"] , additional_claims=claims.to_dict())
+            access_token_resp = AccessTokenRsp(access_token=access_token, token_type="bearer", expires_in=expire_time.total_seconds(), scope=access_token_req["scope"])
 
-                res = make_response(object=access_token_resp, status=200)
-                return res
+            current_app.logger.debug("Created access token")
+
+            res = make_response(object=access_token_resp, status=200)
+            return res
         except Exception as e:
             exception = "An exception occurred in return token"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)
 
 
     def update_servicesecurity(self, api_invoker_id, service_security):
         mycol = self.db.get_col_by_name(self.db.security_info)
         try:
+
+            current_app.logger.debug("Updating security context")
             result = self.__check_invoker(api_invoker_id)
             if result != None:
                 return result
@@ -233,7 +270,7 @@ class SecurityOperations:
             old_object = mycol.find_one({"api_invoker_id": api_invoker_id})
 
             if old_object is None:
-
+                current_app.logger.error("Service api not found with id: " + api_invoker_id)
                 return not_found_error(detail="Service API not existing", cause="Not exist securiy information for this invoker")
 
             for service_instance in service_security.security_info:
@@ -247,6 +284,7 @@ class SecurityOperations:
                     services_security_object = capif_service_col.find_one({"aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
+                        current_app.logger.error("Service api with this aefId not found: " + service_instance.aef_id)
                         return not_found_error(detail="Service with this aefId not found", cause="Not found Service")
 
                     pref_security_methods = service_instance.pref_security_methods
@@ -261,12 +299,15 @@ class SecurityOperations:
 
             mycol.update_one(old_object, {"$set":service_security}, upsert=False)
 
+            current_app.logger.debug("Updated security context")
+
             res= make_response(object=service_security, status=200)
             res.headers['Location'] = "https://${CAPIF_HOSTNAME}/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
         except Exception as e:
             exception = "An exception occurred in update security info"
+            current_app.logger.error(exception + "::" + e)
             return internal_server_error(detail=exception, cause=e)
 
 
@@ -274,26 +315,35 @@ class SecurityOperations:
 
         mycol = self.db.get_col_by_name(self.db.security_info)
 
+        try:
 
-        result = self.__check_invoker(api_invoker_id)
-        if result != None:
-            return result
+            current_app.logger.debug("Revoking security context")
+            result = self.__check_invoker(api_invoker_id)
+            if result != None:
+                return result
 
-        myQuery = {'api_invoker_id': api_invoker_id}
-        services_security_context = mycol.find_one(myQuery)
+            myQuery = {'api_invoker_id': api_invoker_id}
+            services_security_context = mycol.find_one(myQuery)
 
-        if services_security_context is None:
-            return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
+            if services_security_context is None:
+                current_app.logger.error("Security context not found")
+                return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
 
-        updated_security_context = services_security_context.copy()
-        for context in services_security_context["security_info"]:
-            index = context.index()
-            if security_notification.aef_id == context["aef_id"] or context["api_id"] in security_notification.api_ids:
-                updated_security_context["security_info"].pop(index)
+            updated_security_context = services_security_context.copy()
+            for context in services_security_context["security_info"]:
+                index = context.index()
+                if security_notification.aef_id == context["aef_id"] or context["api_id"] in security_notification.api_ids:
+                    updated_security_context["security_info"].pop(index)
 
-        mycol.replace_one(myQuery, updated_security_context)
+            mycol.replace_one(myQuery, updated_security_context)
 
-        self.notification.send_notification(services_security_context["notificationDestination"], security_notification)
+            self.notification.send_notification(services_security_context["notificationDestination"], security_notification)
+            
+            current_app.logger.debug("Revoked security context")
+            out= "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
+            return make_response(out, status=204)
 
-        out= "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
-        return make_response(out, status=204)
+        except Exception as e:
+            exception = "An exception occurred in revoke security auth"
+            current_app.logger.error(exception + "::" + e)
+            return internal_server_error(detail=exception, cause=e)

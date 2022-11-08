@@ -40,6 +40,7 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     :rtype: AccessTokenRsp
     """
 
+    current_app.logger.info("Creting secuity context")
     if connexion.request.is_json:
         body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501
     res = service_security_ops.return_token(security_id, body)
@@ -56,7 +57,7 @@ def trusted_invokers_api_invoker_id_delete(api_invoker_id):  # noqa: E501
 
     :rtype: None
     """
-
+    current_app.logger.info("Removing security context")
     return service_security_ops.delete_servicesecurity(api_invoker_id)
 
 
@@ -76,8 +77,10 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     if connexion.request.is_json:
         body = SecurityNotification.from_dict(connexion.request.get_json())  # noqa: E501
 
+    current_app.logger.info("Revoking permissions")
     res = service_security_ops.revoke_api_authorization(api_invoker_id, body)
     if res.status_code == 204:
+        current_app.logger.info("Permissions revoked")
         mqtt = current_app.config['INSTANCE_MQTT']
         mqtt.publish("/events","API_INVOKER_AUTHORIZATION_REVOKED")
     return res
@@ -98,7 +101,7 @@ def trusted_invokers_api_invoker_id_get(api_invoker_id, authentication_info=Fals
     :rtype: Union[ServiceSecurity, Tuple[ServiceSecurity, int], Tuple[ServiceSecurity, int, Dict[str, str]]
     """
 
-
+    current_app.logger.info("Obtaining security context")
     res = service_security_ops.get_servicesecurity(api_invoker_id, authentication_info, authorization_info)
 
     return res
@@ -116,6 +119,7 @@ def trusted_invokers_api_invoker_id_put(api_invoker_id, body):  # noqa: E501
 
     :rtype: Union[ServiceSecurity, Tuple[ServiceSecurity, int], Tuple[ServiceSecurity, int, Dict[str, str]]
     """
+    current_app.logger.info("Creating security context")
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
@@ -135,6 +139,7 @@ def trusted_invokers_api_invoker_id_update_post(api_invoker_id, body):  # noqa: 
 
     :rtype: ServiceSecurity
     """
+    current_app.logger.info("Updating security context")
 
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501

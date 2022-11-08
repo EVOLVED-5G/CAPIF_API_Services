@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from service_apis.db.config import Config
+from service_apis.config import Config
 
 
 class MongoDatabse():

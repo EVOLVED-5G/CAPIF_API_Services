@@ -3,7 +3,7 @@ import connexion
 import six
 import json
 
-from flask import Response, request
+from flask import Response, request, current_app
 from ..core.provider_enrolment_details_api import ProviderManagementOperations
 from ..encoder import JSONEncoder
 from api_provider_management.models.api_provider_enrolment_details import APIProviderEnrolmentDetails  # noqa: E501
@@ -29,6 +29,7 @@ def modify_ind_api_provider_enrolment(api_prov_dom_id, body):  # noqa: E501
     :rtype: APIProviderEnrolmentDetails
     """
 
+    current_app.logger.info("Patch Provider Domain")
     if connexion.request.is_json:
         body = APIProviderEnrolmentDetailsPatch.from_dict(connexion.request.get_json())  # noqa: E501
 

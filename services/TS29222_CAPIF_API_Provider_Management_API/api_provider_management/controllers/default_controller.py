@@ -2,7 +2,7 @@ import connexion
 import six
 import json
 
-from flask import Response, request
+from flask import Response, request, current_app
 from ..core.provider_enrolment_details_api import ProviderManagementOperations
 from ..encoder import JSONEncoder
 from api_provider_management.models.api_provider_enrolment_details import APIProviderEnrolmentDetails  # noqa: E501
@@ -31,6 +31,7 @@ def registrations_post(body):  # noqa: E501
     identity = get_jwt_identity()
     _, role = identity.split()
 
+    current_app.logger.info("Registering Provider Domain")
     if role != "provider":
         prob = ProblemDetails(title="Unauthorized", status=401, detail="Role not authorized for this API route",
                               cause="User role must be provider")
@@ -56,7 +57,7 @@ def registrations_registration_id_delete(api_prov_dom_id):  # noqa: E501
 
     :rtype: None
     """
-
+    current_app.logger.info("Removing Provider Domain")
     res = provider_management_ops.delete_api_provider_enrolment_details(api_prov_dom_id)
 
     return res
@@ -74,7 +75,7 @@ def registrations_registration_id_put(api_prov_dom_id, body):  # noqa: E501
 
     :rtype: APIProviderEnrolmentDetails
     """
-
+    current_app.logger.info("Updating Provider Domain")
     if connexion.request.is_json:
         body = APIProviderEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
