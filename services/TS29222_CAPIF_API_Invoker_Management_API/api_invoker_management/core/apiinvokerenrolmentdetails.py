@@ -93,12 +93,12 @@ class InvokerManagementOperations:
             if isinstance(result, Response):
                 return result
 
-            apiinvokerenrolmentdetail = apiinvokerenrolmentdetail.to_dict()
-            apiinvokerenrolmentdetail = {
-                key: value for key, value in apiinvokerenrolmentdetail.items() if value is not None
+            apiinvokerenrolmentdetail_update = apiinvokerenrolmentdetail.to_dict()
+            apiinvokerenrolmentdetail_update = {
+                key: value for key, value in apiinvokerenrolmentdetail_update.items() if value is not None
             }
 
-            mycol.update_one(result, {"$set":apiinvokerenrolmentdetail}, upsert=False)
+            mycol.update_one(result, {"$set":apiinvokerenrolmentdetail_update}, upsert=False)
 
             current_app.logger.debug("Invoker Resource inserted in database")
             res = make_response(object=apiinvokerenrolmentdetail, status=200)
