@@ -1,4 +1,4 @@
-def create_onboarding_notification_body(notification_destination="https://host.docker.internal/netapp_callback", api_invoker_public_key="ApiInvokerPublicKey",api_invoker_information='ROBOT_TESTING'):
+def create_onboarding_notification_body(notification_destination="https://host.docker.internal/netapp_callback", api_invoker_public_key="ApiInvokerPublicKey",api_invoker_information='ROBOT_TESTING', api_invoker_id=None):
     data = {
         "notificationDestination": notification_destination,
         "supportedFeatures": "fffffff",
@@ -14,5 +14,7 @@ def create_onboarding_notification_body(notification_destination="https://host.d
         },
         "requestTestNotification": True
     }
+    if api_invoker_id != None:
+        data['apiInvokerId'] = api_invoker_id
 
     return (data)
