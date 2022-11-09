@@ -78,7 +78,7 @@ Update Onboarded NetApp
 
     Status Should Be    200    ${resp}
     Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
-    Should Match    ${resp.json()['notificationDestination']}    ${${new_notification_destination}}
+    Should Match    ${resp.json()['notificationDestination']}    ${new_notification_destination}
 
 Update Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-4
