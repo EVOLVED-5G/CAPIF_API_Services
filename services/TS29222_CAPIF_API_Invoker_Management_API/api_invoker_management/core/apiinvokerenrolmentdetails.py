@@ -103,6 +103,10 @@ class InvokerManagementOperations:
 
             result = mycol.find_one_and_update(result, {"$set":apiinvokerenrolmentdetail_update}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
+
             current_app.logger.debug("Invoker Resource inserted in database")
             res = make_response(object=dict_to_camel_case(result), status=200)
             return res

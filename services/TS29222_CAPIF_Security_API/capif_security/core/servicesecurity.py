@@ -1,6 +1,7 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 import re
 import rfc3987
@@ -297,11 +298,15 @@ class SecurityOperations:
                 key: value for key, value in service_security.items() if value is not None
             }
 
-            mycol.update_one(old_object, {"$set":service_security}, upsert=False)
+            result = mycol.find_one_and_update(old_object, {"$set":service_security}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
 
             current_app.logger.debug("Updated security context")
 
-            res= make_response(object=service_security, status=200)
+            res= make_response(object=dict_to_camel_case(result), status=200)
             res.headers['Location'] = "https://${CAPIF_HOSTNAME}/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res

@@ -1,6 +1,7 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 from flask import current_app, Flask, Response
 import json
@@ -193,10 +194,15 @@ class PublishServiceOperations:
                 key: value for key, value in service_api_description.items() if value is not None
             }
 
-            mycol.update_one(serviceapidescription, {"$set":service_api_description}, upsert=False)
+            result = mycol.find_one_and_update(serviceapidescription, {"$set":service_api_description}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
+
             current_app.logger.debug("Updated service api")
     
-            response = make_response(object=service_api_description, status=200)
+            response = make_response(object=dict_to_camel_case(result), status=200)
 
             return response
 
