@@ -19,7 +19,7 @@ from bson import json_util
 import requests
 from ..models.access_token_err import AccessTokenErr
 from ..models.service_security import ServiceSecurity
-from ..util import dict_to_camel_case
+from ..util import dict_to_camel_case, clean_empty
 from .responses import not_found_error, make_response, bad_request_error, internal_server_error, forbidden_error
 from .notification import Notifications
 import os
@@ -294,15 +294,15 @@ class SecurityOperations:
                     service_instance.sel_security_method = list(valid_security_method)[0]
 
             service_security = service_security.to_dict()
-            service_security = {
-                key: value for key, value in service_security.items() if value is not None
-            }
+            service_security = clean_empty(service_security)
 
             result = mycol.find_one_and_update(old_object, {"$set":service_security}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
-            result = {
-                key: value for key, value in result.items() if value is not None
-            }
+            # result = {
+            #     key: value for key, value in result.items() if value is not None
+            # }
+
+            result = clean_empty(result)
 
             current_app.logger.debug("Updated security context")
 
