@@ -70,3 +70,65 @@ class RegisterOperations:
                 return jsonify(message="Token returned successfully", access_token=access_token), 200
         except Exception as e:
             return jsonify(message=f"Errors when try getting auth: {e}"), 500
+    def delete_tests(self):
+        user = self.db.get_col_by_name("user")
+        invokerdetails = self.db.get_col_by_name('invokerdetails')
+        serviceapidescriptions = self.db.get_col_by_name('serviceapidescriptions')
+        eventsdetails = self.db.get_col_by_name('eventsdetails')
+        servicesecurity = self.db.get_col_by_name('servicesecurity')
+        providerenrolmentdetails = self.db.get_col_by_name('providerenrolmentdetails')
+
+        splitter_string = '//'
+        message_returned = ''
+
+        myquery = {"username": {"$regex": "^ROBOT_TESTING.*"}}
+        result = user.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No test users present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Test Users"
+        message_returned += splitter_string
+
+        myquery = {"description": {"$regex": "^ROBOT_TESTING.*"}}
+        result = serviceapidescriptions.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No test services present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Test Services"
+        message_returned += splitter_string
+
+        myquery = {"api_invoker_information": {"$regex": "^ROBOT_TESTING.*"}}
+        result = invokerdetails.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No test Invokers present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Test Invokers"
+        message_returned += splitter_string
+
+        myquery = {"notification_destination": {"$regex": "^http://robot.testing.*"}}
+        result = eventsdetails.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No event subscription present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Event Subscriptions"
+        message_returned += splitter_string
+
+        myquery = {"notification_destination": {"$regex": "^http://robot.testing.*"}}
+        result = servicesecurity.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No service security subscription present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " service security Subscriptions"
+        message_returned += splitter_string
+
+        myquery = {"api_prov_dom_info": {"$regex": "^ROBOT_TESTING.*"}}
+        result = providerenrolmentdetails.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No Provider Enrolment Details present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " provider enrolment details"
+        message_returned += splitter_string
+
+        return jsonify(message=message_returned), 200
+
+

@@ -24,28 +24,28 @@ At this documentation you will have all information and related files and exampl
   This test case will check that Api Provider can be registered con CCF by API Provider
 * **Pre-Conditions**:
   
-  * Exposer is pre-authorised (has valid certificate from CAPIF Authority)
+  * Provider is pre-authorised (has valid certificate from CAPIF Authority)
 
 * **Information of Test**:
 
-  1. Create public and private key at exposer
+  1. Create public and private key at provider
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Register Exposer at Provider Management:
+  3. Register Provider at Provider Management:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  3. Register Exposer at Provider Management
+  1. Register Provider at CCF
+  3. Register Provider at Provider Management
    
 * **Expected Result**:
 
-  1. Register Exposer at Provider Management:
+  1. Register Provider at Provider Management:
      1. **201 Created** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure.
      3. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
@@ -62,25 +62,25 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at exposer
+  1. Create public and private key at provider
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Register Exposer at Provider Management:
+  3. Register Provider at Provider Management:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  3. Register Exposer at Provider Management
-  4. Re-Register Exposer at Provider Management
+  1. Register Provider at CCF
+  3. Register Provider at Provider Management
+  4. Re-Register Provider at Provider Management
    
 * **Expected Result**:
 
-  1. Re-Register Exposer at Provider Management:
+  1. Re-Register Provider at Provider Management:
      1. **403 Forbidden** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 403
@@ -101,34 +101,34 @@ At this documentation you will have all information and related files and exampl
 
   1. Create public and private key at invoker
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Register Exposer at Provider Management:
+  3. Register Provider at Provider Management:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
      * Get Resource URL from Location
 
-  4. Update Exposer at Provider Management:
+  4. Update Provider at Provider Management:
      * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body] with apiProvDomInfo set to ROBOT_TESTING_MOD
 
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Register Exposer at Provider Management
-  4. Re-Register Exposer at Provider Management
+  1. Register Provider at CCF
+  2. Register Provider at Provider Management
+  4. Re-Register Provider at Provider Management
    
 * **Expected Result**:
-  1. Register Exposer at Provider Management:
+  1. Register Provider at Provider Management:
      1. **201 Created** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure.
      3. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
 
 
-  2. Re-Register Exposer at Provider Management:
+  2. Re-Register Provider at Provider Management:
      1. **200 OK** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure, with:
         * apiProvDomInfo set to ROBOT_TESTING_MOD
@@ -147,22 +147,22 @@ At this documentation you will have all information and related files and exampl
 
   1. Create public and private key at invoker
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Update Exposer at Provider Management:
+  3. Update Provider at Provider Management:
      * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  3. Update Exposer at Provider Management
+  1. Register Provider at CCF
+  3. Update Provider at Provider Management
    
 * **Expected Result**:
 
-  1. Re-Register Exposer at Provider Management:
+  1. Re-Register Provider at Provider Management:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
@@ -183,28 +183,28 @@ At this documentation you will have all information and related files and exampl
 
   1. Create public and private key at invoker
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Register Exposer at Provider Management:
+  3. Register Provider at Provider Management:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
      * Get resource from Location header
 
-  4. Partial update exposer at Provider Management:
+  4. Partial update provider at Provider Management:
      * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
      * body [provider request patch body]
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Register Exposer at Provider Management
-  3. Partial update exposer at Provider Management
+  1. Register Provider at CCF
+  2. Register Provider at Provider Management
+  3. Partial update provider at Provider Management
    
 * **Expected Result**:
 
-  1. Partial update exposer at Provider Management:
+  1. Partial update provider at Provider Management:
      1. **200 OK** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure, with:
         * apiProvDomInfo with "ROBOT_TESTING_MOD"
@@ -223,24 +223,24 @@ At this documentation you will have all information and related files and exampl
 
   1. Create public and private key at invoker
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Partial update exposer at Provider Management:
+  3. Partial update Provider at Provider Management:
      * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_API_PROVIDER_NOT_REGISTERED}*
      * body [provider request patch body]
   
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Register Exposer at Provider Management
-  3. Partial update exposer at Provider Management
+  1. Register Provider at CCF
+  2. Register Provider at Provider Management
+  3. Partial update provider at Provider Management
    
 * **Expected Result**:
 
-  1. Partial update exposer at Provider Management:
+  1. Partial update provider at Provider Management:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
@@ -259,29 +259,29 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at exposer
+  1. Create public and private key at provider
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Register Exposer at Provider Management:
+  3. Register Provider at Provider Management:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
      * Get resource from Location header
 
-  4. Delete registered exposer at Provider Management:
+  4. Delete registered provider at Provider Management:
      * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Register Exposer at Provider Management
-  3. Delete Exposer at Provider Management
+  1. Register Provider at CCF
+  2. Register Provider at Provider Management
+  3. Delete Provider at Provider Management
    
 * **Expected Result**:
 
-  1. Delete Exposer at Provider Management:
+  1. Delete Provider at Provider Management:
      1. **204 No Content** response.
 
 ## Test Case 8: Delete Not Registered Api Provider
@@ -295,23 +295,23 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at exposer
+  1. Create public and private key at provider
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
-     * body [exposer register body]
+     * body [provider register body]
 
-  3. Delete registered exposer at Provider Management:
+  3. Delete registered provider at Provider Management:
      * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_PROVIDER_NOT_REGISTERED}*
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Delete Exposer at Provider Management
+  1. Register Provider at CCF
+  2. Delete Provider at Provider Management
    
 * **Expected Result**:
 
-  1. Delete Exposer at Provider Management:
+  1. Delete Provider at Provider Management:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404

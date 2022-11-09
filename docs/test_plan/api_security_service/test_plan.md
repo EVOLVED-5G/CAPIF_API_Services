@@ -3,8 +3,8 @@
 - [Test Plan for CAPIF Api Security Service](#test-plan-for-capif-api-security-service)
 - [Tests](#tests)
   - [Test Case 1: Create a security context for an API invoker](#test-case-1-create-a-security-context-for-an-api-invoker)
-  - [Test Case 2: Create a security context for an API invoker with Exposer role](#test-case-2-create-a-security-context-for-an-api-invoker-with-exposer-role)
-  - [Test Case 3: Create a security context for an API invoker with Exposer entity role and invalid apiInvokerId](#test-case-3-create-a-security-context-for-an-api-invoker-with-exposer-entity-role-and-invalid-apiinvokerid)
+  - [Test Case 2: Create a security context for an API invoker with Provider role](#test-case-2-create-a-security-context-for-an-api-invoker-with-provider-role)
+  - [Test Case 3: Create a security context for an API invoker with Provider entity role and invalid apiInvokerId](#test-case-3-create-a-security-context-for-an-api-invoker-with-provider-entity-role-and-invalid-apiinvokerid)
   - [Test Case 4: Create a security context for an API invoker with Invoker entity role and invalid apiInvokerId](#test-case-4-create-a-security-context-for-an-api-invoker-with-invoker-entity-role-and-invalid-apiinvokerid)
   - [Test Case 5: Retrieve the Security Context of an API Invoker](#test-case-5-retrieve-the-security-context-of-an-api-invoker)
   - [Test Case 6: Retrieve the Security Context of an API Invoker with invalid apiInvokerID](#test-case-6-retrieve-the-security-context-of-an-api-invoker-with-invalid-apiinvokerid)
@@ -14,15 +14,15 @@
   - [Test Case 10: Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID](#test-case-10-delete-the-security-context-of-an-api-invoker-with-invoker-entity-role-and-invalid-apiinvokerid)
   - [Test Case 11: Delete the Security Context of an API Invoker with invalid apiInvokerID](#test-case-11-delete-the-security-context-of-an-api-invoker-with-invalid-apiinvokerid)
   - [Test Case 12: Update the Security Context of an API Invoker](#test-case-12-update-the-security-context-of-an-api-invoker)
-  - [Test Case 13: Update the Security Context of an API Invoker with Exposer entity role](#test-case-13-update-the-security-context-of-an-api-invoker-with-exposer-entity-role)
+  - [Test Case 13: Update the Security Context of an API Invoker with Provider entity role](#test-case-13-update-the-security-context-of-an-api-invoker-with-provider-entity-role)
   - [Test Case 14: Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId](#test-case-14-update-the-security-context-of-an-api-invoker-with-aef-entity-role-and-invalid-apiinvokerid)
   - [Test Case 15: Update the Security Context of an API Invoker with invalid apiInvokerID](#test-case-15-update-the-security-context-of-an-api-invoker-with-invalid-apiinvokerid)
   - [Test Case 16: Revoke the authorization of the API invoker for APIs.](#test-case-16-revoke-the-authorization-of-the-api-invoker-for-apis)
   - [Test Case 17: Revoke the authorization of the API invoker for APIs without valid apfID.](#test-case-17-revoke-the-authorization-of-the-api-invoker-for-apis-without-valid-apfid)
   - [Test Case 18: Revoke the authorization of the API invoker for APIs with invalid apiInvokerId.](#test-case-18-revoke-the-authorization-of-the-api-invoker-for-apis-with-invalid-apiinvokerid)
   - [Test Case 19: Retrieve access token](#test-case-19-retrieve-access-token)
-  - [Test Case 20: Retrieve access token by Exposer](#test-case-20-retrieve-access-token-by-exposer)
-  - [Test Case 21: Retrieve access token by Exposer with invalid apiInvokerId](#test-case-21-retrieve-access-token-by-exposer-with-invalid-apiinvokerid)
+  - [Test Case 20: Retrieve access token by Provider](#test-case-20-retrieve-access-token-by-provider)
+  - [Test Case 21: Retrieve access token by Provider with invalid apiInvokerId](#test-case-21-retrieve-access-token-by-provider-with-invalid-apiinvokerid)
   - [Test Case 22: Retrieve access token with invalid apiInvokerId](#test-case-22-retrieve-access-token-with-invalid-apiinvokerid)
  
 
@@ -72,14 +72,14 @@ At this documentation you will have all information and related files and exampl
      3. Location Header must contain the new resource URL *{apiRoot}/capif-security/v1/trustedInvokers/{apiInvokerId}*
 
 
-## Test Case 2: Create a security context for an API invoker with Exposer role
+## Test Case 2: Create a security context for an API invoker with Provider role
 * **Test ID**: ***capif_security_api-2***
 * **Description**:
   
-  This test case will check that an Exposer cannot create a Security context with valid apiInvokerId.
+  This test case will check that an Provider cannot create a Security context with valid apiInvokerId.
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with Exposer role
+  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with Provider role
 
 * **Information of Test**:
 
@@ -96,25 +96,25 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
 
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  6. Create Security Context for this Invoker but using Exposer certificate.
+  6. Create Security Context for this Invoker but using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
-     * Using Exposer certificate
+     * Using Provider certificate
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
-  3. Create Security Context using Exposer certificate
+  2. Register Provider at CCF
+  3. Create Security Context using Provider certificate
    
 * **Expected Result**:
 
-  1. Create security context using Exposer certificate:
+  1. Create security context using Provider certificate:
      1. **403 Forbiddent** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 403
@@ -124,37 +124,37 @@ At this documentation you will have all information and related files and exampl
 
   2. No context stored at DB
 
-## Test Case 3: Create a security context for an API invoker with Exposer entity role and invalid apiInvokerId
+## Test Case 3: Create a security context for an API invoker with Provider entity role and invalid apiInvokerId
 * **Test ID**: ***capif_security_api-3***
 * **Description**:
 
-  This test case will check that an Exposer cannot create a Security context with invalid apiInvokerID.
+  This test case will check that an Provider cannot create a Security context with invalid apiInvokerID.
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with Exposer role
+  * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with Provider role
 
 * **Information of Test**:
 
   1. Create public and private key at publisher
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  3. Create Security Context for this not valid apiInvokerId and using Exposer certificate.
+  3. Create Security Context for this not valid apiInvokerId and using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
      * body [service security body]
-     * Using Exposer certificate
+     * Using Provider certificate
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Create Security Context using Exposer certificate
+  1. Register Provider at CCF
+  2. Create Security Context using Provider certificate
    
 * **Expected Result**:
 
-  1. Create security context using Exposer certificate:
+  1. Create security context using Provider certificate:
      1. **403 Forbiddent** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 403
@@ -192,11 +192,11 @@ At this documentation you will have all information and related files and exampl
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Create Security Context using Exposer certificate
+  2. Create Security Context using Provider certificate
    
 * **Expected Result**:
 
-  1. Create security context using Exposer certificate:
+  1. Create security context using Provider certificate:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
@@ -211,10 +211,10 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_security_api-5***
 * **Description**:
   
-  This test case will check that an exposer can retrieve the Security context of an API Invoker
+  This test case will check that an provider can retrieve the Security context of an API Invoker
 * **Pre-Conditions**:
   
-  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
+  * Provider is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
 * **Information of Test**:
 
@@ -229,27 +229,27 @@ At this documentation you will have all information and related files and exampl
      * Reference Request Body: [invoker onboarding body]
      * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
 
-  4. Create Security Context for this Invoker but using Exposer certificate.
+  4. Create Security Context for this Invoker but using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
-     * Using Exposer certificate
+     * Using Provider certificate
 
   5. Create public and private key at publisher
 
-  6. Register of Exposer at CCF:
+  6. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  7. Retrieve Security Context of Invoker by Exposer:
+  7. Retrieve Security Context of Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
-  3. Create Security Context using Exposer certificate
-  4. Retrieve Security Context by exposer
+  2. Register Provider at CCF
+  3. Create Security Context using Provider certificate
+  4. Retrieve Security Context by Provider
    
 * **Expected Result**:
   1. Retrieve security context:
@@ -261,28 +261,28 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_security_api-6***
 * **Description**:
   
-  This test case will check that an exposer can retrieve the Security context of an API Invoker
+  This test case will check that an provider can retrieve the Security context of an API Invoker
 * **Pre-Conditions**:
   
-  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
+  * Provider is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
 * **Information of Test**:
 
   1. Create public and private key at publisher
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  3. Retrieve Security Context of invalid Invoker by Exposer:
+  3. Retrieve Security Context of invalid Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
 
 * **Execution Steps**:
   
-  2. Register Exposer at CCF
-  3. Create Security Context using Exposer certificate
-  4. Retrieve Security Context by exposer of invalid invoker
+  2. Register Provider at CCF
+  3. Create Security Context using Provider certificate
+  4. Retrieve Security Context by Provider of invalid invoker
    
 * **Expected Result**:
   1. Retrieve security context:
@@ -298,7 +298,7 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_security_api-7***
 * **Description**:
   
-  This test case will check that an Exposer cannot retrieve the Security context of an API Invoker without valid apfId
+  This test case will check that an Provider cannot retrieve the Security context of an API Invoker without valid apfId
 * **Pre-Conditions**:
   
   * API Exposure Function is not pre-authorised (has invalid apfId)
@@ -328,7 +328,7 @@ At this documentation you will have all information and related files and exampl
   1. Register and onboard Invoker at CCF
   2. Store signed Certificate
   3. Create Security Context
-  4. Retrieve Security Context as Exposer.
+  4. Retrieve Security Context as Provider.
    
 * **Expected Result**:
 
@@ -338,17 +338,17 @@ At this documentation you will have all information and related files and exampl
         * status 403
         * title with message "Forbidden"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be exposer".
+        * cause with message "User role must be provider".
 
 
 ## Test Case 8: Delete the Security Context of an API Invoker
 * **Test ID**: ***capif_security_api-8***
 * **Description**:
   
-  This test case will check that an Exposer can delete a Security context
+  This test case will check that an Provider can delete a Security context
 * **Pre-Conditions**:
   
-  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
+  * Provider is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
 * **Information of Test**:
 
@@ -363,31 +363,31 @@ At this documentation you will have all information and related files and exampl
      * Reference Request Body: [invoker onboarding body]
      * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
 
-  4. Create Security Context for this Invoker but using Exposer certificate.
+  4. Create Security Context for this Invoker but using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
-     * Using Exposer certificate
+     * Using Provider certificate
 
   5. Create public and private key at publisher
 
-  6. Register of Exposer at CCF:
+  6. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  7. Delete Security Context of Invoker by Exposer:
+  7. Delete Security Context of Invoker by Provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
-     * Use exposer certificate
+     * Use provider certificate
 
-  8. Retrieve Security Context of Invoker by Exposer:
+  8. Retrieve Security Context of Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
-  3. Create Security Context using Exposer certificate
-  4. Delete Security Context by exposer
+  2. Register Provider at CCF
+  3. Create Security Context using Provider certificate
+  4. Delete Security Context by Provider
    
 * **Expected Result**:
 
@@ -410,7 +410,7 @@ At this documentation you will have all information and related files and exampl
   This test case will check that an Invoker cannot delete a Security context
 * **Pre-Conditions**:
   
-  * Exposer is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
+  * Provider is pre-authorised (has valid apfId from CAPIF Authority) and API Invoker has created a valid Security Context
 
 * **Information of Test**:
 
@@ -425,19 +425,19 @@ At this documentation you will have all information and related files and exampl
      * Reference Request Body: [invoker onboarding body]
      * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
 
-  4. Create Security Context for this Invoker but using Exposer certificate.
+  4. Create Security Context for this Invoker but using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
-     * Using Exposer certificate
+     * Using Provider certificate
 
-  7. Delete Security Context of Invoker by Exposer:
+  7. Delete Security Context of Invoker by Provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * Use invoker certificate
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Create Security Context using Exposer certificate
+  1. Register Provider at CCF
+  2. Create Security Context using Provider certificate
   3. Delete Security Context by invoker
    
 * **Expected Result**:
@@ -448,7 +448,7 @@ At this documentation you will have all information and related files and exampl
         * status 403
         * title with message "Forbidden"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be exposer".
+        * cause with message "User role must be provider".
 
 
 ## Test Case 10: Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
@@ -473,13 +473,13 @@ At this documentation you will have all information and related files and exampl
      * Reference Request Body: [invoker onboarding body]
      * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
 
-  4. Delete Security Context of Invoker by Exposer:
+  4. Delete Security Context of Invoker by Provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
      * Use invoker certificate
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
+  1. Register Provider at CCF
   3. Delete Security Context by invoker
    
 * **Expected Result**:
@@ -490,35 +490,35 @@ At this documentation you will have all information and related files and exampl
         * status 403
         * title with message "Forbidden"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be exposer".
+        * cause with message "User role must be provider".
 
 
 ## Test Case 11: Delete the Security Context of an API Invoker with invalid apiInvokerID
 * **Test ID**: ***capif_security_api-11***
 * **Description**:
   
-  This test case will check that an Exposer cannot delete a Security context of invalid apiInvokerId
+  This test case will check that an Provider cannot delete a Security context of invalid apiInvokerId
 * **Pre-Conditions**:
   
-  * Exposer is pre-authorised (has valid apfId from CAPIF Authority).
+  * Provider is pre-authorised (has valid apfId from CAPIF Authority).
 
 * **Information of Test**:
 
   1. Create public and private key at publisher
 
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  3. Delete Security Context of Invoker by Exposer:
+  3. Delete Security Context of Invoker by Provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
-     * Use exposer certificate
+     * Use Provider certificate
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Delete Security Context by exposer
+  1. Register Provider at CCF
+  2. Delete Security Context by provider
    
 * **Expected Result**:
 
@@ -538,7 +538,7 @@ At this documentation you will have all information and related files and exampl
   This test case will check that an API Invoker can update a Security context
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized
 
 * **Information of Test**:
 
@@ -555,7 +555,7 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
   
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -568,13 +568,13 @@ At this documentation you will have all information and related files and exampl
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/update*
      * body [service security body] but with notification destination modified to http://robot.testing2
 
-  8. Retrieve Security Context of Invoker by Exposer:
+  8. Retrieve Security Context of Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
+  2. Register Provider at CCF
   3. Create Security Context
   4. Update Security Context
   5. Retrieve Security Context
@@ -591,15 +591,15 @@ At this documentation you will have all information and related files and exampl
         1. Check is this returned object match with modified one.
 
 
-## Test Case 13: Update the Security Context of an API Invoker with Exposer entity role
+## Test Case 13: Update the Security Context of an API Invoker with Provider entity role
 * **Test ID**: ***capif_security_api-13***
 * **Description**:
   
-  This test case will check that an Exposer cannot update a Security context
+  This test case will check that an Provider cannot update a Security context
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized.
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized.
   * Invoker has created the Security Context previously.
 
 * **Information of Test**:
@@ -617,7 +617,7 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
   
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -629,14 +629,14 @@ At this documentation you will have all information and related files and exampl
   7. Update Security Context of Invoker:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/update*
      * body [service security body] but with notification destination modified to http://robot.testing2
-     * Using Exposer Certificate
+     * Using Provider Certificate
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
+  2. Register Provider at CCF
   3. Create Security Context
-  4. Update Security Context as Exposer
+  4. Update Security Context as Provider
    
 * **Expected Result**:
 
@@ -653,18 +653,18 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_security_api-14***
 * **Description**:
   
-  This test case will check that an Exposer cannot update a Security context of invalid apiInvokerId
+  This test case will check that an Provider cannot update a Security context of invalid apiInvokerId
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized.
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized.
   * Invoker has created the Security Context previously.
 
 * **Information of Test**:
 
   1. Create public and private key at publisher
   
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -672,12 +672,12 @@ At this documentation you will have all information and related files and exampl
   3. Update Security Context of Invoker:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/update*
      * body [service security body]
-     * Using Exposer Certificate
+     * Using Provider Certificate
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
-  2. Update Security Context as Exposer
+  1. Register Provider at CCF
+  2. Update Security Context as Provider
    
 * **Expected Result**:
 
@@ -736,11 +736,11 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_security_api-16***
 * **Description**:
   
-  This test case will check that an Exposer can revoke the authorization for APIs
+  This test case will check that an Provider can revoke the authorization for APIs
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized
 
 * **Information of Test**:
 
@@ -757,7 +757,7 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
   
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -770,16 +770,16 @@ At this documentation you will have all information and related files and exampl
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/delete*
      * body [security notification body]
 
-  8. Retrieve Security Context of Invoker by Exposer:
+  8. Retrieve Security Context of Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
+  2. Register Provider at CCF
   3. Create Security Context
-  4. Revoke Security Context by exposer
+  4. Revoke Security Context by Provider
   5. Retrieve Security Context
    
 * **Expected Result**:
@@ -804,7 +804,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized
 
 * **Information of Test**:
 
@@ -821,7 +821,7 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
   
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -835,14 +835,14 @@ At this documentation you will have all information and related files and exampl
      * body [security notification body]
      * using invoker certificate
 
-  8. Retrieve Security Context of Invoker by Exposer:
+  8. Retrieve Security Context of Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
+  2. Register Provider at CCF
   3. Create Security Context
   4. Revoke Security Context by invoker
   5. Retrieve Security Context
@@ -855,7 +855,7 @@ At this documentation you will have all information and related files and exampl
         * status 403
         * title with message "Forbidden"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be exposer". 
+        * cause with message "User role must be provider". 
 
   3. Retrieve security context:
      1. **200 OK** response.
@@ -871,7 +871,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized
 
 * **Information of Test**:
 
@@ -888,7 +888,7 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
   
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -897,20 +897,20 @@ At this documentation you will have all information and related files and exampl
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
  
-  7. Revoke Authorization by exposer:
+  7. Revoke Authorization by Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/delete*
      * body [security notification body]
 
-  8. Retrieve Security Context of Invoker by Exposer:
+  8. Retrieve Security Context of Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
 
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
+  2. Register Provider at CCF
   3. Create Security Context
-  4. Revoke Security Context by exposer
+  4. Revoke Security Context by Provider
   5. Retrieve Security Context
    
 * **Expected Result**:
@@ -976,7 +976,7 @@ At this documentation you will have all information and related files and exampl
         1. access_token present
         2. token_type=Bearer
 
-## Test Case 20: Retrieve access token by Exposer
+## Test Case 20: Retrieve access token by Provider
 * **Test ID**: ***capif_security_api-20***
 * **Description**:
   
@@ -984,7 +984,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Exposer is also authorized
+  * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority) and Provider is also authorized
 
 * **Information of Test**:
 
@@ -1001,7 +1001,7 @@ At this documentation you will have all information and related files and exampl
 
   4. Create public and private key at publisher
   
-  5. Register of Exposer at CCF:
+  5. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
@@ -1010,19 +1010,19 @@ At this documentation you will have all information and related files and exampl
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
 
-  7. Request Access Token by exposer:
+  7. Request Access Token by Provider:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
      * body [access token req body]
      * securityId is apiInvokerId
      * grant_type=client_credentials
-     * using exposer certificate
+     * using Provider certificate
 
 * **Execution Steps**:
   
   1. Register and onboard Invoker at CCF
-  2. Register Exposer at CCF
+  2. Register Provider at CCF
   3. Create Security Context
-  4. Request Access Token by exposer
+  4. Request Access Token by Provider
    
 * **Expected Result**:
 
@@ -1033,7 +1033,7 @@ At this documentation you will have all information and related files and exampl
         * error_description with message "Role not authorized for this API route"
 
 
-## Test Case 21: Retrieve access token by Exposer with invalid apiInvokerId
+## Test Case 21: Retrieve access token by Provider with invalid apiInvokerId
 * **Test ID**: ***capif_security_api-21***
 * **Description**:
   
@@ -1041,29 +1041,29 @@ At this documentation you will have all information and related files and exampl
 
 * **Pre-Conditions**:
   
-  * API Invoker is pre-authorised and Exposer is also authorized
+  * API Invoker is pre-authorised and Provider is also authorized
 
 * **Information of Test**:
 
   1. Create public and private key at publisher
   
-  2. Register of Exposer at CCF:
+  2. Register of Provider at CCF:
      * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
      * body [publisher register body]
      * Get subscriberId
 
-  3. Request Access Token to invalid Invoker by exposer:
+  3. Request Access Token to invalid Invoker by Provider:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
      * body [access token req body]
      * securityId is API_INVOKER_NOT_VALID
      * grant_type=client_credentials
-     * using exposer certificate
+     * using Provider certificate
 
 * **Execution Steps**:
   
-  1. Register Exposer at CCF
+  1. Register Provider at CCF
   2. Create Security Context
-  3. Request Access Token by exposer
+  3. Request Access Token by Provider
    
 * **Expected Result**:
 
@@ -1106,7 +1106,7 @@ At this documentation you will have all information and related files and exampl
      * body [access token req body]
      * securityId is API_INVOKER_NOT_VALID
      * grant_type=client_credentials
-     * using exposer certificate
+     * using Provider certificate
 
 * **Execution Steps**:
   

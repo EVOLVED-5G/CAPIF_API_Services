@@ -15,7 +15,7 @@ ${API_PROVIDER_NOT_REGISTERED}      notValid
 *** Test Cases ***
 Register Api Provider
     [Tags]    capif_api_provider_management-1
-    # Register Exposer
+    # Register Provider
     ${register_user_info}=    Publisher Default Registration
 
     # Create provider Registration Body
