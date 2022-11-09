@@ -76,8 +76,8 @@ class EventSubscriptionsOperations:
 
         except Exception as e:
             exception = "An exception occurred in create event"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def delete_event(self, subscriber_id, subscription_id):
 
@@ -108,5 +108,5 @@ class EventSubscriptionsOperations:
 
         except Exception as e:
             exception= "An exception occurred in delete event"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

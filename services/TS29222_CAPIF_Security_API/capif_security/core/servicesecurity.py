@@ -1,6 +1,7 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 import re
 import rfc3987
@@ -114,8 +115,8 @@ class SecurityOperations:
                 return res
         except Exception as e:
             exception = "An exception occurred in get security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def create_servicesecurity(self, api_invoker_id, service_security):
@@ -184,8 +185,8 @@ class SecurityOperations:
 
         except Exception as e:
             exception = "An exception occurred in create security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def delete_servicesecurity(self, api_invoker_id):
@@ -215,8 +216,8 @@ class SecurityOperations:
 
         except Exception as e:
             exception = "An exception occurred in create security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause = e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause = str(e))
 
 
     def return_token(self, security_id, access_token_req):
@@ -254,8 +255,8 @@ class SecurityOperations:
             return res
         except Exception as e:
             exception = "An exception occurred in return token"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def update_servicesecurity(self, api_invoker_id, service_security):
@@ -297,18 +298,22 @@ class SecurityOperations:
                 key: value for key, value in service_security.items() if value is not None
             }
 
-            mycol.update_one(old_object, {"$set":service_security}, upsert=False)
+            result = mycol.find_one_and_update(old_object, {"$set":service_security}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
 
             current_app.logger.debug("Updated security context")
 
-            res= make_response(object=service_security, status=200)
+            res= make_response(object=dict_to_camel_case(result), status=200)
             res.headers['Location'] = "https://${CAPIF_HOSTNAME}/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
         except Exception as e:
             exception = "An exception occurred in update security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def revoke_api_authorization(self, api_invoker_id, security_notification):
@@ -345,5 +350,5 @@ class SecurityOperations:
 
         except Exception as e:
             exception = "An exception occurred in revoke security auth"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

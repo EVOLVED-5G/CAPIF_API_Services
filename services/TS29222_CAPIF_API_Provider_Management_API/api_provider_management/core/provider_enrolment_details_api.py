@@ -1,6 +1,7 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 from flask import current_app, Flask, Response
 import json
@@ -10,6 +11,7 @@ from ..core.sign_certificate import sign_certificate
 from .responses import internal_server_error, not_found_error, forbidden_error, make_response
 from bson import json_util
 from ..db.db import MongoDatabse
+from ..util import dict_to_camel_case
 import sys
 
 class ProviderManagementOperations:
@@ -61,8 +63,8 @@ class ProviderManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in register provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(cause=exception, detail=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def delete_api_provider_enrolment_details(self, api_prov_dom_id):
         try:
@@ -81,8 +83,8 @@ class ProviderManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in delete provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def update_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details):
         try:
@@ -99,14 +101,19 @@ class ProviderManagementOperations:
                 key: value for key, value in api_provider_enrolment_details.items() if value is not None
             }
 
-            mycol.update_one(result, {"$set":api_provider_enrolment_details}, upsert=False)
+            result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
+        
             current_app.logger.debug("Provider domain updated in database")
-            return make_response(object=api_provider_enrolment_details, status=200)
+            return make_response(object=dict_to_camel_case(result), status=200)
 
         except Exception as e:
             exception = "An exception occurred in update provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def patch_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details_patch):
         try:
@@ -123,13 +130,17 @@ class ProviderManagementOperations:
                 key: value for key, value in api_provider_enrolment_details_patch.items() if value is not None
             }
 
-            mycol.update_one(result, {"$set":api_provider_enrolment_details_patch})
+            result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details_patch}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
 
             current_app.logger.debug("Provider domain updated in database")
 
-            return make_response(object=api_provider_enrolment_details_patch, status=200)
+            return make_response(object=dict_to_camel_case(result), status=200)
 
         except Exception as e:
             exception = "An exception occurred in patch provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

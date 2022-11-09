@@ -14,6 +14,7 @@ from ..encoder import JSONEncoder
 from ..db.db import MongoDatabse
 from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
+from bson import json_util
 
 class InvokerManagementOperations:
 
@@ -81,8 +82,8 @@ class InvokerManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in create invoker"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def update_apiinvokerenrolmentdetail(self, onboard_id, apiinvokerenrolmentdetail):
 
@@ -100,7 +101,11 @@ class InvokerManagementOperations:
                 key: value for key, value in apiinvokerenrolmentdetail_update.items() if value is not None
             }
 
-            result = mycol.find_one_and_update(result, {"$set":apiinvokerenrolmentdetail_update}, return_document=ReturnDocument.AFTER ,upsert=False)
+            result = mycol.find_one_and_update(result, {"$set":apiinvokerenrolmentdetail_update}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
 
             current_app.logger.debug("Invoker Resource inserted in database")
             res = make_response(object=dict_to_camel_case(result), status=200)
@@ -108,8 +113,8 @@ class InvokerManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in update invoker"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def remove_apiinvokerenrolmentdetail(self, onboard_id):
 
@@ -130,7 +135,7 @@ class InvokerManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in remove invoker"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 

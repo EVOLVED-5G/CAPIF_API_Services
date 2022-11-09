@@ -1,6 +1,7 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 from flask import current_app, Flask, Response
 import json
@@ -68,8 +69,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in get services"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def add_serviceapidescription(self, apf_id, serviceapidescription):
 
@@ -103,8 +104,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in add services"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
 
@@ -134,8 +135,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in get one service"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def delete_serviceapidescription(self, service_api_id, apf_id):
 
@@ -164,8 +165,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in delete service"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def update_serviceapidescription(self, service_api_id, apf_id, service_api_description):
@@ -193,15 +194,20 @@ class PublishServiceOperations:
                 key: value for key, value in service_api_description.items() if value is not None
             }
 
-            mycol.update_one(serviceapidescription, {"$set":service_api_description}, upsert=False)
+            result = mycol.find_one_and_update(serviceapidescription, {"$set":service_api_description}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = {
+                key: value for key, value in result.items() if value is not None
+            }
+
             current_app.logger.debug("Updated service api")
     
-            response = make_response(object=service_api_description, status=200)
+            response = make_response(object=dict_to_camel_case(result), status=200)
 
             return response
 
         except Exception as e:
             exception = "An exception occurred in update service"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
