@@ -61,8 +61,8 @@ class ProviderManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in register provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(cause=exception, detail=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def delete_api_provider_enrolment_details(self, api_prov_dom_id):
         try:
@@ -81,8 +81,8 @@ class ProviderManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in delete provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def update_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details):
         try:
@@ -105,8 +105,8 @@ class ProviderManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in update provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def patch_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details_patch):
         try:
@@ -131,5 +131,5 @@ class ProviderManagementOperations:
 
         except Exception as e:
             exception = "An exception occurred in patch provider"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

@@ -69,6 +69,6 @@ class DiscoverApisOperations:
 
         except Exception as e:
             exception = "An exception occurred in discover services"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 

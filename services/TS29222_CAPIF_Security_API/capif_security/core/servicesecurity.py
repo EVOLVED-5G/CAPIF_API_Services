@@ -114,8 +114,8 @@ class SecurityOperations:
                 return res
         except Exception as e:
             exception = "An exception occurred in get security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def create_servicesecurity(self, api_invoker_id, service_security):
@@ -184,8 +184,8 @@ class SecurityOperations:
 
         except Exception as e:
             exception = "An exception occurred in create security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def delete_servicesecurity(self, api_invoker_id):
@@ -215,8 +215,8 @@ class SecurityOperations:
 
         except Exception as e:
             exception = "An exception occurred in create security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause = e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause = str(e))
 
 
     def return_token(self, security_id, access_token_req):
@@ -254,8 +254,8 @@ class SecurityOperations:
             return res
         except Exception as e:
             exception = "An exception occurred in return token"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def update_servicesecurity(self, api_invoker_id, service_security):
@@ -307,8 +307,8 @@ class SecurityOperations:
             return res
         except Exception as e:
             exception = "An exception occurred in update security info"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def revoke_api_authorization(self, api_invoker_id, security_notification):
@@ -345,5 +345,5 @@ class SecurityOperations:
 
         except Exception as e:
             exception = "An exception occurred in revoke security auth"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

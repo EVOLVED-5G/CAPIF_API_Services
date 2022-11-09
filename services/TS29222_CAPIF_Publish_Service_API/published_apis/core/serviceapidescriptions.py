@@ -68,8 +68,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in get services"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def add_serviceapidescription(self, apf_id, serviceapidescription):
 
@@ -103,8 +103,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in add services"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
 
@@ -134,8 +134,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in get one service"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def delete_serviceapidescription(self, service_api_id, apf_id):
 
@@ -164,8 +164,8 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in delete service"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def update_serviceapidescription(self, service_api_id, apf_id, service_api_description):
@@ -202,6 +202,6 @@ class PublishServiceOperations:
 
         except Exception as e:
             exception = "An exception occurred in update service"
-            current_app.logger.error(exception + "::" + e)
-            return internal_server_error(detail=exception, cause=e)
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
