@@ -33,6 +33,7 @@ def get_subscriber_and_subscription_from_location(input):
     else:
         raise Exception('Host is not present at ' + input)
 
+
 def get_registration_id(input):
     p = re.compile('^.*/v1/registrations/([a-zA-Z0-9]+)/?')
     m = p.match(input)
@@ -60,6 +61,7 @@ def add_dns_to_hosts(ip_address, host_name):
     dns_file.write("{}\n".format(capif_dns))
     dns_file.close()
 
+
 def create_csr(csr_file_path, private_key_path, cn):
     # create public/private key
     key = PKey()
@@ -86,6 +88,14 @@ def create_csr(csr_file_path, private_key_path, cn):
         f.close()
 
     return csr_request
+
+
+def create_user_csr(username):
+    csr_file_path = username+'.csr'
+    private_key_path = username + '.key'
+    cn = username
+    return create_csr(csr_file_path, private_key_path, cn)
+
 
 def get_ip_from_hostname(hostname):
     return socket.gethostbyname(hostname)

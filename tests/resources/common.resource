@@ -5,10 +5,10 @@ Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 *** Variables ***
 ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
-${PUBLISHER_USERNAME}           ROBOT_TESTING_PUBLISHER
+${PROVIDER_USERNAME}           ROBOT_TESTING_PROVIDER
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
-${PUBLISHER_ROLE}               provider
+${PROVIDER_ROLE}               provider
 
 ${CAPIF_HOSTNAME}               capifcore
 ${CAPIF_HTTP_PORT}

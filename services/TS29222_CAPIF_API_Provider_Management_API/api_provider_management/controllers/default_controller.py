@@ -63,7 +63,7 @@ def registrations_registration_id_delete(api_prov_dom_id):  # noqa: E501
     return res
 
 
-def registrations_registration_id_put(api_prov_dom_id, body):  # noqa: E501
+def registrations_registration_id_put(registration_id, body):  # noqa: E501
     """registrations_registration_id_put
 
     Updates an API provider domain&#39;s registration details. # noqa: E501
@@ -79,6 +79,6 @@ def registrations_registration_id_put(api_prov_dom_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = APIProviderEnrolmentDetails.from_dict(connexion.request.get_json())  # noqa: E501
 
-    res = provider_management_ops.update_api_provider_enrolment_details(api_prov_dom_id,body)
+    res = provider_management_ops.update_api_provider_enrolment_details(registration_id,body)
 
     return res

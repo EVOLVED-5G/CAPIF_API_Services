@@ -40,7 +40,7 @@ Create a security context for an API invoker with Provider role
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     # Create Security Context
     ${request_body}=    Create Service Security Body
@@ -49,7 +49,7 @@ Create a security context for an API invoker with Provider role
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    403    ${resp}
@@ -62,7 +62,7 @@ Create a security context for an API invoker with Provider role
 Create a security context for an API invoker with Provider entity role and invalid apiInvokerId
     [Tags]    capif_security_api-3
     # Register APF
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     # Create Security Context
     ${request_body}=    Create Service Security Body
@@ -71,7 +71,7 @@ Create a security context for an API invoker with Provider entity role and inval
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    403    ${resp}
@@ -122,13 +122,13 @@ Retrieve the Security Context of an API Invoker
     ${service_security_context}=    Set Variable    ${resp.json()}
 
     #Register APF
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    200    ${resp}
@@ -138,13 +138,13 @@ Retrieve the Security Context of an API Invoker
 Retrieve the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-6
     #Register APF
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    404    ${resp}
     Check Problem Details    ${resp}
@@ -199,14 +199,14 @@ Delete the Security Context of an API Invoker
     Status Should Be    201    ${resp}
 
     # Register APF
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     # Remove Security Context
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    204    ${resp}
 
@@ -215,7 +215,7 @@ Delete the Security Context of an API Invoker
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    404    ${resp}
     Check Problem Details    ${resp}
@@ -275,13 +275,13 @@ Delete the Security Context of an API Invoker with Invoker entity role and inval
 Delete the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-11
     # Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Result
     Status Should Be    404    ${resp}
@@ -297,7 +297,7 @@ Update the Security Context of an API Invoker
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
@@ -334,7 +334,7 @@ Update the Security Context of an API Invoker
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    200    ${resp}
@@ -358,14 +358,14 @@ Update the Security Context of an API Invoker with Provider entity role
     Check Variable    ${resp.json()}    ServiceSecurity
 
     #Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}/update
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    403    ${resp}
@@ -378,7 +378,7 @@ Update the Security Context of an API Invoker with Provider entity role
 Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId
     [Tags]    capif_security_api-14
     #Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${request_body}=    Create Service Security Body
     ${resp}=    Post Request Capif
@@ -386,7 +386,7 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    403    ${resp}
     Check Problem Details    ${resp}
@@ -433,7 +433,7 @@ Revoke the authorization of the API invoker for APIs
     Check Variable    ${resp.json()}    ServiceSecurity
 
     # Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['apiInvokerId']}
     ${resp}=    Post Request Capif
@@ -441,7 +441,7 @@ Revoke the authorization of the API invoker for APIs
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    204    ${resp}
@@ -451,7 +451,7 @@ Revoke the authorization of the API invoker for APIs
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    404    ${resp}
     Check Problem Details    ${resp}
@@ -479,7 +479,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ${security_context}=    Set Variable    ${resp.json()}
 
     # Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     # Revoke Security Context by Invoker
     ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['apiInvokerId']}
@@ -502,7 +502,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    200    ${resp}
@@ -528,7 +528,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ${security_context}=    Set Variable    ${resp.json()}
 
     #Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}
     ${resp}=    Post Request Capif
@@ -536,7 +536,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    404    ${resp}
@@ -550,7 +550,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Status Should Be    200    ${resp}
@@ -603,7 +603,7 @@ Retrieve access token by Provider
     Status Should Be    201    ${resp}
 
     #Register Provider
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
@@ -611,7 +611,7 @@ Retrieve access token by Provider
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
@@ -621,7 +621,7 @@ Retrieve access token by Provider
 Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
     #Register APF
-    ${register_user_info_publisher}=    Publisher Default Registration
+    ${register_user_info_publisher}=    Provider Default Registration
 
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
@@ -629,7 +629,7 @@ Retrieve access token by Provider with invalid apiInvokerId
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    400    AccessTokenErr

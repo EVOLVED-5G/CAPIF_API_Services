@@ -357,7 +357,8 @@
   },
   "APIProviderEnrolmentDetails": {
     "mandatory_attributes": {
-      "regSec": "string"
+      "regSec": "string",
+      "apiProvDomId": "string"
     },
     "optional_attributes": {
       "apiProvFuncs": "APIProviderFunctionDetails",
@@ -369,19 +370,20 @@
   "APIProviderFunctionDetails": {
     "mandatory_attributes": {
       "regInfo": "RegistrationInformation",
-      "apiProvFuncRole": "ApiProviderFuncRole"
+      "apiProvFuncRole": "ApiProviderFuncRole",
+      "apiProvFuncId": "string"
     },
     "optional_attributes": {
-      "apiProvFuncId": "string",
       "apiProvFuncInfo": "string"
     }
   },
   "RegistrationInformation": {
     "mandatory_attributes": {
-      "apiProvPubKey": "string"
+      "apiProvPubKey": "string",
+      "apiProvCert": "string"
     },
     "optional_attributes": {
-      "apiProvCert": "string"
+      
     }
   },
   "ApiProviderFuncRole": {

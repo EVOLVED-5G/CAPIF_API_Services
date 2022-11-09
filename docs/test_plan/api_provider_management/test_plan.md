@@ -21,35 +21,42 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_api_provider_management-1***
 * **Description**:
   
-  This test case will check that Api Provider can be registered con CCF by API Provider
+  This test case will check that Api Provider can be registered con CCF
 * **Pre-Conditions**:
   
   * Provider is pre-authorised (has valid certificate from CAPIF Authority)
 
 * **Information of Test**:
 
-  1. Create public and private key at provider
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Register Provider at Provider Management:
+  4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
+     * Store each cert in a file with according name.
 
 * **Execution Steps**:
   
-  1. Register Provider at CCF
-  3. Register Provider at Provider Management
+  1. Create private and public key for provider and each function to register.
+  2. Register Provider.
    
 * **Expected Result**:
 
   1. Register Provider at Provider Management:
      1. **201 Created** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure.
-     3. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
-
+     3. For each **apiProvFuncs**, we must check:
+        1. **apiProvFuncId** is set
+        2. **apiProvCert** under **regInfo** is set properly
+     5. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
 
 ## Test Case 2: Register Api Provider Already registered
 * **Test ID**: ***capif_api_provider_management-2***
@@ -62,21 +69,26 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at provider
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Register Provider at Provider Management:
+  4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
+     * Store each cert in a file with according name.
 
 * **Execution Steps**:
   
-  1. Register Provider at CCF
-  3. Register Provider at Provider Management
-  4. Re-Register Provider at Provider Management
+  1. Create private and public key for provider and each function to register.
+  2. Register Provider.
+  3. Re-Register Provider.
    
 * **Expected Result**:
 
@@ -323,5 +335,7 @@ At this documentation you will have all information and related files and exampl
 [provider request body]: ./provider_details_post_example.json  "API Provider Enrolment Request"
 
 [provider request patch body]: ./provider_details_enrolment_details_patch_example.json  "API Provider Enrolment Patch Request"
+
+[provider getauth body]: ./provider_getauth_example.json    "Get Auth Example"
 
 [Return To All Test Plans]: ../README.md

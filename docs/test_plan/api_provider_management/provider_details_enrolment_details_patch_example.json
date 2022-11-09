@@ -1,17 +1,29 @@
 {
-  "regSec": "string",
+  "regSec": "<public provider key>",
   "apiProvFuncs": [
     {
-      "apiProvFuncId": "string",
       "regInfo": {
-        "apiProvPubKey": "string",
-        "apiProvCert": "string"
+        "apiProvPubKey": "<public provider apf key>"
+      },
+      "apiProvFuncRole": "APF",
+      "apiProvFuncInfo": "APF_ROBOT_TESTING_PROVIDER"
+    },
+    {
+      "regInfo": {
+        "apiProvPubKey": "<public provider aef key>"
       },
       "apiProvFuncRole": "AEF",
-      "apiProvFuncInfo": "string"
+      "apiProvFuncInfo": "AEF_ROBOT_TESTING_PROVIDER"
+    },
+    {
+      "regInfo": {
+        "apiProvPubKey": "<public provider amf key>"
+      },
+      "apiProvFuncRole": "AMF",
+      "apiProvFuncInfo": "AMF_ROBOT_TESTING_PROVIDER"
     }
   ],
-  "apiProvDomInfo": "string",
+  "apiProvDomInfo": "ROBOT_TESTING",
   "suppFeat": "string",
   "failReason": "string"
 }

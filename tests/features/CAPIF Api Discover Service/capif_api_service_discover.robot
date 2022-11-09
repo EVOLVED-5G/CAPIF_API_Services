@@ -15,7 +15,7 @@ ${API_INVOKER_NOT_REGISTERED}       not-valid
 Discover Published service APIs by Authorised API Invoker
     [Tags]    capif_api_discover_service-1
     #Register APF
-    ${register_user_info}=    Publisher Default Registration
+    ${register_user_info}=    Provider Default Registration
 
     # Publish one api
     ${request_body}=    Create Service Api Description
@@ -24,7 +24,7 @@ Discover Published service APIs by Authorised API Invoker
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -54,7 +54,7 @@ Discover Published service APIs by Authorised API Invoker
 Discover Published service APIs by Non Authorised API Invoker
     [Tags]    capif_api_discover_service-2
     #Register APF
-    ${register_user_info}=    Publisher Default Registration
+    ${register_user_info}=    Provider Default Registration
 
     # Publish one api
     ${request_body}=    Create Service Api Description
@@ -63,7 +63,7 @@ Discover Published service APIs by Non Authorised API Invoker
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -77,7 +77,7 @@ Discover Published service APIs by Non Authorised API Invoker
     ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    401    ${resp}
     Check Problem Details
@@ -90,7 +90,7 @@ Discover Published service APIs by Non Authorised API Invoker
 Discover Published service APIs by not registered API Invoker
     [Tags]    capif_api_discover_service-3
     #Register APF
-    ${register_user_info}=    Publisher Default Registration
+    ${register_user_info}=    Provider Default Registration
 
     # Publish one api
     ${request_body}=    Create Service Api Description
@@ -99,7 +99,7 @@ Discover Published service APIs by not registered API Invoker
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -126,7 +126,7 @@ Discover Published service APIs by not registered API Invoker
 Discover Published service APIs by registered API Invoker with 1 result filtered
     [Tags]    capif_api_discover_service-4
     #Register APF
-    ${register_user_info}=    Publisher Default Registration
+    ${register_user_info}=    Provider Default Registration
 
     ${api_name_1}=    Set Variable    service_1
     ${api_name_2}=    Set Variable    service_2
@@ -138,7 +138,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -153,7 +153,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -202,7 +202,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 Discover Published service APIs by registered API Invoker filtered with no match
     [Tags]    capif_api_discover_service-5
     #Register APF
-    ${register_user_info}=    Publisher Default Registration
+    ${register_user_info}=    Provider Default Registration
 
     ${api_name_1}=    Set Variable    apiName1
     ${api_name_2}=    Set Variable    apiName2
@@ -214,7 +214,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -230,7 +230,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -276,7 +276,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
 Discover Published service APIs by registered API Invoker not filtered
     [Tags]    capif_api_discover_service-6
     #Register APF
-    ${register_user_info}=    Publisher Default Registration
+    ${register_user_info}=    Provider Default Registration
 
     ${api_name_1}=    Set Variable    apiName1
     ${api_name_2}=    Set Variable    apiName2
@@ -288,7 +288,7 @@ Discover Published service APIs by registered API Invoker not filtered
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -304,7 +304,7 @@ Discover Published service APIs by registered API Invoker not filtered
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PUBLISHER_USERNAME}
+    ...    username=${PROVIDER_USERNAME}
 
     Status Should Be    201    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription

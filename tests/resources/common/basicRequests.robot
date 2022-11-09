@@ -11,17 +11,17 @@ ${CAPIF_AUTH}
 ${CAPIF_BEARER}
 
 ${LOCATION_INVOKER_RESOURCE_REGEX}
-...    ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
+...                                     ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
 ${LOCATION_EVENT_RESOURCE_REGEX}
-...    ^/capif-events/v1/[0-9a-zA-Z]+/subscriptions/[0-9a-zA-Z]+
+...                                     ^/capif-events/v1/[0-9a-zA-Z]+/subscriptions/[0-9a-zA-Z]+
 ${LOCATION_INVOKER_RESOURCE_REGEX}
-...    ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
+...                                     ^/api-invoker-management/v1/onboardedInvokers/[0-9a-zA-Z]+
 ${LOCATION_PUBLISH_RESOURCE_REGEX}
-...    ^/published-apis/v1/[0-9a-zA-Z]+/service-apis/[0-9a-zA-Z]+
+...                                     ^/published-apis/v1/[0-9a-zA-Z]+/service-apis/[0-9a-zA-Z]+
 ${LOCATION_SECURITY_RESOURCE_REGEX}
-...    ^/capif-security/v1/trustedInvokers/[0-9a-zA-Z]+
+...                                     ^/capif-security/v1/trustedInvokers/[0-9a-zA-Z]+
 ${LOCATION_PROVIDER_RESOURCE_REGEX}
-...    ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
+...                                     ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
 
 
 *** Keywords ***
@@ -191,6 +191,53 @@ Register User At Jwt Auth
 
     RETURN    ${register_user_info}
 
+Register User At Jwt Auth Provider
+    [Arguments]    ${username}    ${role}    ${password}=password    ${description}=Testing
+
+    ${apf_username}=    Set Variable    APF_${username}
+    ${aef_username}=    Set Variable    AEF_${username}
+    ${amf_username}=    Set Variable    AMF_${username}
+
+    # Create a certificate for each kind of role under provider
+    ${csr_request}=    Create User Csr    ${username}
+
+    ${apf_csr_request}=    Create User Csr    ${apf_username}
+    ${aef_csr_request}=    Create User Csr    ${aef_username}
+    ${amf_csr_request}=    Create User Csr    ${amf_username}
+
+    # Register provider
+    &{body}=    Create Dictionary
+    ...    password=${password}
+    ...    username=${username}
+    ...    role=${role}
+    ...    description=${description}
+    ...    cn=${username}
+
+    Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
+
+    ${resp}=    POST On Session    jwtsession    /register    json=${body}
+
+    Should Be Equal As Strings    ${resp.status_code}    201
+
+    # Get Auth to obtain access_token
+    ${get_auth_response}=    Get Auth For User    ${username}    ${password}    ${role}
+
+    ${register_user_info}=    Create Dictionary
+    ...    netappID=${resp.json()['id']}
+    ...    csr_request=${csr_request}
+    ...    apf_csr_request=${apf_csr_request}
+    ...    aef_csr_request=${aef_csr_request}
+    ...    amf_csr_request=${amf_csr_request}
+    ...    apf_username=${apf_username}
+    ...    aef_username=${aef_username}
+    ...    amf_username=${amf_username}
+    ...    &{resp.json()}
+    ...    &{get_auth_response}
+
+    Log Dictionary    ${register_user_info}
+
+    RETURN    ${register_user_info}
+
 Get Auth For User
     [Arguments]    ${username}    ${password}    ${role}
 
@@ -240,9 +287,57 @@ Invoker Default Onboarding
 
     RETURN    ${register_user_info}    ${url}    ${request_body}
 
-Publisher Default Registration
-    #Register Provider
-    ${register_user_info}=    Register User At Jwt Auth
-    ...    username=${PUBLISHER_USERNAME}    role=${PUBLISHER_ROLE}
+Provider Registration
+    [Arguments]    ${register_user_info}
+
+    # Create provider Registration Body
+    ${apf_func_details}=    Create Api Provider Function Details
+    ...    ${register_user_info['apf_username']}
+    ...    ${register_user_info['apf_csr_request']}
+    ...    APF
+    ${aef_func_details}=    Create Api Provider Function Details
+    ...    ${register_user_info['aef_username']}
+    ...    ${register_user_info['aef_csr_request']}
+    ...    AEF
+    ${amf_func_details}=    Create Api Provider Function Details
+    ...    ${register_user_info['amf_username']}
+    ...    ${register_user_info['amf_csr_request']}
+    ...    AMF
+    ${api_prov_funcs}=    Create List    ${apf_func_details}    ${aef_func_details}    ${amf_func_details}
+
+    ${request_body}=    Create Api Provider Enrolment Details Body
+    ...    ${register_user_info['access_token']}
+    ...    ${api_prov_funcs}
+
+    # Register Provider
+    ${resp}=    Post Request Capif
+    ...    /api-provider-management/v1/registrations
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    access_token=${register_user_info['access_token']}
+
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    201    APIProviderEnrolmentDetails
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
+
+    Log Dictionary    ${resp.json()}
+
+    FOR    ${prov}    IN    @{resp.json()['apiProvFuncs']}
+        Log Dictionary    ${prov}
+        Store In File    ${prov['apiProvFuncInfo']}.crt    ${prov['regInfo']['apiProvCert']}
+    END
+
+    Set To Dictionary    ${register_user_info}    provider_enrollment_details=${request_body}    resource_url=${resource_url}
 
     RETURN    ${register_user_info}
+
+Provider Default Registration
+    #Register Provider
+    ${register_user_info}=    Register User At Jwt Auth Provider
+    ...    username=${PROVIDER_USERNAME}    role=${PROVIDER_ROLE}
+
+    ${register_user_info}=   Provider Registration    ${register_user_info}
+
+    RETURN   ${register_user_info}
+
