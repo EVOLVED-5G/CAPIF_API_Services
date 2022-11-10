@@ -47,7 +47,7 @@ def registrations_post(body):  # noqa: E501
     return res
 
 
-def registrations_registration_id_delete(api_prov_dom_id):  # noqa: E501
+def registrations_registration_id_delete(registration_id):  # noqa: E501
     """registrations_registration_id_delete
 
     Deregisters API provider domain by deleting API provider domain and functions. # noqa: E501
@@ -58,7 +58,7 @@ def registrations_registration_id_delete(api_prov_dom_id):  # noqa: E501
     :rtype: None
     """
     current_app.logger.info("Removing Provider Domain")
-    res = provider_management_ops.delete_api_provider_enrolment_details(api_prov_dom_id)
+    res = provider_management_ops.delete_api_provider_enrolment_details(registration_id)
 
     return res
 
