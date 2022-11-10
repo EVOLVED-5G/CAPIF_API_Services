@@ -41,6 +41,7 @@ At this documentation you will have all information and related files and exampl
   4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
+     * Authentication Bearer with access_token
      * Store each cert in a file with according name.
 
 * **Execution Steps**:
@@ -82,7 +83,11 @@ At this documentation you will have all information and related files and exampl
   4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
+     * Authentication Bearer with access_token
      * Store each cert in a file with according name.
+
+  5. Re-Register Provider:
+     * Same regSec than Previous registration
 
 * **Execution Steps**:
   
@@ -92,7 +97,7 @@ At this documentation you will have all information and related files and exampl
    
 * **Expected Result**:
 
-  1. Re-Register Provider at Provider Management:
+  1. Re-Register Provider:
      1. **403 Forbidden** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 403
@@ -111,36 +116,41 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at invoker
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Register Provider at Provider Management:
+  4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
+     * Authentication Bearer with access_token
      * Get Resource URL from Location
 
-  4. Update Provider at Provider Management:
-     * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+  5. Update Provider:
+     * Send PUT to Resource URL returned at registration *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
      * body [provider request body] with apiProvDomInfo set to ROBOT_TESTING_MOD
 
 
 * **Execution Steps**:
   
-  1. Register Provider at CCF
-  2. Register Provider at Provider Management
-  4. Re-Register Provider at Provider Management
+  1. Create private and public key for provider and each function to register.
+  2. Register Provider
+  3. Update Provider
    
 * **Expected Result**:
-  1. Register Provider at Provider Management:
+  1. Register Provider:
      1. **201 Created** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure.
      3. Location Header must contain the new resource URL *{apiRoot}/api-provider-management/v1/registrations/{registrationId}*
 
 
-  2. Re-Register Provider at Provider Management:
+  2. Update Provider:
      1. **200 OK** response.
      2. body returned must accomplish **APIProviderEnrolmentDetails** data structure, with:
         * apiProvDomInfo set to ROBOT_TESTING_MOD
@@ -157,24 +167,34 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at invoker
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Update Provider at Provider Management:
-     * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+  4. Register Provider:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+     * Authentication Bearer with access_token
+     * Store each cert in a file with according name.
+
+  5. Update Not Registered Provider:
+     * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_PROVIDER_NOT_REGISTERED}*
      * body [provider request body]
 
 * **Execution Steps**:
   
   1. Register Provider at CCF
-  3. Update Provider at Provider Management
+  3. Update Not Registered Provider
    
 * **Expected Result**:
 
-  1. Re-Register Provider at Provider Management:
+  1. Update Not Registered Provider:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
@@ -193,26 +213,31 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at invoker
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Register Provider at Provider Management:
+  4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
-     * Get resource from Location header
+     * Authentication Bearer with access_token
+     * Store each cert in a file with according name.
 
-  4. Partial update provider at Provider Management:
+  5. Partial update provider:
      * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
      * body [provider request patch body]
 
 * **Execution Steps**:
   
   1. Register Provider at CCF
-  2. Register Provider at Provider Management
-  3. Partial update provider at Provider Management
+  2. Register Provider
+  3. Partial update provider
    
 * **Expected Result**:
 
@@ -233,13 +258,23 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at invoker
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Partial update Provider at Provider Management:
+  4. Register Provider:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+     * Authentication Bearer with access_token
+     * Store each cert in a file with according name.
+
+  5. Partial update Provider:
      * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_API_PROVIDER_NOT_REGISTERED}*
      * body [provider request patch body]
   
@@ -247,12 +282,12 @@ At this documentation you will have all information and related files and exampl
 * **Execution Steps**:
   
   1. Register Provider at CCF
-  2. Register Provider at Provider Management
-  3. Partial update provider at Provider Management
+  2. Register Provider
+  3. Partial update provider
    
 * **Expected Result**:
 
-  1. Partial update provider at Provider Management:
+  1. Partial update provider:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
@@ -271,29 +306,34 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at provider
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Register Provider at Provider Management:
+  4. Register Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
      * body [provider request body]
-     * Get resource from Location header
+     * Authentication Bearer with access_token
+     * Store each cert in a file with according name.
 
-  4. Delete registered provider at Provider Management:
+  5. Delete registered provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
 
 * **Execution Steps**:
   
   1. Register Provider at CCF
-  2. Register Provider at Provider Management
-  3. Delete Provider at Provider Management
+  2. Register Provider
+  3. Delete Provider
    
 * **Expected Result**:
 
-  1. Delete Provider at Provider Management:
+  1. Delete Provider:
      1. **204 No Content** response.
 
 ## Test Case 8: Delete Not Registered Api Provider
@@ -307,23 +347,33 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. Create public and private key at provider
+  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
 
   2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register* 
+     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
      * body [provider register body]
+  
+  3. Obtain Access Token:
+     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
+     * Body [provider getauth body]
 
-  3. Delete registered provider at Provider Management:
+  4. Register Provider:
+     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
+     * body [provider request body]
+     * Authentication Bearer with access_token
+     * Store each cert in a file with according name.
+
+  5. Delete registered provider at Provider Management:
      * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_PROVIDER_NOT_REGISTERED}*
 
 * **Execution Steps**:
   
   1. Register Provider at CCF
-  2. Delete Provider at Provider Management
+  2. Delete Provider
    
 * **Expected Result**:
 
-  1. Delete Provider at Provider Management:
+  1. Delete Provider:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
