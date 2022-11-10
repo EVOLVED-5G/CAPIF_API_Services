@@ -328,7 +328,7 @@ Provider Registration
         Store In File    ${prov['apiProvFuncInfo']}.crt    ${prov['regInfo']['apiProvCert']}
     END
 
-    Set To Dictionary    ${register_user_info}    provider_enrollment_details=${request_body}    resource_url=${resource_url}
+    Set To Dictionary    ${register_user_info}    provider_enrollment_details=${request_body}    resource_url=${resource_url}   provider_register_response=${resp}
 
     RETURN    ${register_user_info}
 
@@ -338,6 +338,7 @@ Provider Default Registration
     ...    username=${PROVIDER_USERNAME}    role=${PROVIDER_ROLE}
 
     ${register_user_info}=   Provider Registration    ${register_user_info}
-
+    
+    Log Dictionary    ${register_user_info}
     RETURN   ${register_user_info}
 

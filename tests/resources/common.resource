@@ -6,6 +6,10 @@ Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 *** Variables ***
 ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
 ${PROVIDER_USERNAME}           ROBOT_TESTING_PROVIDER
+${APF_PROVIDER_USERNAME}       APF_${PROVIDER_USERNAME}
+${AEF_PROVIDER_USERNAME}       AEF_${PROVIDER_USERNAME}
+${AMF_PROVIDER_USERNAME}       AMF_${PROVIDER_USERNAME}
+
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
 ${PROVIDER_ROLE}               provider
