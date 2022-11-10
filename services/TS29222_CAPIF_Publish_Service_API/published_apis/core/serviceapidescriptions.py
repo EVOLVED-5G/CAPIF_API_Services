@@ -10,7 +10,7 @@ from pymongo import response
 from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
-from ..util import dict_to_camel_case
+from ..util import dict_to_camel_case, clean_empty
 from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
 from bson import json_util
 
@@ -190,15 +190,11 @@ class PublishServiceOperations:
                 return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
             service_api_description = service_api_description.to_dict()
-            service_api_description = {
-                key: value for key, value in service_api_description.items() if value is not None
-            }
+            service_api_description = clean_empty(service_api_description)
 
             result = mycol.find_one_and_update(serviceapidescription, {"$set":service_api_description}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
-            result = {
-                key: value for key, value in result.items() if value is not None
-            }
+            result = clean_empty(result)
 
             current_app.logger.debug("Updated service api")
     

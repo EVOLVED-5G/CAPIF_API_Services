@@ -11,7 +11,7 @@ from ..core.sign_certificate import sign_certificate
 from .responses import internal_server_error, not_found_error, forbidden_error, make_response
 from bson import json_util
 from ..db.db import MongoDatabse
-from ..util import dict_to_camel_case
+from ..util import dict_to_camel_case, clean_empty
 import sys
 
 class ProviderManagementOperations:
@@ -97,15 +97,11 @@ class ProviderManagementOperations:
                 return result
 
             api_provider_enrolment_details = api_provider_enrolment_details.to_dict()
-            api_provider_enrolment_details = {
-                key: value for key, value in api_provider_enrolment_details.items() if value is not None
-            }
+            api_provider_enrolment_details = clean_empty(api_provider_enrolment_details)
 
             result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
-            result = {
-                key: value for key, value in result.items() if value is not None
-            }
+            result = clean_empty(result)
         
             current_app.logger.debug("Provider domain updated in database")
             return make_response(object=dict_to_camel_case(result), status=200)
@@ -126,15 +122,11 @@ class ProviderManagementOperations:
                 return result
 
             api_provider_enrolment_details_patch = api_provider_enrolment_details_patch.to_dict()
-            api_provider_enrolment_details_patch = {
-                key: value for key, value in api_provider_enrolment_details_patch.items() if value is not None
-            }
+            api_provider_enrolment_details_patch = clean_empty(api_provider_enrolment_details_patch)
 
             result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details_patch}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
-            result = {
-                key: value for key, value in result.items() if value is not None
-            }
+            result = clean_empty(result)
 
             current_app.logger.debug("Provider domain updated in database")
 
