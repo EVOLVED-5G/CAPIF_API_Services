@@ -8,7 +8,7 @@ import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from ..core.sign_certificate import sign_certificate
-from .responses import internal_server_error, not_found_error, forbidden_error, make_response
+from .responses import internal_server_error, not_found_error, forbidden_error, make_response, bad_request_error
 from bson import json_util
 from ..db.db import MongoDatabse
 from ..util import dict_to_camel_case, clean_empty
@@ -96,13 +96,29 @@ class ProviderManagementOperations:
             if isinstance(result, Response):
                 return result
 
+            for func in api_provider_enrolment_details.api_prov_funcs:
+                if func.api_prov_func_id is None:
+                    func.api_prov_func_id = secrets.token_hex(15)
+                    certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
+                    func.reg_info.api_prov_cert = certificate
+                else:
+                    api_prov_funcs = result["api_prov_funcs"]
+                    for api_func in api_prov_funcs:
+                        if func.api_prov_func_id == api_func["api_prov_func_id"]:
+                            if func.api_prov_func_role != api_func["api_prov_func_role"]:
+                                return bad_request_error(detail="Bad Role in provider", cause="Different role in update reqeuest", invalid_params=[{"param":"api_prov_func_role","reason":"differente role with same id"}])
+                            if func.reg_info.api_prov_pub_key != api_func["reg_info"]["api_prov_pub_key"]:
+                                certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
+                                func.reg_info.api_prov_cert = certificate
+
+
             api_provider_enrolment_details = api_provider_enrolment_details.to_dict()
             api_provider_enrolment_details = clean_empty(api_provider_enrolment_details)
 
             result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
             result = clean_empty(result)
-        
+
             current_app.logger.debug("Provider domain updated in database")
             return make_response(object=dict_to_camel_case(result), status=200)
 
