@@ -10,15 +10,13 @@ from pymongo import response
 from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from .resources import Resource
 from ..util import dict_to_camel_case, clean_empty
 from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
 from bson import json_util
 
 
-class PublishServiceOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
+class PublishServiceOperations(Resource):
 
     def __check_apf(self, apf_id):
         providers_col = self.db.get_col_by_name(self.db.capif_provider_col)

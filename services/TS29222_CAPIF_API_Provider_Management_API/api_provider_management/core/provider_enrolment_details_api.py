@@ -12,12 +12,10 @@ from .responses import internal_server_error, not_found_error, forbidden_error, 
 from bson import json_util
 from ..db.db import MongoDatabse
 from ..util import dict_to_camel_case, clean_empty
+from .resources import Resource
 import sys
 
-class ProviderManagementOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
+class ProviderManagementOperations(Resource):
 
     def __check_api_provider_domain(self, api_prov_dom_id):
         mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)

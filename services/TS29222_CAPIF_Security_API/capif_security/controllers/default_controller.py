@@ -8,6 +8,8 @@ from capif_security.models.security_notification import SecurityNotification  # 
 from capif_security.models.service_security import ServiceSecurity  # noqa: E501
 from capif_security import util
 from ..core.servicesecurity import SecurityOperations
+from ..core.consumer_messager import Subscriber
+from ..core.publisher import Publisher
 import json
 from flask import Response, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -19,6 +21,7 @@ from cryptography.hazmat.backends import default_backend
 import pymongo
 
 service_security_ops = SecurityOperations()
+publish_ops = Publisher()
 
 
 def securities_security_id_token_post(security_id, body):  # noqa: E501
@@ -81,8 +84,8 @@ def trusted_invokers_api_invoker_id_delete_post(api_invoker_id, body):  # noqa: 
     res = service_security_ops.revoke_api_authorization(api_invoker_id, body)
     if res.status_code == 204:
         current_app.logger.info("Permissions revoked")
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","API_INVOKER_AUTHORIZATION_REVOKED")
+        publish_ops.publish_message("events", "API_INVOKER_AUTHORIZATION_REVOKED")
+
     return res
 
 

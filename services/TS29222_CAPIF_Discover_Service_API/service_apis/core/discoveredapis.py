@@ -9,14 +9,12 @@ from service_apis.encoder import JSONEncoder
 from service_apis.models.problem_details import ProblemDetails
 from service_apis.models.service_api_description import ServiceAPIDescription
 from service_apis.util import dict_to_camel_case
+from service_apis.core.resources import Resource
 from bson import json_util
 
 
 
-class DiscoverApisOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
+class DiscoverApisOperations(Resource):
 
     def get_discoveredapis(self, api_invoker_id, api_name, api_version, comm_type, protocol, aef_id,
                         data_format, api_cat, supported_features, api_supported_features):

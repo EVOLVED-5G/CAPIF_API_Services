@@ -5,7 +5,10 @@ import logging
 from capif_security import encoder
 from flask_jwt_extended import JWTManager
 from .config import Config
-from flask_mqtt import Mqtt
+from .core.consumer_messager import Subscriber
+from threading import Thread
+from flask_executor import Executor
+from flask_apscheduler import APScheduler
 import sys
 
 
@@ -46,13 +49,26 @@ def main():
                 pythonic_params=True)
 
     config = Config()
-    config.chargeMQTTConfig(app)
 
     jwt = JWTManager(app.app)
-    mqtt = Mqtt(app.app)
-    app.app.config["INSTANCE_MQTT"] = mqtt
-
+    subscriber = Subscriber()
+    scheduler = APScheduler()
+    scheduler.init_app(app.app)
     configure_logging(app.app)
+
+    @scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
+    def job1():
+        with scheduler.app.app_context():
+            subscriber.get_message()
+
+    scheduler.start()
+
+    # executor = Executor(app.app)
+
+    # @app.app.before_first_request
+    # def up_listener():
+    #     executor.submit(subscriber.listen)
+
 
     app.run(port=8080, debug=True)
 

@@ -4,10 +4,16 @@ services:
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
-  mosquitto:
-    build: ./mosquitto
-    ports: 
-      - "1883:1883"
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API
@@ -55,7 +61,7 @@ services:
       - ./TS29222_CAPIF_Events_API:/usr/src/app
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
-      - mosquitto
+      - redis
       - mongo
   api-invocation-logs:
     build: TS29222_CAPIF_Logging_API_Invocation_API/.
@@ -71,7 +77,7 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
     depends_on:
-      - mosquitto
+      - redis
       - mongo
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.

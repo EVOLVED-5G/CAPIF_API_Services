@@ -7,12 +7,3 @@ mongo: {
   'host': 'mongo',
   'port': "27017"
 }
-
-mqtt: {
-  'url': 'mosquitto',
-  'port': 1883,
-  'username': '',
-  'password': '',
-  'keepalive': 10,
-  'tls': False
-}

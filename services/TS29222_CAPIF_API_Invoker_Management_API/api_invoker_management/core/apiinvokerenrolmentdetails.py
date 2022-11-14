@@ -14,12 +14,10 @@ from ..encoder import JSONEncoder
 from ..db.db import MongoDatabse
 from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
+from .resources import Resource
 from bson import json_util
 
-class InvokerManagementOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
+class InvokerManagementOperations(Resource):
 
     def __check_api_invoker_id(self, api_invoker_id):
 
