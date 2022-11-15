@@ -11,9 +11,11 @@ from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
+from ..core.publisher import Publisher
 import pymongo
 
 invoker_operations = InvokerManagementOperations()
+publisher_ops = Publisher()
 
 def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
     """onboarded_invokers_onboarding_id_delete
@@ -31,8 +33,8 @@ def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
 
     if res.status_code == 204:
         current_app.logger.info("Invoker Removed")
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","API_INVOKER_OFFBOARDED")
+        publisher_ops.publish_message("events", "API_INVOKER_UPDATED")
+        publisher_ops.publish_message("internal-messages", "invoker-removed:"+onboarding_id)
 
     return res
 
@@ -56,8 +58,7 @@ def onboarded_invokers_onboarding_id_put(onboarding_id, body):  # noqa: E501
 
     if res.status_code == 200:
         current_app.logger.info("Invoker Updated")
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","API_INVOKER_UPDATED")
+        publisher_ops.publish_message("events", "API_INVOKER_UPDATED")
 
     return res
 
@@ -89,7 +90,6 @@ def onboarded_invokers_post(body):  # noqa: E501
     res = invoker_operations.add_apiinvokerenrolmentdetail(body)
     if res.status_code == 201:
         current_app.logger.info("Invoker Created")
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","API_INVOKER_ONBOARDED")
+        publisher_ops.publish_message("events", "API_INVOKER_ONBOARDED")
 
     return res

@@ -22,14 +22,10 @@ from ..models.service_security import ServiceSecurity
 from ..util import dict_to_camel_case, clean_empty
 from .responses import not_found_error, make_response, bad_request_error, internal_server_error, forbidden_error
 from .notification import Notifications
+from .resources import Resource
 import os
 
-class SecurityOperations:
-
-    def __init__(self):
-        self.notification = Notifications()
-        self.db = MongoDatabse()
-        self.mimetype = 'application/json'
+class SecurityOperations(Resource):
 
     def __check_invoker(self, api_invoker_id):
         invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
@@ -219,6 +215,11 @@ class SecurityOperations:
             current_app.logger.error(exception + "::" + str(e))
             return internal_server_error(detail=exception, cause = str(e))
 
+    def delete_intern_servicesecurity(self, api_invoker_id):
+
+        mycol = self.db.get_col_by_name(self.db.security_info)
+        myQuery = {'api_invoker_id': api_invoker_id}
+        mycol.delete_many(myQuery)
 
     def return_token(self, security_id, access_token_req):
 

@@ -10,9 +10,13 @@ from capif_events import encoder
 from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
-from flask_mqtt import Mqtt
 from .config import Config
 from .core.notifications import Notifications
+from .core.consumer_messager import Subscriber
+from multiprocessing import Process
+from threading import Thread
+from flask_executor import Executor
+from flask_apscheduler import APScheduler
 
 
 
@@ -46,25 +50,25 @@ app.add_api('openapi.yaml',
 
 
 config = Config()
-config.chargeMQTTConfig(app)
 
 notifications = Notifications()
 jwt = JWTManager(app.app)
-mqtt = Mqtt(app.app)
 configure_logging(app.app)
+#executor = Executor(app.app)
+subscriber = Subscriber()
+scheduler = APScheduler()
+scheduler.init_app(app.app)
+@scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
+def job1():
+    with scheduler.app.app_context():
+        subscriber.get_message()
 
-@mqtt.on_connect()
-def handle_connect(client, userdata, flags, rc):
-    if rc == 0:
-       mqtt.subscribe('/events')
+scheduler.start()
 
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, message):
-    data = dict(
-        topic=message.topic,
-        payload=message.payload.decode()
-    )
-    notifications.send_notifications(data["payload"])
+
+# @app.app.before_first_request
+# def create_listener_message():
+#     executor.submit(subscriber.listen)
 
 if __name__ == '__main__':
-     app.run(debug=True, port=8080)
+    app.run(debug=True, port=8080)

@@ -14,12 +14,10 @@ from ..encoder import JSONEncoder
 from ..db.db import MongoDatabse
 from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
+from .resources import Resource
 from bson import json_util
 
-class InvokerManagementOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
+class InvokerManagementOperations(Resource):
 
     def __check_api_invoker_id(self, api_invoker_id):
 
@@ -33,6 +31,26 @@ class InvokerManagementOperations:
             return not_found_error(detail="Please provide an existing Netapp ID", cause= "Not exist NetappID" )
 
         return old_values
+
+    def __sign_cert(self, publick_key, invoker_information):
+        url = "http://easy-rsa:8080/sign-csr"
+
+        payload = dict()
+        payload['csr'] = publick_key
+        payload['mode'] = 'client'
+        payload['filename'] = invoker_information
+
+        headers = {
+
+            'Content-Type': 'application/json'
+
+        }
+
+        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+        response_payload = json.loads(response.text)
+
+        return response_payload
+
 
     def add_apiinvokerenrolmentdetail(self, apiinvokerenrolmentdetail):
 
@@ -53,25 +71,11 @@ class InvokerManagementOperations:
 
             current_app.logger.debug("Signing Certificate")
 
-            url = "http://easy-rsa:8080/sign-csr"
-
-            payload = dict()
-            payload['csr'] = apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key
-            payload['mode'] = 'client'
-            payload['filename'] = apiinvokerenrolmentdetail.api_invoker_information
-
-            headers = {
-
-                'Content-Type': 'application/json'
-
-            }
-
-            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-            response_payload = json.loads(response.text)
+            cert = self.__sign_cert(apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key, apiinvokerenrolmentdetail.api_invoker_information)
 
             api_invoker_id = secrets.token_hex(15)
             apiinvokerenrolmentdetail.api_invoker_id = api_invoker_id
-            apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = response_payload['certificate']
+            apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
             mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
 
             current_app.logger.debug("Invoker inserted in database")
@@ -95,6 +99,10 @@ class InvokerManagementOperations:
 
             if isinstance(result, Response):
                 return result
+
+            if apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key != result["onboarding_information"]["api_invoker_public_key"]:
+                cert = self.__sign_cert(apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key, apiinvokerenrolmentdetail.api_invoker_information)
+                apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
 
             apiinvokerenrolmentdetail_update = apiinvokerenrolmentdetail.to_dict()
             apiinvokerenrolmentdetail_update = {

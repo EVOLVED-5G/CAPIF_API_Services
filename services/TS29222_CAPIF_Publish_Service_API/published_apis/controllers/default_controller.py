@@ -2,6 +2,7 @@ import connexion
 from published_apis.models.service_api_description import ServiceAPIDescription  # noqa: E501
 from ..core import serviceapidescriptions
 from ..core.serviceapidescriptions import PublishServiceOperations
+from ..core.publisher import Publisher
 
 import json
 from flask import Response, request, current_app
@@ -15,6 +16,7 @@ import pymongo
 
 
 service_operations = PublishServiceOperations()
+publisher_ops = Publisher()
 
 def apf_id_service_apis_get(apf_id):  # noqa: E501
     """apf_id_service_apis_get
@@ -53,8 +55,8 @@ def apf_id_service_apis_post(apf_id, body):  # noqa: E501
 
     if res.status_code == 201:
         current_app.logger.info("Service published")
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","SERVICE_API_AVAILABLE")
+        publisher_ops.publish_message("events", "SERVICE_API_AVAILABLE")
+
     return res
 
 
@@ -76,8 +78,8 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
 
     if res.status_code == 204:
         current_app.logger.info("Removed service published")
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","SERVICE_API_UNAVAILABLE")
+        publisher_ops.publish_message("events", "SERVICE_API_UNAVAILABLE")
+
     return res
 
 
@@ -123,7 +125,6 @@ def apf_id_service_apis_service_api_id_put(service_api_id, apf_id, body):  # noq
     response = service_operations.update_serviceapidescription(service_api_id, apf_id, body)
 
     if response.status_code == 200:
-        mqtt = current_app.config['INSTANCE_MQTT']
-        mqtt.publish("/events","SERVICE_API_UPDATE")
+        publisher_ops.publish_message("events", "SERVICE_API_UPDATE")
 
     return response

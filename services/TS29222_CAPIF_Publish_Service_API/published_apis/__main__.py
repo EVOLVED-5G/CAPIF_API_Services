@@ -9,7 +9,6 @@ from flask import Flask, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 from .config import Config
-from flask_mqtt import Mqtt
 
 
 def configure_logging(app):
@@ -42,11 +41,8 @@ app.add_api('openapi.yaml',
 app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
 
 config = Config()
-config.chargeMQTTConfig(app)
 
 jwt = JWTManager(app.app)
-mqtt = Mqtt(app.app)
-app.app.config["INSTANCE_MQTT"] = mqtt
 configure_logging(app.app)
 
 

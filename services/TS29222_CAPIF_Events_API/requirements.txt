@@ -7,4 +7,6 @@ pymongo == 4.0.1
 flask_jwt_extended
 pyopenssl
 rfc3987
-flask-mqtt
+redis
+flask_executor
+Flask-APScheduler

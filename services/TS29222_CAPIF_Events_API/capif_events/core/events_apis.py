@@ -8,15 +8,13 @@ from flask import current_app, Flask, Response
 import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from .resources import Resource
 from bson import json_util
 from .responses import internal_server_error, not_found_error, make_response, bad_request_error
 from ..db.db import MongoDatabse
 from ..util import dict_to_camel_case
 
-class EventSubscriptionsOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
+class EventSubscriptionsOperations(Resource):
 
     def __check_subscriber_id(self, subscriber_id):
         mycol_invoker= self.db.get_col_by_name(self.db.invoker_collection)
@@ -111,57 +109,4 @@ class EventSubscriptionsOperations:
             current_app.logger.error(exception + "::" + str(e))
             return internal_server_error(detail=exception, cause=str(e))
 
-    def delete_all_events(self, subscriber_id):
 
-        try:
-            mycol = self.db.get_col_by_name(self.db.event_collection)
-
-            current_app.logger.debug("Removing event subscription")
-
-            result = self.__check_subscriber_id(subscriber_id)
-
-
-            if  isinstance(result, Response):
-                return result
-
-            myQuery = {'subscriber_id': subscriber_id}
-            eventdescription = mycol.find_one(myQuery)
-
-            if eventdescription is None:
-                current_app.logger.error("Event subscription not found")
-                return not_found_error(detail="Event subscription not exist", cause="Event API subscription id not found")
-
-            mycol.delete_one(myQuery)
-            current_app.logger.debug("Event subscription removed from database")
-
-            out =  "The event matching subscriptionId  " + subscription_id + " was deleted."
-            return make_response(out, status=204)
-
-        except Exception as e:
-            exception= "An exception occurred in delete event"
-            current_app.logger.error(exception + "::" + str(e))
-            return internal_server_error(detail=exception, cause=str(e))
-
-    def get_event_subscriptions(self, event):
-        try:
-            mycol = self.db.get_col_by_name(self.db.event_collection)
-
-            query= {'events':event}
-            subscriptions = mycol.find(query)
-
-
-            if  subscriptions is None:
-                prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist subscriptions",
-                                    cause="Not found subscriptions to send this event")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
-
-            else:
-                json_docs=[]
-                for subscription in subscriptions:
-                    json_docs.append(subscription)
-
-                return json_docs
-
-        except Exception as e:
-            print("An exception occurred ::", e)
-            return False
