@@ -16,21 +16,18 @@ ${SERVICE_API_ID_NOT_VALID}     not-valid
 Publish API by Authorised API Publisher
     [Tags]    capif_api_publish_service-1
     #Register APF
-    ${register_user_info}=    Register User At Jwt Auth
-    ...    username=${PROVIDER_USERNAME}    role=${PROVIDER_ROLE}
+    ${register_user_info}=    Provider Default Registration
 
     # Test
     ${request_body}=    Create Service Api Description
     ${resp}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiId
+    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
 Publish API by NON Authorised API Publisher
@@ -44,15 +41,13 @@ Publish API by NON Authorised API Publisher
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    401    ${resp}
-    Check Problem Details
-    ...    ${resp}
-    ...    title=Unauthorized
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
     ...    status=401
-    ...    detail=Provider not existing
-    ...    cause=Provider id not found
+    ...    title=Unauthorized
+    ...    detail=Publisher not existing
+    ...    cause=Publisher id not found
 
 Retrieve all APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-3
@@ -62,37 +57,33 @@ Retrieve all APIs Published by Authorised apfId
     # Register One Service
     ${request_body}=    Create Service Api Description    service_1
     ${resp_service_1}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp_service_1}
-    Check Variable    ${resp_service_1.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp_service_1.json()}    apiId
+    Check Response Variable Type And Values    ${resp_service_1}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Register Other Service
     ${request_body}=    Create Service Api Description    service_2
     ${resp_service_2}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp_service_2}
-    Check Variable    ${resp_service_2.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp_service_2.json()}    apiId
+    Check Response Variable Type And Values    ${resp_service_2}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Retrieve Services published
     ${resp}=    Get Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
     Status Should Be    200    ${resp}
     Check Variable    ${resp.json()}    ServiceAPIDescription
@@ -112,15 +103,13 @@ Retrieve all APIs Published by NON Authorised apfId
     ...    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    401    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
     ...    title=Unauthorized
     ...    status=401
-    ...    detail=Provider not existing
-    ...    cause=Provider id not found
+    ...    detail=Publisher not existing
+    ...    cause=Publisher id not found
 
 Retrieve single APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-5
@@ -129,15 +118,13 @@ Retrieve single APIs Published by Authorised apfId
 
     ${request_body}=    Create Service Api Description    service_1
     ${resp_service_1}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp_service_1}
-    Check Variable    ${resp_service_1.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp_service_1.json()}    apiId
+    Check Response Variable Type And Values    ${resp_service_1}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Store apiId1
@@ -145,15 +132,13 @@ Retrieve single APIs Published by Authorised apfId
 
     ${request_body}=    Create Service Api Description    service_2
     ${resp_service_2}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp_service_2}
-    Check Variable    ${resp_service_2.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp_service_2.json()}    apiId
+    Check Response Variable Type And Values    ${resp_service_2}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Store apiId2
@@ -161,24 +146,22 @@ Retrieve single APIs Published by Authorised apfId
 
     # Retrieve Services 1
     ${resp}=    Get Request Capif
-    ...    ${register_user_info['ccf_publish_url']}/${serviceApiId1}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${serviceApiId1}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
     Dictionaries Should Be Equal    ${resp.json()}    ${resp_service_1.json()}
 
     # Retrieve Services 1
     ${resp}=    Get Request Capif
-    ...    ${register_user_info['ccf_publish_url']}/${serviceApiId2}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${serviceApiId2}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
     Dictionaries Should Be Equal    ${resp.json()}    ${resp_service_2.json()}
 
 Retrieve single APIs non Published by Authorised apfId
@@ -187,14 +170,12 @@ Retrieve single APIs non Published by Authorised apfId
     ${register_user_info}=    Provider Default Registration
 
     ${resp}=    Get Request Capif
-    ...    ${register_user_info['ccf_publish_url']}/${SERVICE_API_ID_NOT_VALID}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Service API not found
@@ -209,15 +190,13 @@ Retrieve single APIs Published by NON Authorised apfId
     # Publish Service API
     ${request_body}=    Create Service Api Description    service_1
     ${resp_service}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp_service}
-    Check Variable    ${resp_service.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp_service.json()}    apiId
+    Check Response Variable Type And Values    ${resp_service}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp_service}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Register INVOKER
@@ -229,9 +208,7 @@ Retrieve single APIs Published by NON Authorised apfId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    401    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
     ...    title=Unauthorized
     ...    status=401
     ...    detail=User not authorized
@@ -244,15 +221,13 @@ Update API Published by Authorised apfId with valid serviceApiId
 
     ${request_body}=    Create Service Api Description    service_1
     ${resp}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiId
+    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     ${request_body_modified}=    Create Service Api Description    service_1_modified
@@ -261,10 +236,9 @@ Update API Published by Authorised apfId with valid serviceApiId
     ...    json=${request_body_modified}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
     Dictionary Should Contain Key    ${resp.json()}    apiName
     Should Be Equal As Strings    ${resp.json()['apiName']}    service_1_modified
 
@@ -273,10 +247,9 @@ Update API Published by Authorised apfId with valid serviceApiId
     ...    ${resource_url.path}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
     Dictionary Should Contain Key    ${resp.json()}    apiName
     Should Be Equal As Strings    ${resp.json()['apiName']}    service_1_modified
 
@@ -287,19 +260,17 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
 
     ${request_body}=    Create Service Api Description    service_1_modified
     ${resp}=    Put Request Capif
-    ...    ${register_user_info['ccf_publish_url']}/${SERVICE_API_ID_NOT_VALID}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
-    ...    detail=Service API not found
-    ...    cause=No Service with specific credentials exists
+    ...    detail=Service API not existing
+    ...    cause=Service API id not found
 
 Update APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-10
@@ -308,15 +279,13 @@ Update APIs Published by NON Authorised apfId
 
     ${request_body}=    Create Service Api Description    service_1
     ${resp}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiId
+    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     #Register INVOKER
@@ -330,9 +299,7 @@ Update APIs Published by NON Authorised apfId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    401    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
     ...    title=Unauthorized
     ...    status=401
     ...    detail=User not authorized
@@ -343,10 +310,9 @@ Update APIs Published by NON Authorised apfId
     ...    ${resource_url.path}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
     Dictionary Should Contain Key    ${resp.json()}    apiName
     Should Be Equal As Strings    ${resp.json()['apiName']}    service_1
 
@@ -357,22 +323,20 @@ Delete API Published by Authorised apfId with valid serviceApiId
 
     ${request_body}=    Create Service Api Description    first_service
     ${resp}=    Post Request Capif
-    ...    ${register_user_info['ccf_publish_url']}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiId
+    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     ${resp}=    Delete Request Capif
     ...    ${resource_url.path}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
     Status Should Be    204    ${resp}
 
@@ -380,17 +344,13 @@ Delete API Published by Authorised apfId with valid serviceApiId
     ...    ${resource_url.path}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Service API not found
     ...    cause=No Service with specific credentials exists
-
-
 
 Delete APIs Published by Authorised apfId with invalid serviceApiId
     [Tags]    capif_api_publish_service-12
@@ -398,19 +358,16 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
     ${register_user_info}=    Provider Default Registration
 
     ${resp}=    Delete Request Capif
-    ...    ${register_user_info['ccf_publish_url']}/${SERVICE_API_ID_NOT_VALID}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...    username=${PROVIDER_USERNAME}
+    ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
-    ...    detail=Service API not found
-    ...    cause=No Service with specific credentials exists
-
+    ...    detail=Service API not existing
+    ...    cause=Service API id not found
 
 Delete APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-13
@@ -421,14 +378,12 @@ Delete APIs Published by NON Authorised apfId
     ${register_user_info_invoker}=    Invoker Default Onboarding
 
     ${resp}=    Delete Request Capif
-    ...    ${register_user_info['ccf_publish_url']}/${SERVICE_API_ID_NOT_VALID}
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    401    ${resp}
-    Check Problem Details
-    ...    ${resp}
+    Check Response Variable Type And Values  ${resp}    401    ProblemDetails
     ...    title=Unauthorized
     ...    status=401
     ...    detail=User not authorized

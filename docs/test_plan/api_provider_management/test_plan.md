@@ -135,6 +135,7 @@ At this documentation you will have all information and related files and exampl
   5. Update Provider:
      * Send PUT to Resource URL returned at registration *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
      * body [provider request body] with apiProvDomInfo set to ROBOT_TESTING_MOD
+     * Use AMF Certificate.
 
 
 * **Execution Steps**:
@@ -186,6 +187,7 @@ At this documentation you will have all information and related files and exampl
   5. Update Not Registered Provider:
      * Send PUT *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_PROVIDER_NOT_REGISTERED}*
      * body [provider request body]
+     * Use AMF Certificate.
 
 * **Execution Steps**:
   
@@ -232,6 +234,7 @@ At this documentation you will have all information and related files and exampl
   5. Partial update provider:
      * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
      * body [provider request patch body]
+     * Use AMF Certificate.
 
 * **Execution Steps**:
   
@@ -277,6 +280,7 @@ At this documentation you will have all information and related files and exampl
   5. Partial update Provider:
      * Send PATCH *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_API_PROVIDER_NOT_REGISTERED}*
      * body [provider request patch body]
+     * Use AMF Certificate.
   
 
 * **Execution Steps**:
@@ -324,6 +328,7 @@ At this documentation you will have all information and related files and exampl
 
   5. Delete registered provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{registrationId}*
+     * Use AMF Certificate.
 
 * **Execution Steps**:
   
@@ -365,6 +370,7 @@ At this documentation you will have all information and related files and exampl
 
   5. Delete registered provider at Provider Management:
      * Send DELETE *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations/{API_PROVIDER_NOT_REGISTERED}*
+     * Use AMF Certificate.
 
 * **Execution Steps**:
   

@@ -52,10 +52,10 @@
   },
   "ServiceAPIDescription": {
     "mandatory_attributes": {
-      "apiName": "string"
+      "apiName": "string",
+      "apiId": "string"
     },
     "optional_attributes": {
-      "apiId": "string",
       "aefProfiles": "AefProfile",
       "description": "string",
       "supportedFeatures": "SupportedFeatures",

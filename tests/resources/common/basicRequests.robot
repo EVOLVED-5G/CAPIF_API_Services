@@ -4,6 +4,7 @@ Documentation       This resource file contains the basic requests used by Capif
 Library             RequestsLibrary
 Library             Collections
 Library             OperatingSystem
+Library             XML
 
 
 *** Variables ***
@@ -326,9 +327,22 @@ Provider Registration
     FOR    ${prov}    IN    @{resp.json()['apiProvFuncs']}
         Log Dictionary    ${prov}
         Store In File    ${prov['apiProvFuncInfo']}.crt    ${prov['regInfo']['apiProvCert']}
+        IF    "${prov['apiProvFuncRole']}" == "APF"
+            Set To Dictionary    ${register_user_info}    apf_id=${prov['apiProvFuncId']}
+        ELSE IF    "${prov['apiProvFuncRole']}" == "AEF"
+            Set To Dictionary    ${register_user_info}    aef_id=${prov['apiProvFuncId']}
+        ELSE IF    "${prov['apiProvFuncRole']}" == "AMF"
+            Set To Dictionary    ${register_user_info}    amf_id=${prov['apiProvFuncId']}
+        ELSE
+            Fail    "${prov['apiProvFuncRole']} is not valid role"
+        END
     END
 
-    Set To Dictionary    ${register_user_info}    provider_enrollment_details=${request_body}    resource_url=${resource_url}   provider_register_response=${resp}
+    Set To Dictionary
+    ...    ${register_user_info}
+    ...    provider_enrollment_details=${request_body}
+    ...    resource_url=${resource_url}
+    ...    provider_register_response=${resp}
 
     RETURN    ${register_user_info}
 
@@ -337,8 +351,7 @@ Provider Default Registration
     ${register_user_info}=    Register User At Jwt Auth Provider
     ...    username=${PROVIDER_USERNAME}    role=${PROVIDER_ROLE}
 
-    ${register_user_info}=   Provider Registration    ${register_user_info}
-    
-    Log Dictionary    ${register_user_info}
-    RETURN   ${register_user_info}
+    ${register_user_info}=    Provider Registration    ${register_user_info}
 
+    Log Dictionary    ${register_user_info}
+    RETURN    ${register_user_info}
