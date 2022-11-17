@@ -58,6 +58,7 @@ class PublishServiceOperations(Resource):
             for serviceapi in service:
                 properyly_json= json.dumps(serviceapi, default=json_util.default)
                 my_service_api = dict_to_camel_case(json.loads(properyly_json))
+                my_service_api = clean_empty(my_service_api)
                 json_docs.append(my_service_api)
 
             current_app.logger.debug("Obtained services apis")
@@ -126,6 +127,7 @@ class PublishServiceOperations(Resource):
 
             properyly_json= json.dumps(service_api, default=json_util.default)
             my_service_api = dict_to_camel_case(json.loads(properyly_json))
+            my_service_api = clean_empty(my_service_api)
 
             current_app.logger.debug("Obtained service api")
             res = make_response(object=my_service_api, status=200)
