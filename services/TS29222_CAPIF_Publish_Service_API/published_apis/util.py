@@ -25,8 +25,8 @@ def dict_to_camel_case(my_dict):
 
             my_key = ''.join(word.title() for word in attr.split('_'))
             my_key= ''.join([my_key[0].lower(), my_key[1:]])
-            if my_key == "service_api_description":
-                my_key = "serviceAPIDescription"
+            if my_key == "serviceApiCategory":
+                my_key = "serviceAPICategory"
 
             if isinstance(value, list):
                 result[my_key] = list(map(
