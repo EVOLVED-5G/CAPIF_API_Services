@@ -190,7 +190,7 @@ class PublishServiceOperations(Resource):
             service_api_description = service_api_description.to_dict()
             service_api_description = clean_empty(service_api_description)
 
-            result = mycol.find_one_and_update(serviceapidescription, {"$set":service_api_description}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+            result = mycol.find_one_and_update(serviceapidescription, {"$set":service_api_description}, projection={"apf_id":0, "_id":0},return_document=ReturnDocument.AFTER ,upsert=False)
 
             result = clean_empty(result)
 
