@@ -11,6 +11,8 @@ from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from bson import json_util
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionError
+import time
 
 
 class LoggingInvocationOperations:
@@ -18,9 +20,19 @@ class LoggingInvocationOperations:
     def __init__(self):
         self.db = MongoDatabse()
         self.mimetype = 'application/json'
+        # self.es = Elasticsearch(hosts=['http://elasticsearch:9200'], basic_auth=('elastic', 'changeme'), retry_on_timeout=True)
+        #
+        # for _ in range(100):
+        #     try:
+        #         # make sure the cluster is available
+        #         self.es.cluster.health(wait_for_status="yellow")
+        #     except ConnectionError:
+        #         time.sleep(2)
+
         self.es = Elasticsearch(
             hosts=['http://elasticsearch:9200'],
             basic_auth=('elastic', 'changeme'),
+            retry_on_timeout=True
         )
         mappings = {
             "properties": {
@@ -59,7 +71,7 @@ class LoggingInvocationOperations:
                 "supportedFeatures": {"type": "text", "analyzer": "standard"}
             }
         }
-        self.es.indices.create(index="logs", mappings=mappings)
+        self.es.indices.create(index="capiflogs", mappings=mappings)
 
     def add_invocationlog(self, aef_id, invocationlog):
 
@@ -148,7 +160,7 @@ class LoggingInvocationOperations:
                     #     "outputParameters": ,
                     # }
 
-                    self.es.index(index="logs", id=i, document=rec)
+                    self.es.index(index="capiflogs", id=i, document=rec)
 
                 res = Response(json.dumps(invocationlog, cls=JSONEncoder), status=201, mimetype=self.mimetype)
 

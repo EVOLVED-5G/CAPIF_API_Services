@@ -43,6 +43,8 @@ services:
       - ./TS29222_CAPIF_Auditing_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
+    depends_on:
+      - elasticsearch
   service-apis:
     build:
       context: ./TS29222_CAPIF_Discover_Service_API
@@ -68,6 +70,8 @@ services:
       - ./TS29222_CAPIF_Logging_API_Invocation_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
+    depends_on:
+      - elasticsearch
   published-apis:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
@@ -174,8 +178,6 @@ services:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
-    networks:
-      - elk
     depends_on:
       - elasticsearch
   elasticsearch:
@@ -198,8 +200,6 @@ services:
       # Use single node discovery in order to disable production mode and avoid bootstrap checks.
       # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
       discovery.type: single-node
-    networks:
-      - elk
   logstash:
     build:
       context: ./docker-elk/logstash/
@@ -216,8 +216,6 @@ services:
     environment:
       LS_JAVA_OPTS: -Xms256m -Xmx256m
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
-    networks:
-      - elk
     depends_on:
       - elasticsearch
   kibana:
@@ -233,14 +231,12 @@ services:
       KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
       # Fleet plugin
       KIBANA_FLEET_SETUP: '1'
-    networks:
-      - elk
     depends_on:
       - elasticsearch
 
-networks:
-  elk:
-    driver: bridge
+#networks:
+#  elk:
+#    driver: bridge
 
 volumes:
   setup:
