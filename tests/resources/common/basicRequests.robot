@@ -355,3 +355,20 @@ Provider Default Registration
 
     Log Dictionary    ${register_user_info}
     RETURN    ${register_user_info}
+
+Publish Service Api
+    [Arguments]    ${register_user_info}    ${service_name}=service_1
+
+    ${request_body}=    Create Service Api Description    ${service_name}
+    ${resp}=    Post Request Capif
+    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    ...    json=${request_body}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${register_user_info['apf_username']}
+
+    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+
+    RETURN    ${resp.json()}    ${resource_url}    ${request_body}

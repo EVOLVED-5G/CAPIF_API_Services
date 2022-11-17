@@ -28,6 +28,7 @@ Publish API by Authorised API Publisher
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
+    Dictionary Should Contain Key    ${resp.json()}    apiId
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
 Publish API by NON Authorised API Publisher
@@ -55,28 +56,34 @@ Retrieve all APIs Published by Authorised apfId
     ${register_user_info}=    Provider Default Registration
 
     # Register One Service
-    ${request_body}=    Create Service Api Description    service_1
-    ${resp_service_1}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}   service_2
 
-    Check Response Variable Type And Values    ${resp_service_1}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
-    # Register Other Service
-    ${request_body}=    Create Service Api Description    service_2
-    ${resp_service_2}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    # ${request_body}=    Create Service Api Description    service_1
+    # ${resp_service_1}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp_service_2}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # Check Response Variable Type And Values    ${resp_service_1}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp_service_1.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+
+    # # Register Other Service
+    # ${request_body}=    Create Service Api Description    service_2
+    # ${resp_service_2}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
+
+    # Check Response Variable Type And Values    ${resp_service_2}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp_service_2.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Retrieve Services published
     ${resp}=    Get Request Capif
@@ -85,13 +92,14 @@ Retrieve all APIs Published by Authorised apfId
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceAPIDescription
+    Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
+    # Status Should Be    200    ${resp}
+    # Check Variable    ${resp.json()}    ServiceAPIDescription
 
     Log List    ${resp.json()}
 
-    List Should Contain Value    ${resp.json()}    ${resp_service_1.json()}
-    List Should Contain Value    ${resp.json()}    ${resp_service_2.json()}
+    List Should Contain Value    ${resp.json()}    ${service_api_description_published_1}
+    List Should Contain Value    ${resp.json()}    ${service_api_description_published_2}
 
 Retrieve all APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-4
@@ -116,33 +124,38 @@ Retrieve single APIs Published by Authorised apfId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${request_body}=    Create Service Api Description    service_1
-    ${resp_service_1}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}   service_2
 
-    Check Response Variable Type And Values    ${resp_service_1}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # ${request_body}=    Create Service Api Description    service_1
+    # ${resp_service_1}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
+
+    # Check Response Variable Type And Values    ${resp_service_1}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp_service_1.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp_service_1}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Store apiId1
-    ${serviceApiId1}=    Set Variable    ${resp_service_1.json()['apiId']}
+    ${serviceApiId1}=    Set Variable    ${service_api_description_published_1['apiId']}
 
-    ${request_body}=    Create Service Api Description    service_2
-    ${resp_service_2}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    # ${request_body}=    Create Service Api Description    service_2
+    # ${resp_service_2}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp_service_2}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # Check Response Variable Type And Values    ${resp_service_2}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp_service_2.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp_service_2}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Store apiId2
-    ${serviceApiId2}=    Set Variable    ${resp_service_2.json()['apiId']}
+    ${serviceApiId2}=    Set Variable    ${service_api_description_published_2['apiId']}
 
     # Retrieve Services 1
     ${resp}=    Get Request Capif
@@ -152,7 +165,7 @@ Retrieve single APIs Published by Authorised apfId
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
-    Dictionaries Should Be Equal    ${resp.json()}    ${resp_service_1.json()}
+    Dictionaries Should Be Equal    ${resp.json()}    ${service_api_description_published_1}
 
     # Retrieve Services 1
     ${resp}=    Get Request Capif
@@ -162,7 +175,7 @@ Retrieve single APIs Published by Authorised apfId
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
-    Dictionaries Should Be Equal    ${resp.json()}    ${resp_service_2.json()}
+    Dictionaries Should Be Equal    ${resp.json()}    ${service_api_description_published_2}
 
 Retrieve single APIs non Published by Authorised apfId
     [Tags]    capif_api_publish_service-6
@@ -188,16 +201,18 @@ Retrieve single APIs Published by NON Authorised apfId
     ${register_user_info}=    Provider Default Registration
 
     # Publish Service API
-    ${request_body}=    Create Service Api Description    service_1
-    ${resp_service}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    # ${request_body}=    Create Service Api Description    service_1
+    # ${resp_service}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp_service}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp_service}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # Check Response Variable Type And Values    ${resp_service}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp_service.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp_service}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     # Register INVOKER
     ${register_user_info_invoker}=    Invoker Default Onboarding
@@ -219,16 +234,18 @@ Update API Published by Authorised apfId with valid serviceApiId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${request_body}=    Create Service Api Description    service_1
-    ${resp}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    # ${request_body}=    Create Service Api Description    service_1
+    # ${resp}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     ${request_body_modified}=    Create Service Api Description    service_1_modified
     ${resp}=    Put Request Capif
@@ -277,16 +294,19 @@ Update APIs Published by NON Authorised apfId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${request_body}=    Create Service Api Description    service_1
-    ${resp}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
 
-    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # ${request_body}=    Create Service Api Description    service_1
+    # ${resp}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
+
+    # Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     #Register INVOKER
     ${register_user_info_invoker}=    Invoker Default Onboarding
@@ -321,16 +341,19 @@ Delete API Published by Authorised apfId with valid serviceApiId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${request_body}=    Create Service Api Description    first_service
-    ${resp}=    Post Request Capif
-    ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${APF_PROVIDER_USERNAME}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  first_service
 
-    Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
-    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
+    # ${request_body}=    Create Service Api Description    first_service
+    # ${resp}=    Post Request Capif
+    # ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${APF_PROVIDER_USERNAME}
+
+    # Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
+    # Dictionary Should Contain Key    ${resp.json()}    apiId
+    # ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
     ${resp}=    Delete Request Capif
     ...    ${resource_url.path}
