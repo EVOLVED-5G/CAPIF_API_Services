@@ -9,7 +9,7 @@ from service_apis.encoder import JSONEncoder
 from service_apis.models.problem_details import ProblemDetails
 from service_apis.models.service_api_description import ServiceAPIDescription
 from service_apis.models.discovered_apis import DiscoveredAPIs
-from service_apis.util import dict_to_camel_case
+from service_apis.util import dict_to_camel_case, clean_empty
 from service_apis.core.resources import Resource
 from bson import json_util
 
@@ -60,6 +60,7 @@ class DiscoverApisOperations(Resource):
 
                 properyly_json= json.dumps(discoved_api, default=json_util.default)
                 my_api = dict_to_camel_case(json.loads(properyly_json))
+                my_api = clean_empty(my_api)
                 json_docs.append(my_api)
 
             apis_discoveres = DiscoveredAPIs(service_api_descriptions=json_docs)
