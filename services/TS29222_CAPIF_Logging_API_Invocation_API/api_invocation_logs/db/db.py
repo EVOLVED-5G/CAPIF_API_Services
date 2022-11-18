@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from .config import Config
+from elasticsearch import Elasticsearch
 
 
 class MongoDatabse():
@@ -26,3 +27,22 @@ class MongoDatabse():
         except Exception as e:
             print("An exception occurred ::", e)
             return None
+
+
+class ELKDatabase():
+
+    def __init__(self):
+        self.db = self.__connect()
+
+    def get_connector(self):
+        return self.db
+
+    def __connect(self):
+
+        es = Elasticsearch(
+            hosts=['http://elasticsearch:9200'],
+            basic_auth=('elastic', 'changeme'),
+            retry_on_timeout=True
+        )
+
+        return es
