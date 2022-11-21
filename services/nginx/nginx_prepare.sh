@@ -62,4 +62,6 @@ curl  --retry 30 \
     --retry-max-time 300 \
     --location --request POST "http://$EASY_RSA_HOSTNAME:$EASY_RSA_PORT/sign-csr" --header 'Content-Type: application/json' -d @./sign_req_body.json | jq -r '.certificate' -j > $CERTS_FOLDER/server.crt
 
+
+redis-cli -h redis -p 6379 -n 1 -x SET server_priv_key < $CERTS_FOLDER/server.key
 nginx
