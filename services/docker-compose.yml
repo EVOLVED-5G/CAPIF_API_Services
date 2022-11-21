@@ -165,5 +165,5 @@ services:
 #      - api-invocation-logs
       - published-apis
 #      - capif-routing-info
-      - capif-security
+      #- capif-security
       - capif-events
