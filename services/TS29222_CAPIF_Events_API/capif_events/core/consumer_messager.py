@@ -21,6 +21,7 @@ class Subscriber():
     def listen(self):
         for raw_message in self.p.listen():
             if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "events":
+                current_app.logger.info("Event received")
                 self.notification.send_notifications(raw_message["data"].decode('utf-8'))
 
             elif raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
