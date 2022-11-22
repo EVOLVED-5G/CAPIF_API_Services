@@ -57,9 +57,7 @@ class DiscoverApisOperations(Resource):
             discoved_apis = services.find(myQuery, {"_id":0, "apf_id":0})
             json_docs = []
             for discoved_api in discoved_apis:
-
-                properyly_json= json.dumps(discoved_api, default=json_util.default)
-                my_api = dict_to_camel_case(json.loads(properyly_json))
+                my_api = dict_to_camel_case(discoved_api)
                 my_api = clean_empty(my_api)
                 json_docs.append(my_api)
 

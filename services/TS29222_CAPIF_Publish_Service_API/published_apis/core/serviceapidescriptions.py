@@ -56,8 +56,7 @@ class PublishServiceOperations(Resource):
 
             json_docs = []
             for serviceapi in service:
-                properyly_json= json.dumps(serviceapi, default=json_util.default)
-                my_service_api = dict_to_camel_case(json.loads(properyly_json))
+                my_service_api = dict_to_camel_case(serviceapi)
                 my_service_api = clean_empty(my_service_api)
                 json_docs.append(my_service_api)
 
@@ -125,8 +124,8 @@ class PublishServiceOperations(Resource):
                 current_app.logger.error("Service api not found")
                 return not_found_error(detail="Service API not found", cause="No Service with specific credentials exists")
 
-            properyly_json= json.dumps(service_api, default=json_util.default)
-            my_service_api = dict_to_camel_case(json.loads(properyly_json))
+
+            my_service_api = dict_to_camel_case(service_api)
             my_service_api = clean_empty(my_service_api)
 
             current_app.logger.debug("Obtained service api")
