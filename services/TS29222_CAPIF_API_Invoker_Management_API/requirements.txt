@@ -8,3 +8,4 @@ flask_jwt_extended
 pyopenssl
 rfc3987
 redis
+flask_executor

@@ -56,18 +56,18 @@ def main():
     scheduler.init_app(app.app)
     configure_logging(app.app)
 
-    @scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
-    def job1():
-        with scheduler.app.app_context():
-            subscriber.get_message()
+    # @scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
+    # def job1():
+    #     with scheduler.app.app_context():
+    #         subscriber.get_message()
 
-    scheduler.start()
+    # scheduler.start()
 
-    # executor = Executor(app.app)
+    executor = Executor(app.app)
 
-    # @app.app.before_first_request
-    # def up_listener():
-    #     executor.submit(subscriber.listen)
+    @app.app.before_first_request
+    def up_listener():
+        executor.submit(subscriber.listen)
 
 
     app.run(port=8080, debug=True)
