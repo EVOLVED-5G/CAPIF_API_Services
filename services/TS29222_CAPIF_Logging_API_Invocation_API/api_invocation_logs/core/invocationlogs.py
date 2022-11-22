@@ -5,14 +5,9 @@ import secrets
 from flask import current_app, Flask, Response
 import json
 
-from pymongo import response
 from ..db.db import MongoDatabse, ELKDatabase
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
-from bson import json_util
-from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import ConnectionError
-import time
 
 
 class LoggingInvocationOperations:
