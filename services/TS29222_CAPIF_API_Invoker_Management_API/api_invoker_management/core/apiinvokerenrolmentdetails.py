@@ -79,6 +79,7 @@ class InvokerManagementOperations(Resource):
             mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
 
             current_app.logger.debug("Invoker inserted in database")
+            current_app.logger.debug("Netapp onboarded sucessfuly")
 
             res = make_response(object=apiinvokerenrolmentdetail, status=201)
             res.headers['Location'] = "/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
@@ -138,6 +139,7 @@ class InvokerManagementOperations(Resource):
             mycol.delete_one({'api_invoker_id':onboard_id})
 
             current_app.logger.debug("Invoker resource removed from database")
+            current_app.logger.debug("Netapp offboarded sucessfuly")
             out =  "The Netapp matching onboardingId  " + onboard_id + " was offboarded."
             return make_response(out, status=204)
 

@@ -23,7 +23,7 @@ class DiscoverApisOperations(Resource):
         services = self.db.get_col_by_name(self.db.service_api_descriptions)
         invokers = self.db.get_col_by_name(self.db.invoker_col)
 
-        current_app.logger.debug("Discovering services apis")
+        current_app.logger.debug("Discovering services apis by: " + api_invoker_id)
 
         try:
             invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
@@ -65,7 +65,7 @@ class DiscoverApisOperations(Resource):
 
             apis_discoveres = DiscoveredAPIs(service_api_descriptions=json_docs)
             res = make_response(object=apis_discoveres, status=200)
-            current_app.logger.debug("Discovered APIs")
+            current_app.logger.debug("Discovered APIs by: " + api_invoker_id)
             return res
 
         except Exception as e:
