@@ -18,27 +18,16 @@ class Subscriber():
         self.p = self.r.pubsub()
         self.p.subscribe("events", "internal-messages")
 
-    # def listen(self):
-    #     for raw_message in self.p.listen():
-    #         if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "events":
-    #             print(raw_message["data"], file=sys.stderr)
-    #             self.notification.send_notifications(raw_message["data"].decode('utf-8'))
+    def listen(self):
+        for raw_message in self.p.listen():
+            if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "events":
+                self.notification.send_notifications(raw_message["data"].decode('utf-8'))
 
-    #         elif raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
-    #             message, invoker_id = raw_message["data"].decode('utf-8').split(":")
-    #             if message == "invoker-removed":
-    #                 self.event_ops.delete_all_events(invoker_id)
-
-    def get_message(self):
-        message = self.p.get_message()
-        if message != None:
-            if message["type"] == "message" and message["channel"].decode('utf-8') == "events":
-                print(message["data"], file=sys.stderr)
-                self.notification.send_notifications(message["data"].decode('utf-8'))
-
-            elif message["type"] == "message" and message["channel"].decode('utf-8') == "internal-messages":
-                message, invoker_id = message["data"].decode('utf-8').split(":")
+            elif raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
+                message, invoker_id = raw_message["data"].decode('utf-8').split(":")
                 if message == "invoker-removed":
+                    current_app.logger.debug("Recevived message, invoker remove, removing event subscriptions")
                     self.event_ops.delete_all_events(invoker_id)
+
 
 

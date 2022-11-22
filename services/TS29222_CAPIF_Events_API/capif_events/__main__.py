@@ -54,21 +54,14 @@ config = Config()
 notifications = Notifications()
 jwt = JWTManager(app.app)
 configure_logging(app.app)
-#executor = Executor(app.app)
+executor = Executor(app.app)
 subscriber = Subscriber()
 scheduler = APScheduler()
 scheduler.init_app(app.app)
-@scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
-def job1():
-    with scheduler.app.app_context():
-        subscriber.get_message()
 
-scheduler.start()
-
-
-# @app.app.before_first_request
-# def create_listener_message():
-#     executor.submit(subscriber.listen)
+@app.app.before_first_request
+def create_listener_message():
+    executor.submit(subscriber.listen)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
