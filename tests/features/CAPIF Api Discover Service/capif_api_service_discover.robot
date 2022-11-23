@@ -20,14 +20,15 @@ Discover Published service APIs by Authorised API Invoker
     ${register_user_info}=    Provider Default Registration
 
     # Publish one api
-    ${service_api_description_published}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}
+    ${service_api_description_published}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Test
     ${resp}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['apiInvokerId']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -39,7 +40,8 @@ Discover Published service APIs by Authorised API Invoker
     Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    1
-    Dictionaries Should Be Equal    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published}
+
 
 Discover Published service APIs by Non Authorised API Invoker
     [Tags]    capif_api_discover_service-2
@@ -47,13 +49,13 @@ Discover Published service APIs by Non Authorised API Invoker
     ${register_user_info}=    Provider Default Registration
 
     # Publish one api
-    Publish Service Api   ${register_user_info}
+    Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     ${resp}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['apiInvokerId']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
@@ -70,7 +72,7 @@ Discover Published service APIs by not registered API Invoker
     ${register_user_info}=    Provider Default Registration
 
     # Publish one api
-    Publish Service Api   ${register_user_info}
+    Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
@@ -81,7 +83,7 @@ Discover Published service APIs by not registered API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}   403    ProblemDetails
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=API Invoker does not exist
@@ -96,15 +98,19 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     ${api_name_2}=    Set Variable    service_2
 
     # Publish 2 apis
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  ${api_name_1}
-    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  ${api_name_2}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    ${api_name_1}
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    ${api_name_2}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
-    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -116,12 +122,12 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
-    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
-    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_2}
 
     # Request api 1
     ${resp}=    Get Request Capif
-    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}&api-name=${api_name_1}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&api-name=${api_name_1}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -144,15 +150,19 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ${api_name_2}=    Set Variable    apiName2
 
     # Publish 2 apis
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  ${api_name_1}
-    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  ${api_name_2}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    ${api_name_1}
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    ${api_name_2}
 
     # Change to invoker role and register at api invoker management
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
-    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -164,12 +174,14 @@ Discover Published service APIs by registered API Invoker filtered with no match
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
-    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
-    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_2}
+    # Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
+    # Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
 
     # Request api 1
     ${resp}=    Get Request Capif
-    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}&api-name=NOT_VALID_NAME
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&api-name=NOT_VALID_NAME
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -190,15 +202,19 @@ Discover Published service APIs by registered API Invoker not filtered
     ${api_name_2}=    Set Variable    apiName2
 
     # Publish 2 apis
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  ${api_name_1}
-    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  ${api_name_2}
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    ${api_name_1}
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    ${api_name_2}
 
     # Change to invoker role and register at api invoker management
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
-    ...    ${register_user_info_invoker['ccf_discover_url']}${register_user_info_invoker['apiInvokerId']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -210,5 +226,5 @@ Discover Published service APIs by registered API Invoker not filtered
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
-    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
-    Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}
+    List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_2}

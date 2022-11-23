@@ -75,7 +75,7 @@ class RegisterOperations:
         invokerdetails = self.db.get_col_by_name('invokerdetails')
         serviceapidescriptions = self.db.get_col_by_name('serviceapidescriptions')
         eventsdetails = self.db.get_col_by_name('eventsdetails')
-        servicesecurity = self.db.get_col_by_name('servicesecurity')
+        servicesecurity = self.db.get_col_by_name('security')
         providerenrolmentdetails = self.db.get_col_by_name('providerenrolmentdetails')
 
         splitter_string = '//'
