@@ -1,5 +1,5 @@
-def create_service_security_body(notificationDestination='http://robot.testing'):
-    return {
+def create_service_security_body(notificationDestination='http://robot.testing', aef_id=None):
+    data = {
         "notificationDestination": notificationDestination,
         "supportedFeatures": "fffffff",
         "securityInfo": [{
@@ -11,19 +11,24 @@ def create_service_security_body(notificationDestination='http://robot.testing')
                 "port": 5248
             },
             "prefSecurityMethods": ["PSK", "PKI", "OAUTH"],
-        },
-            {
-            "authenticationInfo": "authenticationInfo",
-            "authorizationInfo": "authorizationInfo",
-            "prefSecurityMethods": ["PSK", "PKI", "OAUTH"],
-            "aefId": "aefId"
-        }],
+        }
+        ],
         "websockNotifConfig": {
             "requestWebsocketUri": True,
             "websocketUri": "websocketUri"
         },
         "requestTestNotification": True
     }
+
+    if aef_id != None:
+        data['securityInfo'].append({
+            "authenticationInfo": "authenticationInfo",
+            "authorizationInfo": "authorizationInfo",
+            "prefSecurityMethods": ["PSK", "PKI", "OAUTH"],
+            "aefId": aef_id
+        })
+
+    return data
 
 
 def create_security_notification_body(api_invoker_id):
