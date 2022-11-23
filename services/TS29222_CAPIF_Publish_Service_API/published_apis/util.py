@@ -108,10 +108,10 @@ def deserialize_date(string):
     """
     if string is None:
       return None
-    
+
     try:
         from dateutil.parser import parse
-        return parse(string).date()
+        return parse(string).date().isoformat()
     except ImportError:
         return string
 
