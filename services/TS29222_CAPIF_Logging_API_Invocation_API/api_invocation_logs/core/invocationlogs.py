@@ -84,18 +84,18 @@ class LoggingInvocationOperations:
                 return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
             else:
                 ####### Implementation 1: Each Log entry is stored as different InvocationLog #######
-                log_id = secrets.token_hex(15)
-                invocationlog_copy = invocationlog.to_dict()
-                invocationlog_copy2 = invocationlog.to_dict()
-                del invocationlog_copy['logs']
-                del invocationlog_copy2['logs']
-                for i in range(0, len(invocationlog.logs)):
-                    print(invocationlog.logs[i])
-                    rec = dict()
-                    rec['log_id'] = log_id
-                    rec['logs'] = [invocationlog.logs[i].to_dict()]
-                    rec.update(invocationlog_copy)
-                    mycol.insert_one(rec)
+                # log_id = secrets.token_hex(15)
+                # invocationlog_copy = invocationlog.to_dict()
+                # invocationlog_copy2 = invocationlog.to_dict()
+                # del invocationlog_copy2['logs']
+                # del invocationlog_copy['logs']
+                # for i in range(0, len(invocationlog.logs)):
+                #     print(invocationlog.logs[i])
+                #     rec = dict()
+                #     rec['log_id'] = log_id
+                #     rec['logs'] = [invocationlog.logs[i].to_dict()]
+                #     rec.update(invocationlog_copy)
+                #     mycol.insert_one(rec)
 
                 ####### Implementation 2: A Log array is stored as 1 InvocationLog #######
                 # log_id = secrets.token_hex(15)
@@ -104,19 +104,21 @@ class LoggingInvocationOperations:
                 # rec['log_id'] = log_id
                 # rec.update(invocationlog.to_dict())
                 # mycol.insert_one(rec)
+                log_id = mycol.insert_one(invocationlog.to_dict())
 
                 ####### Implementation 3: A Log array is stored as different InvocationLog in Elasticsearch #######
-                for i in range(0, len(invocationlog.logs)):
-                    print(invocationlog.logs[i])
-                    rec = dict()
-                    rec['log_id'] = log_id
-                    rec['logs'] = [invocationlog.logs[i].to_dict()]
-                    rec.update(invocationlog_copy2)
-                    elk_connector.index(index="capiflogs", body=rec)
+                # for i in range(0, len(invocationlog.logs)):
+                #     print(invocationlog.logs[i])
+                #     rec = dict()
+                #     logId = secrets.token_hex(15)
+                #     rec['log_id'] = logId
+                #     rec['logs'] = [invocationlog.logs[i].to_dict()]
+                #     rec.update(invocationlog_copy2)
+                #     elk_connector.index(index="capiflogs", body=rec)
 
                 res = Response(json.dumps(invocationlog, cls=JSONEncoder), status=201, mimetype=self.mimetype)
 
-                res.headers['Location'] = "http://localhost:8080/" + str(aef_id) + "/logs/" + str(log_id)
+                res.headers['Location'] = "http://localhost:8080/api-invocation-logs/v1/" + str(aef_id) + "/logs/" + str(log_id.inserted_id)
                 return res
 
         except Exception as e:

@@ -1,5 +1,6 @@
 import connexion
 import six
+import sys
 
 from logs.models.interface_description import InterfaceDescription  # noqa: E501
 from logs.models.invocation_log import InvocationLog  # noqa: E501
@@ -58,16 +59,18 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
 
     :rtype: InvocationLog
     """
+
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)
+
     if connexion.request.is_json:
-        protocol =  Protocol.from_dict(connexion.request.get_json())  # noqa: E501
+        protocol = Protocol.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
-        operation =  Operation.from_dict(connexion.request.get_json())  # noqa: E501
+        operation = Operation.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
-        src_interface =  InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
+        src_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
-        dest_interface =  InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
+        dest_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     # cert_tmp = request.headers['X-Ssl-Client-Cert']
     # cert_raw = cert_tmp.replace('\t', '')

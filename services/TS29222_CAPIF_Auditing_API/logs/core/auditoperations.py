@@ -6,6 +6,7 @@ import json
 from ..db.db import MongoDatabse, ELKDatabase
 from ..encoder import JSONEncoder
 from bson import json_util
+from ..models.protocol import Protocol
 
 
 class AuditOperations:
@@ -31,32 +32,38 @@ class AuditOperations:
                 myParams.append({"api_invoker_id": api_invoker_id})
 
             if time_range_start is not None and time_range_end is not None:
-                myParams.append({"logs.0.invocation_time": {'$gte': time_range_start, '$lt': time_range_end}})
+                myParams.append({"logs.invocation_time": {'$gte': time_range_start, '$lt': time_range_end}})
             elif time_range_start is not None:
-                myParams.append({"logs.0.invocation_time": {'$gte': time_range_start}})
+                myParams.append({"logs.invocation_time": {'$gte': time_range_start}})
             elif time_range_end is not None:
-                myParams.append({"logs.0.invocation_time": {'$lt': time_range_end}})
+                myParams.append({"logs.invocation_time": {'$lt': time_range_end}})
 
             if api_id is not None:
-                myParams.append({"logs.0.api_id": api_id})
+                myParams.append({"logs.api_id": api_id})
 
             if api_name is not None:
-                myParams.append({"logs.0.api_name": api_name})
+                myParams.append({"logs.api_name": api_name})
 
             if api_version is not None:
-                myParams.append({"logs.0.api_version": api_version})
+                myParams.append({"logs.api_version": api_version})
 
             if protocol is not None:
-                myParams.append({"logs.0.protocol": protocol})
+                myParams.append({"logs.protocol": protocol})
 
             if operation is not None:
-                myParams.append({"logs.0.operation": protocol})
+                myParams.append({"logs.operation": operation})
 
             if result is not None:
-                myParams.append({"logs.0.result": protocol})
+                myParams.append({"logs.result": result})
 
             if resource_name is not None:
-                myParams.append({"logs.0.resource_name": api_version})
+                myParams.append({"logs.resource_name": resource_name})
+
+            if src_interface is not None:
+                myParams.append({"logs.src_interface": src_interface})
+
+            if dest_interface is not None:
+                myParams.append({"logs.dest_interface": dest_interface})
 
             if supported_features is not None:
                 myParams.append({"supported_features": supported_features})
@@ -64,10 +71,10 @@ class AuditOperations:
             if myParams:
                 myQuery = {"$and": myParams}
 
-            logs = mycol.find(myQuery)
+            logs = mycol.find(myQuery, {"_id":0})
             json_docs = []
             for log in logs:
-                del log['_id']
+                # del log['_id']
                 json_docs.append(log)
 
             resp = elk_connector.search(
@@ -84,8 +91,6 @@ class AuditOperations:
                 #     },
                 # },
             )
-            print("lalala\n" + str(resp))
-            sys.stdout.flush()
 
             res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
             return res
