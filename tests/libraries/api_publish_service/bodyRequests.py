@@ -7,7 +7,7 @@ def create_service_api_description(api_name="service_1"):
                 "versions": [
                     {
                         "apiVersion": "v1",
-                        "expiry": "2021-11-30T10:32:02.004Z",
+                        "expiry": "2021-11-30T10:32:02.004000Z",
                         "resources": [
                             {
                                 "resourceName": "string",
@@ -53,7 +53,7 @@ def create_service_api_description(api_name="service_1"):
                 "versions": [
                     {
                         "apiVersion": "v1",
-                        "expiry": "2021-11-30T10:32:02.004Z",
+                        "expiry": "2021-11-30T10:32:02.004000Z",
                         "resources": [
                             {
                                 "resourceName": "string",
