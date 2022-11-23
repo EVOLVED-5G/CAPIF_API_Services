@@ -43,10 +43,12 @@ def securities_security_id_token_post(security_id, body):  # noqa: E501
     :rtype: AccessTokenRsp
     """
 
-    current_app.logger.info("Creting secuity context")
+    current_app.logger.info("Creating security token")
     if connexion.request.is_json:
         body = AccessTokenReq.from_dict(connexion.request.get_json())  # noqa: E501
     res = service_security_ops.return_token(security_id, body)
+
+
     return res
 
 
@@ -127,6 +129,12 @@ def trusted_invokers_api_invoker_id_put(api_invoker_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = ServiceSecurity.from_dict(connexion.request.get_json())  # noqa: E501
     res = service_security_ops.create_servicesecurity(api_invoker_id, body)
+
+    if res.status_code == 201:
+        for service_instance in body.security_info:
+            if service_instance.api_id is not None:
+                publish_ops.publish_message("internal-messages", "security-context-created:"+api_invoker_id+":"+service_instance.api_id )
+
     return res
 
 
