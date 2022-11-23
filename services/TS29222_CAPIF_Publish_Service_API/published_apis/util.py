@@ -111,7 +111,7 @@ def deserialize_date(string):
 
     try:
         from dateutil.parser import parse
-        return parse(string).date().isoformat()
+        return parse(string).date()
     except ImportError:
         return string
 
