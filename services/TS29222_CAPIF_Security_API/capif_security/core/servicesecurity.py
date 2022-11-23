@@ -103,6 +103,7 @@ class SecurityOperations(Resource):
 
                 properyly_json= json.dumps(services_security_object, default=json_util.default)
                 my_service_security = dict_to_camel_case(json.loads(properyly_json))
+                my_service_security = clean_empty(my_service_security)
 
                 current_app.logger.debug("Obtained security context from database")
         
