@@ -22,7 +22,7 @@ Creates a new individual CAPIF Event Subscription
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
@@ -57,7 +57,7 @@ Deletes an individual CAPIF Event Subscription
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
@@ -83,7 +83,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
@@ -111,7 +111,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
@@ -128,5 +128,5 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ...    username=${INVOKER_USERNAME}
 
     Status Should Be    404    ${resp}
-    Check Problem Details     ${resp}   status=404   detail=Service API not existing   cause=Event API subscription id not found
+    Check Problem Details     ${resp}   status=404   detail=Event subscription not exist   cause=Event API subscription id not found
 

@@ -274,7 +274,7 @@ Invoker Default Onboarding
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
-    Set To Dictionary    ${register_user_info}    apiInvokerId=${resp.json()['apiInvokerId']}
+    Set To Dictionary    ${register_user_info}    api_invoker_id=${resp.json()['apiInvokerId']}
     Log Dictionary    ${register_user_info}
 
     # Assertions

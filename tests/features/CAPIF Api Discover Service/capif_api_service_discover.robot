@@ -133,7 +133,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    1
-    Dictionaries Should Be Equal    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published}
+    List Should Contain Value    ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}
 
 Discover Published service APIs by registered API Invoker filtered with no match
     [Tags]    capif_api_discover_service-5
