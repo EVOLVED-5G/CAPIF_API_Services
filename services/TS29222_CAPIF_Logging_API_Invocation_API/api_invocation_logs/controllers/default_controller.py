@@ -1,28 +1,15 @@
 import connexion
-import six
 
 from api_invocation_logs.models.invocation_log import InvocationLog  # noqa: E501
-from api_invocation_logs.models.problem_details import ProblemDetails  # noqa: E501
-from api_invocation_logs import util
 
 from ..core.check_user import CapifUsersOperations
 from ..core.invocationlogs import LoggingInvocationOperations
-
-import json
-from flask import Response, request, current_app
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask import current_app
-from ..encoder import JSONEncoder
-from ..models.problem_details import ProblemDetails
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-import pymongo
 
 
 check_user = CapifUsersOperations()
 logging_invocation_operations = LoggingInvocationOperations()
 
-# @jwt_required()
+
 def aef_id_logs_post(aef_id, body):  # noqa: E501
     """aef_id_logs_post
 

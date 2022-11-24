@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from .config import Config
-from elasticsearch import Elasticsearch
 
 
 class MongoDatabse():
@@ -11,6 +10,7 @@ class MongoDatabse():
         self.invocation_logs = self.config['mongo']['col']
         self.invoker_details = self.config['mongo']['col2']
         self.provider_details = self.config['mongo']['col3']
+        self.service_apis = self.config['mongo']['col4']
         self.capif_users = self.config['mongo']['capif_users_col']
 
     def get_col_by_name(self, name):
@@ -27,22 +27,3 @@ class MongoDatabse():
         except Exception as e:
             print("An exception occurred ::", e)
             return None
-
-
-class ELKDatabase():
-
-    def __init__(self):
-        self.db = self.__connect()
-
-    def get_connector(self):
-        return self.db
-
-    def __connect(self):
-
-        es = Elasticsearch(
-            hosts=['http://elasticsearch:9200'],
-            basic_auth=('elastic', 'changeme'),
-            retry_on_timeout=True
-        )
-
-        return es

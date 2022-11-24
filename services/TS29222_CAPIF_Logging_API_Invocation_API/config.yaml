@@ -5,6 +5,7 @@ mongo: {
   'col': 'invocationlogs',
   'col2': 'invokerdetails',
   'col3': 'providerenrolmentdetails',
+  'col4': 'serviceapidescriptions',
   'capif_users_col': "user",
   'host': 'mongo',
   'port': "27017"

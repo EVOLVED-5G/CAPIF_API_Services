@@ -3,7 +3,7 @@ import sys
 from flask import current_app, Flask, Response
 import json
 
-from ..db.db import MongoDatabse, ELKDatabase
+from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from bson import json_util
 from ..models.protocol import Protocol
@@ -13,14 +13,12 @@ class AuditOperations:
 
     def __init__(self):
         self.db = MongoDatabse()
-        self.elastic = ELKDatabase()
         self.mimetype = 'application/json'
 
     def get_logs(self, aef_id, api_invoker_id, time_range_start, time_range_end, api_id, api_name, api_version, protocol, operation, result, resource_name, src_interface, dest_interface, supported_features):
 
         mycol = self.db.get_col_by_name(self.db.invocation_logs)
         users_col = self.db.get_col_by_name(self.db.capif_users)
-        elk_connector = self.elastic.get_connector()
 
         try:
             myParams = []
@@ -74,23 +72,7 @@ class AuditOperations:
             logs = mycol.find(myQuery, {"_id":0})
             json_docs = []
             for log in logs:
-                # del log['_id']
                 json_docs.append(log)
-
-            resp = elk_connector.search(
-                index="capiflogs",
-                query={"match_all": {}}
-                # query={
-                #     "bool": {
-                #         "must": {
-                #             "match_phrase": {
-                #                 "cast": "jack nicholson",
-                #             }
-                #         },
-                #         "filter": {"bool": {"must_not": {"match_phrase": {"director": "roman polanski"}}}},
-                #     },
-                # },
-            )
 
             res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
             return res
