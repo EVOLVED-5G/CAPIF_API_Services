@@ -57,8 +57,6 @@ Post Request Capif
         ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
     END
 
-    # Set To Dictionary    ${headers}    Content-Type=application/json
-
     ${resp}=    POST On Session
     ...    apisession
     ...    ${endpoint}
