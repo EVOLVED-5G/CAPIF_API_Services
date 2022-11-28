@@ -24,6 +24,11 @@ ${LOCATION_SECURITY_RESOURCE_REGEX}
 ${LOCATION_PROVIDER_RESOURCE_REGEX}
 ...                                     ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
 
+${INVOKER_ROLE}                         invoker
+${AMF_ROLE}                             amf
+${APF_ROLE}                             apf
+${AEF_ROLE}                             aef
+
 
 *** Keywords ***
 Create CAPIF Session
@@ -52,7 +57,7 @@ Post Request Capif
         ${cert}=    Set variable    ${{ ('${username}.crt','${username}.key') }}
     END
 
-    Set To Dictionary    ${headers}    Content-Type=application/json
+    # Set To Dictionary    ${headers}    Content-Type=application/json
 
     ${resp}=    POST On Session
     ...    apisession
@@ -86,7 +91,7 @@ Get Request Capif
 
 Put Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
+    [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
 
     ${headers}=    Create CAPIF Session    ${server}    ${access_token}
 
@@ -107,7 +112,7 @@ Put Request Capif
 
 Patch Request Capif
     [Timeout]    60s
-    [Arguments]    ${endpoint}    ${json}=${EMTPY}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
+    [Arguments]    ${endpoint}    ${json}=${NONE}    ${server}=${NONE}    ${access_token}=${NONE}    ${auth}=${NONE}    ${verify}=${FALSE}    ${cert}=${NONE}    ${username}=${NONE}
 
     ${headers}=    Create CAPIF Session    ${server}    ${access_token}
 
@@ -169,7 +174,7 @@ Register User At Jwt Auth
 
     Should Be Equal As Strings    ${resp.status_code}    201
 
-    ${get_auth_response}=    Get Auth For User    ${username}    ${password}    ${role}
+    ${get_auth_response}=    Get Auth For User    ${username}    ${password}
 
     ${register_user_info}=    Create Dictionary
     ...    netappID=${resp.json()['id']}
@@ -221,7 +226,7 @@ Register User At Jwt Auth Provider
     Should Be Equal As Strings    ${resp.status_code}    201
 
     # Get Auth to obtain access_token
-    ${get_auth_response}=    Get Auth For User    ${username}    ${password}    ${role}
+    ${get_auth_response}=    Get Auth For User    ${username}    ${password}
 
     ${register_user_info}=    Create Dictionary
     ...    netappID=${resp.json()['id']}
@@ -240,9 +245,9 @@ Register User At Jwt Auth Provider
     RETURN    ${register_user_info}
 
 Get Auth For User
-    [Arguments]    ${username}    ${password}    ${role}
+    [Arguments]    ${username}    ${password}
 
-    &{body}=    Create Dictionary    username=${username}    password=${password}    role=${role}
+    &{body}=    Create Dictionary    username=${username}    password=${password}
 
     ${resp}=    POST On Session    jwtsession    /getauth    json=${body}
 

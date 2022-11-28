@@ -30,8 +30,7 @@ Create a security context for an API invoker
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_SECURITY_RESOURCE_REGEX}
 
 Create a security context for an API invoker with Provider role
@@ -52,8 +51,7 @@ Create a security context for an API invoker with Provider role
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -74,8 +72,7 @@ Create a security context for an API invoker with Provider entity role and inval
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -95,8 +92,7 @@ Create a security context for an API invoker with Invalid apiInvokerID
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -115,25 +111,29 @@ Retrieve the Security Context of an API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_SECURITY_RESOURCE_REGEX}
 
     ${service_security_context}=    Set Variable    ${resp.json()}
 
     #Register APF
     ${register_user_info_publisher}=    Provider Default Registration
-
+# ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
     ${resp}=    Get Request Capif
-    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
+    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
-    Dictionaries Should Be Equal    ${resp.json()}    ${service_security_context}
+    Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
+
+    ${service_security_context_filtered}=    Remove Keys From Object
+    ...    ${service_security_context}
+    ...    authenticationInfo
+    ...    authorizationInfo
+
+    Dictionaries Should Be Equal    ${resp.json()}    ${service_security_context_filtered}
 
 Retrieve the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-6
@@ -146,8 +146,7 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -166,7 +165,7 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # We will request information using invoker user, that is not allowed
     ${resp}=    Get Request Capif
@@ -176,8 +175,7 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -196,7 +194,7 @@ Delete the Security Context of an API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
@@ -217,8 +215,7 @@ Delete the Security Context of an API Invoker
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -237,7 +234,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -246,8 +243,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
     ...    username=${INVOKER_USERNAME}
 
     # Check Result
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -265,8 +261,7 @@ Delete the Security Context of an API Invoker with Invoker entity role and inval
     ...    username=${INVOKER_USERNAME}
 
     # Check Result
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -284,8 +279,7 @@ Delete the Security Context of an API Invoker with invalid apiInvokerID
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Result
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -308,8 +302,7 @@ Update the Security Context of an API Invoker
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # Store Initial Security Context
     ${security_context}=    Set Variable    ${resp.json()}
@@ -323,8 +316,7 @@ Update the Security Context of an API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
 
     # Store Security Context modified.
     ${security_context_modified}=    Set Variable    ${resp.json()}
@@ -337,8 +329,7 @@ Update the Security Context of an API Invoker
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
     Dictionaries Should Be Equal    ${resp.json()}    ${security_context_modified}
 
 Update the Security Context of an API Invoker with Provider entity role
@@ -354,8 +345,7 @@ Update the Security Context of an API Invoker with Provider entity role
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
@@ -368,8 +358,7 @@ Update the Security Context of an API Invoker with Provider entity role
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -388,8 +377,7 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -409,8 +397,7 @@ Update the Security Context of an API Invoker with invalid apiInvokerID
     ...    username=${INVOKER_USERNAME}
 
     # Check Result
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -453,8 +440,7 @@ Revoke the authorization of the API invoker for APIs
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -473,8 +459,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     ${security_context}=    Set Variable    ${resp.json()}
 
@@ -491,8 +476,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    title=Forbidden
     ...    status=403
     ...    detail=Role not authorized for this API route
@@ -505,8 +489,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
     Dictionaries Should Be Equal    ${resp.json()}    ${security_context}
 
 Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
@@ -522,8 +505,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     ${security_context}=    Set Variable    ${resp.json()}
 
@@ -539,8 +521,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker not found
@@ -553,9 +534,12 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
-    Dictionaries Should Be Equal    ${resp.json()}    ${security_context}
+    Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
+    ${security_context_filtered}=    Remove Keys From Object
+    ...    ${security_context}
+    ...    authenticationInfo
+    ...    authorizationInfo
+    Dictionaries Should Be Equal    ${resp.json()}    ${security_context_filtered}
 
 Retrieve access token
     [Tags]    capif_security_api-19
@@ -570,7 +554,7 @@ Retrieve access token
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # Retrieve Token from CCF
     ${request_body}=    Create Access Token Req Body
@@ -600,7 +584,7 @@ Retrieve access token by Provider
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
@@ -644,7 +628,7 @@ Retrieve access token with invalid apiInvokerId
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token
-    ...    json=${request_body}
+    ...    data=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}

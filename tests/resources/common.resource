@@ -61,3 +61,10 @@ Check Response Variable Type And Values
         Log    ${input}=${input_parameters['${input}']}
         Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
     END
+
+Remove Keys From Object
+    [Arguments]     ${input}      @{keys_to_remove}
+
+    ${filtered_input}=    Remove Keys From Object Helper   ${input}    ${keys_to_remove}
+
+    RETURN    ${filtered_input}
