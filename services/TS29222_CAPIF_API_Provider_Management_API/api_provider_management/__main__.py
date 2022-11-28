@@ -29,6 +29,10 @@ def verbose_formatter():
     )
 
 def main():
+
+    with open("/usr/src/app/api_provider_management/pubkey.pem", "rb") as pub_file:
+            pub_data = pub_file.read()
+
     app = connexion.App(__name__, specification_dir='./openapi/')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('openapi.yaml',
@@ -36,7 +40,9 @@ def main():
                 pythonic_params=True)
 
     configure_logging(app.app)
-    app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
+    app.app.config['JWT_ALGORITHM'] = 'RS256'
+    app.app.config['JWT_PUBLIC_KEY'] = pub_data
+
     JWTManager(app.app)
 
 

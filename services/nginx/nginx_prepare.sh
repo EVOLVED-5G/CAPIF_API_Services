@@ -64,4 +64,7 @@ curl  --retry 30 \
 
 
 redis-cli -h redis -p 6379 -n 1 -x SET server_priv_key < $CERTS_FOLDER/server.key
+openssl x509 -pubkey -noout -in $CERTS_FOLDER/server.crt  > $CERTS_FOLDER/pubkey.pem
+redis-cli -h redis -p 6379 -n 1 -x SET server_pub_key < $CERTS_FOLDER/pubkey.pem
+
 nginx

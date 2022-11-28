@@ -24,14 +24,17 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
     depends_on:
-    - mongo
+    - redis
+    - nginx
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
     depends_on:
-      - mongo
+      - redis
+      - nginx
+
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
@@ -118,6 +121,8 @@ services:
     depends_on:
       - easy-rsa
       - mongo
+      - redis
+      - nginx
   mongo:
     image: mongo:6.0.2
     logging:
@@ -142,7 +147,7 @@ services:
     depends_on:
       - mongo
   nginx:
-    build: 
+    build:
       context: ./nginx
     ports:
       - "8080:8080"
@@ -154,12 +159,12 @@ services:
     volumes:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:
-      - api-invoker-management
+      #- api-invoker-management
       - easy-rsa
       - redis
 #      - aef-security
 #      - api-invoker-management
-      - api-provider-management
+      #- api-provider-management
 #      - access-control-policy
       - service-apis
 #      - api-invocation-logs

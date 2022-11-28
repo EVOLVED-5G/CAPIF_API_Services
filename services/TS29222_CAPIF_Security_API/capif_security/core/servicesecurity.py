@@ -237,7 +237,6 @@ class SecurityOperations(Resource):
             if service_security is None:
                 current_app.logger.error("Not found securoty context with id: " + security_id)
                 return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
-           
 
             result = self.__check_scope(access_token_req["scope"], service_security)
 

@@ -33,6 +33,8 @@ def verbose_formatter():
         datefmt='%d/%m/%Y %H:%M:%S'
     )
 
+with open("/usr/src/app/api_invoker_management/pubkey.pem", "rb") as pub_file:
+            pub_data = pub_file.read()
 
 app = connexion.App(__name__, specification_dir='./openapi/')
 app.app.json_encoder = encoder.JSONEncoder
@@ -40,7 +42,8 @@ app.add_api('openapi.yaml',
             arguments={'title': 'CAPIF_API_Invoker_Management_API'},
             pythonic_params=True)
 
-app.app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
+app.app.config['JWT_ALGORITHM'] = 'RS256'
+app.app.config['JWT_PUBLIC_KEY'] = pub_data
 
 config = Config()
 
