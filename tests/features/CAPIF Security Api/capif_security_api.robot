@@ -422,7 +422,7 @@ Revoke the authorization of the API invoker for APIs
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}
+    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}  1234
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
@@ -560,7 +560,7 @@ Retrieve access token
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
-    ...    json=${request_body}
+    ...    data=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -592,7 +592,7 @@ Retrieve access token by Provider
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
-    ...    json=${request_body}
+    ...    data=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
@@ -610,7 +610,7 @@ Retrieve access token by Provider with invalid apiInvokerId
     ${request_body}=    Create Access Token Req Body
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token
-    ...    json=${request_body}
+    ...    data=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}

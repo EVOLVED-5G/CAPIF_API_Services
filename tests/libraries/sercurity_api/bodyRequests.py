@@ -31,17 +31,24 @@ def create_service_security_body(notificationDestination='http://robot.testing',
     return data
 
 
-def create_security_notification_body(api_invoker_id):
+def create_security_notification_body(api_invoker_id, api_ids, cause="OVERLIMIT_USAGE", aef_id=None):
     # cause must be one of [ OVERLIMIT_USAGE, UNEXPECTED_REASON ]
-    return {
-        "aefId": "aefId",
-        "apiIds": [
-            "apiIds",
-            "apiIds"
-        ],
+    data = {
+        "apiIds": api_ids,
         "apiInvokerId": api_invoker_id,
-        "cause": "OVERLIMIT_USAGE"
+        "cause": cause
     }
+
+    if isinstance(api_ids,list):
+        data['apiIds'] = api_ids
+    else:
+        data['apiIds'] = [ api_ids ]
+
+    if aef_id != None:
+        data['aefId'] = aef_id
+    
+
+    return data
 
 
 def create_access_token_req_body():

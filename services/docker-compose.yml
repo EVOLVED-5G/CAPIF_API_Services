@@ -158,6 +158,7 @@ services:
     hostname: ${CAPIF_HOSTNAME}
     volumes:
       - ./nginx/certs:/etc/nginx/certs
+    restart: unless-stopped
     depends_on:
       #- api-invoker-management
       - easy-rsa
