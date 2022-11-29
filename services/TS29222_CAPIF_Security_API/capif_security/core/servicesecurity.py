@@ -337,14 +337,14 @@ class SecurityOperations(Resource):
 
             updated_security_context = services_security_context.copy()
             for context in services_security_context["security_info"]:
-                index = context.index()
+                index = services_security_context["security_info"].index(context)
                 if security_notification.aef_id == context["aef_id"] or context["api_id"] in security_notification.api_ids:
                     updated_security_context["security_info"].pop(index)
 
             mycol.replace_one(myQuery, updated_security_context)
 
             self.notification.send_notification(services_security_context["notificationDestination"], security_notification)
-            
+
             current_app.logger.debug("Revoked security context")
             out= "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
             return make_response(out, status=204)
