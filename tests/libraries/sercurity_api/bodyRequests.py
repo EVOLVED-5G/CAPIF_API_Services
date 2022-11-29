@@ -51,10 +51,15 @@ def create_security_notification_body(api_invoker_id, api_ids, cause="OVERLIMIT_
     return data
 
 
-def create_access_token_req_body():
-    return {
-        "client_id": "client_id",
-        "client_secret": "client_secret",
-        "grant_type": "client_credentials",
-        "scope": "scope"
+def create_access_token_req_body(client_id, scope, client_secret=None,grant_type="client_credentials"):
+    data = {
+        "client_id": client_id,
+        "grant_type": grant_type,
+        "scope": scope
     }
+
+    if client_secret != None:
+        data['client_secret'] = client_secret
+
+    return data
+

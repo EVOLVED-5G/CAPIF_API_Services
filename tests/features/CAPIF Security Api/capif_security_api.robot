@@ -218,8 +218,8 @@ Delete the Security Context of an API Invoker
     Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
-    ...    detail=Invoker not found
-    ...    cause=API Invoker not exists or invalid ID
+    ...    detail=Security context not found
+    ...    cause=API Invoker has no security context
 
 Delete the Security Context of an API Invoker with Invoker entity role
     [Tags]    capif_security_api-9
