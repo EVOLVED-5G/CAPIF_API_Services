@@ -41,13 +41,13 @@ At this documentation you will have all information and related files and exampl
   4. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
      2. body [event subscription request body]
+     3. Use Invoker Certificate
 
 * Execution Steps:
   
-  1. Register And Onboard Invoker at CCF
-  2. Store signed Certificate
-  3. Subscribe to Events
-  4. Retrieve {subscriberId} and {subscriptionId} from Location Header
+  1. Register Invoker and Onboard Invoker at CCF
+  2. Subscribe to Events
+  3. Retrieve {subscriberId} and {subscriptionId} from Location Header
    
 * Expected Result:
 
@@ -92,12 +92,12 @@ At this documentation you will have all information and related files and exampl
   4. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{SUBSCRIBER_NOT_REGISTERED}/subscriptions
      2. body [event subscription request body]
+     3. Use Invoker Certificate
 
 * Execution Steps:
   
-  1. Register And Onboard Invoker at CCF
-  2. Store signed Certificate
-  3. Subscribe to Events
+  1. Register Invoker and Onboard Invoker at CCF
+  2. Subscribe to Events
    
 * Expected Result:
 
@@ -143,17 +143,18 @@ At this documentation you will have all information and related files and exampl
   4. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
      2. body [event subscription request body]
+     3. Use Invoker Certificate
 
   5. Remove Event Subscription:
      1. Send DELETE to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
+     2. Use Invoker Certificate
 
 * Execution Steps:
   
-  1. Register And Onboard Invoker at CCF
-  2. Store signed Certificate
-  3. Subscribe to Events
-  4. Retrieve {subscriberId} and {subscriptionId} from Location Header
-  5. Remove Event Subscription
+  1. Register Invoker and Onboard Invoker at CCF
+  2. Subscribe to Events
+  3. Retrieve {subscriberId} and {subscriptionId} from Location Header
+  4. Remove Event Subscription
    
 * Expected Result:
 
@@ -203,16 +204,18 @@ At this documentation you will have all information and related files and exampl
   4. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
      2. body [event subscription request body]
+     3. Use Invoker Certificate
 
   5. Remove Event Subcription with not valid subscriber:
      1. Send DELETE to to https://{CAPIF_HOSTNAME}/capif-events/v1/{SUBSCRIBER_ID_NOT_VALID}/subscriptions/{subcriptionId}
+     2. Use Invoker Certificate
+
 * Execution Steps:
   
-  1. Register And Onboard Invoker at CCF
-  2. Store signed Certificate
-  3. Subscribe to Events
-  4. Retrieve Location Header with subscriptionId.
-  5. Remove Event Subscribed with not valid Subscriber.
+  1. Register Invoker and Onboard Invoker at CCF
+  2. Subscribe to Events
+  3. Retrieve Location Header with subscriptionId.
+  4. Remove Event Subscribed with not valid Subscriber.
    
 * Expected Result:
 
@@ -264,16 +267,18 @@ At this documentation you will have all information and related files and exampl
   4. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
      2. body [event subscription request body]
+     3. Use Invoker Certificate
 
   5. Remove Event Subcription with not valid subscriber:
      1. Send DELETE to to https://{CAPIF_HOSTNAME}/capif-events/v1/{subcriberId}/subscriptions/{SUBSCRIPTION_ID_NOT_VALID}
+     2. Use Invoker Certificate
+
 * Execution Steps:
   
-  1. Register And Onboard Invoker at CCF
-  2. Store signed Certificate
-  3. Subscribe to Events
-  4. Retrieve Location Header with subscriptionId.
-  5. Remove Event Subscribed with not valid Subscriber.
+  1. Register Invoker and Onboard Invoker at CCF
+  2. Subscribe to Events
+  3. Retrieve Location Header with subscriptionId.
+  4. Remove Event Subscribed with not valid Subscriber.
    
 * Expected Result:
 
@@ -285,7 +290,7 @@ At this documentation you will have all information and related files and exampl
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
   2. Response to Event Subscription must accomplish:
-     1. 201 Created
+     1. **201 Created**
      2. The URI of the created resource shall be returned in the "Location" HTTP header, following this structure: *{apiRoot}/capif-events/{apiVersion}/{subscriberId}/subscriptions/{subscriptionId}
      3. Response Body must follow **EventSubscription** data structure.
 
