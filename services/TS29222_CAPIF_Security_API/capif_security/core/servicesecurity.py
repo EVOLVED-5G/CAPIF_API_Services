@@ -297,11 +297,7 @@ class SecurityOperations(Resource):
             service_security = service_security.to_dict()
             service_security = clean_empty(service_security)
 
-            result = mycol.find_one_and_update(old_object, {"$set":service_security}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
-
-            # result = {
-            #     key: value for key, value in result.items() if value is not None
-            # }
+            result = mycol.find_one_and_update(old_object, {"$set":service_security}, projection={'_id': 0, "api_invoker_id":0},return_document=ReturnDocument.AFTER ,upsert=False)
 
             result = clean_empty(result)
 
