@@ -343,7 +343,7 @@ class SecurityOperations(Resource):
 
             mycol.replace_one(myQuery, updated_security_context)
 
-            self.notification.send_notification(services_security_context["notificationDestination"], security_notification)
+            self.notification.send_notification(services_security_context["notification_destination"], security_notification)
 
             current_app.logger.debug("Revoked security context")
             out= "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
