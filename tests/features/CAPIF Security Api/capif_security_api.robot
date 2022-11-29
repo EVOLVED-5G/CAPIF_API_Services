@@ -467,7 +467,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ${register_user_info_publisher}=    Provider Default Registration
 
     # Revoke Security Context by Invoker
-    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}
+    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}  1234
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
@@ -512,7 +512,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}
+    ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}   1234
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/delete
     ...    json=${request_body}
