@@ -248,7 +248,7 @@ class SecurityOperations(Resource):
 
             claims = AccessTokenClaims(iss = access_token_req["client_id"], scope=access_token_req["scope"], exp=int((now+expire_time).timestamp()))
             access_token = create_access_token(identity = access_token_req["client_id"] , additional_claims=claims.to_dict())
-            access_token_resp = AccessTokenRsp(access_token=access_token, token_type="Bearer", expires_in=expire_time.total_seconds(), scope=access_token_req["scope"])
+            access_token_resp = AccessTokenRsp(access_token=access_token, token_type="Bearer", expires_in=int(expire_time.total_seconds()), scope=access_token_req["scope"])
 
             current_app.logger.debug("Created access token")
 
