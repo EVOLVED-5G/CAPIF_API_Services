@@ -543,9 +543,6 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
 
 Retrieve access token
     [Tags]    capif_security_api-19
-    # Default Invoker Registration and Onboarding
-    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
-
     #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
@@ -554,6 +551,9 @@ Retrieve access token
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info_provider}
     ...    ${api_name}
+
+    # Default Invoker Registration and Onboarding
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Test
     ${discover_response}=    Get Request Capif

@@ -387,6 +387,7 @@ At this documentation you will have all information and related files and exampl
         * detail with message "Not Exist Provider Enrolment Details".
         * cause with message "Not found registrations to send this api provider details".
 
+[provider register body]: ./provider_details_post_example.json  "API Provider Enrolment Request"
 
 [provider request body]: ./provider_details_post_example.json  "API Provider Enrolment Request"
 
