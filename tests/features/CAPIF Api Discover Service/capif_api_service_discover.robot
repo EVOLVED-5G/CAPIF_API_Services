@@ -10,7 +10,6 @@ Test Setup      Reset Testing Environment
 
 *** Variables ***
 ${API_INVOKER_NOT_REGISTERED}       not-valid
-${DISCOVER_URL}                     /service-apis/v1/allServiceAPIs?api-invoker-id=
 
 
 *** Test Cases ***
@@ -33,7 +32,6 @@ Discover Published service APIs by Authorised API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Check Variable    ${resp.json()}    DiscoveredAPIs
     Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
     # Check returned values

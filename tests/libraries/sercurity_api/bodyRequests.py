@@ -1,6 +1,6 @@
-def create_service_security_body(notificationDestination='http://robot.testing', aef_id=None):
+def create_service_security_body(notification_destination='http://robot.testing', aef_id=None):
     data = {
-        "notificationDestination": notificationDestination,
+        "notificationDestination": notification_destination,
         "supportedFeatures": "fffffff",
         "securityInfo": [{
             "authenticationInfo": "authenticationInfo",
@@ -28,6 +28,30 @@ def create_service_security_body(notificationDestination='http://robot.testing',
             "aefId": aef_id
         })
 
+    return data
+
+
+def create_service_security_from_discover_response(notification_destination, discover_response):
+    data = {
+        "notificationDestination": notification_destination,
+        "supportedFeatures": "fffffff",
+        "securityInfo": [],
+        "websockNotifConfig": {
+            "requestWebsocketUri": True,
+            "websocketUri": "websocketUri"
+        },
+        "requestTestNotification": True
+    }
+    service_api_descriptions = discover_response.json()['serviceAPIDescriptions']
+    for service_api_description in service_api_descriptions:
+        for aef_profile in service_api_description['aefProfiles']:
+            data['securityInfo'].append({
+                "authenticationInfo": "authenticationInfo",
+                "authorizationInfo": "authorizationInfo",
+                "prefSecurityMethods": ["PSK", "PKI", "OAUTH"],
+                "aefId": aef_profile['aefId'],
+                "apiId": service_api_description['apiId']
+            })
     return data
 
 

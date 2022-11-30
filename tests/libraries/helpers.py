@@ -91,7 +91,7 @@ def create_csr(csr_file_path, private_key_path, cn):
     return csr_request
 
 
-def create_user_csr(username,cn=None):
+def create_user_csr(username, cn=None):
     csr_file_path = username+'.csr'
     private_key_path = username + '.key'
     if cn == None:
@@ -128,7 +128,14 @@ def remove_keys_from_object_helper(input, keys_to_remove):
         return True
     return input
 
+
 def remove_key_from_object(input, key_to_remove):
-    input_copy =copy.deepcopy(input)
-    remove_keys_from_object_helper(input_copy,[key_to_remove])
+    input_copy = copy.deepcopy(input)
+    remove_keys_from_object_helper(input_copy, [key_to_remove])
     return input_copy
+
+
+def create_scope(aef_id, api_name):
+    data = "3gpp#" + aef_id + ":" + api_name
+
+    return data

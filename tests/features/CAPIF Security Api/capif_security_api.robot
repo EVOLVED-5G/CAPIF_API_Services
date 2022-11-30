@@ -422,7 +422,7 @@ Revoke the authorization of the API invoker for APIs
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}  1234
+    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}    1234
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
@@ -467,7 +467,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ${register_user_info_publisher}=    Provider Default Registration
 
     # Revoke Security Context by Invoker
-    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}  1234
+    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}    1234
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
@@ -512,7 +512,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}   1234
+    ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}    1234
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/delete
     ...    json=${request_body}
@@ -546,7 +546,29 @@ Retrieve access token
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    #Register APF
+    ${register_user_info_provider}=    Provider Default Registration
+    ${api_name}=    Set Variable    service_1
+
+    # Register One Service
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info_provider}
+    ...    ${api_name}
+
+    # Test
+    ${discover_response}=    Get Request Capif
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
+
+    Check Response Variable Type And Values    ${discover_response}    200    DiscoveredAPIs
+
+    # create Security Context
+    ${request_body}=    Create Service Security From Discover Response
+    ...    http://robot.testing
+    ...    ${discover_response}
+    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -557,7 +579,8 @@ Retrieve access token
     Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # Retrieve Token from CCF
-    ${request_body}=    Create Access Token Req Body
+    ${scope}=    Create Scope    ${register_user_info_provider['aef_id']}    ${api_name}
+    ${request_body}=    Create Access Token Req Body    ${register_user_info_invoker['api_invoker_id']}    ${scope}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}

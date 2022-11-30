@@ -5,20 +5,22 @@ Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 *** Variables ***
 ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
-${PROVIDER_USERNAME}           ROBOT_TESTING_PROVIDER
-${APF_PROVIDER_USERNAME}       APF_${PROVIDER_USERNAME}
-${AEF_PROVIDER_USERNAME}       AEF_${PROVIDER_USERNAME}
-${AMF_PROVIDER_USERNAME}       AMF_${PROVIDER_USERNAME}
+${PROVIDER_USERNAME}            ROBOT_TESTING_PROVIDER
+${APF_PROVIDER_USERNAME}        APF_${PROVIDER_USERNAME}
+${AEF_PROVIDER_USERNAME}        AEF_${PROVIDER_USERNAME}
+${AMF_PROVIDER_USERNAME}        AMF_${PROVIDER_USERNAME}
 
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
-${PROVIDER_ROLE}               provider
+${PROVIDER_ROLE}                provider
 
 ${CAPIF_HOSTNAME}               capifcore
 ${CAPIF_HTTP_PORT}
 ${CAPIF_IP}                     127.0.0.1
 ${CAPIF_CALLBACK_IP}            host.docker.internal
 ${CAPIF_CALLBACK_PORT}          8086
+
+${DISCOVER_URL}                 /service-apis/v1/allServiceAPIs?api-invoker-id=
 
 
 *** Keywords ***
@@ -63,8 +65,8 @@ Check Response Variable Type And Values
     END
 
 Remove Keys From Object
-    [Arguments]     ${input}      @{keys_to_remove}
+    [Arguments]    ${input}    @{keys_to_remove}
 
-    ${filtered_input}=    Remove Keys From Object Helper   ${input}    ${keys_to_remove}
+    ${filtered_input}=    Remove Keys From Object Helper    ${input}    ${keys_to_remove}
 
     RETURN    ${filtered_input}
