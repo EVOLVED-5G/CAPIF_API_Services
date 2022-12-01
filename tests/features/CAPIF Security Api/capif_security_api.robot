@@ -35,6 +35,7 @@ Create a security context for an API invoker
 
 Create a security context for an API invoker with Provider role
     [Tags]    capif_security_api-2
+    Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -59,6 +60,7 @@ Create a security context for an API invoker with Provider role
 
 Create a security context for an API invoker with Provider entity role and invalid apiInvokerId
     [Tags]    capif_security_api-3
+    Test ${TEST NAME} Currently Not Supported
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
 
@@ -154,6 +156,7 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
 
 Retrieve the Security Context of an API Invoker with invalid apfId
     [Tags]    capif_security_api-7
+    Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -223,6 +226,7 @@ Delete the Security Context of an API Invoker
 
 Delete the Security Context of an API Invoker with Invoker entity role
     [Tags]    capif_security_api-9
+    Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -251,6 +255,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
 
 Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
     [Tags]    capif_security_api-10
+    Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -327,6 +332,7 @@ Update the Security Context of an API Invoker
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
+    
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
@@ -334,6 +340,7 @@ Update the Security Context of an API Invoker
 
 Update the Security Context of an API Invoker with Provider entity role
     [Tags]    capif_security_api-13
+    Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -366,6 +373,7 @@ Update the Security Context of an API Invoker with Provider entity role
 
 Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId
     [Tags]    capif_security_api-14
+    Test ${TEST NAME} Currently Not Supported
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
@@ -594,60 +602,10 @@ Retrieve access token
 
     Should Not Be Empty    ${resp.json()['access_token']}
 
-Retrieve access token by Provider
-    [Tags]    capif_security_api-20
-    #Register APF
-    ${register_user_info_provider}=    Provider Default Registration
-    ${api_name}=    Set Variable    service_1
-
-    # Register One Service
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
-    ...    ${register_user_info_provider}
-    ...    ${api_name}
-
-    # Default Invoker Registration and Onboarding
-    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
-
-    # Test
-    ${discover_response}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${INVOKER_USERNAME}
-
-    Check Response Variable Type And Values    ${discover_response}    200    DiscoveredAPIs
-
-    # create Security Context
-    ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
-    ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
-    ${resp}=    Put Request Capif
-    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${INVOKER_USERNAME}
-
-    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
-
-    # Retrieve Token from CCF
-    ${scope}=    Create Scope    ${register_user_info_provider['aef_id']}    ${api_name}
-    ${request_body}=    Create Access Token Req Body    ${register_user_info_invoker['api_invoker_id']}    ${scope}
-    ${resp}=    Post Request Capif
-    ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
-    ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
-    ...    verify=ca.crt
-    ...    username=${AEF_PROVIDER_USERNAME}
-
-    # Check Results
-    Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
-    ...    error=invalid_client
-    ...    error_description=Role not authorized for this API route
 
 Retrieve access token by Provider
     [Tags]    capif_security_api-20
+    Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
@@ -701,6 +659,7 @@ Retrieve access token by Provider
 
 Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
+    Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1

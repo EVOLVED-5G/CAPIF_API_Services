@@ -70,3 +70,7 @@ Remove Keys From Object
     ${filtered_input}=    Remove Keys From Object Helper    ${input}    ${keys_to_remove}
 
     RETURN    ${filtered_input}
+
+Test ${TEST NAME} Currently Not Supported
+    Log           Test "${TEST NAME}" Currently not supported   WARN
+	Skip          Test "${TEST NAME}" Currently not supported
