@@ -114,7 +114,7 @@ At this documentation you will have all information and related files and exampl
         * status 404
         * title with message "Not Found"
         * detail with message "Invoker or APF or AEF or AMF Not found".
-        * cause with message "Subscriber Not found".
+        * cause with message "Subscriber Not Found".
 
   3. Event Subscriptions are not stored in CAPIF Database
 
@@ -238,8 +238,7 @@ At this documentation you will have all information and related files and exampl
         * status 404
         * title with message "Not Found"
         * detail with message "Invoker or APF or AEF or AMF Not found".
-        * cause with message "Subscriber Not found".
-
+        * cause with message "Subscriber Not Found".
 
 
 ## Test Case 5: Deletes an individual CAPIF Event Subscription with invalid SubscriptionId

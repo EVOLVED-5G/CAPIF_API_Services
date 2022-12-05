@@ -50,7 +50,7 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker or APF or AEF or AMF Not found
-    ...    cause=Subscriber Not found
+    ...    cause=Subscriber Not Found
 
 Deletes an individual CAPIF Event Subscription
     [Tags]    capif_api_events-3
@@ -104,7 +104,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     ...    title=Not Found
     ...    status=404
     ...    detail=Invoker or APF or AEF or AMF Not found
-    ...    cause=Subscriber Not found
+    ...    cause=Subscriber Not Found
 
 
 Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
