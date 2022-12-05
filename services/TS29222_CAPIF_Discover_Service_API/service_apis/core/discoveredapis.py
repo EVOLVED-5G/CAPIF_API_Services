@@ -61,6 +61,9 @@ class DiscoverApisOperations(Resource):
                 my_api = clean_empty(my_api)
                 json_docs.append(my_api)
 
+            if len(json_docs) == 0:
+                return not_found_error(detail="API Invoker " + api_invoker_id + " has no API Published that accomplish filter conditions", cause="No API Published accomplish filter conditions")
+
             apis_discoveres = DiscoveredAPIs(service_api_descriptions=json_docs)
             res = make_response(object=apis_discoveres, status=200)
             current_app.logger.debug("Discovered APIs by: " + api_invoker_id)

@@ -208,10 +208,10 @@ At this documentation you will have all information and related files and exampl
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
   3. Response to Discover Request By Invoker:
-     1. **403 Forbidden**
+     1. **404 Not Found**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 403
-        * title with message "Forbidden"
+        * status 404
+        * title with message "Not Found"
         * detail with message "API Invoker does not exist".
         * cause with message "API Invoker id not found".
 
@@ -356,9 +356,12 @@ At this documentation you will have all information and related files and exampl
      2. Response body must follow **DiscoveredAPIs** data structure:
         * Check if DiscoveredAPIs contains previously registered Service APIs published.
   4. Response to Discover Request By Invoker:
-     1. **200 OK** response.
-     2. Response body must follow **DiscoveredAPIs** data structure:
-        * serviceAPIDescriptions array empty.
+     1. **404 Not Found** response.
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "API Invoker {api_invoker_id} has no API Published that accomplish filter conditions".
+        * cause with message "No API Published accomplish filter conditions".
 
 
 ## Test Case 6: Discover Published service APIs by registered API Invoker not filtered

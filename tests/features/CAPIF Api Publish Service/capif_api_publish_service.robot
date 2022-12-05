@@ -143,6 +143,7 @@ Retrieve single APIs non Published by Authorised apfId
 Retrieve single APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-7
     # [Setup]    Initialize Test And Register    role=invoker
+    Test ${TEST NAME} Currently Not Supported
     # Register APF
     ${register_user_info}=    Provider Default Registration
 
@@ -215,6 +216,7 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
 
 Update APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-10
+    Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
@@ -294,6 +296,7 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
 
 Delete APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-13
+    Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 

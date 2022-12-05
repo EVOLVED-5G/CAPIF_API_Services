@@ -43,6 +43,7 @@ Discover Published service APIs by Authorised API Invoker
 
 Discover Published service APIs by Non Authorised API Invoker
     [Tags]    capif_api_discover_service-2
+    Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
@@ -81,9 +82,9 @@ Discover Published service APIs by not registered API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
+    ...    title=Not Found
+    ...    status=404
     ...    detail=API Invoker does not exist
     ...    cause=API Invoker id not found
 
@@ -174,8 +175,6 @@ Discover Published service APIs by registered API Invoker filtered with no match
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
     List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}
     List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_2}
-    # Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][0]}    ${service_api_description_published_1}
-    # Should Be Equal As Strings    ${resp.json()['serviceAPIDescriptions'][1]}    ${service_api_description_published_2}
 
     # Request api 1
     ${resp}=    Get Request Capif
@@ -184,12 +183,16 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    DiscoveredAPIs
-    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+    # Status Should Be    200    ${resp}
+    # Check Variable    ${resp.json()}    DiscoveredAPIs
+    # Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
 
     # Check returned values
-    Should Be Empty    ${resp.json()['serviceAPIDescriptions']}
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
+    ...    title=Not Found
+    ...    status=404
+    ...    detail=API Invoker ${register_user_info_invoker['api_invoker_id']} has no API Published that accomplish filter conditions
+    ...    cause=No API Published accomplish filter conditions
 
 Discover Published service APIs by registered API Invoker not filtered
     [Tags]    capif_api_discover_service-6

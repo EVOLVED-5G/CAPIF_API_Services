@@ -320,7 +320,7 @@ Provider Registration
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
-    Log Dictionary    ${resp.json()}
+
     # Check Results
     Check Response Variable Type And Values    ${resp}    201    APIProviderEnrolmentDetails
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
