@@ -114,9 +114,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    DiscoveredAPIs
-    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+    Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
@@ -131,9 +129,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    DiscoveredAPIs
-    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+    Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
@@ -166,9 +162,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    DiscoveredAPIs
-    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+    Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
@@ -182,10 +176,6 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
-
-    # Status Should Be    200    ${resp}
-    # Check Variable    ${resp.json()}    DiscoveredAPIs
-    # Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
 
     # Check returned values
     Check Response Variable Type And Values    ${resp}    404    ProblemDetails
@@ -220,9 +210,7 @@ Discover Published service APIs by registered API Invoker not filtered
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    DiscoveredAPIs
-    Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
+    Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
     # Check returned values
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}

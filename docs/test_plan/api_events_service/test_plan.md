@@ -109,10 +109,12 @@ At this documentation you will have all information and related files and exampl
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
   2. Response to Event Subscription must accomplish:
-     1. **403 Forbidden**
+     1. **404 Not Found**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * detail with message "Event API not existing".
-        * cause with message "Event Subscriptions are not stored in CAPIF Database".
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker or APF or AEF or AMF Not found".
+        * cause with message "Subscriber Not found".
 
   3. Event Subscriptions are not stored in CAPIF Database
 
@@ -232,11 +234,11 @@ At this documentation you will have all information and related files and exampl
      3. Response Body must follow **EventSubscription** data structure.
 
   3. Event Subscriptions are stored in CAPIF Database
-  4. Remove Event Subscription with not valid subscriber:
-     1. **403 Forbidden**
-     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * detail with message "Event API not existing".
-        * cause with message "Event Subscriptions are not stored in CAPIF Database".
+  4. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found"
+        * detail with message "Invoker or APF or AEF or AMF Not found".
+        * cause with message "Subscriber Not found".
 
 
 
