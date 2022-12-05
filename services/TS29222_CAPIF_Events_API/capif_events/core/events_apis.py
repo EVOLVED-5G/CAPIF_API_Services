@@ -32,7 +32,7 @@ class EventSubscriptionsOperations(Resource):
 
         if invoker is None and provider is None:
             current_app.logger.error("Not found invoker or provider with this subscriber id")
-            return not_found_error(detail="Not found Subscriber", cause="Not found Invoker or APF or AEF or AMF")
+            return not_found_error(detail="Invoker or APF or AEF or AMF Not found", cause="Subscriber Not Found")
 
         return None
 
