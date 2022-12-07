@@ -328,7 +328,7 @@ Update the Security Context of an API Invoker
 
     # Check Security Context is corretly modified at CCF
     ${resp}=    Get Request Capif
-    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
+    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
@@ -455,6 +455,7 @@ Revoke the authorization of the API invoker for APIs
 
 Revoke the authorization of the API invoker for APIs without valid apfID.
     [Tags]    capif_security_api-17
+    Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
