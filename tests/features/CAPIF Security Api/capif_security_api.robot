@@ -424,8 +424,7 @@ Revoke the authorization of the API invoker for APIs
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    ServiceSecurity
+    Check Response Variable Type And Values   ${resp}   201  ServiceSecurity
 
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration

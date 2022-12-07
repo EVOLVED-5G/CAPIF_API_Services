@@ -1,4 +1,4 @@
-def create_service_security_body(notification_destination='http://robot.testing', aef_id=None):
+def create_service_security_body(notification_destination='http://robot.testing:1080', aef_id=None):
     data = {
         "notificationDestination": notification_destination,
         "supportedFeatures": "fffffff",
