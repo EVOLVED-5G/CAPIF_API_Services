@@ -32,19 +32,8 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
@@ -117,29 +106,18 @@ At this documentation you will have all information and related files and exampl
   * At least 2 service APIs are published.
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration]
+  2. Publish Service API at CCF:
      * Send Post to https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Publish Other Service API at CCF:
+  3. Publish Other Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_2
      * Get apiId
      * Use APF Certificate
-  7. Retrieve all published APIs:
+  4. Retrieve all published APIs:
      * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * Use APF Certificate
 
@@ -178,19 +156,8 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Retrieve all published APIs:
+  1. See [Provider Registration]
+  2. Retrieve all published APIs:
      * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis
      * Use APF Certificate
 
@@ -219,32 +186,21 @@ At this documentation you will have all information and related files and exampl
   * At least 2 service APIs are published.
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Publish Other Service API at CCF:
+  3. Publish Other Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_2
      * Get apiId
      * Use APF Certificate
-  7. Retrieve service_1 published APIs detail:
+  4. Retrieve service_1 published APIs detail:
      * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId1}
      * Use APF Certificate
-  8. Retrieve service_2 published APIs detail:
+  5. Retrieve service_2 published APIs detail:
      * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId2}
      * Use APF Certificate
 
@@ -290,19 +246,8 @@ At this documentation you will have all information and related files and exampl
   * No published api
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Retrieve not published APIs detail:
+  1. See [Provider Registration]
+  2. Retrieve not published APIs detail:
      * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
      * Use APF Certificate
 
@@ -330,34 +275,15 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Create public and private key at invoker
-  7. Register of Invoker at CCF:
-     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
-     * body [invoker register body]
-  8. Onboard Invoker:
-     * Send POST to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers
-     * Reference Request Body: [invoker onboarding body]
-     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
-  9. Retrieve detailed published APIs:
+  6. Retrieve detailed published APIs:
      * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/${apiId}
-     * Use invoker certificate
+     * Use Invoker certificate
 
 * **Execution Steps**:
   1. Register Provider at CCF and store certificates.
@@ -389,29 +315,18 @@ At this documentation you will have all information and related files and exampl
   * A service APIs is published.
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * get resource url from location Header.
      * Use APF Certificate
-  6. Update published API at CCF:
+  3. Update published API at CCF:
      * Send PUT to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}
      * body [service api description] with overrided apiName to service_1_modified
      * Use APF Certificate
-  7. Retrieve detail of service API:
+  4. Retrieve detail of service API:
      * Send Get to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}
      * check apiName is service_1_modified
      * Use APF Certificate
@@ -449,24 +364,13 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Update published API at CCF:
+  3. Update published API at CCF:
      * Send PUT to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
      * body [service api description] with overrided apiName to ***service_1_modified***
      * Use APF Certificate
@@ -499,36 +403,17 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Create public and private key at invoker
-  7. Register of Invoker at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [invoker register body]
-  8. Onboard Invoker:
-     * Send POST to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers*
-     * Reference Request Body: [invoker onboarding body]
-     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
-  9. Update published API at CCF:
+  3. Update published API at CCF:
      * Send PUT to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
      * body [service api description] with overrided apiName to ***service_1_modified***
      * Use invoker certificate
-  10. Retrieve detail of service API:
+  4.  Retrieve detail of service API:
      * Send Get to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
      * check apiName is service_1
      * Use APF Certificate
@@ -567,27 +452,16 @@ At this documentation you will have all information and related files and exampl
   * A service APIs is published.
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  4. Remove published Service API at CCF:
+  3. Remove published Service API at CCF:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
      * Use APF Certificate
-  5. Retrieve detail of service API:
+  4. Retrieve detail of service API:
      * Send Get to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
      * Use APF Certificate
 
@@ -626,19 +500,8 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Remove published Service API at CCF with invalid serviceId:
+  1. See [Provider Registration]
+  2. Remove published Service API at CCF with invalid serviceId:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * Use APF Certificate
 
@@ -666,32 +529,13 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API at CCF:
+  1. See [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Create public and private key at invoker
-  7. Register of Invoker at CCF:
-     * Send POST to http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register 
-     * body [invoker register body]
-  8. Onboard Invoker:
-     * Send POST to https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers
-     * Reference Request Body: [invoker onboarding body]
-     * "onboardingInformation"->"apiInvokerPublicKey": must contain public key generated by Invoker.
-  9. Remove published Service API at CCF with invalid serviceId as Invoker:
+  3. Remove published Service API at CCF with invalid serviceId as Invoker:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * Use invoker certificate.
 
@@ -717,5 +561,9 @@ At this documentation you will have all information and related files and exampl
    [provider request body]: ../api_provider_management/provider_details_post_example.json  "API Provider Enrolment Request"
    [provider request patch body]: ../api_provider_management/provider_details_enrolment_details_patch_example.json  "API Provider Enrolment Patch Request"
    [provider getauth body]: ../api_provider_management/provider_getauth_example.json    "Get Auth Example"
+
+   [invoker onboarding]: ../common_operations/README.md#register-an-invoker "Invoker Onboarding"
+   [provider registration]: ../common_operations/README.md#register-a-provider "Provider Registration"
+
 
   [Return To All Test Plans]: ../README.md

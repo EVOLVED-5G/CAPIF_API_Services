@@ -19,7 +19,7 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_api_invoker_management-1***
 * **Description**:
 
-  This test will try to register new NetApp at CAPIF Core
+  This test will try to register new NetApp at CAPIF Core.
 * **Pre-Conditions**:
 
   * NetApp was not registered previously
