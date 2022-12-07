@@ -191,10 +191,9 @@ This CAPIF services have many stability improvements:
 
 # CAPIF Tool Release 2.2
 
-This CAPIF services have several changes:
- - exposer is changed to provider, according to specs.
+Changes at Services:
 
-* **Common**:
+* **Common Changes**:
   * Removed from all services the Common Name (CN) check at certificate to get the role.
   * Roles are not detected in this version, then no role access check perform by services.
 * **Register**:
@@ -225,13 +224,11 @@ This CAPIF services have several changes:
       * When a new security context is created, then request to invoker to add the api to it apilist.
       * When a security list is remove those apis are removed from invoker apilist associated.
     * Token Creation.
-    * Revoke Authoritations.
+    * Revoke Authorizations.
 
-
-* easyRSA:
-    * Revisar si se ha cambiado algo.
-
-* Auditing y Login -> Stavros.
+Changes at Tests:
+* **New common scenarios**
+* New Test plan definition.
 
 
 
