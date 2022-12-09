@@ -26,7 +26,7 @@ At this documentation you will have all information and related files and exampl
 
 * Information of Test:
 
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
@@ -67,7 +67,7 @@ At this documentation you will have all information and related files and exampl
 
 * Information of Test:
 
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{SUBSCRIBER_NOT_REGISTERED}/subscriptions
@@ -110,7 +110,7 @@ At this documentation you will have all information and related files and exampl
 
 * Information of Test:
 
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
@@ -161,7 +161,7 @@ At this documentation you will have all information and related files and exampl
 
 * Information of Test:
 
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
@@ -213,7 +213,7 @@ At this documentation you will have all information and related files and exampl
 
 * Information of Test:
 
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
      1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions

@@ -26,7 +26,7 @@ At this documentation you will have all information and related files and exampl
   * NetApp was onboarded previously with {onboardingId}
   
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -72,7 +72,7 @@ At this documentation you will have all information and related files and exampl
   * Service APIs are published.
   
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -121,7 +121,7 @@ At this documentation you will have all information and related files and exampl
   * Service APIs are published.
   
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -170,7 +170,7 @@ At this documentation you will have all information and related files and exampl
   * NetApp was onboarded previously with {onboardingId}
   
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -223,7 +223,7 @@ At this documentation you will have all information and related files and exampl
   * NetApp was onboarded previously with {onboardingId}
   
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -280,7 +280,7 @@ At this documentation you will have all information and related files and exampl
   * NetApp was onboarded previously with {onboardingId}
   
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1

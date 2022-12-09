@@ -42,7 +42,7 @@ At this documentation you will have all information and related files and exampl
   * API Invoker is pre-authorised (has valid apiInvokerID from CAPIF Authority)
 
 * **Information of Test**:
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
   2. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
@@ -73,7 +73,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker but using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -109,7 +109,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
 
   2. Create Security Context for this not valid apiInvokerId and using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
@@ -142,7 +142,7 @@ At this documentation you will have all information and related files and exampl
   * API Invoker is pre-authorised (has valid apiInvokerID), but user that create Security Context with invalid apiInvokerId
 
 * **Information of Test**:
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
@@ -177,7 +177,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -212,7 +212,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
 
   4. Retrieve Security Context of invalid Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
@@ -245,7 +245,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -285,7 +285,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker but using Provider certificate.
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -332,7 +332,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -371,7 +371,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Invoker Onboarding]
+  1. Perform [Invoker Onboarding]
 
   2. Delete Security Context of Invoker:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
@@ -404,7 +404,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
 
   4. Delete Security Context of Invoker by Provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
@@ -437,7 +437,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -486,7 +486,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -529,7 +529,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
  
   4. Update Security Context of Invoker by Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/update*
@@ -563,7 +563,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
  
   2. Update Security Context of Invoker:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/update*
@@ -598,7 +598,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   7. Create Security Context By Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -649,7 +649,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -701,7 +701,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
@@ -753,7 +753,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -802,7 +802,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -852,7 +852,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
 
   4. Request Access Token to invalid Invoker by Provider:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{INVALID}/token*:
@@ -888,7 +888,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
 
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
 
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*

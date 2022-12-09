@@ -32,7 +32,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -106,7 +106,7 @@ At this documentation you will have all information and related files and exampl
   * At least 2 service APIs are published.
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Publish Service API at CCF:
      * Send Post to https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -156,7 +156,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Retrieve all published APIs:
      * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis
      * Use APF Certificate
@@ -186,7 +186,7 @@ At this documentation you will have all information and related files and exampl
   * At least 2 service APIs are published.
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -246,7 +246,7 @@ At this documentation you will have all information and related files and exampl
   * No published api
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Retrieve not published APIs detail:
      * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
      * Use APF Certificate
@@ -275,7 +275,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -315,7 +315,7 @@ At this documentation you will have all information and related files and exampl
   * A service APIs is published.
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -364,7 +364,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -403,7 +403,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
@@ -452,7 +452,7 @@ At this documentation you will have all information and related files and exampl
   * A service APIs is published.
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
@@ -500,7 +500,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
 
 * **Information of Test**:
-  1. See [Provider Registration]
+  1. Perform [Provider Registration]
   2. Remove published Service API at CCF with invalid serviceId:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * Use APF Certificate
@@ -529,7 +529,7 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority).
 
 * **Information of Test**:
-  1. See [Provider Registration] and [Invoker Onboarding]
+  1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
