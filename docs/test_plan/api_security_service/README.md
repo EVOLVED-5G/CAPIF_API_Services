@@ -925,8 +925,6 @@ At this documentation you will have all information and related files and exampl
   [service security body]: ./service_security.json  "Service Security Request"
   [security notification body]: ./security_notification.json  "Security Notification Request"
   [access token req body]: ./access_token_req.json  "Access Token Request"
-  [invoker onboarding body]: ../api_invoker_management/invoker_details_post_example.json  "API Invoker Request"
-  [invoker register body]: ../api_invoker_management/invoker_register_body.json  "Invoker Register Body"
 
   [invoker onboarding]: ../common_operations/README.md#register-an-invoker "Invoker Onboarding"
   [provider registration]: ../common_operations/README.md#register-a-provider "Provider Registration"
