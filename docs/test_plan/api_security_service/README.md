@@ -24,6 +24,11 @@
   - [Test Case 20: Retrieve access token by Provider](#test-case-20-retrieve-access-token-by-provider)
   - [Test Case 21: Retrieve access token by Provider with invalid apiInvokerId](#test-case-21-retrieve-access-token-by-provider-with-invalid-apiinvokerid)
   - [Test Case 22: Retrieve access token with invalid apiInvokerId](#test-case-22-retrieve-access-token-with-invalid-apiinvokerid)
+  - [Test Case 23: Retrieve access token with invalid client\_id](#test-case-23-retrieve-access-token-with-invalid-client_id)
+  - [Test Case 24: Retrieve access token with unsupported grant\_type](#test-case-24-retrieve-access-token-with-unsupported-grant_type)
+  - [Test Case 25: Retrieve access token with invalid scope](#test-case-25-retrieve-access-token-with-invalid-scope)
+  - [Test Case 26: Retrieve access token with invalid aefid at scope](#test-case-26-retrieve-access-token-with-invalid-aefid-at-scope)
+  - [Test Case 27: Retrieve access token with invalid apiName at scope](#test-case-27-retrieve-access-token-with-invalid-apiname-at-scope)
  
 
 
@@ -769,9 +774,10 @@ At this documentation you will have all information and related files and exampl
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
   5.  Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
-     * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
+     * body [access token req body] and example [example]
+     * securityId is apiInvokerId.
+     * grant_type=client_credentials.
+     * Create Scope properly for request: 3gpp#{aef_id}:{api_name}
      * Using Invoker Certificate.
   
 * **Execution Steps**:
@@ -816,7 +822,7 @@ At this documentation you will have all information and related files and exampl
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+  5.  Request Access Token by provider:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
      * body [access token req body]
      * securityId is apiInvokerId
@@ -834,11 +840,9 @@ At this documentation you will have all information and related files and exampl
 
   1. Response to Request of Access Token:
      1. **401 Unauthorized** response.
-     2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 401
-        * title with message "Unauthorized"
-        * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be invoker".
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error unauthorized_client
+        * error_description=Role not authorized for this API route
 
 ## Test Case 21: Retrieve access token by Provider with invalid apiInvokerId
 * **Test ID**: ***capif_security_api-21***
@@ -850,31 +854,45 @@ At this documentation you will have all information and related files and exampl
   
   * API Invoker is pre-authorised and Provider is also authorized
 
+
 * **Information of Test**:
 
-  1. Perform [Provider Registration]
-
-  4. Request Access Token to invalid Invoker by Provider:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{INVALID}/token*:
+  1. Perform [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Invoker Certificate.
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by provider:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
      * body [access token req body]
-     * securityId is API_INVOKER_NOT_VALID
+     * securityId is apiInvokerId
      * grant_type=client_credentials
      * Using AEF certificate
 
 * **Execution Steps**:
-  
-  1. Register Provider at CCF
-  2. Create Security Context
-  3. Request Access Token by Provider
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Provider
    
 * **Expected Result**:
 
   1. Response to Request of Access Token:
-     1. **400 Bad Request** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **AccessTokenErr** data structure, with:
-        * error "invalid_client"
-        * error_description with message "Role not authorized for this API route"
-
+        * error unauthorized_client
+        * error_description=Role not authorized for this API route
+   
 
 ## Test Case 22: Retrieve access token with invalid apiInvokerId
 * **Test ID**: ***capif_security_api-22***
@@ -889,33 +907,300 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
-
-  2. Create Security Context for this Invoker:
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
-
-  3. Request Access Token by invoker:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
      * body [access token req body]
-     * securityId is API_INVOKER_NOT_VALID
+     * securityId is apiInvokerId
      * grant_type=client_credentials
-     * Using AEF certificate
+     * Using Invoker certificate
 
 * **Execution Steps**:
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Invoker
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **401 Unauthorized** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error unauthorized_client
+        * error_description=Role not authorized for this API route
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **404 Not Found** response.
+     2. body returned must accomplish **ProblemDetails29571** data structure, with:
+        * status 404
+        * title Not Found
+        * detail Security context not found
+        * cause API Invoker has no security context
+
+
+**NOTE: ProblemDetails29571 is the definition present for this request at swagger of ProblemDetails, and this is different from definition of ProblemDetails across other CAPIF Services**
+
+## Test Case 23: Retrieve access token with invalid client_id
+* **Test ID**: ***capif_security_api-23***
+* **Description**:
   
-  1. Register and onboard Invoker at CCF
-  2. Create Security Context
-  3. Request Access Token by invoker
+  This test case will check that an API Exposure Function cannot retrieve a security access token without valid client_id at body
+
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised and Provider is also authorized
+
+* **Information of Test**:
+
+  1. Perform [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Invoker Certificate.
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * grant_type=client_credentials
+     * **client_id is not-valid** 
+     * Using Invoker certificate
+
+* **Execution Steps**:
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Invoker
    
 * **Expected Result**:
 
   1. Response to Request of Access Token:
      1. **400 Bad Request** response.
      2. body returned must accomplish **AccessTokenErr** data structure, with:
-        * error "invalid_request"
-        * error_description with message "No Security Context for this API Invoker"
+        * error invalid_client
+        * error_description=Client Id Not Found
 
+
+## Test Case 24: Retrieve access token with unsupported grant_type
+* **Test ID**: ***capif_security_api-24***
+* **Description**:
+  
+  This test case will check that an API Exposure Function cannot retrieve a security access token with unsupported grant_type
+
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised and Provider is also authorized
+
+* **Information of Test**:
+
+  1. Perform [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Invoker Certificate.
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * **grant_type=not_valid**
+     * Using Invoker certificate
+
+* **Execution Steps**:
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Invoker
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error unsupported_grant_type
+        * error_description='${grant_type}' is not one of ['client_credentials'] - 'grant_type'
+
+## Test Case 25: Retrieve access token with invalid scope
+* **Test ID**: ***capif_security_api-25***
+* **Description**:
+  
+  This test case will check that an API Exposure Function cannot retrieve a security access token with complete invalid scope
+
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised and Provider is also authorized
+
+* **Information of Test**:
+
+  1. Perform [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Invoker Certificate.
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * grant_type=client_credentials
+     * **scope=not-valid-scope**
+     * Using Invoker certificate
+
+* **Execution Steps**:
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Invoker
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error invalid_scope
+        * error_description=The first characters must be '3gpp'
+
+
+## Test Case 26: Retrieve access token with invalid aefid at scope
+* **Test ID**: ***capif_security_api-26***
+* **Description**:
+  
+  This test case will check that an API Exposure Function cannot retrieve a security access token with invalid aefId at scope
+
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised and Provider is also authorized
+
+* **Information of Test**:
+
+  1. Perform [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Invoker Certificate.
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * grant_type=client_credentials
+     * **scope=3gpp#1234:service_1**
+     * Using Invoker certificate
+
+* **Execution Steps**:
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Invoker
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error invalid_scope
+        * error_description=One of aef_id not belongs of your security context
+
+
+## Test Case 27: Retrieve access token with invalid apiName at scope
+* **Test ID**: ***capif_security_api-27***
+* **Description**:
+  
+  This test case will check that an API Exposure Function cannot retrieve a security access token with invalid apiName at scope
+
+* **Pre-Conditions**:
+  
+  * API Invoker is pre-authorised and Provider is also authorized
+
+* **Information of Test**:
+
+  1. Perform [Provider Registration] and [Invoker Onboarding]
+  2. Publish Service API at CCF:
+     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * body [service api description] with apiName service_1
+     * Use APF Certificate
+  3.  Request Discover Published APIs not filtered:
+     * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
+     * Param api-invoker-id is mandatory
+     * Using invoker certificate
+  4.  Create Security Context for this Invoker
+     * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * body [service security body]
+     * Using Invoker Certificate.
+     * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
+  5.  Request Access Token by invoker:
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * body [access token req body]
+     * securityId is apiInvokerId
+     * grant_type=client_credentials
+     * **scope=3gpp#{aef_id}:not-valid**
+     * Using Invoker certificate
+
+* **Execution Steps**:
+  1. Register Provider at CCF, store certificates and Publish Service API service_1 at CCF
+  2. Register and onboard Invoker at CCF
+  3. Discover Service APIs by Invoker.
+  4. Create Security Context According to Service APIs discovered.
+  5. Request Access Token by Invoker
+   
+* **Expected Result**:
+
+  1. Response to Request of Access Token:
+     1. **400 Bad Request** response.
+     2. body returned must accomplish **AccessTokenErr** data structure, with:
+        * error invalid_scope
+        * error_description=One of the api names does not exist or is not associated with the aef id provided
 
 
   [Return To All Test Plans]: ../README.md
@@ -925,6 +1210,7 @@ At this documentation you will have all information and related files and exampl
   [service security body]: ./service_security.json  "Service Security Request"
   [security notification body]: ./security_notification.json  "Security Notification Request"
   [access token req body]: ./access_token_req.json  "Access Token Request"
+  [example]: ./access_token_req.json  "Access Token Request Example"
 
   [invoker onboarding]: ../common_operations/README.md#register-an-invoker "Invoker Onboarding"
   [provider registration]: ../common_operations/README.md#register-a-provider "Provider Registration"

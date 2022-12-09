@@ -1,0 +1,5 @@
+{
+  "client_id": "bb260b4d0b3a0f954fa23f42d979ca",
+  "grant_type": "client_credentials",
+  "scope": "3gpp#af7e4cf70063814770e7b00b87273e:service_1"
+}
