@@ -332,7 +332,6 @@ Update the Security Context of an API Invoker
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
-    
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
@@ -413,10 +412,34 @@ Update the Security Context of an API Invoker with invalid apiInvokerID
 
 Revoke the authorization of the API invoker for APIs
     [Tags]    capif_security_api-16
+    #Register APF
+    ${register_user_info_provider}=    Provider Default Registration
+    ${api_name}=    Set Variable    service_1
+
+    # Register One Service
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info_provider}
+    ...    ${api_name}
+
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    # Test
+    ${discover_response}=    Get Request Capif
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    verify=ca.crt
+    ...    username=${INVOKER_USERNAME}
+
+    Check Response Variable Type And Values    ${discover_response}    200    DiscoveredAPIs
+
+    ${api_ids}=    Get Api Ids From Discover Response     ${discover_response}
+
+    # create Security Context
+    ${request_body}=    Create Service Security From Discover Response
+    ...    http://robot.testing:1080
+    ...    ${discover_response}
+    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -424,12 +447,26 @@ Revoke the authorization of the API invoker for APIs
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Check Response Variable Type And Values   ${resp}   201  ServiceSecurity
+    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
+
+    # ######------
+    # # Default Invoker Registration and Onboarding
+    # ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    # ${request_body}=    Create Service Security Body
+    # ${resp}=    Put Request Capif
+    # ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
+    # ...    json=${request_body}
+    # ...    server=https://${CAPIF_HOSTNAME}/
+    # ...    verify=ca.crt
+    # ...    username=${INVOKER_USERNAME}
+
+    # Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # Register Provider
-    ${register_user_info_publisher}=    Provider Default Registration
+    # ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}    1234
+    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}     ${api_ids}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
@@ -602,7 +639,6 @@ Retrieve access token
 
     Should Not Be Empty    ${resp.json()['access_token']}
 
-
 Retrieve access token by Provider
     [Tags]    capif_security_api-20
     Test ${TEST NAME} Currently Not Supported
@@ -656,7 +692,6 @@ Retrieve access token by Provider
     ...    error=unauthorized_client
     ...    error_description=Role not authorized for this API route
 
-
 Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
     Test ${TEST NAME} Currently Not Supported
@@ -709,12 +744,11 @@ Retrieve access token by Provider with invalid apiInvokerId
     Check Response Variable Type And Values    ${resp}    401    AccessTokenErr
     ...    error=unauthorized_client
     ...    error_description=Role not authorized for this API route
-    
 
 Retrieve access token with invalid apiInvokerId
     [Tags]    capif_security_api-22
     # Default Invoker Registration and Onboarding
-        #Register APF
+    #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -766,11 +800,10 @@ Retrieve access token with invalid apiInvokerId
     ...    detail=Security context not found
     ...    cause=API Invoker has no security context
 
-
 Retrieve access token with invalid client_id
     [Tags]    capif_security_api-23
     # Default Invoker Registration and Onboarding
-        #Register APF
+    #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -820,11 +853,10 @@ Retrieve access token with invalid client_id
     ...    error=invalid_client
     ...    error_description=Client Id Not Found
 
-
 Retrieve access token with unsupported grant_type
     [Tags]    capif_security_api-24
     # Default Invoker Registration and Onboarding
-        #Register APF
+    #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -861,8 +893,11 @@ Retrieve access token with unsupported grant_type
 
     # Retrieve Token from CCF
     ${scope}=    Create Scope    ${register_user_info_provider['aef_id']}    ${api_name}
-    ${grant_type}=  Set Variable    not_valid
-    ${request_body}=    Create Access Token Req Body    ${register_user_info_invoker['api_invoker_id']}    ${scope}  grant_type=${grant_type}
+    ${grant_type}=    Set Variable    not_valid
+    ${request_body}=    Create Access Token Req Body
+    ...    ${register_user_info_invoker['api_invoker_id']}
+    ...    ${scope}
+    ...    grant_type=${grant_type}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
@@ -875,11 +910,10 @@ Retrieve access token with unsupported grant_type
     ...    error=unsupported_grant_type
     ...    error_description='${grant_type}' is not one of ['client_credentials'] - 'grant_type'
 
-
 Retrieve access token with invalid scope
     [Tags]    capif_security_api-25
     # Default Invoker Registration and Onboarding
-        #Register APF
+    #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -916,7 +950,9 @@ Retrieve access token with invalid scope
 
     # Retrieve Token from CCF
     ${scope}=    Create Scope    ${register_user_info_provider['aef_id']}    ${api_name}
-    ${request_body}=    Create Access Token Req Body    ${register_user_info_invoker['api_invoker_id']}    "not-valid-scope"
+    ${request_body}=    Create Access Token Req Body
+    ...    ${register_user_info_invoker['api_invoker_id']}
+    ...    "not-valid-scope"
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
@@ -932,7 +968,7 @@ Retrieve access token with invalid scope
 Retrieve access token with invalid aefid at scope
     [Tags]    capif_security_api-26
     # Default Invoker Registration and Onboarding
-        #Register APF
+    #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -969,7 +1005,9 @@ Retrieve access token with invalid aefid at scope
 
     # Retrieve Token from CCF
     ${scope}=    Create Scope    ${register_user_info_provider['aef_id']}    ${api_name}
-    ${request_body}=    Create Access Token Req Body    ${register_user_info_invoker['api_invoker_id']}    3gpp#1234:${api_name}
+    ${request_body}=    Create Access Token Req Body
+    ...    ${register_user_info_invoker['api_invoker_id']}
+    ...    3gpp#1234:${api_name}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
@@ -985,7 +1023,7 @@ Retrieve access token with invalid aefid at scope
 Retrieve access token with invalid apiName at scope
     [Tags]    capif_security_api-27
     # Default Invoker Registration and Onboarding
-        #Register APF
+    #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -1021,8 +1059,10 @@ Retrieve access token with invalid apiName at scope
     Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
 
     # Retrieve Token from CCF
-    ${not_valid_api_name}=    Set Variable      not-valid
-    ${request_body}=    Create Access Token Req Body    ${register_user_info_invoker['api_invoker_id']}    3gpp#${register_user_info_provider['aef_id']}:${not_valid_api_name}
+    ${not_valid_api_name}=    Set Variable    not-valid
+    ${request_body}=    Create Access Token Req Body
+    ...    ${register_user_info_invoker['api_invoker_id']}
+    ...    3gpp#${register_user_info_provider['aef_id']}:${not_valid_api_name}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
@@ -1034,4 +1074,3 @@ Retrieve access token with invalid apiName at scope
     Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
     ...    error=invalid_scope
     ...    error_description=One of the api names does not exist or is not associated with the aef id provided
-

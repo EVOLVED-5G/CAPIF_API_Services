@@ -87,3 +87,9 @@ def create_access_token_req_body(client_id, scope, client_secret=None,grant_type
 
     return data
 
+def get_api_ids_from_discover_response(discover_response):
+    api_ids=[]
+    service_api_descriptions = discover_response.json()['serviceAPIDescriptions']
+    for service_api_description in service_api_descriptions:
+        api_ids.append(service_api_description['apiId'])
+    return api_ids
