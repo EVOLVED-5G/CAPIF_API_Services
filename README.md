@@ -227,8 +227,10 @@ Changes at Services:
     * Revoke Authorizations.
 
 Changes at Tests:
-* **New common scenarios**
-* New Test plan definition.
+* **New common scenarios** in order to make easy to describe a test.
+* New Test plan definition format.
+* Change to new provider registration towards provider Management.
+
 
 
 
