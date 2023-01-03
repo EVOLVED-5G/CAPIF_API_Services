@@ -51,9 +51,9 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     :param resource_name: Name of the specific resource invoked.
     :type resource_name: str
     :param src_interface: Interface description of the API invoker.
-    :type src_interface: dict | bytes
+    :type src_interface: str
     :param dest_interface: Interface description of the API invoked.
-    :type dest_interface: dict | bytes
+    :type dest_interface: str
     :param supported_features: To filter irrelevant responses related to unsupported features
     :type supported_features: str
 
@@ -63,14 +63,14 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)
 
-    if connexion.request.is_json:
-        protocol = Protocol.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        operation = Operation.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        src_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        dest_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     protocol = Protocol.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     operation = Operation.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     src_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     dest_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
 
     # cert_tmp = request.headers['X-Ssl-Client-Cert']
     # cert_raw = cert_tmp.replace('\t', '')

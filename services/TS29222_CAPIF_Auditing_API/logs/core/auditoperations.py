@@ -58,10 +58,18 @@ class AuditOperations:
                 myParams.append({"logs.resource_name": resource_name})
 
             if src_interface is not None:
-                myParams.append({"logs.src_interface": src_interface})
+                src_int_json = json.loads(src_interface)
+                ipv4Addr = src_int_json["ipv4Addr"]
+                port = src_int_json["port"]
+                security_methods = src_int_json["securityMethods"]
+                myParams.append({"logs.src_interface.ipv4_addr": ipv4Addr, "logs.src_interface.port": port, "logs.src_interface.security_methods": security_methods})
 
             if dest_interface is not None:
-                myParams.append({"logs.dest_interface": dest_interface})
+                dest_int_json = json.loads(dest_interface)
+                ipv4Addr = dest_int_json["ipv4Addr"]
+                port = dest_int_json["port"]
+                security_methods = dest_int_json["securityMethods"]
+                myParams.append({"logs.dest_interface.ipv4_addr": ipv4Addr, "logs.dest_interface.port": port, "logs.dest_interface.security_methods": security_methods})
 
             if supported_features is not None:
                 myParams.append({"supported_features": supported_features})
