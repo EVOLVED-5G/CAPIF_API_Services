@@ -60,34 +60,21 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     :rtype: InvocationLog
     """
 
+    cert_tmp = request.headers['X-Ssl-Client-Cert']
+    cert_raw = cert_tmp.replace('\t', '')
+
+    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
+    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
+
+    capif_user = check_user.check_capif_user(cn, "exposer")
+
+    if not capif_user:
+        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
+                              cause="Certificate not authorized")
+        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)
-
-    # if connexion.request.is_json:
-    #     protocol = Protocol.from_dict(connexion.request.get_json())  # noqa: E501
-    # if connexion.request.is_json:
-    #     operation = Operation.from_dict(connexion.request.get_json())  # noqa: E501
-    # if connexion.request.is_json:
-    #     src_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
-    # if connexion.request.is_json:
-    #     dest_interface = InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
-
-    # cert_tmp = request.headers['X-Ssl-Client-Cert']
-    # cert_raw = cert_tmp.replace('\t', '')
-    #
-    # cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    # cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-    #
-    # capif_user = check_user.check_capif_user(cn, "invoker")
-    #
-    # if not capif_user:
-    #     prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-    #                           cause="Certificate not authorized")
-    #     return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
-    #
-    # else:
-    #     response = discover_apis.get_discoveredapis(api_invoker_id, api_name, api_version, comm_type, protocol, aef_id, data_format, api_cat, supported_features, api_supported_features)
-    #     return response
 
     response = audit_operations.get_logs(aef_id, api_invoker_id, time_range_start, time_range_end, api_id, api_name, api_version, protocol, operation, result, resource_name, src_interface, dest_interface, supported_features)
     return response
