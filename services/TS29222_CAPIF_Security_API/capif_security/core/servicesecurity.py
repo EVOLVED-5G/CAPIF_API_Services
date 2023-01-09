@@ -229,9 +229,15 @@ class SecurityOperations(Resource):
         try:
 
             current_app.logger.debug("Generating access token")
-            result = self.__check_invoker(access_token_req["client_id"])
-            if result != None:
-                return result
+
+            invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
+
+            current_app.logger.debug("Checking api invoker with id: " + access_token_req["client_id"])
+            invoker =  invokers_col.find_one({"api_invoker_id": access_token_req["client_id"]})
+            if invoker is None:
+                client_id_error =  AccessTokenErr(error="invalid_client", error_description="Client Id not found")
+                return make_response(object=client_id_error, status=400)
+
 
             service_security = mycol.find_one({"api_invoker_id": security_id})
             if service_security is None:
