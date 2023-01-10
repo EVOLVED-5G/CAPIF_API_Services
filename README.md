@@ -2,7 +2,7 @@
 
 - [Common API Framework (CAPIF)](#common-api-framework-capif)
 - [Repository structure](#repository-structure)
-- [CAPIF_API_Services](#capif_api_services)
+- [CAPIF\_API\_Services](#capif_api_services)
   - [How to run CAPIF services in this Repository](#how-to-run-capif-services-in-this-repository)
     - [Run All CAPIF Services locally with Docker images](#run-all-capif-services-locally-with-docker-images)
     - [Run each service using Docker](#run-each-service-using-docker)
@@ -191,8 +191,47 @@ This CAPIF services have many stability improvements:
 
 # CAPIF Tool Release 2.2
 
-This CAPIF services have several changes:
- - exposer is changed to provider, according to specs.
+Changes at Services:
+
+* **Common Changes**:
+  * Removed from all services the Common Name (CN) check at certificate to get the role.
+  * Roles are not detected in this version, then no role access check perform by services.
+* **Register**:
+  * At Registration operation you need to setup if entity is invoker or provider (previously was invoker or exposer).
+  * Get Auth operation to get access_token now only need to have user and password in body, role is not needed now.
+* **Invoker**:
+  * Same functionality but complete code refactor performed.
+  * This service has REDIS connection to update status (onboard, offboard) to other services.
+  * Listener created to add apiList when security context is created and remove it when security context is destroyed.
+* **Provider**:
+  * New development at this version.
+  * Allow registration of provider entities (AMF, APF y AEF)
+  * This registration returns signed certificates for each one requested to be used in subsequent request by each entity of provider.
+* **Events**:
+  * Generate subscription to event for any entity (due to issue of role detection also generate subscription for CCF role)
+  * This service has REDIS connection to communicate event to other services:
+    * Internal operations
+      * Invoker OnBoarded or OffBoarded.
+      * Other events.
+    * External operations from other services.
+* **Publish**:
+  * Check if APF Id is valid.
+  * This service has REDIS connection:
+    * If Service is added or removed it sends a message through REDIS.
+* **Security**:
+    * New at this version
+    * This service has REDIS connection, that allow some operations like:
+      * When a new security context is created, then request to invoker to add the api to it apilist.
+      * When a security list is remove those apis are removed from invoker apilist associated.
+    * Token Creation.
+    * Revoke Authorizations.
+
+Changes at Tests:
+* **New common scenarios** in order to make easy to describe a test.
+* New Test plan definition format.
+* Change to new provider registration towards provider Management.
+
+
 
 
 [Open API Descriptions of 3GPP 5G APIs]: https://github.com/jdegre/5GC_APIs  "Open API Descriptions of 3GPP 5G APIs"
