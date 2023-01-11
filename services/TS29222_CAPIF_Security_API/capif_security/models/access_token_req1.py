@@ -158,12 +158,10 @@ class AccessTokenReq1(Model):
         """
         allowed_values = ["client_credentials"]  # noqa: E501
         if grant_type not in allowed_values:
-            # raise ValueError(
-            #     "Invalid value for `grant_type` ({0}), must be one of {1}"
-            #     .format(grant_type, allowed_values)
-            # )
-            raise AccessTokenErr(error= "unsupported_grant_type", error_description="Invalid value for `grant_type` ({0}), must be one of {1}"
-                 .format(grant_type, allowed_values))
+            raise ValueError(
+                "Invalid value for `grant_type` ({0}), must be one of {1}"
+                .format(grant_type, allowed_values)
+            )
 
         self._grant_type = grant_type
 

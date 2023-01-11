@@ -129,7 +129,7 @@ class SecurityOperations(Resource):
 
             if rfc3987.match(service_security.notification_destination, rule="URI") is None:
                 current_app.logger.error("Bad url format")
-                return bad_request_error(detail="Bad Param", cause = "Detected Bad formar of param", invalid_params=[{"param": "notificationDestination", "reason": "Not valid URL format"}])
+                return bad_request_error(detail="Bad Param", cause = "Detected Bad format of param", invalid_params=[{"param": "notificationDestination", "reason": "Not valid URL format"}])
 
             services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id})
 
@@ -238,6 +238,11 @@ class SecurityOperations(Resource):
                 client_id_error =  AccessTokenErr(error="invalid_client", error_description="Client Id not found")
                 return make_response(object=client_id_error, status=400)
 
+
+            if access_token_req["grant_type"] != "client_credentials":
+                client_id_error =  AccessTokenErr(error="unsupported_grant_type", error_description="Invalid value for `grant_type` ({0}), must be one of ['client_credentials'] - 'grant_type'"
+                .format(access_token_req["grant_type"]))
+                return make_response(object=client_id_error, status=400)
 
             service_security = mycol.find_one({"api_invoker_id": security_id})
             if service_security is None:
