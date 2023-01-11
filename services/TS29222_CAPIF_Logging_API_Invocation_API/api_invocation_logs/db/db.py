@@ -7,10 +7,10 @@ class MongoDatabse():
     def __init__(self):
         self.config = Config().getConfig()
         self.db = self.__connect()
-        self.invocation_logs = self.config['mongo']['col']
-        self.invoker_details = self.config['mongo']['col2']
-        self.provider_details = self.config['mongo']['col3']
-        self.service_apis = self.config['mongo']['col4']
+        self.invocation_logs = self.config['mongo']['logs_col']
+        self.invoker_details = self.config['mongo']['invoker_col']
+        self.provider_details = self.config['mongo']['prov_col']
+        self.service_apis = self.config['mongo']['serv_col']
         self.capif_users = self.config['mongo']['capif_users_col']
 
     def get_col_by_name(self, name):

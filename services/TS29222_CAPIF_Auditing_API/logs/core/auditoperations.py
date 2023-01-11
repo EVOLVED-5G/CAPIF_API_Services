@@ -3,24 +3,21 @@ import sys
 from flask import current_app, Flask, Response
 import json
 
-from ..db.db import MongoDatabse
-from ..encoder import JSONEncoder
+from .resources import Resource
 from bson import json_util
-from ..models.protocol import Protocol
+from .responses import bad_request_error, not_found_error, forbidden_error, internal_server_error, make_response
 
 
-class AuditOperations:
-
-    def __init__(self):
-        self.db = MongoDatabse()
-        self.mimetype = 'application/json'
+class AuditOperations (Resource):
 
     def get_logs(self, aef_id, api_invoker_id, time_range_start, time_range_end, api_id, api_name, api_version, protocol, operation, result, resource_name, src_interface, dest_interface, supported_features):
 
         mycol = self.db.get_col_by_name(self.db.invocation_logs)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
+
+        current_app.logger.debug("Find invocation logs")
 
         try:
+
             myParams = []
             myQuery = {}
             if aef_id is not None:
@@ -78,14 +75,15 @@ class AuditOperations:
                 myQuery = {"$and": myParams}
 
             logs = mycol.find(myQuery, {"_id":0})
-            json_docs = []
+            audit_logs = []
             for log in logs:
-                json_docs.append(log)
+                audit_logs.append(log)
 
-            res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
+            res = make_response(object=audit_logs, status=200)
+            current_app.logger.debug("Found invocation logs")
             return res
 
         except Exception as e:
-            exception = "An exception occurred in add services::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in audit"
+            return internal_server_error(detail=exception, cause=str(e))
 

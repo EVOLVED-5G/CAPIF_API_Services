@@ -9,7 +9,6 @@ from logs.models.problem_details import ProblemDetails  # noqa: E501
 from logs.models.protocol import Protocol  # noqa: E501
 from logs import util
 
-from ..core.check_user import CapifUsersOperations
 from ..core.auditoperations import AuditOperations
 import json
 from flask import Response, request, current_app
@@ -18,8 +17,6 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
 
-
-check_user = CapifUsersOperations()
 audit_operations = AuditOperations()
 
 
@@ -60,18 +57,7 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     :rtype: InvocationLog
     """
 
-    cert_tmp = request.headers['X-Ssl-Client-Cert']
-    cert_raw = cert_tmp.replace('\t', '')
-
-    cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-    cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
-
-    capif_user = check_user.check_capif_user(cn, "exposer")
-
-    if not capif_user:
-        prob = ProblemDetails(title="Unauthorized", status=401, detail="User not authorized",
-                              cause="Certificate not authorized")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype='application/json')
+    current_app.logger.info("Audit logs")
 
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)

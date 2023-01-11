@@ -7,7 +7,7 @@ class MongoDatabse():
     def __init__(self):
         self.config = Config().getConfig()
         self.db = self.__connect()
-        self.invocation_logs = self.config['mongo']['col']
+        self.invocation_logs = self.config['mongo']['logs_col']
         self.capif_users = self.config['mongo']['capif_users_col']
 
     def get_col_by_name(self, name):
