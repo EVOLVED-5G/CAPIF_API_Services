@@ -908,7 +908,10 @@ Retrieve access token with unsupported grant_type
     # Check Results
     Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
     ...    error=unsupported_grant_type
-    ...    error_description='${grant_type}' is not one of ['client_credentials'] - 'grant_type'
+    ...    error_description=Invalid value for \`grant_type\` \(not_valid\), must be one of \[\'client_credentials\'\] \- \'grant_type\'
+    # ...    error_description='${grant_type}' is not one of ['client_credentials'] - 'grant_type'
+    # '"Invalid value for `grant_type` (not_valid), must be one of ['client_credentials'] - 'grant_type'"' does not match 
+    # '"Invalid value for `grant_type` (not_valid), must be one of ['client_credentials'] - 'grant_type'"'
 
 Retrieve access token with invalid scope
     [Tags]    capif_security_api-25
