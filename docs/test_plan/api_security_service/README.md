@@ -982,7 +982,7 @@ At this documentation you will have all information and related files and exampl
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
   5.  Request Access Token by invoker:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
      * securityId is apiInvokerId
      * grant_type=client_credentials
@@ -1002,7 +1002,7 @@ At this documentation you will have all information and related files and exampl
      1. **400 Bad Request** response.
      2. body returned must accomplish **AccessTokenErr** data structure, with:
         * error invalid_client
-        * error_description=Client Id Not Found
+        * error_description=Client Id not found
 
 
 ## Test Case 24: Retrieve access token with unsupported grant_type
@@ -1032,7 +1032,7 @@ At this documentation you will have all information and related files and exampl
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
   5.  Request Access Token by invoker:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
      * securityId is apiInvokerId
      * **grant_type=not_valid**
@@ -1080,7 +1080,7 @@ At this documentation you will have all information and related files and exampl
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
   5.  Request Access Token by invoker:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
      * securityId is apiInvokerId
      * grant_type=client_credentials
@@ -1130,7 +1130,7 @@ At this documentation you will have all information and related files and exampl
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
   5.  Request Access Token by invoker:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
      * securityId is apiInvokerId
      * grant_type=client_credentials
@@ -1180,7 +1180,7 @@ At this documentation you will have all information and related files and exampl
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
   5.  Request Access Token by invoker:
-     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
+     * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
      * securityId is apiInvokerId
      * grant_type=client_credentials

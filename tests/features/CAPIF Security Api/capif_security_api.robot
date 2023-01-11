@@ -851,7 +851,7 @@ Retrieve access token with invalid client_id
     # Check Results
     Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
     ...    error=invalid_client
-    ...    error_description=Client Id Not Found
+    ...    error_description=Client Id not found
 
 Retrieve access token with unsupported grant_type
     [Tags]    capif_security_api-24
