@@ -9,7 +9,9 @@ from .core.consumer_messager import Subscriber
 from threading import Thread
 from flask_executor import Executor
 from flask_apscheduler import APScheduler
+from logging.handlers import RotatingFileHandler
 import sys
+
 
 
 def configure_logging(app):
@@ -19,7 +21,11 @@ def configure_logging(app):
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
     console_handler.setFormatter(verbose_formatter())
+    file_handler = RotatingFileHandler(filename="security_logs.log", maxBytes=1024 * 1024 * 100, backupCount=20)
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(verbose_formatter())
     handlers.append(console_handler)
+    handlers.append(file_handler)
 
     for l in loggers:
         for handler in handlers:
