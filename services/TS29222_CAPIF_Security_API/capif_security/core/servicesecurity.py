@@ -350,6 +350,9 @@ class SecurityOperations(Resource):
 
             mycol.replace_one(myQuery, updated_security_context)
 
+            if len(updated_security_context["security_info"]) == 0:
+                mycol.delete_many(myQuery)
+
             self.notification.send_notification(services_security_context["notification_destination"], security_notification)
 
             current_app.logger.debug("Revoked security context")
