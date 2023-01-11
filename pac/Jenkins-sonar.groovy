@@ -78,7 +78,7 @@ pipeline {
                                             -Dsonar.projectKey=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
                                             -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
                                             -Dsonar.sources=${WORKSPACE}/${NETAPP_NAME}/services/$name \
-                                            -Dsonar.host.url=http://195.235.92.134:9000 \
+                                            -Dsonar.host.url=https://sq.mobilesandbox.cloud:9000 \
                                             -Dsonar.login=$SQ_TOKEN \
                                             -Dsonar.projectName=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
                                             -Dsonar.language=python \
