@@ -61,7 +61,7 @@ Check Response Variable Type And Values
     Check Variable    ${resp.json()}    ${variable_type}
     FOR    ${input}    IN    @{input_parameters}
         Log    ${input}=${input_parameters['${input}']}
-        Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
+        Should Match Regexp    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
     END
 
 Remove Keys From Object
@@ -72,5 +72,5 @@ Remove Keys From Object
     RETURN    ${filtered_input}
 
 Test ${TEST NAME} Currently Not Supported
-    Log           Test "${TEST NAME}" Currently not supported   WARN
-	Skip          Test "${TEST NAME}" Currently not supported
+    Log    Test "${TEST NAME}" Currently not supported    WARN
+    Skip    Test "${TEST NAME}" Currently not supported

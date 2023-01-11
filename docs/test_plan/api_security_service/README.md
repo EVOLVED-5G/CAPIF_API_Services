@@ -638,8 +638,8 @@ At this documentation you will have all information and related files and exampl
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 404
         * title with message "Not Found"
-        * detail with message "Invoker not found".
-        * cause with message "API Invoker not exists or invalid ID".
+        * detail with message "Security context not found".
+        * cause with message "API Invoker has no security context".
 
 
 ## Test Case 17: Revoke the authorization of the API invoker for APIs without valid apfID.
@@ -1051,7 +1051,7 @@ At this documentation you will have all information and related files and exampl
      1. **400 Bad Request** response.
      2. body returned must accomplish **AccessTokenErr** data structure, with:
         * error unsupported_grant_type
-        * error_description='${grant_type}' is not one of ['client_credentials'] - 'grant_type'
+        * error_description=Invalid value for `grant_type` \\(${grant_type}\\), must be one of \\['client_credentials'\\] - 'grant_type'
 
 ## Test Case 25: Retrieve access token with invalid scope
 * **Test ID**: ***capif_security_api-25***

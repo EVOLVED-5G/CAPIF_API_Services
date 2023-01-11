@@ -487,8 +487,8 @@ Revoke the authorization of the API invoker for APIs
     Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
-    ...    detail=Invoker not found
-    ...    cause=API Invoker not exists or invalid ID
+    ...    detail=Security context not found
+    ...    cause=API Invoker has no security context
 
 Revoke the authorization of the API invoker for APIs without valid apfID.
     [Tags]    capif_security_api-17
@@ -908,10 +908,8 @@ Retrieve access token with unsupported grant_type
     # Check Results
     Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
     ...    error=unsupported_grant_type
-    ...    error_description=Invalid value for \`grant_type\` \(not_valid\), must be one of \[\'client_credentials\'\] \- \'grant_type\'
-    # ...    error_description='${grant_type}' is not one of ['client_credentials'] - 'grant_type'
-    # '"Invalid value for `grant_type` (not_valid), must be one of ['client_credentials'] - 'grant_type'"' does not match 
-    # '"Invalid value for `grant_type` (not_valid), must be one of ['client_credentials'] - 'grant_type'"'
+    ...    error_description=Invalid value for `grant_type` \\(${grant_type}\\), must be one of \\['client_credentials'\\] - 'grant_type'
+
 
 Retrieve access token with invalid scope
     [Tags]    capif_security_api-25
