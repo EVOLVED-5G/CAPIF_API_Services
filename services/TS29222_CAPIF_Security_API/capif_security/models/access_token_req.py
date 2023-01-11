@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from capif_security.models.base_model_ import Model
+from capif_security.models.access_token_err import AccessTokenErr
 from capif_security import util
 
 
@@ -77,10 +78,12 @@ class AccessTokenReq(Model):
         """
         allowed_values = ["client_credentials"]  # noqa: E501
         if grant_type not in allowed_values:
-            raise ValueError(
-                "Invalid value for `grant_type` ({0}), must be one of {1}"
-                .format(grant_type, allowed_values)
-            )
+            # raise ValueError(
+            #     "Invalid value for `grant_type` ({0}), must be one of {1}"
+            #     .format(grant_type, allowed_values)
+            # )
+            raise AccessTokenErr(error= "unsupported_grant_type", error_description="Invalid value for `grant_type` ({0}), must be one of {1}"
+                 .format(grant_type, allowed_values))
 
         self._grant_type = grant_type
 
