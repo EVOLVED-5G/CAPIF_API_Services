@@ -1375,8 +1375,8 @@ components:
       description: Contains information related to the access token request
       properties:
         grant_type:
-          enum:
-          - client_credentials
+          # enum:
+          # - client_credentials
           title: grant_type
           type: string
         nfInstanceId:
