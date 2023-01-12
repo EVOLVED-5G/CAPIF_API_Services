@@ -35,7 +35,7 @@ pipeline {
                     sh '''
                     mkdir $NETAPP_NAME
                     cd $NETAPP_NAME
-                    git clone --single-branch --branch $CHANGE_BRANCH $GIT_CAPIF_URL .
+                    git clone --single-branch --branch $CHANGE_BRANCH https://github.com/EVOLVED-5G/CAPIF_API_Services .
                     '''
                 }
            }
@@ -61,6 +61,9 @@ pipeline {
                         def list = sh(returnStdout: true, script: "ls -d */ | sed 's#/##'").trim().split('\n')
                             list.each { array ->
                                 if(array=="nginx"){
+                                    return
+                                }
+                                if(array=="mosquitto"){
                                     return
                                 }
                                 if(array=="mosquitto"){
@@ -92,7 +95,7 @@ pipeline {
                                 script {
                                     def tries = 0
                                     def sonarResultStatus = "PENDING"
-                                    while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 10) {
+                                    while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 15) {
                                         try {
                                             timeout(time: 5, unit: 'SECONDS') {
                                                 sonarResult = waitForQualityGate abortPipeline: false
