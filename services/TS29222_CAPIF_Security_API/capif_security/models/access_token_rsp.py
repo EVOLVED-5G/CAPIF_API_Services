@@ -61,7 +61,7 @@ class AccessTokenRsp(Model):
     def access_token(self):
         """Gets the access_token of this AccessTokenRsp.
 
-        JWS Compact Serialized representation of JWS signed JSON object (AccessTokenClaims)  # noqa: E501
+        JWS Compact Serialized representation of JWS signed JSON object (AccessTokenClaims)   # noqa: E501
 
         :return: The access_token of this AccessTokenRsp.
         :rtype: str
@@ -72,7 +72,7 @@ class AccessTokenRsp(Model):
     def access_token(self, access_token):
         """Sets the access_token of this AccessTokenRsp.
 
-        JWS Compact Serialized representation of JWS signed JSON object (AccessTokenClaims)  # noqa: E501
+        JWS Compact Serialized representation of JWS signed JSON object (AccessTokenClaims)   # noqa: E501
 
         :param access_token: The access_token of this AccessTokenRsp.
         :type access_token: str

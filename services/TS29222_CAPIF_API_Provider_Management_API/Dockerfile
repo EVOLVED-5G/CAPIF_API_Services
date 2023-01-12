@@ -5,12 +5,12 @@ WORKDIR /usr/src/app
 
 COPY requirements.txt /usr/src/app/
 
+RUN apk add -U --no-cache gcc build-base linux-headers ca-certificates libffi-dev libressl-dev libxslt-dev
 RUN pip3 install --no-cache-dir -r requirements.txt
+RUN apk add redis
 
 COPY . /usr/src/app
 
 EXPOSE 8080
 
-ENTRYPOINT ["python3"]
-
-CMD ["-m", "api_provider_management"]
+CMD ["sh", "prepare_provider.sh"]

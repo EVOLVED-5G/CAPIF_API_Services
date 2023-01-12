@@ -3,16 +3,8 @@ mongo: {
   'password': 'example',
   'db': 'capif',
   'col': 'eventsdetails',
-  'capif_users_col': 'user',
+  'capif_invokers_col': 'invokerdetails',
+  'capif_providers_col': 'providerenrolmentdetails',
   'host': 'mongo',
   'port': "27017"
-}
-
-mqtt: {
-  'url': 'mosquitto',
-  'port': 1883,
-  'username': '',
-  'password': '',
-  'keepalive': 10,
-  'tls': False
 }

@@ -20,8 +20,8 @@
     "repPeriod": 6,
     "sampRatio": 15
   },
-  "events": ["event_name_id_1", "event_name_id_2"],
-  "notificationDestination": "ROBOT_TESTING",
+  "events": ["SERVICE_API_AVAILABLE", "API_INVOKER_ONBOARDED"],
+  "notificationDestination": "http://robot.testing",
   "requestTestNotification": true,
   "supportedFeatures": "aaa",
   "websockNotifConfig": {

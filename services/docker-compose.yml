@@ -6,15 +6,16 @@ services:
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
-  mosquitto:
-    build: ./mosquitto
-    ports: 
-      - "1883:1883"
-  aef-security:
-    build: TS29222_AEF_Security_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API
@@ -24,11 +25,18 @@ services:
       - ./TS29222_CAPIF_API_Invoker_Management_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
+    depends_on:
+    - redis
+    - nginx
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
+    depends_on:
+      - redis
+      - nginx
+
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
@@ -52,13 +60,18 @@ services:
       - ./TS29222_CAPIF_Discover_Service_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
+    depends_on:
+    - mongo
   capif-events:
     build: TS29222_CAPIF_Events_API/.
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Events_API:/usr/src/app
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
-      - mosquitto
+      - redis
+      - mongo
   api-invocation-logs:
     build:
       context: ./TS29222_CAPIF_Logging_API_Invocation_API
@@ -79,7 +92,8 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
     depends_on:
-      - mosquitto
+      - redis
+      - mongo
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
@@ -97,6 +111,9 @@ services:
       - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
     extra_hosts:
       - host.docker.internal:host-gateway
+    depends_on:
+      - redis
+      - nginx
   easy-rsa:
     build:
       context: ./easy_rsa
@@ -115,8 +132,11 @@ services:
     image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
     depends_on:
       - easy-rsa
+      - mongo
+      - redis
+      - nginx
   mongo:
-    image: mongo:5.0
+    image: mongo:6.0.2
     logging:
       driver: 'none'
     restart: unless-stopped
@@ -151,15 +171,17 @@ services:
     volumes:
       - ./nginx/certs:/etc/nginx/certs
     depends_on:
-      - api-invoker-management
+      #- api-invoker-management
       - easy-rsa
+      - redis
 #      - aef-security
-      - api-provider-management
+#      - api-invoker-management
+      #- api-provider-management
 #      - access-control-policy
       - service-apis
       - api-invocation-logs
       - published-apis
 #      - capif-routing-info
-      - capif-security
+      #- capif-security
       - capif-events
       - logs

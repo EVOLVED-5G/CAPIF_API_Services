@@ -19,13 +19,15 @@ class SecurityInformation(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, interface_details=None, aef_id=None, pref_security_methods=None, sel_security_method=None, authentication_info=None, authorization_info=None):  # noqa: E501
+    def __init__(self, interface_details=None, aef_id=None, api_id=None, pref_security_methods=None, sel_security_method=None, authentication_info=None, authorization_info=None):  # noqa: E501
         """SecurityInformation - a model defined in OpenAPI
 
         :param interface_details: The interface_details of this SecurityInformation.  # noqa: E501
         :type interface_details: InterfaceDescription
         :param aef_id: The aef_id of this SecurityInformation.  # noqa: E501
         :type aef_id: str
+        :param api_id: The api_id of this SecurityInformation.  # noqa: E501
+        :type api_id: str
         :param pref_security_methods: The pref_security_methods of this SecurityInformation.  # noqa: E501
         :type pref_security_methods: List[SecurityMethod]
         :param sel_security_method: The sel_security_method of this SecurityInformation.  # noqa: E501
@@ -38,6 +40,7 @@ class SecurityInformation(Model):
         self.openapi_types = {
             'interface_details': InterfaceDescription,
             'aef_id': str,
+            'api_id': str,
             'pref_security_methods': List[SecurityMethod],
             'sel_security_method': SecurityMethod,
             'authentication_info': str,
@@ -47,6 +50,7 @@ class SecurityInformation(Model):
         self.attribute_map = {
             'interface_details': 'interfaceDetails',
             'aef_id': 'aefId',
+            'api_id': 'apiId',
             'pref_security_methods': 'prefSecurityMethods',
             'sel_security_method': 'selSecurityMethod',
             'authentication_info': 'authenticationInfo',
@@ -55,6 +59,7 @@ class SecurityInformation(Model):
 
         self._interface_details = interface_details
         self._aef_id = aef_id
+        self._api_id = api_id
         self._pref_security_methods = pref_security_methods
         self._sel_security_method = sel_security_method
         self._authentication_info = authentication_info
@@ -69,6 +74,7 @@ class SecurityInformation(Model):
         :return: The SecurityInformation of this SecurityInformation.  # noqa: E501
         :rtype: SecurityInformation
         """
+        print(dikt)
         return util.deserialize_model(dikt, cls)
 
     @property
@@ -114,6 +120,29 @@ class SecurityInformation(Model):
         """
 
         self._aef_id = aef_id
+
+    @property
+    def api_id(self):
+        """Gets the api_id of this SecurityInformation.
+
+        API identifier  # noqa: E501
+
+        :return: The api_id of this SecurityInformation.
+        :rtype: str
+        """
+        return self._api_id
+
+    @api_id.setter
+    def api_id(self, api_id):
+        """Sets the api_id of this SecurityInformation.
+
+        API identifier  # noqa: E501
+
+        :param api_id: The api_id of this SecurityInformation.
+        :type api_id: str
+        """
+
+        self._api_id = api_id
 
     @property
     def pref_security_methods(self):

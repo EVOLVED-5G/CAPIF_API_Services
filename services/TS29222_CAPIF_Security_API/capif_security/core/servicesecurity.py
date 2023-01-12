@@ -1,261 +1,365 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
+import re
+import rfc3987
 from flask import current_app, Flask, Response
 from flask_jwt_extended import create_access_token
+from datetime import datetime, timedelta
 import json
+
+from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
 from ..models.access_token_rsp import AccessTokenRsp
+from ..models.access_token_claims import AccessTokenClaims
 from bson import json_util
 import requests
 from ..models.access_token_err import AccessTokenErr
+from ..models.service_security import ServiceSecurity
+from ..util import dict_to_camel_case, clean_empty
+from .responses import not_found_error, make_response, bad_request_error, internal_server_error, forbidden_error
+from .notification import Notifications
+from .resources import Resource
 import os
 
+class SecurityOperations(Resource):
 
-def get_servicesecurity(api_invoker_id, authentication_info=True, authorization_info=True):
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    serv = current_app.config['MONGODB_SETTINGS']['col']
-    inv = current_app.config['MONGODB_SETTINGS']['invokers']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    def __check_invoker(self, api_invoker_id):
+        invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+        current_app.logger.debug("Checking api invoker with id: " + api_invoker_id)
+        invoker =  invokers_col.find_one({"api_invoker_id": api_invoker_id})
+        if invoker is None:
+            current_app.logger.error("Invoker not found")
+            return not_found_error(detail="Invoker not found", cause="API Invoker not exists or invalid ID")
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    services_security = mydb[serv]
-    invokers = mydb[inv]
+        return None
 
-    invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
-    if invoker is None:
-        myclient.close()
-        prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                              cause="API Invoker not exists or invalid ID")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
-    else:
-        myQuery = {'api_invoker_id': api_invoker_id}
-        services_security_count = services_security.count_documents(myQuery)
+    def __check_scope(self, scope, security_context):
 
-        if services_security_count == 0:
-            myclient.close()
-            prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
-                                  cause="API Invoker has no security context")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
+        try:
 
-        services_security_objects = services_security.find(myQuery)
-        json_docs = []
-        for services_security_object in services_security_objects:
-            del services_security_object['_id']
-            del services_security_object['api_invoker_id']
-            if not authentication_info:
-                for securityInfo_obj in services_security_object['security_info']:
-                    del securityInfo_obj['authentication_info']
-            if not authorization_info:
-                for securityInfo_obj in services_security_object['security_info']:
-                    del securityInfo_obj['authorization_info']
+            current_app.logger.debug("Checking scope")
+            header = scope[0:4]
+            if header != "3gpp":
+                current_app.logger.error("Bad format scope")
+                token_error = AccessTokenErr(error="invalid_scope", error_description="The first characters must be '3gpp'")
+                return make_response(object=token_error, status=400)
 
-            json_doc = json.dumps(services_security_object, default=json_util.default)
-            json_docs.append(json_doc)
+            _, body = scope.split("#")
 
-        myclient.close()
-        res = Response(json_docs, status=200, mimetype='application/json')
-        return res
+            capif_service_col = self.db.get_col_by_name(self.db.capif_service_col)
+            security_info = security_context["security_info"]
+            aef_security_context = [info["aef_id"] for info in security_info]
+
+            groups = body.split(";")
+            for group in groups:
+                aef_id, api_names = group.split(":")
+                if aef_id not in aef_security_context:
+                    current_app.logger.error("Bad format Scope, not valid aef id ")
+                    token_error = AccessTokenErr(error="invalid_scope", error_description="One of aef_id not belongs of your security context")
+                    return make_response(object=token_error, status=400)
+                api_names = api_names.split(",")
+                for api_name in api_names:
+                    service = capif_service_col.find_one({"$and": [{"api_name":api_name},{"aef_profiles.aef_id":aef_id}]})
+                    if service is None:
+                        current_app.logger.error("Bad format Scope, not valid api name")
+                        token_error = AccessTokenErr(error="invalid_scope", error_description="One of the api names does not exist or is not associated with the aef id provided")
+                        return make_response(object=token_error, status=400)
+
+            return None
+
+        except Exception as e:
+            current_app.logger.error("Bad format Scope: " + e)
+            token_error = AccessTokenErr(error="invalid_scope", error_description="malformed scope")
+            return make_response(object=token_error, status=400)
+
+    def get_servicesecurity(self, api_invoker_id, authentication_info=True, authorization_info=True):
+
+        mycol = self.db.get_col_by_name(self.db.security_info)
+
+        try:
+
+            current_app.logger.debug("Obtainig security context with id: " + api_invoker_id)
+            result = self.__check_invoker(api_invoker_id)
+            if result != None:
+                return result
+            else:
+                services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id}, {"_id":0, "api_invoker_id":0})
+
+                if services_security_object is None:
+                    current_app.logger.error("Not found security context")
+                    return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
+
+                if not authentication_info:
+                    for securityInfo_obj in services_security_object['security_info']:
+                        del securityInfo_obj['authentication_info']
+                if not authorization_info:
+                    for securityInfo_obj in services_security_object['security_info']:
+                        del securityInfo_obj['authorization_info']
+
+                properyly_json= json.dumps(services_security_object, default=json_util.default)
+                my_service_security = dict_to_camel_case(json.loads(properyly_json))
+                my_service_security = clean_empty(my_service_security)
+
+                current_app.logger.debug("Obtained security context from database")
+        
+                res = make_response(object=my_service_security, status=200)
+
+                return res
+        except Exception as e:
+            exception = "An exception occurred in get security info"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
-def create_servicesecurity(api_invoker_id, service_security):
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    serv = current_app.config['MONGODB_SETTINGS']['col']
-    inv = current_app.config['MONGODB_SETTINGS']['invokers']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    def create_servicesecurity(self, api_invoker_id, service_security):
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+        mycol = self.db.get_col_by_name(self.db.security_info)
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    services_security = mydb[serv]
-    invokers = mydb[inv]
+        try:
 
-    invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
-    if invoker is None:
-        myclient.close()
-        prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                              cause="API Invoker not exists or invalid ID")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
-    else:
-        myParams = []
-        for i in range(0, len(service_security.security_info)):
-            myParams.append({"security_info." + str(i) + ".aef_id": service_security.security_info[i].aef_id})
-        myQuery = {"$and": myParams}
-        res = services_security.find(myQuery)
-        res_size = len(list(res))
-        if res_size != 0:
-            myclient.close()
-            prob = ProblemDetails(title="Forbidden", status=403, detail="Security method already defined",
-                                  cause="Identical AEF Profile IDs")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
-        else:
+            current_app.logger.debug("Creating security context")
+            result = self.__check_invoker(api_invoker_id)
+            if result != None:
+                return result
+
+            if rfc3987.match(service_security.notification_destination, rule="URI") is None:
+                current_app.logger.error("Bad url format")
+                return bad_request_error(detail="Bad Param", cause = "Detected Bad format of param", invalid_params=[{"param": "notificationDestination", "reason": "Not valid URL format"}])
+
+            services_security_object = mycol.find_one({"api_invoker_id": api_invoker_id})
+
+            if services_security_object is not None:
+
+                current_app.logger.error("Already security context defined with same api invoker id")
+                return forbidden_error(detail="Security method already defined", cause="Identical AEF Profile IDs")
+
+
+            for service_instance in service_security.security_info:
+                if service_instance.interface_details is not None:
+                    security_methods = service_instance.interface_details.security_methods
+                    pref_security_methods = service_instance.pref_security_methods
+                    valid_security_method = set(security_methods) & set(pref_security_methods)
+
+                    if len(list(valid_security_method)) == 0:
+                        current_app.logger.error("Not found comptaible security method with pref security method")
+                        return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
+
+
+                    service_instance.sel_security_method = list(valid_security_method)[0]
+                else:
+                    capif_service_col = self.db.get_col_by_name(self.db.capif_service_col)
+                    services_security_object = capif_service_col.find_one({"api_id":service_instance.api_id, "aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
+
+                    if services_security_object is None:
+                        current_app.logger.error("Not found service with this aef id: " + service_instance.aef_id)
+                        return not_found_error(detail="Service with this aefId not found", cause="Not found Service")
+
+                    pref_security_methods = service_instance.pref_security_methods
+                    valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
+                    valid_security_method = set(valid_security_methods) & set(pref_security_methods)
+
+                    if len(list(valid_security_method)) == 0:
+                        current_app.logger.error("Not found comptaible security method with pref security method")
+                        return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
+
+                    service_instance.sel_security_method = list(valid_security_method)[0]
+
             rec = dict()
             rec['api_invoker_id'] = api_invoker_id
             rec.update(service_security.to_dict())
-            services_security.insert_one(rec)
-            myclient.close()
-            res = Response(json.dumps(service_security, cls=JSONEncoder), status=201, mimetype='application/json')
+            mycol.insert_one(rec)
+
+            current_app.logger.debug("Inserted security context in database")
+
+            res = make_response(object=service_security, status=201)
             res.headers['Location'] = "https://{}/capif-security/v1/trustedInvokers/{}".format(os.getenv('CAPIF_HOSTNAME'),str(api_invoker_id))
             return res
 
+        except Exception as e:
+            exception = "An exception occurred in create security info"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
-def delete_servicesecurity(api_invoker_id):
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    serv = current_app.config['MONGODB_SETTINGS']['col']
-    inv = current_app.config['MONGODB_SETTINGS']['invokers']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+    def delete_servicesecurity(self, api_invoker_id):
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    services_security = mydb[serv]
-    invokers = mydb[inv]
+        mycol = self.db.get_col_by_name(self.db.security_info)
 
-    myQuery = {'api_invoker_id': api_invoker_id}
+        try:
 
-    invoker = invokers.find_one(myQuery)
-    if invoker is None:
-        myclient.close()
-        prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                              cause="API Invoker not exists or invalid ID")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
-    else:
+            current_app.logger.debug("Removing security context")
+
+            result = self.__check_invoker(api_invoker_id)
+            if result != None:
+                return result
+            else:
+                myQuery = {'api_invoker_id': api_invoker_id}
+                services_security_count = mycol.count_documents(myQuery)
+
+                if services_security_count == 0:
+                    current_app.logger.error("Security context not found")
+                    return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
+
+                mycol.delete_many(myQuery)
+
+                current_app.logger.debug("Removed security context from database")
+                out= "The security info of Netapp with Netapp ID " + api_invoker_id + " were deleted.", 204
+                return make_response(out, status=204)
+
+        except Exception as e:
+            exception = "An exception occurred in create security info"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause = str(e))
+
+    def delete_intern_servicesecurity(self, api_invoker_id):
+
+        mycol = self.db.get_col_by_name(self.db.security_info)
         myQuery = {'api_invoker_id': api_invoker_id}
-        services_security_count = services_security.count_documents(myQuery)
+        mycol.delete_many(myQuery)
 
-        if services_security_count == 0:
-            myclient.close()
-            prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
-                                  cause="API Invoker has no security context")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
+    def return_token(self, security_id, access_token_req):
 
-        services_security.delete_many(myQuery)
-        return "The security info of Netapp with Netapp ID " + api_invoker_id + " were deleted.", 204
+        mycol = self.db.get_col_by_name(self.db.security_info)
 
+        try:
 
-def return_token(security_id, access_token_req):
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    serv = current_app.config['MONGODB_SETTINGS']['col']
-    inv = current_app.config['MONGODB_SETTINGS']['invokers']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+            current_app.logger.debug("Generating access token")
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+            invokers_col = self.db.get_col_by_name(self.db.capif_invokers)
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    services_security = mydb[serv]
-    invokers = mydb[inv]
-
-    service_security = services_security.find_one({"api_invoker_id": security_id})
-    if service_security is None:
-        myclient.close()
-        prob = AccessTokenErr(error="invalid_request", error_description="No Security Context for this API Invoker")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=400, mimetype='application/json')
-    else:
-        request_token_obj = access_token_req.to_dict()
-        access_token = create_access_token(identity=(request_token_obj["client_id"] + " " + request_token_obj["scope"] + " " + "691200"))
-        access_token_resp = AccessTokenRsp(access_token=access_token, token_type="bearer", expires_in=691200, scope="cccc")
-        if "scope" in request_token_obj.keys():
-            access_token_resp.scope = request_token_obj["scope"]
-        res = Response(json.dumps(access_token_resp, cls=JSONEncoder), status=200, mimetype='application/json')
-        return res
+            current_app.logger.debug("Checking api invoker with id: " + access_token_req["client_id"])
+            invoker =  invokers_col.find_one({"api_invoker_id": access_token_req["client_id"]})
+            if invoker is None:
+                client_id_error =  AccessTokenErr(error="invalid_client", error_description="Client Id not found")
+                return make_response(object=client_id_error, status=400)
 
 
-def update_servicesecurity(api_invoker_id, service_security):
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    serv = current_app.config['MONGODB_SETTINGS']['col']
-    inv = current_app.config['MONGODB_SETTINGS']['invokers']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+            if access_token_req["grant_type"] != "client_credentials":
+                client_id_error =  AccessTokenErr(error="unsupported_grant_type", error_description="Invalid value for `grant_type` ({0}), must be one of ['client_credentials'] - 'grant_type'"
+                .format(access_token_req["grant_type"]))
+                return make_response(object=client_id_error, status=400)
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+            service_security = mycol.find_one({"api_invoker_id": security_id})
+            if service_security is None:
+                current_app.logger.error("Not found securoty context with id: " + security_id)
+                return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    services_security = mydb[serv]
-    invokers = mydb[inv]
+            result = self.__check_scope(access_token_req["scope"], service_security)
 
-    invoker = invokers.find_one({"api_invoker_id": api_invoker_id})
-    if invoker is None:
-        myclient.close()
-        prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                              cause="API Invoker not exists or invalid ID")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
-    else:
-        myParams = []
-        for i in range(0, len(service_security.security_info)):
-            myParams.append({"security_info." + str(i) + ".aef_id": service_security.security_info[i].aef_id})
-        myQuery = {"$and": myParams}
-        old_object = services_security.find_one(myQuery)
-        if old_object is None:
-            myclient.close()
-            prob = ProblemDetails(title="Forbidden", status=403, detail="Security context not found",
-                                  cause="Not existing AEF Profile IDs")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype='application/json')
-        else:
-            new_object = dict()
-            new_object['api_invoker_id'] = api_invoker_id
-            new_object.update(service_security.to_dict())
-            services_security.replace_one(old_object, new_object)
-            myclient.close()
-            res = Response(json.dumps(service_security, cls=JSONEncoder), status=200, mimetype='application/json')
+            if result != None:
+                return result
+
+            expire_time = timedelta(minutes=10)
+            now=datetime.now()
+
+            claims = AccessTokenClaims(iss = access_token_req["client_id"], scope=access_token_req["scope"], exp=int((now+expire_time).timestamp()))
+            access_token = create_access_token(identity = access_token_req["client_id"] , additional_claims=claims.to_dict())
+            access_token_resp = AccessTokenRsp(access_token=access_token, token_type="Bearer", expires_in=int(expire_time.total_seconds()), scope=access_token_req["scope"])
+
+            current_app.logger.debug("Created access token")
+
+            res = make_response(object=access_token_resp, status=200)
+            return res
+        except Exception as e:
+            exception = "An exception occurred in return token"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
+
+
+    def update_servicesecurity(self, api_invoker_id, service_security):
+        mycol = self.db.get_col_by_name(self.db.security_info)
+        try:
+
+            current_app.logger.debug("Updating security context")
+            result = self.__check_invoker(api_invoker_id)
+            if result != None:
+                return result
+
+            old_object = mycol.find_one({"api_invoker_id": api_invoker_id})
+
+            if old_object is None:
+                current_app.logger.error("Service api not found with id: " + api_invoker_id)
+                return not_found_error(detail="Service API not existing", cause="Not exist securiy information for this invoker")
+
+            for service_instance in service_security.security_info:
+                if service_instance.interface_details is not None:
+                    security_methods = service_instance.interface_details.security_methods
+                    pref_security_methods = service_instance.pref_security_methods
+                    valid_security_method = set(security_methods) & set(pref_security_methods)
+                    service_instance.sel_security_method = list(valid_security_method)[0]
+                else:
+                    capif_service_col = self.db.get_col_by_name(self.db.capif_service_col)
+                    services_security_object = capif_service_col.find_one({"aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
+
+                    if services_security_object is None:
+                        current_app.logger.error("Service api with this aefId not found: " + service_instance.aef_id)
+                        return not_found_error(detail="Service with this aefId not found", cause="Not found Service")
+
+                    pref_security_methods = service_instance.pref_security_methods
+                    valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
+                    valid_security_method = set(valid_security_methods) & set(pref_security_methods)
+                    service_instance.sel_security_method = list(valid_security_method)[0]
+
+            service_security = service_security.to_dict()
+            service_security = clean_empty(service_security)
+
+            result = mycol.find_one_and_update(old_object, {"$set":service_security}, projection={'_id': 0, "api_invoker_id":0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = clean_empty(result)
+
+            current_app.logger.debug("Updated security context")
+
+            res= make_response(object=dict_to_camel_case(result), status=200)
             res.headers['Location'] = "https://${CAPIF_HOSTNAME}/capif-security/v1/trustedInvokers/" + str(
                 api_invoker_id)
             return res
+        except Exception as e:
+            exception = "An exception occurred in update security info"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
-def revoke_api_authorization(api_invoker_id, security_notification):
-    user = current_app.config['MONGODB_SETTINGS']['user']
-    password = current_app.config['MONGODB_SETTINGS']['password']
-    db = current_app.config['MONGODB_SETTINGS']['db']
-    serv = current_app.config['MONGODB_SETTINGS']['col']
-    inv = current_app.config['MONGODB_SETTINGS']['invokers']
-    host = current_app.config['MONGODB_SETTINGS']['host']
-    port = current_app.config['MONGODB_SETTINGS']['port']
+    def revoke_api_authorization(self, api_invoker_id, security_notification):
 
-    uri = "mongodb://" + user + ":" + password + "@" + host + ":" + str(port)
+        mycol = self.db.get_col_by_name(self.db.security_info)
 
-    myclient = pymongo.MongoClient(uri)
-    mydb = myclient[db]
-    services_security = mydb[serv]
-    invokers = mydb[inv]
+        try:
 
-    myQuery = {'api_invoker_id': api_invoker_id}
-    invoker = invokers.find_one(myQuery)
-    if invoker is None:
-        myclient.close()
-        prob = ProblemDetails(title="Not found", status=404, detail="Invoker not found",
-                              cause="API Invoker not exists or invalid ID")
-        return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
-    else:
-        myQuery = {'api_invoker_id': api_invoker_id}
-        services_security_count = services_security.count_documents(myQuery)
+            current_app.logger.debug("Revoking security context")
+            result = self.__check_invoker(api_invoker_id)
+            if result != None:
+                return result
 
-        if services_security_count == 0:
-            myclient.close()
-            prob = ProblemDetails(title="Not found", status=404, detail="Security context not found",
-                                  cause="API Invoker has no security context")
-            return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype='application/json')
-        services_security.delete_many(myQuery)
-        return "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
+            myQuery = {'api_invoker_id': api_invoker_id}
+            services_security_context = mycol.find_one(myQuery)
+
+            if services_security_context is None:
+                current_app.logger.error("Security context not found")
+                return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
+
+            updated_security_context = services_security_context.copy()
+            for context in services_security_context["security_info"]:
+                index = services_security_context["security_info"].index(context)
+                if security_notification.aef_id == context["aef_id"] or context["api_id"] in security_notification.api_ids:
+                    updated_security_context["security_info"].pop(index)
+
+            mycol.replace_one(myQuery, updated_security_context)
+
+            if len(updated_security_context["security_info"]) == 0:
+                mycol.delete_many(myQuery)
+
+            self.notification.send_notification(services_security_context["notification_destination"], security_notification)
+
+            current_app.logger.debug("Revoked security context")
+            out= "Netapp with ID " + api_invoker_id + " was revoked by some APIs.", 204
+            return make_response(out, status=204)
+
+        except Exception as e:
+            exception = "An exception occurred in revoke security auth"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

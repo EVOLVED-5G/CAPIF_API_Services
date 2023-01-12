@@ -8,7 +8,12 @@ app = Flask(__name__)
 
 jwt = JWTManager(app)
 
-app.config["JWT_SECRET_KEY"] = "this-is-secret-key"
+with open("/usr/src/app/register_service/server.key", "rb") as key_file:
+            key_data = key_file.read()
+
+app.config['JWT_ALGORITHM'] = 'RS256'
+app.config['JWT_PRIVATE_KEY'] = key_data
+
 app.register_blueprint(register_routes)
 
 

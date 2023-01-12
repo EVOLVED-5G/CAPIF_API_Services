@@ -120,7 +120,7 @@ class ServiceSecurity(Model):
     def request_test_notification(self):
         """Gets the request_test_notification of this ServiceSecurity.
 
-        Set to true by API invoker to request the CAPIF core function to send a test notification as defined in in subclause 7.6. Set to false or omitted otherwise.  # noqa: E501
+        Set to true by API invoker to request the CAPIF core function to send a test notification as defined in in clause 7.6. Set to false or omitted otherwise.   # noqa: E501
 
         :return: The request_test_notification of this ServiceSecurity.
         :rtype: bool
@@ -131,7 +131,7 @@ class ServiceSecurity(Model):
     def request_test_notification(self, request_test_notification):
         """Sets the request_test_notification of this ServiceSecurity.
 
-        Set to true by API invoker to request the CAPIF core function to send a test notification as defined in in subclause 7.6. Set to false or omitted otherwise.  # noqa: E501
+        Set to true by API invoker to request the CAPIF core function to send a test notification as defined in in clause 7.6. Set to false or omitted otherwise.   # noqa: E501
 
         :param request_test_notification: The request_test_notification of this ServiceSecurity.
         :type request_test_notification: bool
@@ -164,7 +164,7 @@ class ServiceSecurity(Model):
     def supported_features(self):
         """Gets the supported_features of this ServiceSecurity.
 
-        A string used to indicate the features supported by an API that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\", \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in table 5.2.2-3. The most significant character representing the highest-numbered features shall appear first in the string, and the character representing features 1 to 4 shall appear last in the string. The list of features and their numbering (starting with 1) are defined separately for each API. If the string contains a lower number of characters than there are defined features for an API, all features that would be represented by characters that are not present in the string are not supported  # noqa: E501
+        A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\",  \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.   # noqa: E501
 
         :return: The supported_features of this ServiceSecurity.
         :rtype: str
@@ -175,7 +175,7 @@ class ServiceSecurity(Model):
     def supported_features(self, supported_features):
         """Sets the supported_features of this ServiceSecurity.
 
-        A string used to indicate the features supported by an API that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\", \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in table 5.2.2-3. The most significant character representing the highest-numbered features shall appear first in the string, and the character representing features 1 to 4 shall appear last in the string. The list of features and their numbering (starting with 1) are defined separately for each API. If the string contains a lower number of characters than there are defined features for an API, all features that would be represented by characters that are not present in the string are not supported  # noqa: E501
+        A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of \"0\" to \"9\",  \"a\" to \"f\" or \"A\" to \"F\" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.   # noqa: E501
 
         :param supported_features: The supported_features of this ServiceSecurity.
         :type supported_features: str

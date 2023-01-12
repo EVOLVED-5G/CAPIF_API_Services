@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-from .config import Config
+from ..config import Config
+from bson.codec_options import CodecOptions
 
 
 class MongoDatabse():
@@ -8,10 +9,11 @@ class MongoDatabse():
         self.config = Config().getConfig()
         self.db = self.__connect()
         self.event_collection = self.config['mongo']['col']
-        self.user_collection = self.config['mongo']['capif_users_col']
+        self.invoker_collection = self.config['mongo']['capif_invokers_col']
+        self.provider_collection = self.config['mongo']['capif_providers_col']
 
     def get_col_by_name(self, name):
-        return self.db[name]
+        return self.db[name].with_options(codec_options=CodecOptions(tz_aware=True))
 
     def __connect(self):
         uri = "mongodb://" + self.config['mongo']['user'] + ":" + self.config['mongo']['password'] + "@" + self.config['mongo']['host'] + ":" + self.config['mongo']['port']

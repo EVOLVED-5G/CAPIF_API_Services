@@ -1,5 +1,6 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
+Resource    ../../resources/common.resource
 # Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
@@ -14,10 +15,11 @@ ${API_PROVIDER_NOT_REGISTERED}      notValid
 *** Test Cases ***
 Register Api Provider
     [Tags]    capif_api_provider_management-1
+    # Register Provider
     ${register_user_info}=    Publisher Default Registration
 
+    # Create provider Registration Body
     ${request_body}=    Create Api Provider Enrolment Details Body
-
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
@@ -25,12 +27,9 @@ Register Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
-
-    ${location_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${location_url.path}
-
-    Should Match Regexp    ${location_url.path}    ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    201    APIProviderEnrolmentDetails
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
 
 Register Api Provider Already registered
     [Tags]    capif_api_provider_management-2
@@ -44,13 +43,8 @@ Register Api Provider Already registered
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
-
-    Status Should Be    201    ${resp}
-
-    ${location_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${location_url.path}
-
-    Should Match Regexp    ${location_url.path}    ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
+    
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
@@ -59,7 +53,12 @@ Register Api Provider Already registered
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    403    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
+    ...    status=403
+    ...    title=Forbidden
+    ...    detail=Provider already registered
+    ...    cause=Identical provider reg sec
 
 Update Registered Api Provider
     [Tags]    capif_api_provider_management-3
@@ -74,23 +73,19 @@ Update Registered Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
 
-    ${location_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${location_url.path}
-
-    Should Match Regexp    ${location_url.path}    ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
-
-    ${registration_id}=    Get Registration Id    ${location_url.path}
-
+    ${request_body}=    Create Api Provider Enrolment Details Body   ROBOT_TESTING_MOD
     ${resp}=    Put Request Capif
-    ...    ${location_url.path}
+    ...    ${resource_url.path}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    200    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    200    APIProviderEnrolmentDetails
+    ...   apiProvDomInfo=ROBOT_TESTING_MOD
 
 Update Not Registered Api Provider
     [Tags]    capif_api_provider_management-4
@@ -105,7 +100,13 @@ Update Not Registered Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    404    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
+    ...    status=404
+    ...    title=Not Found
+    ...    detail=Not Exist Provider Enrolment Details
+    ...    cause=Not found registrations to send this api provider details
+
 
 Partially Update Registered Api Provider
     [Tags]    capif_api_provider_management-5
@@ -120,23 +121,24 @@ Partially Update Registered Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    # Store dummy signede certificate
-    ${location_url}=    Parse Url    ${resp.headers['Location']}
-    Log    ${location_url.path}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    201    APIProviderEnrolmentDetails
+    ...    apiProvDomInfo=ROBOT_TESTING
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
 
-    Should Match Regexp    ${location_url.path}    ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
-
-    ${request_body}=    Create Api Provider Enrolment Details Patch Body
+    ${request_body}=    Create Api Provider Enrolment Details Patch Body   ROBOT_TESTING_MOD
 
     ${resp}=    Patch Request Capif
-    ...    ${location_url.path}
+    ...    ${resource_url.path}
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    200    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    200    APIProviderEnrolmentDetails
+    ...    apiProvDomInfo=ROBOT_TESTING_MOD
+
 
 Partially Update Not Registered Api Provider
     [Tags]    capif_api_provider_management-6
@@ -151,7 +153,12 @@ Partially Update Not Registered Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    404    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
+    ...    status=404
+    ...    title=Not Found
+    ...    detail=Not Exist Provider Enrolment Details
+    ...    cause=Not found registrations to send this api provider details
 
 Delete Registered Api Provider
     [Tags]    capif_api_provider_management-7
@@ -166,16 +173,17 @@ Delete Registered Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    201    ${resp}
-
-    ${location_url}=    Parse Url    ${resp.headers['Location']}
+    Check Response Variable Type And Values    ${resp}    201    APIProviderEnrolmentDetails
+    ...    apiProvDomInfo=ROBOT_TESTING
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
 
     ${resp}=    Delete Request Capif
-    ...    ${location_url.path}
+    ...    ${resource_url.path}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
-
+    
+    # Check Results
     Status Should Be    204    ${resp}
 
 Delete Not Registered Api Provider
@@ -188,4 +196,10 @@ Delete Not Registered Api Provider
     ...    verify=ca.crt
     ...    username=${PUBLISHER_USERNAME}
 
-    Status Should Be    404    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
+    ...    status=404
+    ...    title=Not Found
+    ...    detail=Not Exist Provider Enrolment Details
+    ...    cause=Not found registrations to send this api provider details
+
