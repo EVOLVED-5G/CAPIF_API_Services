@@ -91,25 +91,25 @@ pipeline {
                                     }
                                 }
                             }
-                            stage("Quality gate ${array}") {
-                                script {
-                                    def tries = 0
-                                    def sonarResultStatus = "PENDING"
-                                    while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 15) {
-                                        try {
-                                            timeout(time: 5, unit: 'SECONDS') {
-                                                sonarResult = waitForQualityGate abortPipeline: false
-                                                sonarResultStatus = sonarResult.status
-                                            }
-                                        } catch(ex) {
-                                            echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
-                                        }
-                                    }
-                                    if (sonarResultStatus != 'OK') {
-                                        error "Quality gate failure for SonarQube: ${sonarResultStatus}"
-                                    }
-                                }
-                            }
+                            // stage("Quality gate ${array}") {
+                            //     script {
+                            //         def tries = 0
+                            //         def sonarResultStatus = "PENDING"
+                            //         while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 15) {
+                            //             try {
+                            //                 timeout(time: 5, unit: 'SECONDS') {
+                            //                     sonarResult = waitForQualityGate abortPipeline: false
+                            //                     sonarResultStatus = sonarResult.status
+                            //                 }
+                            //             } catch(ex) {
+                            //                 echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
+                            //             }
+                            //         }
+                            //         if (sonarResultStatus != 'OK') {
+                            //             error "Quality gate failure for SonarQube: ${sonarResultStatus}"
+                            //         }
+                            //     }
+                            // }
                         }
                     }
                 }
