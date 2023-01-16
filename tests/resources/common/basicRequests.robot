@@ -152,19 +152,24 @@ Delete Request Capif
 Register User At Jwt Auth
     [Arguments]    ${username}    ${role}    ${password}=password    ${description}=Testing
 
+    ${cn}=    Set Variable    ${username}
     # Create certificate and private_key for this machine.
     IF    "${role}" == "${INVOKER_ROLE}"
-        ${csr_request}=    Create Csr    ${username}.csr    ${username}.key    ${username}
+        ${cn}=    Set Variable    invoker
+        ${csr_request}=    Create User Csr    ${username}    ${cn}
+        Log    inside if cn=${cn}
     ELSE
         ${csr_request}=    Set Variable    ${None}
     END
+
+    Log    cn=${cn}
 
     &{body}=    Create Dictionary
     ...    password=${password}
     ...    username=${username}
     ...    role=${role}
     ...    description=${description}
-    ...    cn=${username}
+    ...    cn=${cn}
 
     Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
 
@@ -203,11 +208,11 @@ Register User At Jwt Auth Provider
     ${amf_username}=    Set Variable    AMF_${username}
 
     # Create a certificate for each kind of role under provider
-    ${csr_request}=    Create User Csr    ${username}
+    ${csr_request}=    Create User Csr    ${username}    provider
 
-    ${apf_csr_request}=    Create User Csr    ${apf_username}
-    ${aef_csr_request}=    Create User Csr    ${aef_username}
-    ${amf_csr_request}=    Create User Csr    ${amf_username}
+    ${apf_csr_request}=    Create User Csr    ${apf_username}    apf
+    ${aef_csr_request}=    Create User Csr    ${aef_username}    aef
+    ${amf_csr_request}=    Create User Csr    ${amf_username}    amf
 
     # Register provider
     &{body}=    Create Dictionary
@@ -362,7 +367,7 @@ Provider Default Registration
 Publish Service Api
     [Arguments]    ${register_user_info_provider}    ${service_name}=service_1
 
-    ${request_body}=    Create Service Api Description    ${service_name}   ${register_user_info_provider['aef_id']}
+    ${request_body}=    Create Service Api Description    ${service_name}    ${register_user_info_provider['aef_id']}
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${register_user_info_provider['apf_id']}/service-apis
     ...    json=${request_body}

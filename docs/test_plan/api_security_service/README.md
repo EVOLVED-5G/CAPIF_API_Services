@@ -94,10 +94,10 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Create security context using Provider certificate:
-     1. **403 Forbiddent** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
-        * title with message "Forbidden"
+        * status 401
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be invoker".
 
@@ -129,10 +129,10 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Create security context using Provider certificate:
-     1. **403 Forbiddent** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
-        * title with message "Forbidden"
+        * status 401
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be invoker".
   2. No context stored at DB
@@ -271,12 +271,12 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Create security context:
-     1. **403 Forbidden** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
-        * title with message "Forbidden"
+        * status 401
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be provider".
+        * cause with message "User role must be aef".
 
 
 ## Test Case 8: Delete the Security Context of an API Invoker
@@ -357,12 +357,12 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Delete security context:
-     1. **403 Forbidden** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 403
-        * title with message "Forbidden"
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be provider".
+        * cause with message "User role must be aef".
 
 
 ## Test Case 10: Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
@@ -390,12 +390,12 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Delete security context:
-     1. **403 Forbidden** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
         * status 403
-        * title with message "Forbidden"
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
-        * cause with message "User role must be provider".
+        * cause with message "User role must be aef".
 
 
 ## Test Case 11: Delete the Security Context of an API Invoker with invalid apiInvokerID

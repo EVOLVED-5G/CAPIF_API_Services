@@ -87,7 +87,7 @@ Update Registered Api Provider
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
-    ...   access_token=${register_user_info['access_token']}
+    ...    username=${AMF_PROVIDER_USERNAME}
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    APIProviderEnrolmentDetails

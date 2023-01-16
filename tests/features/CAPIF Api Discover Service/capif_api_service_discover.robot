@@ -43,7 +43,7 @@ Discover Published service APIs by Authorised API Invoker
 
 Discover Published service APIs by Non Authorised API Invoker
     [Tags]    capif_api_discover_service-2
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 

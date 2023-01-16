@@ -35,7 +35,7 @@ Create a security context for an API invoker
 
 Create a security context for an API invoker with Provider role
     [Tags]    capif_security_api-2
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -52,15 +52,15 @@ Create a security context for an API invoker with Provider role
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
     ...    cause=User role must be invoker
 
 Create a security context for an API invoker with Provider entity role and invalid apiInvokerId
     [Tags]    capif_security_api-3
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
 
@@ -74,9 +74,9 @@ Create a security context for an API invoker with Provider entity role and inval
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
     ...    cause=User role must be invoker
 
@@ -156,7 +156,7 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
 
 Retrieve the Security Context of an API Invoker with invalid apfId
     [Tags]    capif_security_api-7
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -178,11 +178,11 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be provider
+    ...    cause=User role must be aef
 
 Delete the Security Context of an API Invoker
     [Tags]    capif_security_api-8
@@ -226,7 +226,7 @@ Delete the Security Context of an API Invoker
 
 Delete the Security Context of an API Invoker with Invoker entity role
     [Tags]    capif_security_api-9
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -247,15 +247,15 @@ Delete the Security Context of an API Invoker with Invoker entity role
     ...    username=${INVOKER_USERNAME}
 
     # Check Result
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be provider
+    ...    cause=User role must be aef
 
 Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
     [Tags]    capif_security_api-10
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -266,11 +266,11 @@ Delete the Security Context of an API Invoker with Invoker entity role and inval
     ...    username=${INVOKER_USERNAME}
 
     # Check Result
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be provider
+    ...    cause=User role must be aef
 
 Delete the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-11
@@ -339,7 +339,7 @@ Update the Security Context of an API Invoker
 
 Update the Security Context of an API Invoker with Provider entity role
     [Tags]    capif_security_api-13
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -364,15 +364,15 @@ Update the Security Context of an API Invoker with Provider entity role
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
     ...    cause=User role must be invoker
 
 Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId
     [Tags]    capif_security_api-14
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
@@ -384,9 +384,9 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
     ...    cause=User role must be invoker
 
@@ -492,7 +492,7 @@ Revoke the authorization of the API invoker for APIs
 
 Revoke the authorization of the API invoker for APIs without valid apfID.
     [Tags]    capif_security_api-17
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -521,11 +521,11 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
-    ...    title=Forbidden
-    ...    status=403
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    status=401
     ...    detail=Role not authorized for this API route
-    ...    cause=User role must be provider
+    ...    cause=User role must be aef
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -535,7 +535,13 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
-    Dictionaries Should Be Equal    ${resp.json()}    ${security_context}
+    ${security_context_filtered}=    Remove Keys From Object
+    ...    ${security_context}
+    ...    authenticationInfo
+    ...    authorizationInfo
+    Dictionaries Should Be Equal    ${resp.json()}    ${security_context_filtered}
+
+    # Dictionaries Should Be Equal    ${resp.json()}    ${security_context}
 
 Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     [Tags]    capif_security_api-18
@@ -641,7 +647,7 @@ Retrieve access token
 
 Retrieve access token by Provider
     [Tags]    capif_security_api-20
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
@@ -694,7 +700,7 @@ Retrieve access token by Provider
 
 Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
-    Test ${TEST NAME} Currently Not Supported
+    # Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
