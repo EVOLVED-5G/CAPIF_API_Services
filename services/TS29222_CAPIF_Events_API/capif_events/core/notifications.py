@@ -20,8 +20,6 @@ class Notifications():
             url = sub["notification_destination"]
             data = EventNotification(sub["subscription_id"], events=event)
             self.request_post(url, data)
-            #res = executor.map(self.request_post, url, data)
-        #concurrent.futures.wait(res)
 
     def request_post(self, url, data):
         headers = {'content-type': 'application/json'}

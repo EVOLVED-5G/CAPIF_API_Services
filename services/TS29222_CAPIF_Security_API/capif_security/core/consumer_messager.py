@@ -23,13 +23,6 @@ class Subscriber():
                 if message == "invoker-removed":
                     self.security_ops.delete_intern_servicesecurity(invoker_id)
 
-    # def get_message(self):
-    #     message = self.p.get_message()
-    #     if message != None:
-    #         if message["type"] == "message" and message["channel"].decode('utf-8') == "internal-messages":
-    #                 message, invoker_id = message["data"].decode('utf-8').split(":")
-    #                 if message == "invoker-removed":
-    #                     self.security_ops.delete_intern_servicesecurity(invoker_id)
 
 
 
