@@ -25,6 +25,9 @@ from .notification import Notifications
 from .resources import Resource
 import os
 
+security_context_not_found_detail = "Security context not found"
+api_invoker_no_context_cause = "API Invoker has no security context"
+
 class SecurityOperations(Resource):
 
     def __check_invoker(self, api_invoker_id):
@@ -64,7 +67,7 @@ class SecurityOperations(Resource):
                     return make_response(object=token_error, status=400)
                 api_names = api_names.split(",")
                 for api_name in api_names:
-                    service = capif_service_col.find_one({"$and": [{"api_name":api_name},{"aef_profiles.aef_id":aef_id}]})
+                    service = capif_service_col.find_one({"$and": [{"api_name":api_name},{self.filter_aef_id:aef_id}]})
                     if service is None:
                         current_app.logger.error("Bad format Scope, not valid api name")
                         token_error = AccessTokenErr(error="invalid_scope", error_description="One of the api names does not exist or is not associated with the aef id provided")
@@ -76,6 +79,10 @@ class SecurityOperations(Resource):
             current_app.logger.error("Bad format Scope: " + e)
             token_error = AccessTokenErr(error="invalid_scope", error_description="malformed scope")
             return make_response(object=token_error, status=400)
+
+    def __init__(self):
+        Resource.__init__()
+        self.filter_aef_id = "aef_profiles.aef_id"
 
     def get_servicesecurity(self, api_invoker_id, authentication_info=True, authorization_info=True):
 
@@ -92,14 +99,14 @@ class SecurityOperations(Resource):
 
                 if services_security_object is None:
                     current_app.logger.error("Not found security context")
-                    return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
+                    return not_found_error(detail= security_context_not_found_detail, cause=api_invoker_no_context_cause)
 
                 if not authentication_info:
-                    for securityInfo_obj in services_security_object['security_info']:
-                        del securityInfo_obj['authentication_info']
+                    for security_info_obj in services_security_object['security_info']:
+                        del security_info_obj['authentication_info']
                 if not authorization_info:
-                    for securityInfo_obj in services_security_object['security_info']:
-                        del securityInfo_obj['authorization_info']
+                    for security_info_obj in services_security_object['security_info']:
+                        del security_info_obj['authorization_info']
 
                 properyly_json= json.dumps(services_security_object, default=json_util.default)
                 my_service_security = dict_to_camel_case(json.loads(properyly_json))
@@ -145,15 +152,9 @@ class SecurityOperations(Resource):
                     pref_security_methods = service_instance.pref_security_methods
                     valid_security_method = set(security_methods) & set(pref_security_methods)
 
-                    if len(list(valid_security_method)) == 0:
-                        current_app.logger.error("Not found comptaible security method with pref security method")
-                        return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
-
-
-                    service_instance.sel_security_method = list(valid_security_method)[0]
                 else:
                     capif_service_col = self.db.get_col_by_name(self.db.capif_service_col)
-                    services_security_object = capif_service_col.find_one({"api_id":service_instance.api_id, "aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
+                    services_security_object = capif_service_col.find_one({"api_id":service_instance.api_id, self.filter_aef_id: service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
                         current_app.logger.error("Not found service with this aef id: " + service_instance.aef_id)
@@ -163,11 +164,11 @@ class SecurityOperations(Resource):
                     valid_security_methods = [security_method for array_methods in services_security_object["aef_profiles"] for security_method in array_methods["security_methods"]]
                     valid_security_method = set(valid_security_methods) & set(pref_security_methods)
 
-                    if len(list(valid_security_method)) == 0:
-                        current_app.logger.error("Not found comptaible security method with pref security method")
-                        return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
+                if len(list(valid_security_method)) == 0:
+                    current_app.logger.error("Not found comptaible security method with pref security method")
+                    return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
 
-                    service_instance.sel_security_method = list(valid_security_method)[0]
+            service_instance.sel_security_method = list(valid_security_method)[0]
 
             rec = dict()
             rec['api_invoker_id'] = api_invoker_id
@@ -198,14 +199,14 @@ class SecurityOperations(Resource):
             if result != None:
                 return result
             else:
-                myQuery = {'api_invoker_id': api_invoker_id}
-                services_security_count = mycol.count_documents(myQuery)
+                my_query = {'api_invoker_id': api_invoker_id}
+                services_security_count = mycol.count_documents(my_query)
 
                 if services_security_count == 0:
-                    current_app.logger.error("Security context not found")
-                    return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
+                    current_app.logger.error(security_context_not_found_detail)
+                    return not_found_error(detail=security_context_not_found_detail, cause=api_invoker_no_context_cause)
 
-                mycol.delete_many(myQuery)
+                mycol.delete_many(my_query)
 
                 current_app.logger.debug("Removed security context from database")
                 out= "The security info of Netapp with Netapp ID " + api_invoker_id + " were deleted.", 204
@@ -219,8 +220,8 @@ class SecurityOperations(Resource):
     def delete_intern_servicesecurity(self, api_invoker_id):
 
         mycol = self.db.get_col_by_name(self.db.security_info)
-        myQuery = {'api_invoker_id': api_invoker_id}
-        mycol.delete_many(myQuery)
+        my_query = {'api_invoker_id': api_invoker_id}
+        mycol.delete_many(my_query)
 
     def return_token(self, security_id, access_token_req):
 
@@ -247,7 +248,7 @@ class SecurityOperations(Resource):
             service_security = mycol.find_one({"api_invoker_id": security_id})
             if service_security is None:
                 current_app.logger.error("Not found securoty context with id: " + security_id)
-                return not_found_error(detail= "Security context not found", cause="API Invoker has no security context")
+                return not_found_error(detail= security_context_not_found_detail, cause=api_invoker_no_context_cause)
 
             result = self.__check_scope(access_token_req["scope"], service_security)
 
@@ -294,7 +295,7 @@ class SecurityOperations(Resource):
                     service_instance.sel_security_method = list(valid_security_method)[0]
                 else:
                     capif_service_col = self.db.get_col_by_name(self.db.capif_service_col)
-                    services_security_object = capif_service_col.find_one({"aef_profiles.aef_id": service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
+                    services_security_object = capif_service_col.find_one({self.filter_aef_id: service_instance.aef_id}, {"aef_profiles.security_methods.$":1})
 
                     if services_security_object is None:
                         current_app.logger.error("Service api with this aefId not found: " + service_instance.aef_id)
@@ -335,12 +336,12 @@ class SecurityOperations(Resource):
             if result != None:
                 return result
 
-            myQuery = {'api_invoker_id': api_invoker_id}
-            services_security_context = mycol.find_one(myQuery)
+            my_query = {'api_invoker_id': api_invoker_id}
+            services_security_context = mycol.find_one(my_query)
 
             if services_security_context is None:
-                current_app.logger.error("Security context not found")
-                return not_found_error(detail="Security context not found", cause="API Invoker has no security context")
+                current_app.logger.error(security_context_not_found_detail)
+                return not_found_error(detail=security_context_not_found_detail, cause=api_invoker_no_context_cause)
 
             updated_security_context = services_security_context.copy()
             for context in services_security_context["security_info"]:
@@ -348,10 +349,10 @@ class SecurityOperations(Resource):
                 if security_notification.aef_id == context["aef_id"] or context["api_id"] in security_notification.api_ids:
                     updated_security_context["security_info"].pop(index)
 
-            mycol.replace_one(myQuery, updated_security_context)
+            mycol.replace_one(my_query, updated_security_context)
 
             if len(updated_security_context["security_info"]) == 0:
-                mycol.delete_many(myQuery)
+                mycol.delete_many(my_query)
 
             self.notification.send_notification(services_security_context["notification_destination"], security_notification)
 

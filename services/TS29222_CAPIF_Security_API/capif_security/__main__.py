@@ -47,27 +47,18 @@ def main():
     app = connexion.App(__name__, specification_dir='./openapi/')
     app.app.json_encoder = encoder.JSONEncoder
 
-    jwt = JWTManager(app.app)
+ 
     app.app.config['JWT_ALGORITHM'] = 'RS256'
     app.app.config['JWT_PRIVATE_KEY'] = key_data
     app.add_api('openapi.yaml',
                 arguments={'title': 'CAPIF_Security_API'},
                 pythonic_params=True)
 
-    config = Config()
 
-    jwt = JWTManager(app.app)
     subscriber = Subscriber()
     scheduler = APScheduler()
     scheduler.init_app(app.app)
     configure_logging(app.app)
-
-    # @scheduler.task('interval', id='do_job_1', seconds=10, misfire_grace_time=900)
-    # def job1():
-    #     with scheduler.app.app_context():
-    #         subscriber.get_message()
-
-    # scheduler.start()
 
     executor = Executor(app.app)
 
