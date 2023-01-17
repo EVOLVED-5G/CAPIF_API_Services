@@ -81,7 +81,7 @@ class SecurityOperations(Resource):
             return make_response(object=token_error, status=400)
 
     def __init__(self):
-        Resource.__init__()
+        Resource.__init__(self)
         self.filter_aef_id = "aef_profiles.aef_id"
 
     def get_servicesecurity(self, api_invoker_id, authentication_info=True, authorization_info=True):
