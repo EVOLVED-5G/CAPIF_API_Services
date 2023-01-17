@@ -43,8 +43,6 @@ class DiscoverApisOperations(Resource):
             if my_params:
                 my_query = {"$and": my_params}
 
-            current_app.logger.info(my_params)
-
             discoved_apis = services.find(my_query, {"_id":0, "apf_id":0})
             json_docs = []
             for discoved_api in discoved_apis:
