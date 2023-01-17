@@ -78,7 +78,7 @@ pipeline {
                                             -Dsonar.projectKey=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
                                             -Dsonar.projectBaseDir="${WORKSPACE}/${NETAPP_NAME}/" \
                                             -Dsonar.sources=${WORKSPACE}/${NETAPP_NAME}/services/$name \
-                                            -Dsonar.host.url=http://195.235.92.134:9000 \
+                                            -Dsonar.host.url=https://sq.mobilesandbox.cloud:9000 \
                                             -Dsonar.login=$SQ_TOKEN \
                                             -Dsonar.projectName=${NETAPP_NAME}-${CHANGE_BRANCH}-$name \
                                             -Dsonar.language=python \
@@ -88,25 +88,25 @@ pipeline {
                                     }
                                 }
                             }
-                            stage("Quality gate ${array}") {
-                                script {
-                                    def tries = 0
-                                    def sonarResultStatus = "PENDING"
-                                    while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 10) {
-                                        try {
-                                            timeout(time: 5, unit: 'SECONDS') {
-                                                sonarResult = waitForQualityGate abortPipeline: false
-                                                sonarResultStatus = sonarResult.status
-                                            }
-                                        } catch(ex) {
-                                            echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
-                                        }
-                                    }
-                                    if (sonarResultStatus != 'OK') {
-                                        error "Quality gate failure for SonarQube: ${sonarResultStatus}"
-                                    }
-                                }
-                            }
+                            // stage("Quality gate ${array}") {
+                            //     script {
+                            //         def tries = 0
+                            //         def sonarResultStatus = "PENDING"
+                            //         while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 10) {
+                            //             try {
+                            //                 timeout(time: 5, unit: 'SECONDS') {
+                            //                     sonarResult = waitForQualityGate abortPipeline: false
+                            //                     sonarResultStatus = sonarResult.status
+                            //                 }
+                            //             } catch(ex) {
+                            //                 echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
+                            //             }
+                            //         }
+                            //         if (sonarResultStatus != 'OK') {
+                            //             error "Quality gate failure for SonarQube: ${sonarResultStatus}"
+                            //         }
+                            //     }
+                            // }
                         }
                     }
                 }

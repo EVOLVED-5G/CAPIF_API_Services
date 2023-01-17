@@ -6,7 +6,7 @@ from bson.codec_options import CodecOptions
 class MongoDatabse():
 
     def __init__(self):
-        self.config = Config().getConfig()
+        self.config = Config().get_config()
         self.db = self.__connect()
         self.event_collection = self.config['mongo']['col']
         self.invoker_collection = self.config['mongo']['capif_invokers_col']

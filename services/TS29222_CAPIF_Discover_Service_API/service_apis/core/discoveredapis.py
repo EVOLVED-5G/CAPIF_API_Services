@@ -17,8 +17,7 @@ from bson import json_util
 
 class DiscoverApisOperations(Resource):
 
-    def get_discoveredapis(self, api_invoker_id, api_name, api_version, comm_type, protocol, aef_id,
-                        data_format, api_cat, supported_features, api_supported_features):
+    def get_discoveredapis(self, api_invoker_id, query_params):
 
         services = self.db.get_col_by_name(self.db.service_api_descriptions)
         invokers = self.db.get_col_by_name(self.db.invoker_col)
@@ -31,36 +30,26 @@ class DiscoverApisOperations(Resource):
                 current_app.logger.error("Api invoker not found in database")
                 return not_found_error(detail="API Invoker does not exist", cause="API Invoker id not found")
 
-            myParams = []
-            myQuery = {}
-            if api_name is not None:
-                myParams.append({"api_name": api_name})
-            if api_version is not None:
-                myParams.append({"aef_profiles.0.versions.0.api_version": api_version})
-            if comm_type is not None:
-                myParams.append({"aef_profiles.0.versions.0.resources.0.comm_type": comm_type})
-            if protocol is not None:
-                myParams.append({"aef_profiles.0.protocol": protocol})
-            if aef_id is not None:
-                myParams.append({"aef_profiles.0.aef_id": aef_id})
-            if data_format is not None:
-                myParams.append({"aef_profiles.0.data_format": data_format})
-            if api_cat is not None:
-                myParams.append({"service_api_category": api_cat})
-            if supported_features is not None:
-                myParams.append({"supported_features": supported_features})
-            if api_supported_features is not None:
-                myParams.append({"api_supp_feats": api_supported_features})
-            if myParams:
-                myQuery = {"$and": myParams}
+            my_params = []
+            my_query = {}
+            quey_params_name = {"api_name":"api_name", "api_version":"aef_profiles.0.versions.0.api_version", "comm_type":"aef_profiles.0.versions.0.resources.0.comm_type", 
+            "protocol":"aef_profiles.0.protocol", "aef_id":"aef_profiles.0.aef_id", "data_format":"aef_profiles.0.data_format", 
+            "api_cat":"service_api_category", "supported_features":"supported_features", "api_supported_features":"api_supp_feats"}
 
-            discoved_apis = services.find(myQuery, {"_id":0, "apf_id":0})
+            for param in query_params:
+                if param is not None:
+                    my_params.append({quey_params_name[param]: query_params[param]})
+
+            if my_params:
+                my_query = {"$and": my_params}
+
+            discoved_apis = services.find(my_query, {"_id":0, "apf_id":0})
             json_docs = []
             for discoved_api in discoved_apis:
                 my_api = dict_to_camel_case(discoved_api)
                 my_api = clean_empty(my_api)
                 json_docs.append(my_api)
-            
+
             if len(json_docs) == 0:
                 return not_found_error(detail="API Invoker " + api_invoker_id + " has no API Published that accomplish filter conditions", cause="No API Published accomplish filter conditions")
 

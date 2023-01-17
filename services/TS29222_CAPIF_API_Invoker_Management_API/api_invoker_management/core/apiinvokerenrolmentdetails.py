@@ -23,8 +23,8 @@ class InvokerManagementOperations(Resource):
 
         current_app.logger.debug("Cheking api invoker id")
         mycol = self.db.get_col_by_name(self.db.invoker_enrolment_details)
-        myQuery = {'api_invoker_id':api_invoker_id}
-        old_values = mycol.find_one(myQuery)
+        my_query = {'api_invoker_id':api_invoker_id}
+        old_values = mycol.find_one(my_query)
 
         if old_values is None:
             current_app.logger.error("Not found api invoker id")

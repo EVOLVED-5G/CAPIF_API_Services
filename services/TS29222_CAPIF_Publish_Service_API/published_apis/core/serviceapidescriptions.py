@@ -16,6 +16,8 @@ from .responses import bad_request_error, internal_server_error, forbidden_error
 from bson import json_util
 
 
+service_api_not_found_message = "Service API not found"
+
 class PublishServiceOperations(Resource):
 
     def __check_apf(self, apf_id):
@@ -118,11 +120,11 @@ class PublishServiceOperations(Resource):
             if result != None:
                 return result
 
-            myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-            service_api = mycol.find_one(myQuery, {"apf_id":0, "_id":0})
+            my_query = {'apf_id': apf_id, 'api_id': service_api_id}
+            service_api = mycol.find_one(my_query, {"apf_id":0, "_id":0})
             if service_api is None:
-                current_app.logger.error("Service api not found")
-                return not_found_error(detail="Service API not found", cause="No Service with specific credentials exists")
+                current_app.logger.error(service_api_not_found_message)
+                return not_found_error(detail=service_api_not_found_message, cause="No Service with specific credentials exists")
 
 
             my_service_api = dict_to_camel_case(service_api)
@@ -149,14 +151,14 @@ class PublishServiceOperations(Resource):
             if result != None:
                 return result
 
-            myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-            serviceapidescription = mycol.find_one(myQuery)
+            my_query = {'apf_id': apf_id, 'api_id': service_api_id}
+            serviceapidescription = mycol.find_one(my_query)
 
             if serviceapidescription is None:
-                current_app.logger.error("Service api not found")
+                current_app.logger.error(service_api_not_found_message)
                 return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
-            mycol.delete_one(myQuery)
+            mycol.delete_one(my_query)
 
             current_app.logger.debug("Removed service from database")
             out =  "The service matching api_id " + service_api_id + " was deleted."
@@ -181,11 +183,11 @@ class PublishServiceOperations(Resource):
             if result != None:
                 return result
 
-            myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-            serviceapidescription = mycol.find_one(myQuery)
+            my_query = {'apf_id': apf_id, 'api_id': service_api_id}
+            serviceapidescription = mycol.find_one(my_query)
 
             if serviceapidescription is None:
-                current_app.logger.error("Service api not found")
+                current_app.logger.error(service_api_not_found_message)
                 return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
             service_api_description = service_api_description.to_dict()

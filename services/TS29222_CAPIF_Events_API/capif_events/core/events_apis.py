@@ -90,15 +90,15 @@ class EventSubscriptionsOperations(Resource):
             if  isinstance(result, Response):
                 return result
 
-            myQuery = {'subscriber_id': subscriber_id,
+            my_query = {'subscriber_id': subscriber_id,
                     'subscription_id': subscription_id}
-            eventdescription = mycol.find_one(myQuery)
+            eventdescription = mycol.find_one(my_query)
 
             if eventdescription is None:
                 current_app.logger.error("Event subscription not found")
                 return not_found_error(detail="Event subscription not exist", cause="Event API subscription id not found")
 
-            mycol.delete_one(myQuery)
+            mycol.delete_one(my_query)
             current_app.logger.debug("Event subscription removed from database")
 
             out =  "The event matching subscriptionId  " + subscription_id + " was deleted."
