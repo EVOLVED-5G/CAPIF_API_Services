@@ -6,8 +6,8 @@ class InternalEventOperations(Resource):
     def delete_all_events(self, subscriber_id):
 
         mycol = self.db.get_col_by_name(self.db.event_collection)
-        myQuery = {'subscriber_id': subscriber_id}
-        mycol.delete_many(myQuery)
+        my_query = {'subscriber_id': subscriber_id}
+        mycol.delete_many(my_query)
 
     def get_event_subscriptions(self, event):
         try:

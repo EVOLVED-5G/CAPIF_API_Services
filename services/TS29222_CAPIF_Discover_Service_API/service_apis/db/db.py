@@ -5,7 +5,7 @@ from bson.codec_options import CodecOptions
 class MongoDatabse():
 
     def __init__(self):
-        self.config = Config().getConfig()
+        self.config = Config().get_config()
         self.db = self.__connect()
         self.invoker_col = self.config['mongo']['invokers_col']
         self.service_api_descriptions = self.config['mongo']['col']
