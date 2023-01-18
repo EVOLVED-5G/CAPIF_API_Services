@@ -96,7 +96,7 @@ At this documentation you will have all information and related files and exampl
   1. Create security context using Provider certificate:
      1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 401
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be invoker".
@@ -131,7 +131,7 @@ At this documentation you will have all information and related files and exampl
   1. Create security context using Provider certificate:
      1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 401
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be invoker".
@@ -152,6 +152,7 @@ At this documentation you will have all information and related files and exampl
   2. Create Security Context for this Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
      * body [service security body]
+     * Use Invoker Certificate
 
 * **Execution Steps**:
   
@@ -163,7 +164,7 @@ At this documentation you will have all information and related files and exampl
   1. Create security context using Provider certificate:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Invoker not found".
         * cause with message "API Invoker not exists or invalid ID".
@@ -219,7 +220,7 @@ At this documentation you will have all information and related files and exampl
 
   1. Perform [Provider Registration]
 
-  4. Retrieve Security Context of invalid Invoker by Provider:
+  2. Retrieve Security Context of invalid Invoker by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
      * Using AEF Certificate.
 
@@ -233,7 +234,7 @@ At this documentation you will have all information and related files and exampl
   1. Retrieve security context:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Invoker not found".
         * cause with message "API Invoker not exists or invalid ID".
@@ -273,7 +274,7 @@ At this documentation you will have all information and related files and exampl
   1. Create security context:
      1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 401
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be aef".
@@ -320,7 +321,7 @@ At this documentation you will have all information and related files and exampl
   2. Retrieve security context:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Security context not found".
         * cause with message "API Invoker not exists or invalid ID".
@@ -359,7 +360,7 @@ At this documentation you will have all information and related files and exampl
   1. Delete security context:
      1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be aef".
@@ -385,14 +386,14 @@ At this documentation you will have all information and related files and exampl
 * **Execution Steps**:
   
   1. Register Provider at CCF
-  3. Delete Security Context by invoker
+  2. Delete Security Context by invoker
    
 * **Expected Result**:
 
   1. Delete security context:
      1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be aef".
@@ -411,7 +412,7 @@ At this documentation you will have all information and related files and exampl
 
   1. Perform [Provider Registration]
 
-  4. Delete Security Context of Invoker by Provider:
+  2. Delete Security Context of Invoker by Provider:
      * Send DELETE *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}*
      * Use AEF certificate
 
@@ -425,7 +426,7 @@ At this documentation you will have all information and related files and exampl
   1. Retrieve security context:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Invoker not found".
         * cause with message "API Invoker not exists or invalid ID".
@@ -513,10 +514,10 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Update security context:
-     1. **403 Forbidden** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
-        * title with message "Forbidden"
+        * status **401**
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be invoker". 
 
@@ -549,10 +550,10 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Update security context:
-     1. **403 Forbidden** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
-        * title with message "Forbidden"
+        * status **401**
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be invoker". 
 
@@ -572,7 +573,7 @@ At this documentation you will have all information and related files and exampl
  
   2. Update Security Context of Invoker:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{API_INVOKER_NOT_VALID}/update*
-     * body [service security body] but with notification destination modified to http://robot.testing2
+     * body [service security body]
      * Using Invoker Certificate.
 
 * **Execution Steps**:
@@ -585,7 +586,7 @@ At this documentation you will have all information and related files and exampl
 1. Retrieve security context:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Invoker not found".
         * cause with message "API Invoker not exists or invalid ID".
@@ -595,7 +596,7 @@ At this documentation you will have all information and related files and exampl
 * **Test ID**: ***capif_security_api-16***
 * **Description**:
   
-  This test case will check that an Provider can revoke the authorization for APIs
+  This test case will check that a Provider can revoke the authorization for APIs
 
 * **Pre-Conditions**:
   
@@ -605,17 +606,17 @@ At this documentation you will have all information and related files and exampl
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
 
-  7. Create Security Context By Invoker:
+  2. Create Security Context By Invoker:
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate
  
-  8. Revoke Authorization by Provider:
+  3. Revoke Authorization by Provider:
      * Send POST *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}/delete*
      * body [security notification body]
      * Using AEF Certificate.
 
-  9. Retrieve Security Context by Provider:
+  4. Retrieve Security Context by Provider:
      * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * Using AEF Certificate.
 
@@ -636,7 +637,7 @@ At this documentation you will have all information and related files and exampl
   2. Retrieve security context:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Security context not found".
         * cause with message "API Invoker has no security context".
@@ -681,10 +682,10 @@ At this documentation you will have all information and related files and exampl
 * **Expected Result**:
 
   1. Revoke Security Context by invoker:
-     1. **403 Forbidden** response.
+     1. **401 Unauthorized** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 403
-        * title with message "Forbidden"
+        * status **401**
+        * title with message "Unauthorized"
         * detail with message "Role not authorized for this API route".
         * cause with message "User role must be provider". 
 
@@ -719,7 +720,8 @@ At this documentation you will have all information and related files and exampl
      * Using AEF Certificate.
 
   4. Retrieve Security Context of Invoker by Provider:
-     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
+     * Send GET *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}?authenticationInfo=true&authorizationInfo=true*
+     * This request will ask with parameter to retrieve authenticationInfo and authorizationInfo
      * Using AEF Certificate.
 
 * **Execution Steps**:
@@ -735,7 +737,7 @@ At this documentation you will have all information and related files and exampl
   1. Revoke Security Context by invoker:
      1. **404 Not Found** response.
      2. body returned must accomplish **ProblemDetails** data structure, with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Invoker not found".
         * cause with message "API Invoker not exists or invalid ID".
@@ -759,25 +761,29 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
      * body [access token req body] and example [example]
-     * securityId is apiInvokerId.
-     * grant_type=client_credentials.
-     * Create Scope properly for request: 3gpp#{aef_id}:{api_name}
+       * ***securityId*** is apiInvokerId.
+       * ***grant_type=client_credentials***.
+       * Create Scope properly for request: ***3gpp#{aef_id}:{api_name}***
      * Using Invoker Certificate.
   
 * **Execution Steps**:
@@ -809,24 +815,28 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by provider:
+
+  5. Request Access Token by provider:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*:
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
      * Using AEF certificate
 
 * **Execution Steps**:
@@ -858,24 +868,28 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by provider:
+
+  5. Request Access Token by provider:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
      * Using AEF certificate
 
 * **Execution Steps**:
@@ -911,20 +925,20 @@ At this documentation you will have all information and related files and exampl
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{API_INVOKER_NOT_VALID}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
      * Using Invoker certificate
 
 * **Execution Steps**:
@@ -933,15 +947,7 @@ At this documentation you will have all information and related files and exampl
   3. Discover Service APIs by Invoker.
   4. Create Security Context According to Service APIs discovered.
   5. Request Access Token by Invoker
-   
-* **Expected Result**:
 
-  1. Response to Request of Access Token:
-     1. **401 Unauthorized** response.
-     2. body returned must accomplish **AccessTokenErr** data structure, with:
-        * error unauthorized_client
-        * error_description=Role not authorized for this API route
-   
 * **Expected Result**:
 
   1. Response to Request of Access Token:
@@ -968,25 +974,29 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
-     * **client_id is not-valid** 
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
+       * **client_id is not-valid** 
      * Using Invoker certificate
 
 * **Execution Steps**:
@@ -1018,24 +1028,28 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+   
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * **grant_type=not_valid**
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=not_valid***
      * Using Invoker certificate
 
 * **Execution Steps**:
@@ -1066,25 +1080,29 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
-     * **scope=not-valid-scope**
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
+       * ***scope=not-valid-scope***
      * Using Invoker certificate
 
 * **Execution Steps**:
@@ -1116,25 +1134,29 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
-     * **scope=3gpp#1234:service_1**
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
+       * ***scope=3gpp#1234:service_1***
      * Using Invoker certificate
 
 * **Execution Steps**:
@@ -1166,25 +1188,29 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
 
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
      * body [service api description] with apiName service_1
      * Use APF Certificate
-  3.  Request Discover Published APIs not filtered:
+
+  3. Request Discover Published APIs not filtered:
      * Send GET to ccf_discover_url *https://{CAPIF_HOSTNAME}/service-apis/v1/allServiceAPIs?api-invoker-id={apiInvokerId}*
      * Param api-invoker-id is mandatory
      * Using invoker certificate
-  4.  Create Security Context for this Invoker
+
+  4. Create Security Context for this Invoker
      * Send PUT *https://{CAPIF_HOSTNAME}/trustedInvokers/{apiInvokerId}*
      * body [service security body]
      * Using Invoker Certificate.
      * Create Security Information Body with one **securityInfo** for each aef present at each serviceAPIDescription present at Discover.
-  5.  Request Access Token by invoker:
+
+  5. Request Access Token by invoker:
      * Sent POST *https://{CAPIF_HOSTNAME}/securities/{securityId}/token*.
      * body [access token req body]
-     * securityId is apiInvokerId
-     * grant_type=client_credentials
-     * **scope=3gpp#{aef_id}:not-valid**
+       * ***securityId*** is apiInvokerId
+       * ***grant_type=client_credentials***
+       * ***scope=3gpp#{aef_id}:not-valid***
      * Using Invoker certificate
 
 * **Execution Steps**:

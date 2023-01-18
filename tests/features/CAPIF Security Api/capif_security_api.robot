@@ -35,7 +35,6 @@ Create a security context for an API invoker
 
 Create a security context for an API invoker with Provider role
     [Tags]    capif_security_api-2
-    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -60,7 +59,6 @@ Create a security context for an API invoker with Provider role
 
 Create a security context for an API invoker with Provider entity role and invalid apiInvokerId
     [Tags]    capif_security_api-3
-    # Test ${TEST NAME} Currently Not Supported
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
 
@@ -118,9 +116,10 @@ Retrieve the Security Context of an API Invoker
 
     ${service_security_context}=    Set Variable    ${resp.json()}
 
-    #Register APF
+    # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
-# ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
+    # Retrieve Security context can setup by parameters if authenticationInfo and authorizationInfo are needed at response.
+    # ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    server=https://${CAPIF_HOSTNAME}/
@@ -139,7 +138,7 @@ Retrieve the Security Context of an API Invoker
 
 Retrieve the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-6
-    #Register APF
+    # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
 
     ${resp}=    Get Request Capif
@@ -156,7 +155,6 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
 
 Retrieve the Security Context of an API Invoker with invalid apfId
     [Tags]    capif_security_api-7
-    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -226,7 +224,6 @@ Delete the Security Context of an API Invoker
 
 Delete the Security Context of an API Invoker with Invoker entity role
     [Tags]    capif_security_api-9
-    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -255,7 +252,6 @@ Delete the Security Context of an API Invoker with Invoker entity role
 
 Delete the Security Context of an API Invoker with Invoker entity role and invalid apiInvokerID
     [Tags]    capif_security_api-10
-    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -339,7 +335,6 @@ Update the Security Context of an API Invoker
 
 Update the Security Context of an API Invoker with Provider entity role
     [Tags]    capif_security_api-13
-    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -372,7 +367,6 @@ Update the Security Context of an API Invoker with Provider entity role
 
 Update the Security Context of an API Invoker with AEF entity role and invalid apiInvokerId
     [Tags]    capif_security_api-14
-    # Test ${TEST NAME} Currently Not Supported
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
@@ -412,7 +406,7 @@ Update the Security Context of an API Invoker with invalid apiInvokerID
 
 Revoke the authorization of the API invoker for APIs
     [Tags]    capif_security_api-16
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -439,7 +433,6 @@ Revoke the authorization of the API invoker for APIs
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing:1080
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -448,24 +441,8 @@ Revoke the authorization of the API invoker for APIs
     ...    username=${INVOKER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
-
-    # ######------
-    # # Default Invoker Registration and Onboarding
-    # ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
-
-    # ${request_body}=    Create Service Security Body
-    # ${resp}=    Put Request Capif
-    # ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    # ...    json=${request_body}
-    # ...    server=https://${CAPIF_HOSTNAME}/
-    # ...    verify=ca.crt
-    # ...    username=${INVOKER_USERNAME}
-
-    # Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
-
-    # Register Provider
-    # ${register_user_info_publisher}=    Provider Default Registration
-
+    
+    # Revoke Security Context by Provider
     ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}     ${api_ids}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
@@ -492,7 +469,6 @@ Revoke the authorization of the API invoker for APIs
 
 Revoke the authorization of the API invoker for APIs without valid apfID.
     [Tags]    capif_security_api-17
-    # Test ${TEST NAME} Currently Not Supported
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
@@ -541,8 +517,6 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ...    authorizationInfo
     Dictionaries Should Be Equal    ${resp.json()}    ${security_context_filtered}
 
-    # Dictionaries Should Be Equal    ${resp.json()}    ${security_context}
-
 Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     [Tags]    capif_security_api-18
     # Default Invoker Registration and Onboarding
@@ -579,22 +553,18 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ...    cause=API Invoker not exists or invalid ID
 
     ${resp}=    Get Request Capif
-    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
+    ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    ServiceSecurity
-    ${security_context_filtered}=    Remove Keys From Object
-    ...    ${security_context}
-    ...    authenticationInfo
-    ...    authorizationInfo
-    Dictionaries Should Be Equal    ${resp.json()}    ${security_context_filtered}
+    Dictionaries Should Be Equal    ${resp.json()}    ${security_context}
 
 Retrieve access token
     [Tags]    capif_security_api-19
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -647,8 +617,7 @@ Retrieve access token
 
 Retrieve access token by Provider
     [Tags]    capif_security_api-20
-    # Test ${TEST NAME} Currently Not Supported
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -700,8 +669,7 @@ Retrieve access token by Provider
 
 Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
-    # Test ${TEST NAME} Currently Not Supported
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -754,7 +722,7 @@ Retrieve access token by Provider with invalid apiInvokerId
 Retrieve access token with invalid apiInvokerId
     [Tags]    capif_security_api-22
     # Default Invoker Registration and Onboarding
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -809,7 +777,7 @@ Retrieve access token with invalid apiInvokerId
 Retrieve access token with invalid client_id
     [Tags]    capif_security_api-23
     # Default Invoker Registration and Onboarding
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -862,7 +830,7 @@ Retrieve access token with invalid client_id
 Retrieve access token with unsupported grant_type
     [Tags]    capif_security_api-24
     # Default Invoker Registration and Onboarding
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -920,7 +888,7 @@ Retrieve access token with unsupported grant_type
 Retrieve access token with invalid scope
     [Tags]    capif_security_api-25
     # Default Invoker Registration and Onboarding
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -975,7 +943,7 @@ Retrieve access token with invalid scope
 Retrieve access token with invalid aefid at scope
     [Tags]    capif_security_api-26
     # Default Invoker Registration and Onboarding
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
@@ -1030,7 +998,7 @@ Retrieve access token with invalid aefid at scope
 Retrieve access token with invalid apiName at scope
     [Tags]    capif_security_api-27
     # Default Invoker Registration and Onboarding
-    #Register APF
+    # Register APF
     ${register_user_info_provider}=    Provider Default Registration
     ${api_name}=    Set Variable    service_1
 
