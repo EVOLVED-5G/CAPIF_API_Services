@@ -1,7 +1,6 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
 Resource        ../../resources/common.resource
-# Resource    /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
 Library         Collections
