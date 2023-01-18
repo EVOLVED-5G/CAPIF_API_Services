@@ -19,7 +19,7 @@ Publish API by Authorised API Publisher
     ${register_user_info}=    Provider Default Registration
 
     # Test
-    ${request_body}=    Create Service Api Description
+    ${request_body}=    Create Service Api Description    service_1
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
@@ -28,6 +28,7 @@ Publish API by Authorised API Publisher
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    201    ServiceAPIDescription
+    ...    apiName=service_1
     Dictionary Should Contain Key    ${resp.json()}    apiId
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PUBLISH_RESOURCE_REGEX}
 
@@ -56,8 +57,12 @@ Retrieve all APIs Published by Authorised apfId
     ${register_user_info}=    Provider Default Registration
 
     # Register One Service
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
-    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}   service_2
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_1
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_2
 
     # Retrieve Services published
     ${resp}=    Get Request Capif
@@ -67,8 +72,6 @@ Retrieve all APIs Published by Authorised apfId
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
-
-    Log List    ${resp.json()}
 
     List Should Contain Value    ${resp.json()}    ${service_api_description_published_1}
     List Should Contain Value    ${resp.json()}    ${service_api_description_published_2}
@@ -96,8 +99,12 @@ Retrieve single APIs Published by Authorised apfId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
-    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}   service_2
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_1
+    ${service_api_description_published_2}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_2
 
     # Store apiId1
     ${serviceApiId1}=    Set Variable    ${service_api_description_published_1['apiId']}
@@ -142,13 +149,13 @@ Retrieve single APIs non Published by Authorised apfId
 
 Retrieve single APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-7
-    # [Setup]    Initialize Test And Register    role=invoker
-    # Test ${TEST NAME} Currently Not Supported
     # Register APF
     ${register_user_info}=    Provider Default Registration
 
     # Publish Service API
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_1
 
     # Register INVOKER
     ${register_user_info_invoker}=    Invoker Default Onboarding
@@ -170,7 +177,9 @@ Update API Published by Authorised apfId with valid serviceApiId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_1
 
     ${request_body_modified}=    Create Service Api Description    service_1_modified
     ${resp}=    Put Request Capif
@@ -181,8 +190,7 @@ Update API Published by Authorised apfId with valid serviceApiId
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiName
-    Should Be Equal As Strings    ${resp.json()['apiName']}    service_1_modified
+    ...    apiName=service_1_modified
 
     # Retrieve Service
     ${resp}=    Get Request Capif
@@ -192,13 +200,16 @@ Update API Published by Authorised apfId with valid serviceApiId
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiName
-    Should Be Equal As Strings    ${resp.json()['apiName']}    service_1_modified
+    ...    apiName=service_1_modified
 
 Update APIs Published by Authorised apfId with invalid serviceApiId
     [Tags]    capif_api_publish_service-9
     #Register APF
     ${register_user_info}=    Provider Default Registration
+
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_1
 
     ${request_body}=    Create Service Api Description    service_1_modified
     ${resp}=    Put Request Capif
@@ -216,11 +227,12 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
 
 Update APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-10
-    # Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  service_1
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    service_1
 
     #Register INVOKER
     ${register_user_info_invoker}=    Invoker Default Onboarding
@@ -247,15 +259,16 @@ Update APIs Published by NON Authorised apfId
     ...    username=${APF_PROVIDER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    200    ServiceAPIDescription
-    Dictionary Should Contain Key    ${resp.json()}    apiName
-    Should Be Equal As Strings    ${resp.json()['apiName']}    service_1
+    ...    apiName=service_1
 
 Delete API Published by Authorised apfId with valid serviceApiId
     [Tags]    capif_api_publish_service-11
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
-    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api   ${register_user_info}  first_service
+    ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
+    ...    ${register_user_info}
+    ...    first_service
 
     ${resp}=    Delete Request Capif
     ...    ${resource_url.path}
@@ -271,7 +284,7 @@ Delete API Published by Authorised apfId with valid serviceApiId
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Service API not found
@@ -288,7 +301,7 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
     ...    detail=Service API not existing
@@ -296,7 +309,6 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
 
 Delete APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-13
-    # Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
@@ -309,7 +321,7 @@ Delete APIs Published by NON Authorised apfId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Check Response Variable Type And Values  ${resp}    401    ProblemDetails
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
     ...    title=Unauthorized
     ...    status=401
     ...    detail=User not authorized

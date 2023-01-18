@@ -33,15 +33,16 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
 
 * **Execution Steps**:
   1. Register Provider at CCF and store certificates.
-  3. Publish Service API
-  4. Retrieve {apiId} from body and Location header with new resource created from response
+  2. Publish Service API
+  3. Retrieve {apiId} from body and Location header with new resource created from response
    
 * **Expected Result**:
   1. Response to Publish request must accomplish:
@@ -62,20 +63,10 @@ At this documentation you will have all information and related files and exampl
   * CAPIF subscriber is NOT pre-authorised (has invalid apfId from CAPIF Authority)
 
 * **Information of Test**:
-  1. Create public and private key at provider for provider itself and each function (apf, aef and amf)
-  2. Register of Provider at CCF:
-     * Send POST to *http://{CAPIF_HOSTNAME}:{CAPIF_HTTP_PORT}/register*
-     * body [provider register body]
-  3. Obtain Access Token:
-     * Send POST to *http://{CAPIF_HOSTNAME}/getauth*
-     * Body [provider getauth body]
-  4. Register Provider:
-     * Send POST *https://{CAPIF_HOSTNAME}/api-provider-management/v1/registrations*
-     * body [provider request body]
-     * Authentication Bearer with access_token
-     * Store each cert in a file with according name.
-  5. Publish Service API with invalid APF ID at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis
+  1. Perform [Provider Registration]
+
+  2. Publish Service API with invalid APF ID at CCF:
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
 
@@ -87,7 +78,7 @@ At this documentation you will have all information and related files and exampl
   1. Response to Publish request must accomplish:
      1. **401 Unauthorized**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 401
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Publisher not existing".
         * cause with message "Publisher id not found".
@@ -107,18 +98,21 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Publish Service API at CCF:
-     * Send Post to https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
+
   3. Publish Other Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_2
      * Get apiId
      * Use APF Certificate
+
   4. Retrieve all published APIs:
-     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Get to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * Use APF Certificate
 
 * **Execution Steps**:
@@ -135,12 +129,15 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId1}*
+
   2. Response to service 2 Publish request must accomplish:
      1. **201 Created**
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId2}*
-  3. Published Service APIs are stored in CAPIF Database 
+
+  3. Published Service APIs are stored in CAPIF Database
+
   4. Response to Retrieve all published APIs:
      1. **200 OK**
      2. Response body must return an array of **ServiceAPIDescription** data.
@@ -157,8 +154,9 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Retrieve all published APIs:
-     * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis
+     * Send Get to *https://{CAPIF_HOSTNAME}/published-apis/v1/{APF_ID_NOT_VALID}/service-apis*
      * Use APF Certificate
 
 * **Execution Steps**:
@@ -169,10 +167,11 @@ At this documentation you will have all information and related files and exampl
   1. Response to Publish request must accomplish:
      1. **401 Non Authorized**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 401
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "Provider not existing".
         * cause with message "Provider id not found".
+
   2. Service API is NOT stored in CAPIF Database
 
 ## Test Case 5: Retrieve single APIs Published by Authorised apfId
@@ -187,21 +186,25 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
+
   3. Publish Other Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_2
      * Get apiId
      * Use APF Certificate
+
   4. Retrieve service_1 published APIs detail:
-     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId1}
+     * Send Get to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId1}*
      * Use APF Certificate
+
   5. Retrieve service_2 published APIs detail:
-     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId2}
+     * Send Get to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{apiId2}*
      * Use APF Certificate
 
 * **Execution Steps**:
@@ -219,16 +222,20 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId1}*
+
   2. Response to service 2 Publish request must accomplish:
      1. **201 Created**
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId2}*
-  3. Published Service APIs are stored in CAPIF Database 
+
+  3. Published Service APIs are stored in CAPIF Database
+
   4. Response to Retrieve service_1 published API using apiId1:
      1. **200 OK**
      2. Response body must return a **ServiceAPIDescription** data.
      3. Array must contain same information than service_1 published registration response.
+
   5. Response to Retrieve service_2 published API using apiId2:
      1. **200 OK**
      2. Response body must return a **ServiceAPIDescription** data.
@@ -248,7 +255,7 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration]
   2. Retrieve not published APIs detail:
-     * Send Get to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
+     * Send Get to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * Use APF Certificate
 
 * **Execution Steps**:
@@ -259,7 +266,7 @@ At this documentation you will have all information and related files and exampl
   1. Response to Retrieve for NOT published API must accomplish:
      1. **404 Not Found**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Service API not found".
         * cause with message "No Service with specific credentials exists".
@@ -276,13 +283,15 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
-  6. Retrieve detailed published APIs:
-     * Send Get to https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/${apiId}
+
+  3. Retrieve detailed published APIs:
+     * Send Get to *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/${apiId}*
      * Use Invoker certificate
 
 * **Execution Steps**:
@@ -301,6 +310,7 @@ At this documentation you will have all information and related files and exampl
         * title with message "Unauthorized"
         * detail with message "User not authorized".
         * cause with message "Certificate not authorized".
+
   2. Service API is NOT stored in CAPIF Database
 
 
@@ -316,18 +326,21 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * get resource url from location Header.
      * Use APF Certificate
+
   3. Update published API at CCF:
-     * Send PUT to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}
+     * Send PUT to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
      * body [service api description] with overrided apiName to service_1_modified
      * Use APF Certificate
+
   4. Retrieve detail of service API:
-     * Send Get to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}
+     * Send Get to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
      * check apiName is service_1_modified
      * Use APF Certificate
 
@@ -344,10 +357,12 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
   2. Response to Update Published Service API:
      1. **200 OK**
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiName service_1_modified
+
   3. Response to Retrieve detail of Service API:
      1. **200 OK**
      2. Response Body must follow **ServiceAPIDescription** data structure with:
@@ -365,13 +380,15 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
+
   3. Update published API at CCF:
-     * Send PUT to resource URL https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}
+     * Send PUT to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * body [service api description] with overrided apiName to ***service_1_modified***
      * Use APF Certificate
 
@@ -385,10 +402,11 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
   2. Response to Update Published Service API:
      1. **404 Not Found**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 404
+        * status **404**
         * title with message "Not Found"
         * detail with message "Service API not found".
         * cause with message "Service API id not found".
@@ -404,15 +422,18 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
      * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
+
   3. Update published API at CCF:
      * Send PUT to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
      * body [service api description] with overrided apiName to ***service_1_modified***
      * Use invoker certificate
+
   4.  Retrieve detail of service API:
      * Send Get to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serivceApiId}*
      * check apiName is service_1
@@ -429,12 +450,13 @@ At this documentation you will have all information and related files and exampl
    
 * **Expected Result**:
   1. Response to Update published API acting as Invoker must accomplish:
-     1. **401 Non Authorized**
+     1. **401 Unauthorized**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 401
+        * status **401**
         * title with message "Unauthorized"
         * detail with message "User not authorized".
         * cause with message "Certificate not authorized".
+
   2. Response to Retrieve Detail of Service API:
      1. **200 OK**
      2. Response Body must follow **ServiceAPIDescription** data structure with:
@@ -453,11 +475,13 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
+
   3. Remove published Service API at CCF:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
      * Use APF Certificate
@@ -478,9 +502,12 @@ At this documentation you will have all information and related files and exampl
      2. Response Body must follow **ServiceAPIDescription** data structure with:
         * apiId
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/published-apis/v1/{apfId}/service-apis/{serviceApiId}*
+
   2. Published Service API is stored in CAPIF Database
+
   3. Response to Remove published Service API at CCF:
      1. **204 No Content**
+
   4. Response to Retrieve for DELETED published API must accomplish:
      1. **404 Not Found**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
@@ -501,6 +528,7 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration]
+
   2. Remove published Service API at CCF with invalid serviceId:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * Use APF Certificate
@@ -530,11 +558,13 @@ At this documentation you will have all information and related files and exampl
 
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
+
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Get apiId
      * Use APF Certificate
+
   3. Remove published Service API at CCF with invalid serviceId as Invoker:
      * Send DELETE to resource URL *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis/{SERVICE_API_ID_NOT_VALID}*
      * Use invoker certificate.
