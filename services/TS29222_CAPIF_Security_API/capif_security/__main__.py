@@ -54,7 +54,7 @@ def main():
                 arguments={'title': 'CAPIF_Security_API'},
                 pythonic_params=True)
 
-
+    JWTManager(app.app)
     subscriber = Subscriber()
     scheduler = APScheduler()
     scheduler.init_app(app.app)

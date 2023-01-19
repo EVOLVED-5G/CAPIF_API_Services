@@ -37,7 +37,7 @@ class DiscoverApisOperations(Resource):
             "api_cat":"service_api_category", "supported_features":"supported_features", "api_supported_features":"api_supp_feats"}
 
             for param in query_params:
-                if param is not None:
+                if query_params[param] is not None:
                     my_params.append({quey_params_name[param]: query_params[param]})
 
             if my_params:
