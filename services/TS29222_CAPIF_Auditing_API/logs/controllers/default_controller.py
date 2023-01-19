@@ -62,5 +62,21 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)
 
-    response = audit_operations.get_logs(aef_id, api_invoker_id, time_range_start, time_range_end, api_id, api_name, api_version, protocol, operation, result, resource_name, src_interface, dest_interface, supported_features)
+    query_params = {"aef_id": aef_id,
+                    "api_invoker_id": api_invoker_id,
+                    "time_range_start": time_range_start,
+                    "time_range_end": time_range_end,
+                    "api_id": api_id,
+                    "api_name": api_name,
+                    "api_version": api_version,
+                    "protocol": protocol,
+                    "operation": operation,
+                    "result": result,
+                    "resource_name": resource_name,
+                    "src_interface": src_interface,
+                    "dest_interface": dest_interface,
+                    "supported_features": supported_features
+                    }
+
+    response = audit_operations.get_logs(query_params)
     return response

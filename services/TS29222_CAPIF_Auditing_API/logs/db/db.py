@@ -5,7 +5,7 @@ from .config import Config
 class MongoDatabse():
 
     def __init__(self):
-        self.config = Config().getConfig()
+        self.config = Config().get_config()
         self.db = self.__connect()
         self.invocation_logs = self.config['mongo']['logs_col']
         self.capif_users = self.config['mongo']['capif_users_col']
