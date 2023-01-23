@@ -18,7 +18,8 @@ class LoggingInvocationOperations(Resource):
         prov_col = self.db.get_col_by_name(self.db.provider_details)
 
         current_app.logger.debug("Checking aef id")
-        aef_res = prov_col.find_one({'api_prov_dom_id': aef_id})
+        # aef_res = prov_col.find_one({'api_prov_dom_id': aef_id})
+        aef_res = prov_col.find_one({'api_prov_funcs': {'$elemMatch': {'api_prov_func_role': 'AEF', 'api_prov_func_id': aef_id}}})
 
         if aef_res is None:
             current_app.logger.error("Exposer not exist")
