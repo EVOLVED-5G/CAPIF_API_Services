@@ -1,5 +1,6 @@
 import connexion
 import six
+import sys
 
 from logs.models.interface_description import InterfaceDescription  # noqa: E501
 from logs.models.invocation_log import InvocationLog  # noqa: E501
@@ -7,6 +8,16 @@ from logs.models.operation import Operation  # noqa: E501
 from logs.models.problem_details import ProblemDetails  # noqa: E501
 from logs.models.protocol import Protocol  # noqa: E501
 from logs import util
+
+from ..core.auditoperations import AuditOperations
+import json
+from flask import Response, request, current_app
+from ..encoder import JSONEncoder
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+import pymongo
+
+audit_operations = AuditOperations()
 
 
 def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=None, time_range_end=None, api_id=None, api_name=None, api_version=None, protocol=None, operation=None, result=None, resource_name=None, src_interface=None, dest_interface=None, supported_features=None):  # noqa: E501
@@ -37,22 +48,35 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     :param resource_name: Name of the specific resource invoked.
     :type resource_name: str
     :param src_interface: Interface description of the API invoker.
-    :type src_interface: dict | bytes
+    :type src_interface: str
     :param dest_interface: Interface description of the API invoked.
-    :type dest_interface: dict | bytes
+    :type dest_interface: str
     :param supported_features: To filter irrelevant responses related to unsupported features
     :type supported_features: str
 
     :rtype: InvocationLog
     """
+
+    current_app.logger.info("Audit logs")
+
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)
-    if connexion.request.is_json:
-        protocol =  Protocol.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        operation =  Operation.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        src_interface =  InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        dest_interface =  InterfaceDescription.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+
+    query_params = {"aef_id": aef_id,
+                    "api_invoker_id": api_invoker_id,
+                    "time_range_start": time_range_start,
+                    "time_range_end": time_range_end,
+                    "api_id": api_id,
+                    "api_name": api_name,
+                    "api_version": api_version,
+                    "protocol": protocol,
+                    "operation": operation,
+                    "result": result,
+                    "resource_name": resource_name,
+                    "src_interface": src_interface,
+                    "dest_interface": dest_interface,
+                    "supported_features": supported_features
+                    }
+
+    response = audit_operations.get_logs(query_params)
+    return response
