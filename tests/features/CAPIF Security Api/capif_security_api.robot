@@ -589,7 +589,6 @@ Retrieve access token
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -642,7 +641,6 @@ Retrieve access token by Provider
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -694,7 +692,6 @@ Retrieve access token by Provider with invalid apiInvokerId
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -747,7 +744,6 @@ Retrieve access token with invalid apiInvokerId
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -802,7 +798,6 @@ Retrieve access token with invalid client_id
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -855,7 +850,6 @@ Retrieve access token with unsupported grant_type
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -913,7 +907,6 @@ Retrieve access token with invalid scope
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -968,7 +961,6 @@ Retrieve access token with invalid aefid at scope
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -1023,7 +1015,6 @@ Retrieve access token with invalid apiName at scope
     ${request_body}=    Create Service Security From Discover Response
     ...    http://robot.testing
     ...    ${discover_response}
-    # ${request_body}=    Create Service Security Body
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
