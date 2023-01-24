@@ -1,6 +1,7 @@
 *** Settings ***
 Resource        /opt/robot-tests/tests/resources/common.resource
 Resource        /opt/robot-tests/tests/resources/api_invoker_management_requests/apiInvokerManagementRequests.robot
+Resource    ../../resources/common.resource
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 Library         Process
 Library         Collections
@@ -31,9 +32,8 @@ Onboard NetApp
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
-    # Assertions
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
+    # Check Results
+    Check Response Variable Type And Values  ${resp}  201  APIInvokerEnrolmentDetails
     Check Location Header    ${resp}    ${LOCATION_INVOKER_RESOURCE_REGEX}
 
     # Store dummy signed certificate
@@ -51,10 +51,10 @@ Register NetApp Already Onboarded
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
-    # Assertions
-    Status Should Be    403    ${resp}
-    Check Problem Details    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    403    ProblemDetails
     ...    status=403
+    ...    title=Forbidden
     ...    detail=Invoker already registered
     ...    cause=Identical invoker public key
 
@@ -76,9 +76,9 @@ Update Onboarded NetApp
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    200    ${resp}
-    Check Variable    ${resp.json()}    APIInvokerEnrolmentDetails
-    Should Match    ${resp.json()['notificationDestination']}    ${new_notification_destination}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    200    APIInvokerEnrolmentDetails
+    ...    notificationDestination=${new_notification_destination}
 
 Update Not Onboarded NetApp
     [Tags]    capif_api_invoker_management-4
@@ -92,9 +92,10 @@ Update Not Onboarded NetApp
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    status=404
+    ...    title=Not Found
     ...    detail=Please provide an existing Netapp ID
     ...    cause=Not exist NetappID
 
@@ -109,6 +110,7 @@ Offboard NetApp
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
+    # Check Results
     Should Be Equal As Strings    ${resp.status_code}    204
 
 Offboard Not Previously Onboarded NetApp
@@ -122,8 +124,9 @@ Offboard Not Previously Onboarded NetApp
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details    ${resp}
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    status=404
+    ...    title=Not Found
     ...    detail=Please provide an existing Netapp ID
     ...    cause=Not exist NetappID
