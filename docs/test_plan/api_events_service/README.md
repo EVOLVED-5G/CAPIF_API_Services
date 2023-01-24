@@ -29,7 +29,7 @@ At this documentation you will have all information and related files and exampl
   1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
-     1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
+     1. Send POST to *https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions*
      2. body [event subscription request body]
      3. Use Invoker Certificate
 
@@ -49,7 +49,7 @@ At this documentation you will have all information and related files and exampl
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
   2. Response to Event Subscription must accomplish:
-     1. 201 Created
+     1. **201 Created**
      2. The URI of the created resource shall be returned in the "Location" HTTP header, following this structure: *{apiRoot}/capif-events/{apiVersion}/{subscriberId}/subscriptions/{subscriptionId}
      3. Response Body must follow **EventSubscription** data structure.
 
@@ -70,7 +70,7 @@ At this documentation you will have all information and related files and exampl
   1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
-     1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{SUBSCRIBER_NOT_REGISTERED}/subscriptions
+     1. Send POST to *https://{CAPIF_HOSTNAME}/capif-events/v1/{SUBSCRIBER_NOT_REGISTERED}/subscriptions*
      2. body [event subscription request body]
      3. Use Invoker Certificate
 
@@ -113,12 +113,12 @@ At this documentation you will have all information and related files and exampl
   1. Perform [Invoker Onboarding]
 
   2. Event Subscription:
-     1. Send POST to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
+     1. Send POST to *https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions*
      2. body [event subscription request body]
      3. Use Invoker Certificate
 
   3. Remove Event Subscription:
-     1. Send DELETE to https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions
+     1. Send DELETE to *https://{CAPIF_HOSTNAME}/capif-events/v1/{subscriberId}/subscriptions*
      2. Use Invoker Certificate
 
 * Execution Steps:
@@ -138,13 +138,13 @@ At this documentation you will have all information and related files and exampl
      3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
 
   2. Response to Event Subscription must accomplish:
-     1. 201 Created
+     1. **201 Created**
      2. The URI of the created resource shall be returned in the "Location" HTTP header, following this structure: *{apiRoot}/capif-events/{apiVersion}/{subscriberId}/subscriptions/{subscriptionId}
      3. Response Body must follow **EventSubscription** data structure.
 
   3. Event Subscriptions are stored in CAPIF Database
   4. Remove Event Subscription:
-     1. 204 No Content
+     1. **204 No Content**
 
   5. Event Subscription is not present at CAPIF Database.
 
@@ -252,6 +252,8 @@ At this documentation you will have all information and related files and exampl
         * status 404
         * detail with message "Service API not existing".
         * cause with message "Event API subscription id not found".
+
+
 
 
 [invoker register body]: ../api_invoker_management/invoker_register_body.json  "Invoker Register Body"

@@ -28,7 +28,7 @@ Creates a new individual CAPIF Event Subscription
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    # Assertions
+    # Check Results
     Check Response Variable Type And Values    ${resp}    201    EventSubscription
     ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
@@ -45,7 +45,7 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    # Assertions
+    # Check Results
     Check Response Variable Type And Values  ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
@@ -99,7 +99,8 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
-
+    
+    # Check Results
     Check Response Variable Type And Values  ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
@@ -131,6 +132,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
+    # Check Results
     Check Response Variable Type And Values  ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
