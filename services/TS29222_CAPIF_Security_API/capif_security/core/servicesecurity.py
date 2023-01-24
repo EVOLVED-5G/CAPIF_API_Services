@@ -168,7 +168,7 @@ class SecurityOperations(Resource):
                     current_app.logger.error("Not found comptaible security method with pref security method")
                     return bad_request_error(detail="Not found compatible security method with pref security method", cause="Error pref security method", invalid_params=[{"param": "prefSecurityMethods", "reason": "pref security method not compatible with security method available"}])
 
-            service_instance.sel_security_method = list(valid_security_method)[0]
+                service_instance.sel_security_method = list(valid_security_method)[0]
 
             rec = dict()
             rec['api_invoker_id'] = api_invoker_id
