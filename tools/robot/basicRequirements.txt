@@ -26,6 +26,7 @@ exceptiongroup==1.0.0rc9
 filelock==3.8.0
 flake8==3.9.2
 h11==0.14.0
+robotframework-httpctrl==0.3.1
 idna==3.4
 iniconfig==1.1.1
 invoke==1.6.0

@@ -8,6 +8,7 @@
   - [Test Case 4: Update Not Onboarded NetApp](#test-case-4-update-not-onboarded-netapp)
   - [Test Case 5: Offboard NetApp](#test-case-5-offboard-netapp)
   - [Test Case 6: Offboard Not previsouly Onboarded NetApp](#test-case-6-offboard-not-previsouly-onboarded-netapp)
+  - [Test Case 7: Update Onboarded NetApp Certificate](#test-case-7-update-onboarded-netapp-certificate)
 
 
 # Test Plan for CAPIF Api Invoker Management
@@ -241,6 +242,56 @@ At this documentation you will have all information and related files and exampl
         * detail with message "Please provide an existing Netapp ID".
         * cause with message "Not exist NetappID".
 
+## Test Case 7: Update Onboarded NetApp Certificate
+* **Test ID**: ***capif_api_invoker_management-7***
+* **Description**:
+
+  This test will try to update public key and get a new signed certificate by CAPIF Core.
+* **Pre-Conditions**:
+
+  * NetApp was registered previously
+  * NetApp was onboarded previously with {onboardingId} and {public_key_1}
+
+* **Information of Test**:
+
+  1. Perform [Invoker Onboarding] with public_key_1.
+
+  2. Create {public_key_2}
+
+  3. Update information of previously onboarded Invoker:
+     * Send PUT to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers/{onboardingId}*
+     * Reference Request Body is: [put invoker onboarding body]
+       * ["onboardingInformation"]["apiInvokerPublicKey"]: {public_key_2},
+     * Store new certificate.
+
+  4. Update information of previously onboarded Invoker Using new certificate:
+     * Send PUT to *https://{CAPIF_HOSTNAME}/api-invoker-management/v1/onboardedInvokers/{onboardingId}*
+     * Reference Request Body is: [put invoker onboarding body]
+       * "notificationDestination": "*http://host.docker.internal:8086/netapp_new_callback*",
+     * Use new invoker certificate
+
+* **Execution Steps**:
+
+  1. Register Invoker at CCF
+  2. Onboard Invoker at CCF
+  3. Store signed Certificate
+  4. Update Onboarding Information at CCF with new public key
+  5. Update Onboarding Information at CCF with minor change
+
+* **Expected Result**:
+
+  1. Response to Onboard request must accomplish:
+     1. **201 Created**
+     2. Response Body must follow **APIInvokerEnrolmentDetails** data structure with:
+        * apiInvokerId
+        * onboardingInformation->apiInvokerCertificate must contain the public key signed.
+     3. Response Header **Location** must be received with URI to new resource created, following this structure: *{apiRoot}/api-invoker-management/{apiVersion}/onboardedInvokers/{onboardingId}*
+  2. Response to Update Request (PUT) with new public key:
+     1. **200 OK** response.
+     2. apiInvokerCertificate with new certificate on response -> store to use.
+  3. Response to Update Request (PUT) with minor change must contain:
+     1. **200 OK** response.
+     2. notificationDestination on response must contain the new value
 
 
 
