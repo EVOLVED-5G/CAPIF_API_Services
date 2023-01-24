@@ -34,7 +34,7 @@ Discover Published service APIs by Authorised API Invoker
 
     Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
-    # Check returned values
+    # Check Results
     Dictionary Should Contain Key    ${resp.json()}    serviceAPIDescriptions
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    1
@@ -43,7 +43,6 @@ Discover Published service APIs by Authorised API Invoker
 
 Discover Published service APIs by Non Authorised API Invoker
     [Tags]    capif_api_discover_service-2
-    # Test ${TEST NAME} Currently Not Supported
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
@@ -59,6 +58,7 @@ Discover Published service APIs by Non Authorised API Invoker
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
+    # Check Results
     Check Response Variable Type And Values    ${resp}    401    ProblemDetails
     ...    title=Unauthorized
     ...    status=401
@@ -82,6 +82,7 @@ Discover Published service APIs by not registered API Invoker
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
+    # Check Results
     Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
@@ -104,7 +105,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     ...    ${register_user_info}
     ...    ${api_name_2}
 
-    #Register INVOKER
+    # Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Request all APIs for Invoker
@@ -131,7 +132,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 
     Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
-    # Check returned values
+    # Check Results
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    1
     List Should Contain Value    ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}
@@ -177,7 +178,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    # Check returned values
+    # Check Results
     Check Response Variable Type And Values    ${resp}    404    ProblemDetails
     ...    title=Not Found
     ...    status=404
@@ -212,7 +213,7 @@ Discover Published service APIs by registered API Invoker not filtered
 
     Check Response Variable Type And Values    ${resp}    200    DiscoveredAPIs
 
-    # Check returned values
+    # Check Results
     Should Not Be Empty    ${resp.json()['serviceAPIDescriptions']}
     Length Should Be    ${resp.json()['serviceAPIDescriptions']}    2
     List Should Contain Value   ${resp.json()['serviceAPIDescriptions']}    ${service_api_description_published_1}

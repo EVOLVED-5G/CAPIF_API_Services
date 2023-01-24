@@ -28,7 +28,7 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
   3. Request Discover Published APIs:
@@ -74,7 +74,7 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
   3.  Request Discover Published APIs by no invoker entity:
@@ -123,7 +123,7 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
   3.  Request Discover Published APIs with not valid apiInvoker:
@@ -172,11 +172,11 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
   3. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_2
      * Use APF Certificate
   4.  Request Discover Published APIs filtering by api-name:
@@ -225,11 +225,11 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
   3. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_2
      * Use APF Certificate
   4.  Request Discover Published APIs filtering by api-name not published:
@@ -282,11 +282,11 @@ At this documentation you will have all information and related files and exampl
 * **Information of Test**:
   1. Perform [Provider Registration] and [Invoker Onboarding]
   2. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_1
      * Use APF Certificate
   3. Publish Service API at CCF:
-     * Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+     * Send Post to ccf_publish_url *https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis*
      * body [service api description] with apiName service_2
      * Use APF Certificate
   4.  Request Discover Published APIs not filtered:
