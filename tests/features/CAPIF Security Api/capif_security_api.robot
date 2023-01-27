@@ -12,6 +12,7 @@ Test Setup      Reset Testing Environment
 ${APF_ID_NOT_VALID}             apf-example
 ${SERVICE_API_ID_NOT_VALID}     not-valid
 ${API_INVOKER_NOT_VALID}        not-valid
+${NOTIFICATION_DESTINATION}     http://robot.testing:1080
 
 
 *** Test Cases ***
@@ -21,7 +22,7 @@ Create a security context for an API invoker
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
     # Create Security Context
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -42,7 +43,7 @@ Create a security context for an API invoker with Provider role
     ${register_user_info_publisher}=    Provider Default Registration
 
     # Create Security Context
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -63,7 +64,7 @@ Create a security context for an API invoker with Provider entity role and inval
     ${register_user_info_publisher}=    Provider Default Registration
 
     # Create Security Context
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    json=${request_body}
@@ -83,7 +84,7 @@ Create a security context for an API invoker with Invalid apiInvokerID
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    json=${request_body}
@@ -103,7 +104,7 @@ Retrieve the Security Context of an API Invoker
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -158,7 +159,7 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -187,7 +188,7 @@ Delete the Security Context of an API Invoker
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -227,7 +228,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -294,7 +295,7 @@ Update the Security Context of an API Invoker
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -338,7 +339,7 @@ Update the Security Context of an API Invoker with Provider entity role
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -370,7 +371,7 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/update
     ...    json=${request_body}
@@ -389,7 +390,7 @@ Update the Security Context of an API Invoker with invalid apiInvokerID
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/update
     ...    json=${request_body}
@@ -427,11 +428,11 @@ Revoke the authorization of the API invoker for APIs
 
     Check Response Variable Type And Values    ${discover_response}    200    DiscoveredAPIs
 
-    ${api_ids}=    Get Api Ids From Discover Response     ${discover_response}
+    ${api_ids}=    Get Api Ids From Discover Response    ${discover_response}
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing:1080
+    ...    http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/test
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -441,9 +442,11 @@ Revoke the authorization of the API invoker for APIs
     ...    username=${INVOKER_USERNAME}
 
     Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
-    
+
     # Revoke Security Context by Provider
-    ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}     ${api_ids}
+    ${request_body}=    Create Security Notification Body
+    ...    ${register_user_info_invoker['api_invoker_id']}
+    ...    ${api_ids}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
@@ -472,7 +475,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -522,7 +525,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
-    ${request_body}=    Create Service Security Body
+    ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
@@ -587,7 +590,7 @@ Retrieve access token
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -639,7 +642,7 @@ Retrieve access token by Provider
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -690,7 +693,7 @@ Retrieve access token by Provider with invalid apiInvokerId
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -742,7 +745,7 @@ Retrieve access token with invalid apiInvokerId
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -796,7 +799,7 @@ Retrieve access token with invalid client_id
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -848,7 +851,7 @@ Retrieve access token with unsupported grant_type
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -874,10 +877,12 @@ Retrieve access token with unsupported grant_type
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    400    AccessTokenErr
+    Check Response Variable Type And Values
+    ...    ${resp}
+    ...    400
+    ...    AccessTokenErr
     ...    error=unsupported_grant_type
     ...    error_description=Invalid value for `grant_type` \\(${grant_type}\\), must be one of \\['client_credentials'\\] - 'grant_type'
-
 
 Retrieve access token with invalid scope
     [Tags]    capif_security_api-25
@@ -905,7 +910,7 @@ Retrieve access token with invalid scope
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -959,7 +964,7 @@ Retrieve access token with invalid aefid at scope
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -1013,7 +1018,7 @@ Retrieve access token with invalid apiName at scope
 
     # create Security Context
     ${request_body}=    Create Service Security From Discover Response
-    ...    http://robot.testing
+    ...    ${NOTIFICATION_DESTINATION}
     ...    ${discover_response}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
