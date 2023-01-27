@@ -17,7 +17,7 @@
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
 - [CAPIF Tool Release 2.1](#capif-tool-release-21)
-- [CAPIF Tool Release 2.2](#capif-tool-release-22)
+- [CAPIF Tool Release 3.0](#capif-tool-release-30)
 
 
 # Repository structure
