@@ -22,15 +22,14 @@ Creates a new individual CAPIF Event Subscription
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    # Assertions
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    EventSubscription
+    # Check Results
+    Check Response Variable Type And Values    ${resp}    201    EventSubscription
     ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
 Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
@@ -46,9 +45,12 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    # Assertions
-    Status Should Be    403    ${resp}
-    Check Problem Details     ${resp}   status=403   detail=Event API not existing   cause=Event Subscriptions are not stored in CAPIF Database
+    # Check Results
+    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
+    ...    title=Not Found
+    ...    status=404
+    ...    detail=Invoker or APF or AEF or AMF Not found
+    ...    cause=Subscriber Not Found
 
 Deletes an individual CAPIF Event Subscription
     [Tags]    capif_api_events-3
@@ -57,14 +59,13 @@ Deletes an individual CAPIF Event Subscription
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
-    Check Variable    ${resp.json()}    EventSubscription
+    Check Response Variable Type And Values    ${resp}    201    EventSubscription
 
     ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
@@ -83,13 +84,13 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    EventSubscription
 
     ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
@@ -98,9 +99,13 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
-
-    Status Should Be    403    ${resp}
-    Check Problem Details     ${resp}   status=403   detail=Event API not existing   cause=Event Subscriptions are not stored in CAPIF Database
+    
+    # Check Results
+    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
+    ...    title=Not Found
+    ...    status=404
+    ...    detail=Invoker or APF or AEF or AMF Not found
+    ...    cause=Subscriber Not Found
 
 
 Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
@@ -111,13 +116,13 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
-    ...    /capif-events/v1/${register_user_info_invoker['id']}/subscriptions
+    ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    201    ${resp}
+    Check Response Variable Type And Values    ${resp}    201    EventSubscription
 
     ${subscriber_id}    ${subscription_id}=    Check Event Location Header    ${resp}
 
@@ -127,6 +132,10 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
-    Status Should Be    404    ${resp}
-    Check Problem Details     ${resp}   status=404   detail=Service API not existing   cause=Event API subscription id not found
+    # Check Results
+    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
+    ...    title=Not Found
+    ...    status=404
+    ...    detail=Event subscription not exist
+    ...    cause=Event API subscription id not found
 

@@ -170,6 +170,7 @@ services:
     hostname: ${CAPIF_HOSTNAME}
     volumes:
       - ./nginx/certs:/etc/nginx/certs
+    restart: unless-stopped
     depends_on:
       #- api-invoker-management
       - easy-rsa
@@ -185,3 +186,15 @@ services:
       #- capif-security
       - capif-events
       - logs
+
+  mockServer:
+    image: mockserver/mockserver:5.14.0
+    hostname: robot.testing
+    ports:
+      - 1080:1080
+    # environment:
+    #   MOCKSERVER_PROPERTY_FILE: /config/mockserver.properties
+    #   MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+    # volumes:
+    #   - ./mockServer/:/config
+

@@ -2,15 +2,34 @@
   "ProblemDetails": {
     "mandatory_attributes": {},
     "optional_attributes": {
-      "type": "string",
+      "type": "URI",
       "title": "string",
       "status": "integer",
       "detail": "string",
-      "instance": "string",
+      "instance": "URI",
       "cause": "string",
       "invalidParams": "InvalidParam",
       "supportedFeatures": "SupportedFeatures"
     }
+  },
+  "ProblemDetails29571": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "type": "URI",
+      "title": "string",
+      "status": "integer",
+      "detail": "string",
+      "instance": "URI",
+      "cause": "string",
+      "invalidParams": "InvalidParam",
+      "supportedFeatures": "SupportedFeatures",
+      "accessTokenError": "AccessTokenErr",
+      "accessTokenRequest": "AccessTokenReq29571",
+      "nrfId": "NrfId"
+    }
+  },
+  "NrfId": {
+    "regex": "^([0-9A-Za-z]([-0-9A-Za-z]{0,61}[0-9A-Za-z])?\\.)+[A-Za-z]{2,63}\\.?$"
   },
   "InvalidParam": {
     "mandatory_attributes": {
@@ -320,6 +339,142 @@
       "scope": "string"
     }
   },
+  "AccessTokenReq29571": {
+    "mandatory_attributes": {
+      "grant_type": "GrantType",
+      "nfInstanceId": "UUID",
+      "scope": "ScopeRegex"
+    },
+    "optional_attributes": {
+      "nfType": "NFType",
+      "targetNfType": "NFType",
+      "targetNfInstanceId": "UUID",
+      "requesterPlmn": "PlmnId",
+      "requesterPlmnList": "PlmnId",
+      "requesterSnssaiList": "Snssai",
+      "requesterFqdn": "Fqdn",
+      "requesterSnpnList": "PlmnIdNid",
+      "targetPlmn": "PlmnId",
+      "targetSnpn": "PlmnIdNid",
+      "targetSnssaiList": "Snssai",
+      "targetNsiList": "string",
+      "targetNfSetId": "NfSetId",
+      "targetNfServiceSetId": "NfServiceSetId",
+      "hnrfAccessTokenUri": "URI",
+      "sourceNfInstanceId": "UUID"
+    }
+  },
+  "NfSetId":{
+    "regex": "set[a-zA-Z0-9\\-]+\\.(nrf|udm|amf|smf|ausf|nef|pcf|smsf|nssf|udr|lmf|gmlc|5g_eir|sepp|upf|n3iwf|af|udsf|bsf|chf|nwdaf|pcscf|cbcf|hss|ucmf|sor_af|spaf|mme|scsas|scef|scp|nssaaf|icscf|scscf|dra|ims_as|aanf|5g_ddnmf|nsacf|mfaf|easdf|dccf|mb_smf|tsctsf|adrf|gba_bsf|cef|mb_upf|nswof|pkmf|mnpf|sms_gmsc|sms_iwmsc|mbsf|mbstf|panf)set\\.5gc(\\.nid[A-Fa-f0-9]{11})?\\.mnc[0-9]{3}\\.mcc[0-9]{3}"
+  },
+  "NfServiceSetId":{
+    "regex": "set[a-zA-Z0-9\\-]+\\.(nrf|udm|amf|smf|ausf|nef|pcf|smsf|nssf|udr|lmf|gmlc|5g_eir|sepp|upf|n3iwf|af|udsf|bsf|chf|nwdaf|pcscf|cbcf|hss|ucmf|sor_af|spaf|mme|scsas|scef|scp|nssaaf|icscf|scscf|dra|ims_as|aanf|5g_ddnmf|nsacf|mfaf|easdf|dccf|mb_smf|tsctsf|adrf|gba_bsf|cef|mb_upf|nswof|pkmf|mnpf|sms_gmsc|sms_iwmsc|mbsf|mbstf|panf)set\\.5gc(\\.nid[A-Fa-f0-9]{11})?\\.mnc[0-9]{3}\\.mcc[0-9]{3}"
+  },
+  "ScopeRegex": {
+    "regex": "^([a-zA-Z0-9_:-]+)( [a-zA-Z0-9_:-]+)*$"
+  },
+  "Fqdn": {
+    "regex": "^([0-9A-Za-z]([-0-9A-Za-z]{0,61}[0-9A-Za-z])?\\.)+[A-Za-z]{2,63}\\.?$"
+  },
+  "UUID": {
+    "regex": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$"
+  },
+  "NFType": {
+    "enum": [
+      "NRF",
+      "UDM",
+      "AMF",
+      "SMF",
+      "AUSF",
+      "NEF",
+      "PCF",
+      "SMSF",
+      "NSSF",
+      "UDR",
+      "LMF",
+      "GMLC",
+      "5G_EIR",
+      "SEPP",
+      "UPF",
+      "N3IWF",
+      "AF",
+      "UDSF",
+      "BSF",
+      "CHF",
+      "NWDAF",
+      "PCSCF",
+      "CBCF",
+      "HSS",
+      "UCMF",
+      "SOR_AF",
+      "SPAF",
+      "MME",
+      "SCSAS",
+      "SCEF",
+      "SCP",
+      "NSSAAF",
+      "ICSCF",
+      "SCSCF",
+      "DRA",
+      "IMS_AS",
+      "AANF",
+      "5G_DDNMF",
+      "NSACF",
+      "MFAF",
+      "EASDF",
+      "DCCF",
+      "MB_SMF",
+      "TSCTSF",
+      "ADRF",
+      "GBA_BSF",
+      "CEF",
+      "MB_UPF",
+      "NSWOF",
+      "PKMF",
+      "MNPF",
+      "SMS_GMSC",
+      "SMS_IWMSC",
+      "MBSF",
+      "MBSTF",
+      "PANF"
+    ]
+  },
+  "PlmnId": {
+    "mandatory_attributes": {
+      "mcc": "Mcc",
+      "mnc": "Mnc"
+    },
+    "optional_attributes": {}
+  },
+  "PlmnIdNid":{
+    "mandatory_attributes": {
+      "mcc": "Mcc",
+      "mnc": "Mnc"
+    },
+    "optional_attributes": {
+      "nid": "Nid"
+    }
+  },
+  "Mcc": {
+    "regex": "^[0-9]{3}$"
+  },
+  "Mnc": {
+    "regex": "^[0-9]{2,3}$"
+  },
+  "Snssai": {
+    "mandatory_attributes": {
+      "sst": "integer"
+    },
+    "optional_attributes": {
+      "sd": "SlideDifferentiator"
+    }
+  },
+  "SlideDifferentiator": {
+    "regex": "^[A-Fa-f0-9]{6}$"
+  },
+  "Nid":{
+    "regex": "^[A-Fa-f0-9]{11}$"
+  },
   "AccessTokenRsp": {
     "mandatory_attributes": {
       "access_token": "string",
@@ -357,7 +512,8 @@
   },
   "APIProviderEnrolmentDetails": {
     "mandatory_attributes": {
-      "regSec": "string"
+      "regSec": "string",
+      "apiProvDomId": "string"
     },
     "optional_attributes": {
       "apiProvFuncs": "APIProviderFunctionDetails",
@@ -369,20 +525,19 @@
   "APIProviderFunctionDetails": {
     "mandatory_attributes": {
       "regInfo": "RegistrationInformation",
-      "apiProvFuncRole": "ApiProviderFuncRole"
+      "apiProvFuncRole": "ApiProviderFuncRole",
+      "apiProvFuncId": "string"
     },
     "optional_attributes": {
-      "apiProvFuncId": "string",
       "apiProvFuncInfo": "string"
     }
   },
   "RegistrationInformation": {
     "mandatory_attributes": {
-      "apiProvPubKey": "string"
-    },
-    "optional_attributes": {
+      "apiProvPubKey": "string",
       "apiProvCert": "string"
-    }
+    },
+    "optional_attributes": {}
   },
   "ApiProviderFuncRole": {
     "enum": ["AEF", "APF", "AMF"]
