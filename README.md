@@ -189,47 +189,66 @@ This CAPIF services have many stability improvements:
   - End points used in that flow are changed.
   - API Provider Management tests adapted to use TLS.
 
-# CAPIF Tool Release 2.2
+# CAPIF Tool Release 3.0
 
 Changes at Services:
 
 * **Common Changes**:
-  * Removed from all services the Common Name (CN) check at certificate to get the role.
-  * Roles are not detected in this version, then no role access check perform by services.
+  * Removed from all CAPIF services the Common Name (CN) check at certificate to get the role in services.
+  * Add role verification in Nginx (check if consumer is Invoker, APF, AEF, AMF, or CCF)
+  * Add log files
+  * Remove mosquitto mqtt
+* **NGINX service**:
+  * Add map functions in config to check CN in certificates (role verification)
 * **Register**:
+  * Refactor
   * At Registration operation you need to setup if entity is invoker or provider (previously was invoker or exposer).
   * Get Auth operation to get access_token now only need to have user and password in body, role is not needed now.
 * **Invoker**:
+  * Refactor
   * Same functionality but complete code refactor performed.
   * This service has REDIS connection to update status (onboard, offboard) to other services.
   * Listener created to add apiList when security context is created and remove it when security context is destroyed.
 * **Provider**:
+  * Refactor
   * New development at this version.
   * Allow registration of provider entities (AMF, APF y AEF)
   * This registration returns signed certificates for each one requested to be used in subsequent request by each entity of provider.
 * **Events**:
-  * Generate subscription to event for any entity (due to issue of role detection also generate subscription for CCF role)
+  * Refactor
+  * Generate subscription to event for any entity
   * This service has REDIS connection to communicate event to other services:
     * Internal operations
       * Invoker OnBoarded or OffBoarded.
       * Other events.
     * External operations from other services.
+  * Notify to subscribers
 * **Publish**:
+  * Refactor
   * Check if APF Id is valid.
   * This service has REDIS connection:
     * If Service is added or removed it sends a message through REDIS.
 * **Security**:
-    * New at this version
-    * This service has REDIS connection, that allow some operations like:
-      * When a new security context is created, then request to invoker to add the api to it apilist.
-      * When a security list is remove those apis are removed from invoker apilist associated.
-    * Token Creation.
-    * Revoke Authorizations.
+  * New at this version
+  * This service has REDIS connection, that allow some operations like:
+  * When a new security context is created, then request to invoker to add the api to it apilist.
+  * When a security list is remove those apis are removed from invoker apilist associated.
+  * Token Creation (Oauth).
+  * Revoke Authorizations.
+* **Logging Service**:
+  * New at this version
+  * Creates a new log entry for service API invocations.
+* **Auditing Service**
+  * New at this version:
+  * Query and retrieve service API invocation logs stored on the CAPIF core function.
+
 
 Changes at Tests:
 * **New common scenarios** in order to make easy to describe a test.
 * New Test plan definition format.
 * Change to new provider registration towards provider Management.
+* Complete code refactor of all tests
+* Complete test plan review, including all services (except auditing and logging)
 
 
 
