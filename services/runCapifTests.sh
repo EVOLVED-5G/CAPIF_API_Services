@@ -12,6 +12,9 @@ ROBOT_DOCKER_FILE_FOLDER=$REPOSITORY_BASE_FOLDER/tools/robot
 CAPIF_HOSTNAME=capifcore
 CAPIF_HTTP_PORT=8080
 
+echo "HOSTNAME = $CAPIF_HOSTNAME"
+echo "CAPIF_HTTP_PORT = $CAPIF_HTTP_PORT"
+
 docker >/dev/null 2>/dev/null
 if [[ $? -ne 0 ]]
 then

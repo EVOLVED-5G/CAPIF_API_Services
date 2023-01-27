@@ -1,115 +1,152 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 from flask import current_app, Flask, Response
 import json
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from ..core.sign_certificate import sign_certificate
+from .responses import internal_server_error, not_found_error, forbidden_error, make_response, bad_request_error
 from bson import json_util
 from ..db.db import MongoDatabse
+from ..util import dict_to_camel_case, clean_empty
+from .resources import Resource
+import sys
 
-class ProviderManagementOperations:
+class ProviderManagementOperations(Resource):
 
-    def __init__(self):
-        self.db = MongoDatabse()
-        self.mimetype = 'application/json'
+    def __check_api_provider_domain(self, api_prov_dom_id):
+        mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
+
+        current_app.logger.debug("Checking api provider domain id")
+        search_filter = {'api_prov_dom_id': api_prov_dom_id}
+        provider_enrolment_details = mycol.find_one(search_filter)
+
+        if provider_enrolment_details is None:
+            current_app.logger.error("Not found api provider domain")
+            return not_found_error(detail="Not Exist Provider Enrolment Details", cause="Not found registrations to send this api provider details")
+
+        return provider_enrolment_details
 
     def register_api_provider_enrolment_details(self, api_provider_enrolment_details):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
+            current_app.logger.debug("Creating api provider domain")
             search_filter = {'reg_sec': api_provider_enrolment_details.reg_sec}
             my_provider_enrolment_details = mycol.find_one(search_filter)
 
             if my_provider_enrolment_details is not None:
-                prob = ProblemDetails(title="Forbidden", status=403, detail="Provider already registered", cause="Identical provider reg sec")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+                current_app.logger.error("Found provider registered with same id")
+                return forbidden_error(detail="Provider already registered", cause="Identical provider reg sec")
 
-            apiProvDomId = secrets.token_hex(15)
-            registrationId = secrets.token_hex(15)
-            provider_enrolment_details = dict()
-            provider_enrolment_details["registration_id"] = registrationId
-            api_provider_enrolment_details.api_prov_dom_id = apiProvDomId
+            api_provider_enrolment_details.api_prov_dom_id = secrets.token_hex(15)
 
-            provider_enrolment_details.update(api_provider_enrolment_details.to_dict())
-            mycol.insert_one(provider_enrolment_details)
+            current_app.logger.debug("Geretaing certs to api prov funcs")
+            for api_provider_func in api_provider_enrolment_details.api_prov_funcs:
+                api_provider_func.api_prov_func_id = secrets.token_hex(15)
+                certificate = sign_certificate(api_provider_func.reg_info.api_prov_pub_key, api_provider_func.api_prov_func_info)
+                api_provider_func.reg_info.api_prov_cert = certificate
 
-            res = Response(json_util.dumps(api_provider_enrolment_details, cls=JSONEncoder),
-                        status=201, mimetype= self.mimetype)
-            res.headers['Location'] = "/api-provider-management/v1/registrations/" + str(registrationId)
+
+            mycol.insert_one(api_provider_enrolment_details.to_dict())
+
+            current_app.logger.debug("Provider inserted in database")
+
+            res = make_response(object=api_provider_enrolment_details, status=201)
+            res.headers['Location'] = "/api-provider-management/v1/registrations/" + str(api_provider_enrolment_details.api_prov_dom_id)
             return res
 
         except Exception as e:
-            exception = "An exception occurred in register provider::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in register provider"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
-    def delete_api_provider_enrolment_details(self, registrationId):
+    def delete_api_provider_enrolment_details(self, api_prov_dom_id):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registration_id': registrationId}
-            provider_enrolment_details = mycol.find_one(search_filter)
+            current_app.logger.debug("Deleting provider domain")
+            result = self.__check_api_provider_domain(api_prov_dom_id)
 
-            if provider_enrolment_details is None:
-                prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
-                                    cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
-            else:
-                mycol.delete_one(search_filter)
-                return Response(json.dumps(provider_enrolment_details, default=str, cls=JSONEncoder), status=204, mimetype= self.mimetype)
+            if isinstance(result, Response):
+                return result
 
-        except Exception as e:
-            exception = "An exception occurred in delete provider::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
-    def update_api_provider_enrolment_details(self, registrationId, api_provider_enrolment_details):
-        try:
-            mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
-            search_filter = {'registration_id': registrationId}
-            old_provider_enrolment_details = mycol.find_one(search_filter)
-
-            if  old_provider_enrolment_details is None:
-                prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
-                                    cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
-            else:
-                api_provider_enrolment_details = api_provider_enrolment_details.to_dict()
-                api_provider_enrolment_details = {
-                    key: value for key, value in api_provider_enrolment_details.items() if value is not None
-                }
-
-                mycol.update_one(old_provider_enrolment_details, {"$set":api_provider_enrolment_details}, upsert=False)
-                return  Response(json_util.dumps(api_provider_enrolment_details, cls=JSONEncoder), status=200, mimetype= self.mimetype)
+            mycol.delete_one({'api_prov_dom_id': api_prov_dom_id})
+            out =  "The provider matching apiProvDomainId  " + api_prov_dom_id + " was offboarded."
+            current_app.logger.debug("Removed provider domain from database")
+            return make_response(object=out, status=204)
 
         except Exception as e:
-            exception = "An exception occurred in update provider::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in delete provider"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
-    def patch_api_provider_enrolment_details(self, registrationId, api_provider_enrolment_details_patch):
+    def update_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
 
-            search_filter = {'registration_id': registrationId}
-            old_provider_enrolment_details = mycol.find_one(search_filter)
+            current_app.logger.debug("Updating api provider domain")
+            result = self.__check_api_provider_domain(api_prov_dom_id)
+
+            if isinstance(result, Response):
+                return result
+
+            for func in api_provider_enrolment_details.api_prov_funcs:
+                if func.api_prov_func_id is None:
+                    func.api_prov_func_id = secrets.token_hex(15)
+                    certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
+                    func.reg_info.api_prov_cert = certificate
+                else:
+                    api_prov_funcs = result["api_prov_funcs"]
+                    for api_func in api_prov_funcs:
+                        if func.api_prov_func_id == api_func["api_prov_func_id"]:
+                            if func.api_prov_func_role != api_func["api_prov_func_role"]:
+                                return bad_request_error(detail="Bad Role in provider", cause="Different role in update reqeuest", invalid_params=[{"param":"api_prov_func_role","reason":"differente role with same id"}])
+                            if func.reg_info.api_prov_pub_key != api_func["reg_info"]["api_prov_pub_key"]:
+                                certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
+                                func.reg_info.api_prov_cert = certificate
 
 
-            if  old_provider_enrolment_details is None:
-                prob = ProblemDetails(title="Not Found", status=404, detail="Not Exist Provider Enrolment Details",
-                                    cause="Not found registrations to send this api provider details")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype= self.mimetype)
+            api_provider_enrolment_details = api_provider_enrolment_details.to_dict()
+            api_provider_enrolment_details = clean_empty(api_provider_enrolment_details)
 
-            else:
+            result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
 
-                api_provider_enrolment_details_patch = api_provider_enrolment_details_patch.to_dict()
-                api_provider_enrolment_details_patch = {
-                    key: value for key, value in api_provider_enrolment_details_patch.items() if value is not None
-                }
+            result = clean_empty(result)
 
-                mycol.update_one(old_provider_enrolment_details, {"$set":api_provider_enrolment_details_patch})
-
-                return  Response(json_util.dumps(api_provider_enrolment_details_patch, cls=JSONEncoder), status=200, mimetype= self.mimetype)
+            current_app.logger.debug("Provider domain updated in database")
+            return make_response(object=dict_to_camel_case(result), status=200)
 
         except Exception as e:
-            exception = "An exception occurred in patch provider::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in update provider"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
+
+    def patch_api_provider_enrolment_details(self, api_prov_dom_id, api_provider_enrolment_details_patch):
+        try:
+            mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
+
+            current_app.logger.debug("Updating api provider domain")
+            result = self.__check_api_provider_domain(api_prov_dom_id)
+
+            if isinstance(result, Response):
+                return result
+
+            api_provider_enrolment_details_patch = api_provider_enrolment_details_patch.to_dict()
+            api_provider_enrolment_details_patch = clean_empty(api_provider_enrolment_details_patch)
+
+            result = mycol.find_one_and_update(result, {"$set":api_provider_enrolment_details_patch}, projection={'_id': 0},return_document=ReturnDocument.AFTER ,upsert=False)
+
+            result = clean_empty(result)
+
+            current_app.logger.debug("Provider domain updated in database")
+
+            return make_response(object=dict_to_camel_case(result), status=200)
+
+        except Exception as e:
+            exception = "An exception occurred in patch provider"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))

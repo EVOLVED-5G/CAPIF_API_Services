@@ -6,6 +6,7 @@ from datetime import date, datetime  # noqa: F401
 from typing import List, Dict  # noqa: F401
 
 from capif_security.models.base_model_ import Model
+from capif_security.models.access_token_err import AccessTokenErr
 from capif_security import util
 
 

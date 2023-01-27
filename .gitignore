@@ -15,4 +15,12 @@ services/nginx/certs/sign_req_body.json
 
 !docs/testing_with_curl/exposer.key
 !docs/testing_with_curl/invoker.key
+
+
+services/docker-elk/elasticsearch/_state
+services/docker-elk/elasticsearch/snapshot_cache
+services/docker-elk/elasticsearch/indices
+services/docker-elk/elasticsearch/node.lock
+services/docker-elk/elasticsearch/nodes
+
 results

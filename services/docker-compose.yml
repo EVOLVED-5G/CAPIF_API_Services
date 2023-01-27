@@ -1,18 +1,21 @@
+version: '3.7'
+
 services:
 #  aef-security:
 #    build: TS29222_AEF_Security_API/.
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
-  mosquitto:
-    build: ./mosquitto
-    ports: 
-      - "1883:1883"
-  aef-security:
-    build: TS29222_AEF_Security_API/.
-    expose:
-      - "8080"
-    image: dockerhub.hi.inet/evolved-5g/aef/security_api:latest
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
   api-invoker-management:
     build:
       context: ./TS29222_CAPIF_API_Invoker_Management_API
@@ -23,24 +26,31 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
     depends_on:
-    - mongo
+    - redis
+    - nginx
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
     depends_on:
-      - mongo
+      - redis
+      - nginx
+
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
-#  logs:
-#    build: TS29222_CAPIF_Auditing_API/.
-#    expose:
-#      - "8080"
-#    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
+  logs:
+    build:
+      context: ./TS29222_CAPIF_Auditing_API
+    expose:
+      - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Auditing_API:/usr/src/app
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
   service-apis:
     build:
       context: ./TS29222_CAPIF_Discover_Service_API
@@ -56,15 +66,23 @@ services:
     build: TS29222_CAPIF_Events_API/.
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Events_API:/usr/src/app
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
-      - mosquitto
+      - redis
       - mongo
   api-invocation-logs:
-    build: TS29222_CAPIF_Logging_API_Invocation_API/.
+    build:
+      context: ./TS29222_CAPIF_Logging_API_Invocation_API
     expose:
       - "8080"
+    volumes:
+      - ./TS29222_CAPIF_Logging_API_Invocation_API:/usr/src/app
+    restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
+    environment:
+      - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
   published-apis:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
@@ -74,7 +92,7 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
     depends_on:
-      - mosquitto
+      - redis
       - mongo
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
@@ -93,6 +111,9 @@ services:
       - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
     extra_hosts:
       - host.docker.internal:host-gateway
+    depends_on:
+      - redis
+      - nginx
   easy-rsa:
     build:
       context: ./easy_rsa
@@ -112,6 +133,8 @@ services:
     depends_on:
       - easy-rsa
       - mongo
+      - redis
+      - nginx
   mongo:
     image: mongo:6.0.2
     logging:
@@ -136,7 +159,7 @@ services:
     depends_on:
       - mongo
   nginx:
-    build: 
+    build:
       context: ./nginx
     ports:
       - "8080:8080"
@@ -147,16 +170,31 @@ services:
     hostname: ${CAPIF_HOSTNAME}
     volumes:
       - ./nginx/certs:/etc/nginx/certs
+    restart: unless-stopped
     depends_on:
-      - api-invoker-management
+      #- api-invoker-management
       - easy-rsa
+      - redis
 #      - aef-security
 #      - api-invoker-management
-      - api-provider-management
+      #- api-provider-management
 #      - access-control-policy
       - service-apis
-#      - api-invocation-logs
+      - api-invocation-logs
       - published-apis
 #      - capif-routing-info
-      - capif-security
+      #- capif-security
       - capif-events
+      - logs
+
+  mockServer:
+    image: mockserver/mockserver:5.14.0
+    hostname: robot.testing
+    ports:
+      - 1080:1080
+    # environment:
+    #   MOCKSERVER_PROPERTY_FILE: /config/mockserver.properties
+    #   MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+    # volumes:
+    #   - ./mockServer/:/config
+

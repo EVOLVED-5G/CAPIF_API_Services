@@ -1,6 +1,7 @@
 import sys
 
 import pymongo
+from pymongo import ReturnDocument
 import secrets
 from flask import current_app, Flask, Response
 import json
@@ -9,196 +10,201 @@ from pymongo import response
 from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from .resources import Resource
+from ..util import dict_to_camel_case, clean_empty
+from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
 from bson import json_util
 
-class PublishServiceOperations:
 
-    def __init__(self):
-        self.db = MongoDatabse()
-        self.mimetype = 'application/json'
+service_api_not_found_message = "Service API not found"
+
+class PublishServiceOperations(Resource):
+
+    def __check_apf(self, apf_id):
+        providers_col = self.db.get_col_by_name(self.db.capif_provider_col)
+
+        current_app.logger.debug("Checking apf id")
+        provider = providers_col.find_one({"api_prov_funcs.api_prov_func_id": apf_id})
+
+        if provider is None:
+            current_app.logger.error("Publisher not exist")
+            return unauthorized_error(detail = "Publisher not existing", cause = "Publisher id not found")
+
+        list_apf_ids =  [func["api_prov_func_id"] for func in provider["api_prov_funcs"] if func["api_prov_func_role"] == "APF"]
+        if apf_id not in list_apf_ids:
+            current_app.logger.debug("This id not belongs to APF")
+            return unauthorized_error(detail ="You are not a publisher", cause ="This API is only available for publishers")
+
+        return None
 
 
     def get_serviceapis(self, apf_id):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
 
         try:
 
-            apf_res = users_col.find_one({'_id': apf_id})
-            if apf_res is None:
+            current_app.logger.debug("Geting service apis")
+           
+            result = self.__check_apf(apf_id)
 
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
-                                    cause="Exposer id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            if result != None:
+                return result
 
-            else:
-                myQuery = {'apf_id': apf_id}
-                service_apis = mycol.find(myQuery)
-                json_docs = []
-                for serviceapi in service_apis:
-                    del serviceapi['apf_id']
-                    del serviceapi['_id']
-                    json_docs.append(serviceapi)
+            service = mycol.find({"apf_id": apf_id}, {"apf_id":0, "_id":0})
+            if service is None:
+                current_app.logger.error("Not found services for this apf id")
+                return not_found_error(detail="Not exist published services for this apf_id", cause="Not exist service with this apf_id")
 
-                res = Response(json.dumps(json_docs, default=json_util.default), status=200, mimetype=self.mimetype)
-                return res
+            json_docs = []
+            for serviceapi in service:
+                my_service_api = dict_to_camel_case(serviceapi)
+                my_service_api = clean_empty(my_service_api)
+                json_docs.append(my_service_api)
+
+            current_app.logger.debug("Obtained services apis")
+
+            res = make_response(object=json_docs, status=200)
+            return res
 
         except Exception as e:
-            exception = "An exception occurred in get services::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
-
+            exception = "An exception occurred in get services"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def add_serviceapidescription(self, apf_id, serviceapidescription):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
 
         try:
-            apf_res = users_col.find_one({'_id': apf_id})
 
-            if apf_res is None:
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
-                                    cause="Exposer id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            current_app.logger.debug("Publishing service")
+            result = self.__check_apf(apf_id)
 
-            else:
-                myParams = [{"api_name": serviceapidescription.api_name}]
-                for i in range(0,len(serviceapidescription.aef_profiles)):
-                    myParams.append({"aef_profiles."+str(i)+".aef_id": serviceapidescription.aef_profiles[i].aef_id})
-                myQuery = {"$and": myParams}
-                res = mycol.find_one(myQuery)
-                if res is not None:
+            if result != None:
+                return result
 
-                    prob = ProblemDetails(title="Forbidden", status=403, detail="Service already published",
-                                        cause="Identical API name and AEF Profile IDs")
-                    return Response(json.dumps(prob, cls=JSONEncoder), status=403, mimetype=self.mimetype)
+            service = mycol.find_one({"api_name": serviceapidescription.api_name})
+            if service is not None:
+                current_app.logger.error("Service already registered with same api name")
+                return forbidden_error(detail="Already registered service with same api name", cause="Found service with same api name")
 
-                else:
-                    api_id = secrets.token_hex(15)
-                    serviceapidescription.api_id = api_id
-                    rec = dict()
-                    rec['apf_id'] = apf_id
-                    rec.update(serviceapidescription.to_dict())
-                    mycol.insert_one(rec)
+            api_id = secrets.token_hex(15)
+            serviceapidescription.api_id = api_id
+            rec = dict()
+            rec['apf_id'] = apf_id
+            rec.update(serviceapidescription.to_dict())
+            mycol.insert_one(rec)
 
-                    res = Response(json.dumps(serviceapidescription, cls=JSONEncoder), status=201, mimetype=self.mimetype)
+            current_app.logger.debug("Service inserted in database")
+            res = make_response(object=serviceapidescription, status=201)
+            res.headers['Location'] = "http://localhost:8080/published-apis/v1/" + str(apf_id) + "/service-apis/" + str(api_id)
 
-                    res.headers['Location'] = "http://localhost:8080/published-apis/v1/" + str(apf_id) + "/service-apis/" + str(api_id)
-                    return res
+            return res
 
         except Exception as e:
-            exception = "An exception occurred in add services::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in add services"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
 
     def get_one_serviceapi(self, service_api_id, apf_id):
-    
+
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
 
         try:
-            apf_res = users_col.find_one({'_id': apf_id})
-            if apf_res is None:
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
-                                    cause="Exposer id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            current_app.logger.debug("Geting service api with id: " + service_api_id)
+            result = self.__check_apf(apf_id)
 
-            else:
-                myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-                service_api = mycol.find_one(myQuery)
-                print(service_api)
-                sys.stdin.flush()
-                if service_api is None:
-                    prob = ProblemDetails(title="Not Found", status=404, detail="Service API not found",
-                                        cause="No Service with specific credentials exists")
-                    return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+            if result != None:
+                return result
 
-                else:
-                    del service_api['apf_id']
-                    del service_api['_id']
+            my_query = {'apf_id': apf_id, 'api_id': service_api_id}
+            service_api = mycol.find_one(my_query, {"apf_id":0, "_id":0})
+            if service_api is None:
+                current_app.logger.error(service_api_not_found_message)
+                return not_found_error(detail=service_api_not_found_message, cause="No Service with specific credentials exists")
 
-                    res = Response(json.dumps(service_api, default=json_util.default), status=200, mimetype=self.mimetype)
-                    return res
+
+            my_service_api = dict_to_camel_case(service_api)
+            my_service_api = clean_empty(my_service_api)
+
+            current_app.logger.debug("Obtained service api")
+            res = make_response(object=my_service_api, status=200)
+            return res
+
         except Exception as e:
-            exception = "An exception occurred in get one service::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
-
+            exception = "An exception occurred in get one service"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
     def delete_serviceapidescription(self, service_api_id, apf_id):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
 
         try:
-            apf_res = users_col.find_one({'_id': apf_id})
 
-            if apf_res is None:
+            current_app.logger.debug("Removing api service with id: " + service_api_id)
+            result = self.__check_apf(apf_id)
 
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
-                                        cause="Exposer id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            if result != None:
+                return result
 
+            my_query = {'apf_id': apf_id, 'api_id': service_api_id}
+            serviceapidescription = mycol.find_one(my_query)
 
-            else:
-                myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-                serviceapidescription = mycol.find_one(myQuery)
+            if serviceapidescription is None:
+                current_app.logger.error(service_api_not_found_message)
+                return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
-                if serviceapidescription is None:
+            mycol.delete_one(my_query)
 
-                    prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
-                                        cause="Service API id not found")
-                    return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+            current_app.logger.debug("Removed service from database")
+            out =  "The service matching api_id " + service_api_id + " was deleted."
+            return make_response(out, status=204)
 
-                else:
-                    mycol.delete_one(myQuery)
-                    return Response(json.dumps(serviceapidescription, default=str, cls=JSONEncoder), status=204, mimetype=self.mimetype)
         except Exception as e:
-            exception = "An exception occurred in delete service::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
-
+            exception = "An exception occurred in delete service"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 
 
     def update_serviceapidescription(self, service_api_id, apf_id, service_api_description):
 
         mycol = self.db.get_col_by_name(self.db.service_api_descriptions)
-        users_col = self.db.get_col_by_name(self.db.capif_users)
 
         try:
-            apf_res = users_col.find_one({'_id': apf_id})
 
-            if apf_res is None:
+            current_app.logger.debug("Updating service api with id: " + service_api_id)
 
-                prob = ProblemDetails(title="Unauthorized", status=401, detail="Exposer not existing",
-                                        cause="Exposer id not found")
-                return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype=self.mimetype)
+            result = self.__check_apf(apf_id)
 
-            else:
+            if result != None:
+                return result
 
-                myQuery = {'apf_id': apf_id, 'api_id': service_api_id}
-                serviceapidescription = mycol.find_one(myQuery)
+            my_query = {'apf_id': apf_id, 'api_id': service_api_id}
+            serviceapidescription = mycol.find_one(my_query)
 
-                if serviceapidescription is None:
+            if serviceapidescription is None:
+                current_app.logger.error(service_api_not_found_message)
+                return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
-                    prob = ProblemDetails(title="Unauthorized", status=404, detail="Service API not existing",
-                                        cause="Service API id not found")
-                    return Response(json.dumps(prob, cls=JSONEncoder), status=404, mimetype=self.mimetype)
+            service_api_description = service_api_description.to_dict()
+            service_api_description = clean_empty(service_api_description)
 
-                else:
+            result = mycol.find_one_and_update(serviceapidescription, {"$set":service_api_description}, projection={"apf_id":0, "_id":0},return_document=ReturnDocument.AFTER ,upsert=False)
 
-                    service_api_description = service_api_description.to_dict()
-                    service_api_description = {
-                        key: value for key, value in service_api_description.items() if value is not None
-                    }
+            result = clean_empty(result)
 
-                    mycol.update_one(serviceapidescription, {"$set":service_api_description}, upsert=False)
-                    response = Response(json.dumps(service_api_description, default=str,cls=JSONEncoder), status=200, mimetype=self.mimetype)
+            current_app.logger.debug("Updated service api")
+    
+            response = make_response(object=dict_to_camel_case(result), status=200)
 
-                    return response
+            return response
+
         except Exception as e:
-            exception = "An exception occurred in update service::", e
-            return Response(json.dumps(exception, default=str, cls=JSONEncoder), status=500, mimetype=self.mimetype)
+            exception = "An exception occurred in update service"
+            current_app.logger.error(exception + "::" + str(e))
+            return internal_server_error(detail=exception, cause=str(e))
 

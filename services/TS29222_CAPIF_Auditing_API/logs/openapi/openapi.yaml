@@ -1,20 +1,18 @@
 openapi: 3.0.0
 info:
-  description: |
-    API for auditing.
-    © 2021, 3GPP Organizational Partners (ARIB, ATIS, CCSA, ETSI, TSDSI, TTA, TTC).
-    All rights reserved.
+  description: "API for auditing.  \n© 2022, 3GPP Organizational Partners (ARIB, ATIS,\
+    \ CCSA, ETSI, TSDSI, TTA, TTC).  \nAll rights reserved.\n"
   title: CAPIF_Auditing_API
-  version: 1.2.0-alpha.1
+  version: 1.2.1
 externalDocs:
-  description: 3GPP TS 29.222 V17.1.0 Common API Framework for 3GPP Northbound APIs
-  url: http://www.3gpp.org/ftp/Specs/archive/29_series/29.222/
+  description: 3GPP TS 29.222 V17.6.0 Common API Framework for 3GPP Northbound APIs
+  url: https://www.3gpp.org/ftp/Specs/archive/29_series/29.222/
 servers:
-- url: '{apiRoot}/logs/v1'
+- url: "{apiRoot}/logs/v1"
   variables:
     apiRoot:
       default: https://example.com
-      description: apiRoot as defined in subclause 7.5 of 3GPP TS 29.222.
+      description: apiRoot as defined in clause 7.5 of 3GPP TS 29.222.
 paths:
   /apiInvocationLogs:
     get:
@@ -63,8 +61,8 @@ paths:
         schema:
           type: string
         style: form
-      - description: API name, it is set as {apiName} part of the URI structure as
-          defined in subclause 4.4 of 3GPP TS 29.501.
+      - description: |
+          API name, it is set as {apiName} part of the URI structure as defined in clause 5.2.4 of 3GPP TS 29.122.
         explode: true
         in: query
         name: api-name
@@ -112,22 +110,26 @@ paths:
         schema:
           type: string
         style: form
-      - content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InterfaceDescription'
-        description: Interface description of the API invoker.
+      - description: Interface description of the API invoker.
+        example: "{\"ipv4Addr\": \"192.168.1.7\",\"port\": 8888,\"securityMethods\"\
+          : [\"OAuth\"]}"
+        explode: true
         in: query
         name: src-interface
         required: false
-      - content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InterfaceDescription'
-        description: Interface description of the API invoked.
+        schema:
+          type: string
+        style: form
+      - description: Interface description of the API invoked.
+        example: "{\"ipv4Addr\": \"192.168.1.7\",\"port\": 8888,\"securityMethods\"\
+          : [\"OAuth\"]}"
+        explode: true
         in: query
         name: dest-interface
         required: false
+        schema:
+          type: string
+        style: form
       - description: To filter irrelevant responses related to unsupported features
         explode: true
         in: query
@@ -142,8 +144,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvocationLog'
-          description: Result of the query operation along with fetched service API
-            invocation log data.
+          description: |
+            Result of the query operation along with fetched service API invocation log data.
         "307":
           description: Temporary Redirect
           headers:
@@ -218,6 +220,79 @@ paths:
           description: Generic Error
       x-openapi-router-controller: logs.controllers.default_controller
 components:
+  responses:
+    "307":
+      description: Temporary Redirect
+      headers:
+        Location:
+          description: An alternative URI of the resource.
+          required: true
+          schema:
+            type: string
+    "308":
+      description: Permanent Redirect
+      headers:
+        Location:
+          description: An alternative URI of the resource.
+          required: true
+          schema:
+            type: string
+    "400":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Bad request
+    "401":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Unauthorized
+    "403":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Forbidden
+    "404":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Not Found
+    "406":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Not Acceptable
+    "414":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: URI Too Long
+    "429":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Too Many Requests
+    "500":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Internal Server Error
+    "503":
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+      description: Service Unavailable
+    default:
+      description: Generic Error
   schemas:
     DateTime:
       description: string with format "date-time" as defined in OpenAPI.
@@ -225,23 +300,31 @@ components:
       title: DateTime
       type: string
     Protocol:
-      anyOf:
-      - $ref: '#/components/schemas/Protocol_anyOf'
-      - description: |
-          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
-        type: string
       description: |
-        Possible values are - HTTP_1_1: HTTP version 1.1 - HTTP_2: HTTP version 2
+        Possible values are:
+        - HTTP_1_1: HTTP version 1.1
+        - HTTP_2: HTTP version 2
+      enum:
+      - HTTP_1_1
+      - HTTP_2
       title: Protocol
+      type: string
     Operation:
-      anyOf:
-      - $ref: '#/components/schemas/Operation_anyOf'
-      - description: |
-          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
-        type: string
       description: |
-        Possible values are - GET: HTTP GET method - POST: HTTP POST method - PUT: HTTP PUT method - PATCH: HTTP PATCH method - DELETE: HTTP DELETE method
+        Possible values are:
+        - GET: HTTP GET method
+        - POST: HTTP POST method
+        - PUT: HTTP PUT method
+        - PATCH: HTTP PATCH method
+        - DELETE: HTTP DELETE method
+      enum:
+      - GET
+      - POST
+      - PUT
+      - PATCH
+      - DELETE
       title: Operation
+      type: string
     InterfaceDescription:
       description: Represents the description of an API's interface.
       example:
@@ -275,8 +358,8 @@ components:
           title: port
           type: integer
         securityMethods:
-          description: Security methods supported by the interface, it take precedence
-            over the security methods provided in AefProfile, for this specific interface.
+          description: |
+            Security methods supported by the interface, it take precedence over the security methods provided in AefProfile, for this specific interface.
           items:
             $ref: '#/components/schemas/SecurityMethod'
           minItems: 1
@@ -285,33 +368,26 @@ components:
       title: InterfaceDescription
       type: object
     SecurityMethod:
-      anyOf:
-      - $ref: '#/components/schemas/SecurityMethod_anyOf'
-      - description: |
-          This string provides forward-compatibility with future extensions to the enumeration but is not used to encode content defined in the present version of this API.
-        type: string
       description: |
-        Possible values are - PSK: Security method 1 (Using TLS-PSK) as described in 3GPP TS 33.122 - PKI: Security method 2 (Using PKI) as described in 3GPP TS 33.122 - OAUTH: Security method 3 (TLS with OAuth token) as described in 3GPP TS 33.122
+        Possible values are:
+        - PSK: Security method 1 (Using TLS-PSK) as described in 3GPP TS 33.122
+        - PKI: Security method 2 (Using PKI) as described in 3GPP TS 33.122
+        - OAUTH: Security method 3 (TLS with OAuth token) as described in 3GPP TS 33.122
+      enum:
+      - PSK
+      - PKI
+      - OAUTH
       title: SecurityMethod
+      type: string
     SupportedFeatures:
-      description: A string used to indicate the features supported by an API that
-        is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall contain
-        a bitmask indicating supported features in hexadecimal representation Each
-        character in the string shall take a value of "0" to "9", "a" to "f" or "A"
-        to "F" and shall represent the support of 4 features as described in table 5.2.2-3.
-        The most significant character representing the highest-numbered features
-        shall appear first in the string, and the character representing features
-        1 to 4 shall appear last in the string. The list of features and their numbering
-        (starting with 1) are defined separately for each API. If the string contains
-        a lower number of characters than there are defined features for an API, all
-        features that would be represented by characters that are not present in the
-        string are not supported
-      pattern: ^[A-Fa-f0-9]*$
+      description: |
+        A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of "0" to "9",  "a" to "f" or "A" to "F" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.
+      pattern: "^[A-Fa-f0-9]*$"
       title: supportedFeatures
       type: string
     InvocationLog:
-      description: Represents a set of Service API invocation logs to be stored in
-        a CAPIF core function.
+      description: |
+        Represents a set of Service API invocation logs to be stored in a CAPIF core function.
       example:
         supportedFeatures: supportedFeatures
         apiInvokerId: apiInvokerId
@@ -332,6 +408,7 @@ components:
           inputParameters: ""
           invocationLatency: 0
           result: result
+          protocol: null
           apiVersion: apiVersion
           destInterface:
             ipv6Addr: ipv6Addr
@@ -340,6 +417,7 @@ components:
             - null
             port: 39500
             ipv4Addr: ipv4Addr
+          operation: null
           apiId: apiId
           outputParameters: ""
         - apiName: apiName
@@ -357,6 +435,7 @@ components:
           inputParameters: ""
           invocationLatency: 0
           result: result
+          protocol: null
           apiVersion: apiVersion
           destInterface:
             ipv6Addr: ipv6Addr
@@ -365,12 +444,13 @@ components:
             - null
             port: 39500
             ipv4Addr: ipv4Addr
+          operation: null
           apiId: apiId
           outputParameters: ""
       properties:
         aefId:
-          description: Identity information of the API exposing function requesting
-            logging of service API invocations
+          description: |
+            Identity information of the API exposing function requesting logging of service API invocations
           title: aefId
           type: string
         apiInvokerId:
@@ -385,19 +465,9 @@ components:
           title: logs
           type: array
         supportedFeatures:
-          description: A string used to indicate the features supported by an API
-            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
-            contain a bitmask indicating supported features in hexadecimal representation
-            Each character in the string shall take a value of "0" to "9", "a" to
-            "f" or "A" to "F" and shall represent the support of 4 features as described
-            in table 5.2.2-3. The most significant character representing the highest-numbered
-            features shall appear first in the string, and the character representing
-            features 1 to 4 shall appear last in the string. The list of features
-            and their numbering (starting with 1) are defined separately for each
-            API. If the string contains a lower number of characters than there are
-            defined features for an API, all features that would be represented by
-            characters that are not present in the string are not supported
-          pattern: ^[A-Fa-f0-9]*$
+          description: |
+            A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of "0" to "9",  "a" to "f" or "A" to "F" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.
+          pattern: "^[A-Fa-f0-9]*$"
           title: supportedFeatures
           type: string
       required:
@@ -424,6 +494,7 @@ components:
         inputParameters: ""
         invocationLatency: 0
         result: result
+        protocol: null
         apiVersion: apiVersion
         destInterface:
           ipv6Addr: ipv6Addr
@@ -432,6 +503,7 @@ components:
           - null
           port: 39500
           ipv4Addr: ipv4Addr
+        operation: null
         apiId: apiId
         outputParameters: ""
       properties:
@@ -440,8 +512,8 @@ components:
           title: apiId
           type: string
         apiName:
-          description: Name of the API which was invoked, it is set as {apiName} part
-            of the URI structure as defined in subclause 4.4 of 3GPP TS 29.501.
+          description: |
+            Name of the API which was invoked, it is set as {apiName} part of the URI structure as defined in clause 5.2.4 of 3GPP TS 29.122.
           title: apiName
           type: string
         apiVersion:
@@ -461,7 +533,7 @@ components:
         operation:
           $ref: '#/components/schemas/Operation'
         result:
-          description: For HTTP protocol, it contains HTTP status code of the invocation
+          description: "For HTTP protocol, it contains HTTP status code of the invocation"
           title: result
           type: string
         invocationTime:
@@ -475,21 +547,20 @@ components:
           title: DurationMs
           type: integer
         inputParameters:
-          description: List of input parameters. Can be any value - string, number,
-            boolean, array or object.
+          description: |
+            List of input parameters. Can be any value - string, number, boolean, array or object.
           title: inputParameters
         outputParameters:
-          description: List of output parameters. Can be any value - string, number,
-            boolean, array or object.
+          description: |
+            List of output parameters. Can be any value - string, number, boolean, array or object.
           title: outputParameters
         srcInterface:
           $ref: '#/components/schemas/InterfaceDescription'
         destInterface:
           $ref: '#/components/schemas/InterfaceDescription'
         fwdInterface:
-          description: It includes the node identifier (as defined in IETF RFC 7239
-            of all forwarding entities between the API invoker and the AEF, concatenated
-            with comma and space, e.g. 192.0.2.43:80, unknown:_OBFport, 203.0.113.60
+          description: |
+            It includes the node identifier (as defined in IETF RFC 7239 of all forwarding entities between the API invoker and the AEF, concatenated with comma and space, e.g. 192.0.2.43:80, unknown:_OBFport, 203.0.113.60
           title: fwdInterface
           type: string
       required:
@@ -514,8 +585,8 @@ components:
           title: Uri
           type: string
         title:
-          description: A short, human-readable summary of the problem type. It should
-            not change from occurrence to occurrence of the problem.
+          description: "A short, human-readable summary of the problem type. It should\
+            \ not change from occurrence to occurrence of the problem."
           title: title
           type: string
         status:
@@ -532,33 +603,23 @@ components:
           title: Uri
           type: string
         cause:
-          description: A machine-readable application error cause specific to this
-            occurrence of the problem. This IE should be present and provide application-related
-            error information, if available.
+          description: "A machine-readable application error cause specific to this\
+            \ occurrence of the problem. This IE should be present and provide application-related\
+            \ error information, if available."
           title: cause
           type: string
         invalidParams:
-          description: Description of invalid parameters, for a request rejected due
-            to invalid parameters.
+          description: "Description of invalid parameters, for a request rejected\
+            \ due to invalid parameters."
           items:
             $ref: '#/components/schemas/InvalidParam'
           minItems: 1
           title: invalidParams
           type: array
         supportedFeatures:
-          description: A string used to indicate the features supported by an API
-            that is used as defined in clause 6.6 in 3GPP TS 29.500. The string shall
-            contain a bitmask indicating supported features in hexadecimal representation
-            Each character in the string shall take a value of "0" to "9", "a" to
-            "f" or "A" to "F" and shall represent the support of 4 features as described
-            in table 5.2.2-3. The most significant character representing the highest-numbered
-            features shall appear first in the string, and the character representing
-            features 1 to 4 shall appear last in the string. The list of features
-            and their numbering (starting with 1) are defined separately for each
-            API. If the string contains a lower number of characters than there are
-            defined features for an API, all features that would be represented by
-            characters that are not present in the string are not supported
-          pattern: ^[A-Fa-f0-9]*$
+          description: |
+            A string used to indicate the features supported by an API that is used as defined in clause  6.6 in 3GPP TS 29.500. The string shall contain a bitmask indicating supported features in  hexadecimal representation Each character in the string shall take a value of "0" to "9",  "a" to "f" or "A" to "F" and shall represent the support of 4 features as described in  table 5.2.2-3. The most significant character representing the highest-numbered features shall  appear first in the string, and the character representing features 1 to 4 shall appear last  in the string. The list of features and their numbering (starting with 1) are defined  separately for each API. If the string contains a lower number of characters than there are  defined features for an API, all features that would be represented by characters that are not  present in the string are not supported.
+          pattern: "^[A-Fa-f0-9]*$"
           title: supportedFeatures
           type: string
       title: ProblemDetails
@@ -568,15 +629,16 @@ components:
       title: Uri
       type: string
     InvalidParam:
-      description: Represents the description of invalid parameters, for a request
-        rejected due to invalid parameters.
+      description: "Represents the description of invalid parameters, for a request\
+        \ rejected due to invalid parameters."
       properties:
         param:
-          description: Attribute's name encoded as a JSON Pointer, or header's name.
+          description: "Attribute's name encoded as a JSON Pointer, or header's name."
           title: param
           type: string
         reason:
-          description: A human-readable reason, e.g. "must be a positive integer".
+          description: "A human-readable reason, e.g. \"must be a positive integer\"\
+            ."
           title: reason
           type: string
       required:
@@ -600,25 +662,3 @@ components:
       minimum: 0
       title: port
       type: integer
-    Protocol_anyOf:
-      enum:
-      - HTTP_1_1
-      - HTTP_2
-      title: Protocol_anyOf
-      type: string
-    Operation_anyOf:
-      enum:
-      - GET
-      - POST
-      - PUT
-      - PATCH
-      - DELETE
-      title: Operation_anyOf
-      type: string
-    SecurityMethod_anyOf:
-      enum:
-      - PSK
-      - PKI
-      - OAUTH
-      title: SecurityMethod_anyOf
-      type: string

@@ -136,7 +136,7 @@ class InterfaceDescription(Model):
     def security_methods(self):
         """Gets the security_methods of this InterfaceDescription.
 
-        Security methods supported by the interface, it take precedence over the security methods provided in AefProfile, for this specific interface.  # noqa: E501
+        Security methods supported by the interface, it take precedence over the security methods provided in AefProfile, for this specific interface.   # noqa: E501
 
         :return: The security_methods of this InterfaceDescription.
         :rtype: List[SecurityMethod]
@@ -147,7 +147,7 @@ class InterfaceDescription(Model):
     def security_methods(self, security_methods):
         """Sets the security_methods of this InterfaceDescription.
 
-        Security methods supported by the interface, it take precedence over the security methods provided in AefProfile, for this specific interface.  # noqa: E501
+        Security methods supported by the interface, it take precedence over the security methods provided in AefProfile, for this specific interface.   # noqa: E501
 
         :param security_methods: The security_methods of this InterfaceDescription.
         :type security_methods: List[SecurityMethod]

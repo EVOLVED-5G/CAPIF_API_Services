@@ -2,7 +2,7 @@
 
 - [Common API Framework (CAPIF)](#common-api-framework-capif)
 - [Repository structure](#repository-structure)
-- [CAPIF_API_Services](#capif_api_services)
+- [CAPIF\_API\_Services](#capif_api_services)
   - [How to run CAPIF services in this Repository](#how-to-run-capif-services-in-this-repository)
     - [Run All CAPIF Services locally with Docker images](#run-all-capif-services-locally-with-docker-images)
     - [Run each service using Docker](#run-each-service-using-docker)
@@ -17,6 +17,7 @@
 - [CAPIF Tool Release 1.0](#capif-tool-release-10)
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
 - [CAPIF Tool Release 2.1](#capif-tool-release-21)
+- [CAPIF Tool Release 2.2](#capif-tool-release-22)
 
 
 # Repository structure
@@ -187,6 +188,69 @@ This CAPIF services have many stability improvements:
   - Adjusted the register flow for exposer and invoker.
   - End points used in that flow are changed.
   - API Provider Management tests adapted to use TLS.
+
+# CAPIF Tool Release 3.0
+
+Changes at Services:
+
+* **Common Changes**:
+  * Removed from all CAPIF services the Common Name (CN) check at certificate to get the role in services.
+  * Add role verification in Nginx (check if consumer is Invoker, APF, AEF, AMF, or CCF)
+  * Add log files
+  * Remove mosquitto mqtt
+* **NGINX service**:
+  * Add map functions in config to check CN in certificates (role verification)
+* **Register**:
+  * Refactor
+  * At Registration operation you need to setup if entity is invoker or provider (previously was invoker or exposer).
+  * Get Auth operation to get access_token now only need to have user and password in body, role is not needed now.
+* **Invoker**:
+  * Refactor
+  * Same functionality but complete code refactor performed.
+  * This service has REDIS connection to update status (onboard, offboard) to other services.
+  * Listener created to add apiList when security context is created and remove it when security context is destroyed.
+* **Provider**:
+  * Refactor
+  * New development at this version.
+  * Allow registration of provider entities (AMF, APF y AEF)
+  * This registration returns signed certificates for each one requested to be used in subsequent request by each entity of provider.
+* **Events**:
+  * Refactor
+  * Generate subscription to event for any entity
+  * This service has REDIS connection to communicate event to other services:
+    * Internal operations
+      * Invoker OnBoarded or OffBoarded.
+      * Other events.
+    * External operations from other services.
+  * Notify to subscribers
+* **Publish**:
+  * Refactor
+  * Check if APF Id is valid.
+  * This service has REDIS connection:
+    * If Service is added or removed it sends a message through REDIS.
+* **Security**:
+  * New at this version
+  * This service has REDIS connection, that allow some operations like:
+  * When a new security context is created, then request to invoker to add the api to it apilist.
+  * When a security list is remove those apis are removed from invoker apilist associated.
+  * Token Creation (Oauth).
+  * Revoke Authorizations.
+* **Logging Service**:
+  * New at this version
+  * Creates a new log entry for service API invocations.
+* **Auditing Service**
+  * New at this version:
+  * Query and retrieve service API invocation logs stored on the CAPIF core function.
+
+
+Changes at Tests:
+* **New common scenarios** in order to make easy to describe a test.
+* New Test plan definition format.
+* Change to new provider registration towards provider Management.
+* Complete code refactor of all tests
+* Complete test plan review, including all services (except auditing and logging)
+
+
 
 
 [Open API Descriptions of 3GPP 5G APIs]: https://github.com/jdegre/5GC_APIs  "Open API Descriptions of 3GPP 5G APIs"

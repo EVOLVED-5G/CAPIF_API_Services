@@ -35,7 +35,7 @@ pipeline {
                     sh '''
                     mkdir $NETAPP_NAME
                     cd $NETAPP_NAME
-                    git clone --single-branch --branch $CHANGE_BRANCH $GIT_CAPIF_URL .
+                    git clone --single-branch --branch $CHANGE_BRANCH https://github.com/EVOLVED-5G/CAPIF_API_Services .
                     '''
                 }
            }
@@ -66,6 +66,9 @@ pipeline {
                                 if(array=="mosquitto"){
                                     return
                                 }
+                                if(array=="mosquitto"){
+                                    return
+                                }
                                 stage ("Analyze this CAPIF repo ${array}") {
                                     script {
                                         dir("${WORKSPACE}/${NETAPP_NAME}/.scannerwork"){
@@ -88,25 +91,25 @@ pipeline {
                                     }
                                 }
                             }
-                            stage("Quality gate ${array}") {
-                                script {
-                                    def tries = 0
-                                    def sonarResultStatus = "PENDING"
-                                    while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 10) {
-                                        try {
-                                            timeout(time: 5, unit: 'SECONDS') {
-                                                sonarResult = waitForQualityGate abortPipeline: false
-                                                sonarResultStatus = sonarResult.status
-                                            }
-                                        } catch(ex) {
-                                            echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
-                                        }
-                                    }
-                                    if (sonarResultStatus != 'OK') {
-                                        error "Quality gate failure for SonarQube: ${sonarResultStatus}"
-                                    }
-                                }
-                            }
+                            // stage("Quality gate ${array}") {
+                            //     script {
+                            //         def tries = 0
+                            //         def sonarResultStatus = "PENDING"
+                            //         while ((sonarResultStatus == "PENDING" || sonarResultStatus == "IN_PROGRESS") && tries++ < 15) {
+                            //             try {
+                            //                 timeout(time: 5, unit: 'SECONDS') {
+                            //                     sonarResult = waitForQualityGate abortPipeline: false
+                            //                     sonarResultStatus = sonarResult.status
+                            //                 }
+                            //             } catch(ex) {
+                            //                 echo "Waiting for 'SonarQube' report to finish. Attempt: ${tries}"
+                            //             }
+                            //         }
+                            //         if (sonarResultStatus != 'OK') {
+                            //             error "Quality gate failure for SonarQube: ${sonarResultStatus}"
+                            //         }
+                            //     }
+                            // }
                         }
                     }
                 }

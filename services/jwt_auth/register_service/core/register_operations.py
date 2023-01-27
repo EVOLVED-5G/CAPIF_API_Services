@@ -4,11 +4,7 @@ from ..db.db import MongoDatabse
 import secrets
 import requests
 import json
-
-from OpenSSL.SSL import FILETYPE_PEM
-from OpenSSL.crypto import (dump_certificate_request, dump_privatekey, load_publickey, PKey, TYPE_RSA, X509Req, dump_publickey)
-
-
+import sys
 
 class RegisterOperations:
 
@@ -32,27 +28,34 @@ class RegisterOperations:
                     ccf_discover_url="service-apis/v1/allServiceAPIs?api-invoker-id="), 201
 
 
-    def register_aef(self, username, password, description, cn, role):
+    def register_provider(self, username, password, description, cn, role):
         mycol = self.db.get_col_by_name(self.db.capif_users)
         exist_user = mycol.find_one({"username": username})
         if exist_user:
-            return jsonify("Exposer already exists"), 409
+            return jsonify("Provider already exists"), 409
 
         user_info = dict(_id=secrets.token_hex(7), username=username, password=password, role=role, description=description, cn=cn)
         obj = mycol.insert_one(user_info)
 
-        return jsonify(message="exposer" + " registered successfully",
+        return jsonify(message="provider" + " registered successfully",
                     id=obj.inserted_id,
                     ccf_api_onboarding_url="api-provider-management/v1/registrations",
-                    ccf_publish_url="published-apis/v1/{}/service-apis".format(obj.inserted_id)), 201
+                    ccf_publish_url="published-apis/v1/<apfId>/service-apis"), 201
 
-    def get_auth(self, username, password, role):
+    def get_auth(self, username, password):
 
-        if role == "invoker":
-            mycol = self.db.get_col_by_name(self.db.capif_users)
-            exist_user = mycol.find_one({"username": username, "password": password, "role": role})
-            if exist_user:
-                access_token = create_access_token(identity=(username + " " + role))
+        mycol = self.db.get_col_by_name(self.db.capif_users)
+
+        try:
+
+            exist_user = mycol.find_one({"username": username, "password": password})
+
+            if exist_user is None:
+                return jsonify("Not exister user with this credentials"), 400
+
+            if exist_user["role"] == "invoker":
+
+                access_token = create_access_token(identity=(username + " " + exist_user["role"]))
                 url = "http://easy-rsa:8080/ca-root"
                 headers = {
 
@@ -60,58 +63,72 @@ class RegisterOperations:
                 }
                 response = requests.request("GET", url, headers=headers)
                 response_payload = json.loads(response.text)
-                return jsonify(message="Token and CA root returned successfully", access_token=access_token, ca_root=response_payload["certificate"]), 201
-            else:
-                return jsonify(message="Bad credentials. User not found"), 401
-        elif role == "exposer":
-            mycol = self.db.get_col_by_name(self.db.capif_users)
-            exist_user = mycol.find_one({"username": username, "password": password, "role": role})
+                return jsonify(message="Token and CA root returned successfully", access_token=access_token, ca_root=response_payload["certificate"]), 200
 
-            if exist_user:
-                try:
-                    csr_request, private_key = self.create_csr(cn=username)
-                    publick_key = csr_request.decode("utf-8")
-                    url = "http://easy-rsa:8080/sign-csr"
+            elif exist_user["role"] == "provider":
+                access_token = create_access_token(identity=(username + " " + exist_user["role"]))
+                return jsonify(message="Token returned successfully", access_token=access_token), 200
+        except Exception as e:
+            return jsonify(message=f"Errors when try getting auth: {e}"), 500
+    def delete_tests(self):
+        user = self.db.get_col_by_name("user")
+        invokerdetails = self.db.get_col_by_name('invokerdetails')
+        serviceapidescriptions = self.db.get_col_by_name('serviceapidescriptions')
+        eventsdetails = self.db.get_col_by_name('eventsdetails')
+        servicesecurity = self.db.get_col_by_name('security')
+        providerenrolmentdetails = self.db.get_col_by_name('providerenrolmentdetails')
 
-                    payload = dict()
-                    payload['csr'] = publick_key
-                    payload['mode'] = 'client'
-                    payload['filename'] = username
+        splitter_string = '//'
+        message_returned = ''
 
-                    headers = {
+        myquery = {"username": {"$regex": "^ROBOT_TESTING.*"}}
+        result = user.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No test users present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Test Users"
+        message_returned += splitter_string
 
-                        'Content-Type': self.mimetype
+        myquery = {"description": {"$regex": "^ROBOT_TESTING.*"}}
+        result = serviceapidescriptions.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No test services present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Test Services"
+        message_returned += splitter_string
 
-                    }
+        myquery = {"api_invoker_information": {"$regex": "^ROBOT_TESTING.*"}}
+        result = invokerdetails.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No test Invokers present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Test Invokers"
+        message_returned += splitter_string
 
-                    response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-                    response_payload = json.loads(response.text)
+        myquery = {"notification_destination": {"$regex": "^http://robot.testing.*"}}
+        result = eventsdetails.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No event subscription present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " Event Subscriptions"
+        message_returned += splitter_string
 
-                    return jsonify(message="Certificate created successfuly", cert=response_payload["certificate"], private_key=private_key.decode("utf-8")), 201
+        myquery = {"notification_destination": {"$regex": "^http://robot.testing.*"}}
+        result = servicesecurity.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No service security subscription present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " service security Subscriptions"
+        message_returned += splitter_string
 
-                except Exception as e:
-                    return jsonify(message="Error while create certificate: "+ str(e)), 500
-            else:
-                return jsonify(message="Bad credentials. User not found"), 401
+        myquery = {"api_prov_dom_info": {"$regex": "^ROBOT_TESTING.*"}}
+        result = providerenrolmentdetails.delete_many(myquery)
+        if result.deleted_count == 0:
+            message_returned += "No Provider Enrolment Details present"
+        else:
+            message_returned += "Deleted " + str(result.deleted_count) + " provider enrolment details"
+        message_returned += splitter_string
 
-
-    def create_csr(self,cn):
-
-        # create public/private key
-        key = PKey()
-        key.generate_key(TYPE_RSA, 2048)
-
-        # Generate CSR
-        req = X509Req()
-        req.get_subject().CN = cn
-        req.get_subject().O = 'Telefonica I+D'
-        req.get_subject().C = 'ES'
-        req.set_pubkey(key)
-        req.sign(key, 'sha256')
+        return jsonify(message=message_returned), 200
 
 
-        csr_request = dump_certificate_request(FILETYPE_PEM, req)
-
-        private_key = dump_privatekey(FILETYPE_PEM, key)
-
-        return csr_request, private_key

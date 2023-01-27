@@ -5,16 +5,22 @@ Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 *** Variables ***
 ${INVOKER_USERNAME}             ROBOT_TESTING_INVOKER
-${PUBLISHER_USERNAME}           ROBOT_TESTING_PUBLISHER
+${PROVIDER_USERNAME}            ROBOT_TESTING_PROVIDER
+${APF_PROVIDER_USERNAME}        APF_${PROVIDER_USERNAME}
+${AEF_PROVIDER_USERNAME}        AEF_${PROVIDER_USERNAME}
+${AMF_PROVIDER_USERNAME}        AMF_${PROVIDER_USERNAME}
+
 ${INVOKER_NOT_REGISTERED}       not-valid
 ${INVOKER_ROLE}                 invoker
-${PUBLISHER_ROLE}               exposer
+${PROVIDER_ROLE}                provider
 
 ${CAPIF_HOSTNAME}               capifcore
 ${CAPIF_HTTP_PORT}
 ${CAPIF_IP}                     127.0.0.1
 ${CAPIF_CALLBACK_IP}            host.docker.internal
 ${CAPIF_CALLBACK_PORT}          8086
+
+${DISCOVER_URL}                 /service-apis/v1/allServiceAPIs?api-invoker-id=
 
 
 *** Keywords ***
@@ -55,5 +61,16 @@ Check Response Variable Type And Values
     Check Variable    ${resp.json()}    ${variable_type}
     FOR    ${input}    IN    @{input_parameters}
         Log    ${input}=${input_parameters['${input}']}
-        Should Match    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
+        Should Match Regexp    "${resp.json()['${input}']}"    "${input_parameters['${input}']}"
     END
+
+Remove Keys From Object
+    [Arguments]    ${input}    @{keys_to_remove}
+
+    ${filtered_input}=    Remove Keys From Object Helper    ${input}    ${keys_to_remove}
+
+    RETURN    ${filtered_input}
+
+Test ${TEST NAME} Currently Not Supported
+    Log    Test "${TEST NAME}" Currently not supported    WARN
+    Skip    Test "${TEST NAME}" Currently not supported

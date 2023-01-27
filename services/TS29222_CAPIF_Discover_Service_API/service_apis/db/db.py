@@ -1,11 +1,11 @@
 from pymongo import MongoClient
-from .config import Config
-
+from service_apis.config import Config
+from bson.codec_options import CodecOptions
 
 class MongoDatabse():
 
     def __init__(self):
-        self.config = Config().getConfig()
+        self.config = Config().get_config()
         self.db = self.__connect()
         self.invoker_col = self.config['mongo']['invokers_col']
         self.service_api_descriptions = self.config['mongo']['col']
@@ -13,7 +13,7 @@ class MongoDatabse():
 
 
     def get_col_by_name(self, name):
-        return self.db[name]
+        return self.db[name].with_options(codec_options=CodecOptions(tz_aware=True))
 
     def __connect(self):
         uri = "mongodb://" + self.config['mongo']['user'] + ":" + self.config['mongo']['password'] + "@" + self.config['mongo']['host'] + ":" + self.config['mongo']['port']

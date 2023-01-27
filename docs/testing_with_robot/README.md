@@ -23,7 +23,7 @@ This script will build robot docker image if it's need and execute tests selecte
 ```
 Results will be stored at <REPOSITORY_FOLDER>/results
 
-Please check parameters (include) under *Test Execution* under [Manual Build And Test Execution](#manual-build-and-test-execution).
+Please check parameters (include) under *Test Execution* at [Manual Build And Test Execution](#manual-build-and-test-execution).
 
 ## Manual Build And Test Execution
 
@@ -59,6 +59,7 @@ To run more specific tests, for example, only one functionality:
 And Run:
 docker run -ti --rm --network="host" -v <PATH_TO_REPOSITORY>/tests:/opt/robot-tests/tests -v <PATH_RESULT_FOLDER>:/opt/robot-tests/results 5gnow-robot-test:latest --variable CAPIF_HOSTNAME:capifcore --variable CAPIF_HTTP_PORT:8080 --include <TAG>
 ```
+
 ## Test result review
 
 In order to Review results after tests, you can check general report at <PATH_RESULT_FOLDER>/report.html or if you need more detailed information <PATH_RESULT_FOLDER>/log.html, example:
@@ -66,6 +67,8 @@ In order to Review results after tests, you can check general report at <PATH_RE
 ![Report](../images/robot_report_example.png)
 * Detailed information:
 ![Log](../images/robot_log_example.png)
+
+**NOTE: If you need more detail at Robot Framework Logs you can set log level option just adding to command --loglevel DEBUG**
 
 
 [Return To Main]: ../../README.md#robot-framework
