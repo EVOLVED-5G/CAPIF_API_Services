@@ -253,7 +253,7 @@ Changes at Tests:
 
 
 
-[Open API Descriptions of 3GPP 5G APIs]: https://github.com/jdegre/5GC_APIs  "Open API Descriptions of 3GPP 5G APIs"
+[Open API Descriptions of 3GPP 5G APIs]: https://forge.3gpp.org/rep/all/5G_APIs  "Open API Descriptions of 3GPP 5G APIs"
 [Test Plan Directory]: ./docs/test_plan/README.md  "Test Plan Directory"
 [Testing Using Curl]: ./docs/testing_with_curl/README.md  "Testing Using Curl"
 [Testing with Robot Framework]: ./docs/testing_with_robot/README.md  "Testing with Robot Framework"
