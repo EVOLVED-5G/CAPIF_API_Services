@@ -79,7 +79,7 @@ class ProviderManagementOperations(Resource):
             mycol.delete_one({'api_prov_dom_id': api_prov_dom_id})
             out =  "The provider matching apiProvDomainId  " + api_prov_dom_id + " was offboarded."
             current_app.logger.debug("Removed provider domain from database")
-            self.publish_ops.publish_message("internal-messages", f"provider-removed:{apf_id[0]}:{aef_id[0]}")
+            self.publish_ops.publish_message("internal-messages", f"provider-removed:{aef_id[0]}:{apf_id[0]}")
             return make_response(object=out, status=204)
 
         except Exception as e:

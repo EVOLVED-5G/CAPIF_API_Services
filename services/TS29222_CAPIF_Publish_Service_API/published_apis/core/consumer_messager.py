@@ -20,9 +20,9 @@ class Subscriber():
         current_app.logger.info("Listening publish messages")
         for raw_message in self.p.listen():
             if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
-                message, *apf_id = raw_message["data"].decode('utf-8').split(":")
+                message, *ids = raw_message["data"].decode('utf-8').split(":")
                 if message == "provider-removed":
-                    self.security_ops.delete_intern_service(apf_id[0])
+                    self.security_ops.delete_intern_service(ids[1])
 
 
 
