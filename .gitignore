@@ -17,6 +17,7 @@ services/easy_rsa/*EasyRSA*
 services/easy_rsa/*.csr
 services/easy_rsa/*.bash_history
 services/easy_rsa/*.profile
+services/easy_rsa/*.wget-hsts
 
 
 
