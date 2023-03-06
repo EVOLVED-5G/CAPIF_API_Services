@@ -12,6 +12,13 @@ __pycache__/
 *.crt
 *.zip
 services/nginx/certs/sign_req_body.json
+services/easy_rsa/pki
+services/easy_rsa/*EasyRSA*
+services/easy_rsa/*.csr
+services/easy_rsa/*.bash_history
+services/easy_rsa/*.profile
+
+
 
 !docs/testing_with_curl/exposer.key
 !docs/testing_with_curl/invoker.key
