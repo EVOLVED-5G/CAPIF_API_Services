@@ -18,6 +18,7 @@
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
 - [CAPIF Tool Release 2.1](#capif-tool-release-21)
 - [CAPIF Tool Release 3.0](#capif-tool-release-30)
+- [CAPIF Tool Release 3.1](#capif-tool-release-31)
 
 
 # Repository structure
@@ -242,6 +243,13 @@ Changes at Services:
   * New at this version:
   * Query and retrieve service API invocation logs stored on the CAPIF core function.
 
+
+# CAPIF Tool Release 3.1
+
+* Delete a service automatically if the provider that contains the APF that published it is deleted
+* Clear the security context of an invoker automatically if the invoker is deleted
+* Delete automatically the entry in the security info of the security context if the provider that has the aef that published the service is deleted
+* Delete automatically the entry in the security info of the security context if the service on which that context was created is deleted
 
 Changes at Tests:
 * **New common scenarios** in order to make easy to describe a test.
