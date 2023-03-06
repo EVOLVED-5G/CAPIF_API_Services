@@ -22,7 +22,7 @@ class Subscriber():
             if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
                 message, *ids = raw_message["data"].decode('utf-8').split(":")
                 if message == "invoker-removed":
-                    self.security_ops.delete_intern_servicesecurity(ids[1])
+                    self.security_ops.delete_intern_servicesecurity(ids[0])
                 if message == "provider-removed" or message == "service-removed":
                     self.security_ops.update_intern_servicesecurity(ids[0])
                 
