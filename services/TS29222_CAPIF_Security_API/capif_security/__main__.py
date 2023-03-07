@@ -8,7 +8,6 @@ from .config import Config
 from .core.consumer_messager import Subscriber
 from threading import Thread
 from flask_executor import Executor
-from flask_apscheduler import APScheduler
 from logging.handlers import RotatingFileHandler
 import sys
 
@@ -56,8 +55,6 @@ def main():
 
     JWTManager(app.app)
     subscriber = Subscriber()
-    scheduler = APScheduler()
-    scheduler.init_app(app.app)
     configure_logging(app.app)
 
     executor = Executor(app.app)

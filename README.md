@@ -244,19 +244,19 @@ Changes at Services:
   * Query and retrieve service API invocation logs stored on the CAPIF core function.
 
 
-# CAPIF Tool Release 3.1
-
-* Delete a service automatically if the provider that contains the APF that published it is deleted
-* Clear the security context of an invoker automatically if the invoker is deleted
-* Delete automatically the entry in the security info of the security context if the provider that has the aef that published the service is deleted
-* Delete automatically the entry in the security info of the security context if the service on which that context was created is deleted
-
 Changes at Tests:
 * **New common scenarios** in order to make easy to describe a test.
 * New Test plan definition format.
 * Change to new provider registration towards provider Management.
 * Complete code refactor of all tests
 * Complete test plan review, including all services (except auditing and logging)
+
+# CAPIF Tool Release 3.1
+
+* Delete a service automatically if the provider that contains the APF that published it is deleted
+* Clear the security context of an invoker automatically if the invoker is deleted
+* Delete automatically the entry in the security info of the security context if the provider that has the aef that published the service is deleted
+* Delete automatically the entry in the security info of the security context if the service on which that context was created is deleted
 
 
 

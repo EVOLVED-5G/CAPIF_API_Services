@@ -16,7 +16,6 @@ from .core.consumer_messager import Subscriber
 from multiprocessing import Process
 from threading import Thread
 from flask_executor import Executor
-from flask_apscheduler import APScheduler
 from logging.handlers import RotatingFileHandler
 
 
@@ -61,8 +60,7 @@ jwt = JWTManager(app.app)
 configure_logging(app.app)
 executor = Executor(app.app)
 subscriber = Subscriber()
-scheduler = APScheduler()
-scheduler.init_app(app.app)
+
 
 @app.app.before_first_request
 def create_listener_message():
