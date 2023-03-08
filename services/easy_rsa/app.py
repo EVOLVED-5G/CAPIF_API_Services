@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 @app.route("/ca-root", methods=["GET"])
 def return_ca_root():
-    capif_ca = open('/root/pki/ca.crt', 'rb')
+    capif_ca = open('/root/certs/pki/ca.crt', 'rb')
     capif_ca_crt = capif_ca.read()
     capif_ca.close()
 
@@ -42,13 +42,13 @@ def sign_csr():
     csr_file.write(bytes(csr, 'utf-8'))
     csr_file.close()
 
-    p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa import-req {} {}".format(filename + '.csr', filename),
+    p = subprocess.call("/root/certs/EasyRSA-3.0.4/easyrsa import-req {} {}".format(filename + '.csr', filename),
                         stdout=subprocess.PIPE, shell=True)
 
-    p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa --batch sign-req {} {}".format(mode, filename),
+    p = subprocess.call("/root/certs/EasyRSA-3.0.4/easyrsa --batch sign-req {} {}".format(mode, filename),
                         shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
-    cert = open('/root/pki/issued/{}.crt'.format(filename), 'rb')
+    cert = open('/root/certs/pki/issued/{}.crt'.format(filename), 'rb')
     crt = cert.read()
     cert.close()
 
@@ -88,9 +88,9 @@ def get_files(prefix):
 def revoke_cert(name):
     p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa --batch revoke {}".format(name),
                         stdout=subprocess.PIPE, shell=True)
-    delete_file('/root/{}.csr'.format(name))
-    delete_file('/root/pki/issued/{}.crt'.format(name))
-    delete_file('/root/pki/reqs/{}.req'.format(name))
+    delete_file('/root/certs/{}.csr'.format(name))
+    delete_file('/root/certs/pki/issued/{}.crt'.format(name))
+    delete_file('/root/certs/pki/reqs/{}.req'.format(name))
     current_app.logger.info("cert %s removed", name)
 
 

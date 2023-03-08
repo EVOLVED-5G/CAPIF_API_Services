@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  easy-rsa:
+      build:
+        context: ./easy_rsa
+      expose:
+        - "8080"
+      volumes:
+        - ./easy_rsa/certs:/root/certs
+      restart: unless-stopped
+      image: dockerhub.hi.inet/evolved-5g/easy-rsa:latest
