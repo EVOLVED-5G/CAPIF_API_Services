@@ -74,9 +74,12 @@ class ProviderManagementOperations(Resource):
             if isinstance(result, Response):
                 return result
 
+            apf_id = [ provider_func['api_prov_func_id'] for provider_func in result["api_prov_funcs"] if provider_func['api_prov_func_role'] == 'APF' ]
+            aef_id = [ provider_func['api_prov_func_id'] for provider_func in result["api_prov_funcs"] if provider_func['api_prov_func_role'] == 'AEF' ]
             mycol.delete_one({'api_prov_dom_id': api_prov_dom_id})
             out =  "The provider matching apiProvDomainId  " + api_prov_dom_id + " was offboarded."
             current_app.logger.debug("Removed provider domain from database")
+            self.publish_ops.publish_message("internal-messages", f"provider-removed:{aef_id[0]}:{apf_id[0]}")
             return make_response(object=out, status=204)
 
         except Exception as e:

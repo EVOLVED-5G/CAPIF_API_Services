@@ -10,6 +10,8 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from pymongo import MongoClient
 from .config import Config
 from logging.handlers import RotatingFileHandler
+from .core.consumer_messager import Subscriber
+from flask_executor import Executor
 
 
 def configure_logging(app):
@@ -50,6 +52,12 @@ config = Config()
 jwt = JWTManager(app.app)
 configure_logging(app.app)
 
+executor = Executor(app.app)
+subscriber = Subscriber()
+
+@app.app.before_first_request
+def up_listener():
+    executor.submit(subscriber.listen)
 
 
 if __name__ == '__main__':

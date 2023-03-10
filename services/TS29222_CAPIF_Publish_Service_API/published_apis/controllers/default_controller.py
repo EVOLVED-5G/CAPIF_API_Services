@@ -79,6 +79,7 @@ def apf_id_service_apis_service_api_id_delete(service_api_id, apf_id):  # noqa: 
     if res.status_code == 204:
         current_app.logger.info("Removed service published")
         publisher_ops.publish_message("events", "SERVICE_API_UNAVAILABLE")
+        publisher_ops.publish_message("internal-messages", f"service-removed:{service_api_id}")
 
     return res
 

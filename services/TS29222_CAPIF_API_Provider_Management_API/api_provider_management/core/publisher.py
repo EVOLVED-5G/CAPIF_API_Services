@@ -1,6 +1,5 @@
 import redis
 import sys
-from flask import current_app
 
 class Publisher():
 
