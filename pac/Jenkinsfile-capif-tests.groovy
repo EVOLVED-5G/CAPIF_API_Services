@@ -18,6 +18,17 @@ String robotTestSelection(String tests, String customTest) {
     return tests == 'NONE' ? ' ' : '--include ' + test_plan[tests]
 }
 
+def getAgent(deployment) {
+    String var = deployment
+    if("openshift".equals(var)) {
+        return "evol5-openshift";
+    }else if("kubernetes-athens".equals(var)){
+        return "evol5-athens"
+    }else {
+        return "evol5-slave";
+    }
+}
+
 test_plan = [
     'All Capif Services': 'all',
     'CAPIF Api Invoker Management': 'capif_api_invoker_management',
@@ -33,7 +44,7 @@ test_plan = [
 // ################################################
 
 pipeline {
-    agent { node { label 'evol5-slave' }  }
+    agent {node {label getAgent("${params.DEPLOYMENT}") == "any" ? "" : getAgent("${params.DEPLOYMENT}")}}
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
