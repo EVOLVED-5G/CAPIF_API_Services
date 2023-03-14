@@ -199,18 +199,18 @@ pipeline {
                                  ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                           elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
                               echo "Executing tests in ${DEPLOYMENT}"
-                              ROBOT_IMAGE_NAME="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_5.0.0"
+                              ROBOT_IMAGE="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_5.0.0"
                               echo "Trying to login AWS Registry"
                               aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin \
                               709233559969.dkr.ecr.eu-central-1.amazonaws.com 
-                              echo "docker pull $ROBOT_IMAGE_NAME"
-                              docker pull $ROBOT_IMAGE_NAME
+                              echo "docker pull ${ROBOT_IMAGE}"
+                              docker pull ${ROBOT_IMAGE}
                               docker run -t \
                                   --network="host" \
                                   --rm \
                                   -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
                                   -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
-                                  $ROBOT_IMAGE_NAME \
+                                  ${ROBOT_IMAGE} \
                                   --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                   --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                   ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
