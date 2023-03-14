@@ -80,7 +80,7 @@ pipeline {
         DEPLOYMENT = "${params.DEPLOYMENT}"
     }
     stages {
-        stage('Launch CAPIF: Local Test') {
+        stage('CAPIF: Local Test') {
             when {
                 allOf {
                     expression { RUN_LOCAL_CAPIF == 'true' }
@@ -89,61 +89,33 @@ pipeline {
             steps {
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
-                            ./run.sh ${CAPIF_HOSTNAME}
+                            bash ./run.sh ${CAPIF_HOSTNAME}
                            '''
                 }
                 dir ("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
-                            ./check_services_are_running.sh
+                            bash ./check_services_are_running.sh
                            '''
                 }
                 steps {
                     dir ("${env.WORKSPACE}") {
-                        sh """
-                        if [[ "${DEPLOYMENT}" == "kubernetes-uma" ]]; then
-                            echo "Executing tests in ${DEPLOYMENT}"
-                            echo "Retrieve docker image"
-                            docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
-                            echo "Executing tests"
-                            docker run -t \
-                                --network="host" \
-                                --rm \
+                        sh '''#!/bin/bash
+                            echo "Executing tests in local"
+                            docker images|grep -Eq '^'$ROBOT_IMAGE_NAME'[ ]+[ ]'$ROBOT_VERSION''
+                            if [[ $? -ne 0 ]]; then
+                                echo "Building Robot docker image."
+                                cd ${ROBOT_DOCKER_FILE_FOLDER}
+                                docker build  -t ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} .
+                                cd ${WORKSPACE}
+                            fi
+                            mkdir -p ${ROBOT_RESULTS_DIRECTORY}
+                            docker run --tty --rm --network="host" \
                                 -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
-                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
-                                ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} \
+                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}  \
                                 --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                 --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                 ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
-                        elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
-                            echo "Retrieve docker image"
-                            ROBOT_IMAGE_NAME="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_0.0.1"
-                            docker pull ${ROBOT_IMAGE_NAME}
-                            echo "Executing tests"
-                            docker run -t \
-                                --network="host" \
-                                --rm \
-                                -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
-                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
-                                ${ROBOT_IMAGE_NAME} \
-                                --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
-                                --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
-                                ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
-                        elif [[ "${DEPLOYMENT}" == "openshift" ]]; then
-                            echo "Executing tests in ${DEPLOYMENT}"
-                            echo "Retrieve docker image"
-                            docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
-                            echo "Executing tests"
-                            docker run -t \
-                                --network="host" \
-                                --rm \
-                                -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
-                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
-                                ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} \
-                                --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
-                                --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
-                                ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
-                        fi
-                    """
+                    '''
                     }
                 }
             }
@@ -180,7 +152,7 @@ pipeline {
             script {
                 dir ("${env.CAPIF_SERVICES_DIRECTORY}") {
                     echo 'Shutdown all capif services'
-                    sh 'sudo ./clean_capif_docker_services.sh'
+                    sh 'sudo bash ./clean_capif_docker_services.sh'
                 }
             }
 
