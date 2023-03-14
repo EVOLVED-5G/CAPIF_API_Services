@@ -11,6 +11,7 @@ class MongoDatabse():
         self.invoker_enrolment_details = self.config['mongo']['col']
         self.capif_users = self.config['mongo']['capif_users_col']
         self.service_col = self.config['mongo']["service_col"]
+        self.certs_col = self.config['mongo']['certs_col']
 
 
     def get_col_by_name(self, name):
