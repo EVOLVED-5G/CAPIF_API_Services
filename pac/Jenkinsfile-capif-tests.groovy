@@ -200,7 +200,7 @@ pipeline {
                                  ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                           elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
                             echo "Executing tests in ${DEPLOYMENT}"
-                            docker images|grep -Eq '^'${ROBOT_IMAGE_NAME}'[ ]+[ ]'${ROBOT_VERSION}''
+                            docker images|grep -Eq '^'$ROBOT_IMAGE_NAME'[ ]+[ ]'$ROBOT_VERSION''
                             if [[ $? -ne 0 ]]; then
                                 echo "Building Robot docker image."
                                 cd ${ROBOT_DOCKER_FILE_FOLDER}
