@@ -206,8 +206,6 @@ pipeline {
                                 cd ${ROBOT_DOCKER_FILE_FOLDER}
                                 docker build  -t ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} .
                                 cd ${WORKSPACE}
-                            else
-                                exit -2
                             fi
                             mkdir -p ${ROBOT_RESULTS_DIRECTORY}
                             docker run -ti --rm --network="host" \
