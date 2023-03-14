@@ -173,12 +173,12 @@ pipeline {
                     includes:'**/*'])
             junit allowEmptyResults: true, testResults: 'results/xunit.xml'
 
-            script {
-                dir ("${env.WORKSPACE}") {
-                    sh "sudo rm -rf ${ROBOT_TESTS_DIRECTORY}"
-                    sh "sudo rm -rf ${CAPIF_SERVICES_DIRECTORY}"
-                }
-            }
+//            script {
+//                dir ("${env.WORKSPACE}") {
+//                    sh "sudo rm -rf ${env.ROBOT_TESTS_DIRECTORY}"
+//                    sh "sudo rm -rf ${env.CAPIF_SERVICES_DIRECTORY}"
+//                }
+//            }
         }
         cleanup {
             /* clean up our workspace */
