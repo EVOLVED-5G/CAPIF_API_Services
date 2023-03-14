@@ -209,7 +209,7 @@ pipeline {
                                 cd ${WORKSPACE}
                             fi
                             mkdir -p ${ROBOT_RESULTS_DIRECTORY}
-                            docker run -ti --rm --network="host" \
+                            docker run -tty --rm --network="host" \
                                 -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
                                 -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}  \
                                 --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
