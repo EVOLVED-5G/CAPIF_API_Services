@@ -184,10 +184,10 @@ pipeline {
             steps {
                 dir ("${env.WORKSPACE}") {
                     sh """
-                        echo "Retrieve docker image"
                         if [[ "${DEPLOYMENT}" == "kubernetes-uma" ]]; then
-                           docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                           echo "Retrieve docker image"
                            echo "Executing tests in ${DEPLOYMENT}"
+                           docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
                            docker run -t \
                                --network="host" \
                                --rm \
