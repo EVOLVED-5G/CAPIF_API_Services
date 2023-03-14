@@ -11,6 +11,7 @@ ROBOT_DOCKER_FILE_FOLDER=$REPOSITORY_BASE_FOLDER/tools/robot
 # nginx Hostname and http port (80 by default) to reach for tests
 CAPIF_HOSTNAME=capifcore
 CAPIF_HTTP_PORT=8080
+CAPIF_HTTPS_PORT=443
 
 echo "HOSTNAME = $CAPIF_HOSTNAME"
 echo "CAPIF_HTTP_PORT = $CAPIF_HTTP_PORT"
