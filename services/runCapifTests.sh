@@ -15,6 +15,7 @@ CAPIF_HTTPS_PORT=443
 
 echo "HOSTNAME = $CAPIF_HOSTNAME"
 echo "CAPIF_HTTP_PORT = $CAPIF_HTTP_PORT"
+echo "CAPIF_HTTPS_PORT = $CAPIF_HTTPS_PORT"
 
 docker >/dev/null 2>/dev/null
 if [[ $? -ne 0 ]]
