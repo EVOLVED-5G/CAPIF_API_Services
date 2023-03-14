@@ -203,14 +203,14 @@ pipeline {
                               echo "Trying to login AWS Registry"
                               aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin \
                               709233559969.dkr.ecr.eu-central-1.amazonaws.com 
-                              echo "docker pull ${ROBOT_IMAGE}"
-                              docker pull ${ROBOT_IMAGE}
+                              echo "docker pull $ROBOT_IMAGE"
+                              docker pull $ROBOT_IMAGE
                               docker run -t \
                                   --network="host" \
                                   --rm \
                                   -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
                                   -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
-                                  ${ROBOT_IMAGE} \
+                                  $ROBOT_IMAGE \
                                   --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                   --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                   ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
