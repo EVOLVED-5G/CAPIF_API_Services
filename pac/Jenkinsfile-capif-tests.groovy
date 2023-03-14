@@ -184,7 +184,7 @@ pipeline {
             steps {
                 dir ("${env.WORKSPACE}") {
                     sh """
-                        if [[ "${DEPLOYMENT}" == "kubernetes-uma" ]]; then
+                        if [ "${DEPLOYMENT}" == "kubernetes-uma" ]; then
                            echo "Retrieve docker image"
                            echo "Executing tests in ${DEPLOYMENT}"
                            docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
@@ -197,7 +197,7 @@ pipeline {
                                --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
-                        elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
+                        elif [ "${DEPLOYMENT}" == "kubernetes-athens" ]; then
                             echo "Executing tests in ${DEPLOYMENT}"
                             ROBOT_IMAGE_NAME="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_5.0.0"
                             docker pull ${ROBOT_IMAGE_NAME}
@@ -212,7 +212,7 @@ pipeline {
                                 --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                 --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                 ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
-                        elif [[ "${DEPLOYMENT}" == "openshift" ]]; then
+                        elif [ "${DEPLOYMENT}" == "openshift" ]; then
                             echo "Executing tests in ${DEPLOYMENT}"
                             docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
                             echo "Executing tests"
