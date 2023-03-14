@@ -204,7 +204,7 @@ pipeline {
                             if [[ \$? -ne 0 ]]; then
                                 echo "Building Robot docker image."
                                 cd ${ROBOT_DOCKER_FILE_FOLDER}
-                                docker build  -t ${ROBOT_IMAGE_NAME}:${ROBOT_IMAGE_VERSION} .
+                                docker build  -t ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION} .
                                 cd ${WORKSPACE}
                             else
                                 exit -2
@@ -212,7 +212,7 @@ pipeline {
                             mkdir -p ${ROBOT_RESULTS_DIRECTORY}
                             docker run -ti --rm --network="host" \
                                 -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
-                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE_NAME}:${ROBOT_IMAGE_VERSION}  \
+                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}  \
                                 --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                 --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                 ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
