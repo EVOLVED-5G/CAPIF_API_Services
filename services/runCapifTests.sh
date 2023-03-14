@@ -44,4 +44,5 @@ docker run -ti --rm --network="host" \
     -v $TEST_FOLDER:/opt/robot-tests/tests \
     -v $RESULT_FOLDER:/opt/robot-tests/results ${DOCKER_ROBOT_IMAGE}:${DOCKER_ROBOT_IMAGE_VERSION}  \
     --variable CAPIF_HOSTNAME:$CAPIF_HOSTNAME \
-    --variable CAPIF_HTTP_PORT:$CAPIF_HTTP_PORT $@
+    --variable CAPIF_HTTP_PORT:$CAPIF_HTTP_PORT \
+    --variable CAPIF_HTTPS_PORT:$CAPIF_HTTPS_PORT $@
