@@ -59,7 +59,7 @@ pipeline {
         string(name: 'CAPIF_PORT', defaultValue: '8080', description:'Port of capif')
         choice(name: 'TESTS', choices: test_plan.keySet() as ArrayList, description: 'Select option to run. Prefix')
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
-        string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '2.0', description: 'Robot Docker image version')
+        string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '4.0', description: 'Robot Docker image version')
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
         choice(name: "DEPLOYMENT", choices: ["openshift", "kubernetes-athens", "kubernetes-uma"])
     }
@@ -68,13 +68,14 @@ pipeline {
         CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}/services"
         ROBOT_TESTS_DIRECTORY = "${WORKSPACE}/tests"
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
+        ROBOT_DOCKER_FILE_FOLDER="${WORKSPACE}/tools/robot"
         CUSTOM_TEST = "${params.CUSTOM_TEST}"
         CAPIF_HOSTNAME = "${params.CAPIF_HOSTNAME}"
         CAPIF_PORT = "${params.CAPIF_PORT}"
         ROBOT_TEST_OPTIONS = setRobotOptionsValue("${params.ROBOT_TEST_OPTIONS}")
         ROBOT_TESTS_INCLUDE = robotTestSelection("${params.TESTS}", "${params.CUSTOM_TEST}")
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
-        ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/evolved-robot-test-image'
+        ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/5gnow-robot-test-image'
         RUN_LOCAL_CAPIF = "${params.RUN_LOCAL_CAPIF}"
         DEPLOYMENT = "${params.DEPLOYMENT}"
     }
@@ -198,22 +199,23 @@ pipeline {
                                  --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
                                  ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                           elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
-                              echo "Executing tests in ${DEPLOYMENT}"
-                              ROBOT_IMAGE="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_5.0.0"
-                              echo "Trying to login AWS Registry"
-                              aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin \
-                              709233559969.dkr.ecr.eu-central-1.amazonaws.com 
-                              echo "docker pull $ROBOT_IMAGE"
-                              docker pull $ROBOT_IMAGE
-                              docker run -t \
-                                  --network="host" \
-                                  --rm \
-                                  -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
-                                  -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results \
-                                  $ROBOT_IMAGE \
-                                  --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
-                                  --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
-                                  ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
+                            echo "Executing tests in ${DEPLOYMENT}"
+                            docker images|grep -Eq '^'${ROBOT_IMAGE_NAME}'[ ]+[ ]'${ROBOT_VERSION}''
+                            if [[ $? -ne 0 ]]; then
+                                echo "Building Robot docker image."
+                                cd ${ROBOT_DOCKER_FILE_FOLDER}
+                                docker build  -t ${ROBOT_IMAGE}:${ROBOT_IMAGE_VERSION} .
+                                cd ${WORKSPACE}
+                            else
+                                exit -2
+                            fi
+                            mkdir -p ${ROBOT_RESULTS_DIRECTORY}
+                            docker run -ti --rm --network="host" \
+                                -v ${ROBOT_TESTS_DIRECTORY}:/opt/robot-tests/tests \
+                                -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE}:${ROBOT_IMAGE_VERSION}  \
+                                --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
+                                --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
+                                ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                           elif [[ "${DEPLOYMENT}" == "openshift" ]]; then
                               echo "Executing tests in ${DEPLOYMENT}"
                               docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
