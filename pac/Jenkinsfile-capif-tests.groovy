@@ -144,7 +144,7 @@ pipeline {
                                 ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                         elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
                             echo "Retrieve docker image"
-                            ROBOT_IMAGE_NAME="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_5.0.0"
+                            ROBOT_IMAGE_NAME="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_0.0.1"
                             docker pull ${ROBOT_IMAGE_NAME}
                             echo "Executing tests"
                             docker run -t \
