@@ -61,7 +61,7 @@ pipeline {
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
         string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '4.0', description: 'Robot Docker image version')
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
-        choice(name: "DEPLOYMENT", choices: ["openshift", "kubernetes-athens", "kubernetes-uma"])
+        choice(name: "DEPLOYMENT", choices: ["openshift", "kubernetes-athens", "kubernetes-uma"], description: 'Environment where the CAPIF is tested')
     }
     environment {
         BRANCH_NAME = "${params.BRANCH_NAME}"
