@@ -200,9 +200,10 @@ pipeline {
                           elif [[ "${DEPLOYMENT}" == "kubernetes-athens" ]]; then
                               echo "Executing tests in ${DEPLOYMENT}"
                               ROBOT_IMAGE_NAME="709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:robot_framework_5.0.0"
+                              echo "Trying to login AWS Registry"
+                              aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin \
+                              709233559969.dkr.ecr.eu-central-1.amazonaws.com 
                               docker pull ${ROBOT_IMAGE_NAME}
-                              docker pull ${ROBOT_IMAGE_NAME}
-                              echo "Executing tests"
                               docker run -t \
                                   --network="host" \
                                   --rm \
@@ -215,7 +216,6 @@ pipeline {
                           elif [[ "${DEPLOYMENT}" == "openshift" ]]; then
                               echo "Executing tests in ${DEPLOYMENT}"
                               docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
-                              echo "Executing tests"
                               docker run -t \
                                   --network="host" \
                                   --rm \
