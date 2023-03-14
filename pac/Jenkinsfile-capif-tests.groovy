@@ -152,7 +152,7 @@ pipeline {
             script {
                 dir ("${env.CAPIF_SERVICES_DIRECTORY}") {
                     echo 'Shutdown all capif services'
-                    sh 'sudo bash ./clean_capif_docker_services.sh'
+                    sh 'sudo ./clean_capif_docker_services.sh'
                 }
             }
 
