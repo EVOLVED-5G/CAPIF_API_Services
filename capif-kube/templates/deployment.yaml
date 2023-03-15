@@ -24,6 +24,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: CAPIF_HOSTNAME
@@ -65,6 +75,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -104,6 +124,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -143,6 +173,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -188,6 +228,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -226,6 +276,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: CAPIF_HOSTNAME
@@ -266,6 +326,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -304,6 +374,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -342,6 +422,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -380,6 +470,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: MONGO_INITDB_ROOT_PASSWORD
@@ -422,6 +522,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: ME_CONFIG_MONGODB_ADMINPASSWORD
@@ -468,6 +578,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: CAPIF_HOSTNAME
@@ -509,6 +629,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
@@ -547,6 +677,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - args:
         - redis-server
@@ -589,6 +729,16 @@ spec:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
     spec:
+      imagePullSecrets:
+        - name: regcred
+      hostAliases:
+        {{- if eq .Values.env "kuberentes-athens" }}
+        - ip: "{{ .Values.ingress_ip.athens }}"
+        {{- else }}
+        - ip: "{{ .Values.ingress_ip.uma }}"
+        {{- end }}
+          hostnames:
+            - "{{ .Values.nginx.nginx.env.capifHostname }}"
       containers:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
