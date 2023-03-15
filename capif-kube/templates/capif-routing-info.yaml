@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-capif-routing-info
+  name: capif-routing-info
   labels:
     io.kompose.service: capif-routing-info
   {{- include "capif-kube.labels" . | nindent 4 }}

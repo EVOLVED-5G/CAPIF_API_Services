@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-nginx
+  name: nginx
   labels:
   {{- include "capif-kube.labels" . | nindent 4 }}
   annotations:
@@ -15,49 +15,49 @@ spec:
       paths:
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /ca-root
         pathType: Prefix
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /sign-csr
         pathType: Prefix
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /certdata
         pathType: Prefix
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /register
         pathType: Prefix
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /testdata
         pathType: Prefix
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /getauth
         pathType: Prefix
       - backend:
           service:
-            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            name: 'nginx'
             port:
               number: 8080
         path: /test
@@ -66,7 +66,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-nginx
+  name: nginx
   labels:
     io.kompose.service: nginx
   {{- include "capif-kube.labels" . | nindent 4 }}

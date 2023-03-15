@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-capif-events
+  name: capif-events
   labels:
     io.kompose.service: capif-events
   {{- include "capif-kube.labels" . | nindent 4 }}
