@@ -193,14 +193,7 @@ spec:
         ports:
         - containerPort: 8080
         resources: {}
-        volumeMounts:
-        - mountPath: /usr/src/app
-          name: capif-events-claim0
       restartPolicy: Always
-      volumes:
-      - name: capif-events-claim0
-        persistentVolumeClaim:
-          claimName: capif-events-claim0
 ---
 apiVersion: apps/v1
 kind: Deployment
