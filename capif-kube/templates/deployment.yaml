@@ -481,7 +481,6 @@ spec:
         - containerPort: 8080
         - containerPort: 443
         resources: {}
-      hostname: ${CAPIF_HOSTNAME}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
