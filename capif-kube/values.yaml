@@ -115,7 +115,7 @@ mongo:
       mongoInitdbRootUsername: root
     image:
       repository: 709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g
-      tag: capif-services_mongo_1-demo, capif-services_mongo_1-3.0
+      tag: capif-services_mongo_1-3.0
   ports:
   - name: "27017"
     port: 27017
