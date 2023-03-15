@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-api-invocation-logs
+  name: api-invocation-logs
   labels:
     io.kompose.service: api-invocation-logs
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -52,7 +52,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-api-invoker-management
+  name: api-invoker-management
   labels:
     io.kompose.service: api-invoker-management
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -101,7 +101,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-api-provider-management
+  name: api-provider-management
   labels:
     io.kompose.service: api-provider-management
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -150,7 +150,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-capif-events
+  name: capif-events
   labels:
     io.kompose.service: capif-events
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -198,7 +198,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-capif-routing-info
+  name: capif-routing-info
   labels:
     io.kompose.service: capif-routing-info
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -246,7 +246,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-capif-security
+  name: capif-security
   labels:
     io.kompose.service: capif-security
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -296,7 +296,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-easy-rsa
+  name: easy-rsa
   labels:
     io.kompose.service: easy-rsa
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -344,7 +344,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-jwtauth
+  name: jwtauth
   labels:
     io.kompose.service: jwtauth
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -392,7 +392,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-logs
+  name: logs
   labels:
     io.kompose.service: logs
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -440,7 +440,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-mongo
+  name: mongo
   labels:
     io.kompose.service: mongo
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -492,7 +492,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-mongo-express
+  name: mongo-express
   labels:
     io.kompose.service: mongo-express
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -548,7 +548,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-nginx
+  name: nginx
   labels:
     io.kompose.service: nginx
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -599,7 +599,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-published-apis
+  name: published-apis
   labels:
     io.kompose.service: published-apis
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -647,7 +647,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-redis
+  name: redis
   labels:
     io.kompose.service: redis
   {{- include "capif-kube.labels" . | nindent 4 }}
@@ -699,7 +699,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "capif-kube.fullname" . }}-service-apis
+  name: service-apis
   labels:
     io.kompose.service: service-apis
   {{- include "capif-kube.labels" . | nindent 4 }}
