@@ -7,7 +7,7 @@ ingress_ip:
 apiInvocationLogs:
   apiInvocationLogs:
     env:
-      capifHostname: "capif.apps.ocp-epg.hi.inet"
+      capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: 709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g
       tag: capif-services_api-invocation-logs_1-3.0
@@ -64,7 +64,7 @@ capifRoutingInfo:
 capifSecurity:
   capifSecurity:
     env:
-      capifHostname: "capif.apps.ocp-epg.hi.inet"
+      capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: 709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g
       tag: capif-services_capif-security_1-3.0
@@ -140,7 +140,7 @@ mongoExpress:
 nginx:
   nginx:
     env:
-      capifHostname: "capif.apps.ocp-epg.hi.inet"
+      capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: 709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g
       tag: capif-services_nginx_1-3.0

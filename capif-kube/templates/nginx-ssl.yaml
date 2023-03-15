@@ -13,7 +13,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: capif.apps.ocp-epg.hi.inet
+  - host: "{{ .Values.nginx.nginx.env.capifHostname }}"
     http:
       paths:
       - backend:
