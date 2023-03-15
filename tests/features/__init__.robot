@@ -12,10 +12,16 @@ Force Tags      all
 Prepare environment
     Log    ${CAPIF_HOSTNAME}
     Log    "${CAPIF_HTTP_PORT}"
+    Log    "${CAPIF_HTTPS_PORT}"
 
     Set Global Variable    ${CAPIF_HTTP_URL}    http://${CAPIF_HOSTNAME}/
     IF    "${CAPIF_HTTP_PORT}" != ""
         Set Global Variable    ${CAPIF_HTTP_URL}    http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    END
+
+    Set Global Variable    ${CAPIF_HTTPS_URL}    https://${CAPIF_HOSTNAME}/
+    IF    "${CAPIF_HTTPS_PORT}" != ""
+        Set Global Variable    ${CAPIF_HTTPS_URL}    https://${CAPIF_HOSTNAME}:${CAPIF_HTTPS_PORT}/
     END
 
     ${status}    ${CAPIF_IP}=    Run Keyword And Ignore Error    Get Ip From Hostname    ${CAPIF_HOSTNAME}
