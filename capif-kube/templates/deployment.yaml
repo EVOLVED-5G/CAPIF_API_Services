@@ -1,0 +1,603 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-api-invocation-logs
+  labels:
+    io.kompose.service: api-invocation-logs
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.apiInvocationLogs.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: api-invocation-logs
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: api-invocation-logs
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: CAPIF_HOSTNAME
+          value: {{ quote .Values.apiInvocationLogs.apiInvocationLogs.env.capifHostname
+            }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.apiInvocationLogs.apiInvocationLogs.image.repository }}:{{ .Values.apiInvocationLogs.apiInvocationLogs.image.tag
+          | default .Chart.AppVersion }}
+        name: api-invocation-logs
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-api-invoker-management
+  labels:
+    io.kompose.service: api-invoker-management
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.apiInvokerManagement.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: api-invoker-management
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: api-invoker-management
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.apiInvokerManagement.apiInvokerManagement.image.repository }}:{{
+          .Values.apiInvokerManagement.apiInvokerManagement.image.tag | default .Chart.AppVersion
+          }}
+        name: api-invoker-management
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-api-provider-management
+  labels:
+    io.kompose.service: api-provider-management
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.apiProviderManagement.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: api-provider-management
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: api-provider-management
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.apiProviderManagement.apiProviderManagement.image.repository
+          }}:{{ .Values.apiProviderManagement.apiProviderManagement.image.tag | default
+          .Chart.AppVersion }}
+        name: api-provider-management
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-capif-events
+  labels:
+    io.kompose.service: capif-events
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.capifEvents.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: capif-events
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: capif-events
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.capifEvents.capifEvents.image.repository }}:{{ .Values.capifEvents.capifEvents.image.tag
+          | default .Chart.AppVersion }}
+        name: capif-events
+        ports:
+        - containerPort: 8080
+        resources: {}
+        volumeMounts:
+        - mountPath: /usr/src/app
+          name: capif-events-claim0
+      restartPolicy: Always
+      volumes:
+      - name: capif-events-claim0
+        persistentVolumeClaim:
+          claimName: capif-events-claim0
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-capif-routing-info
+  labels:
+    io.kompose.service: capif-routing-info
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.capifRoutingInfo.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: capif-routing-info
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: capif-routing-info
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.capifRoutingInfo.capifRoutingInfo.image.repository }}:{{ .Values.capifRoutingInfo.capifRoutingInfo.image.tag
+          | default .Chart.AppVersion }}
+        name: capif-routing-info
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-capif-security
+  labels:
+    io.kompose.service: capif-security
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.capifSecurity.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: capif-security
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: capif-security
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: CAPIF_HOSTNAME
+          value: {{ quote .Values.capifSecurity.capifSecurity.env.capifHostname }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.capifSecurity.capifSecurity.image.repository }}:{{ .Values.capifSecurity.capifSecurity.image.tag
+          | default .Chart.AppVersion }}
+        name: capif-security
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-easy-rsa
+  labels:
+    io.kompose.service: easy-rsa
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.easyRsa.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: easy-rsa
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: easy-rsa
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.easyRsa.easyRsa.image.repository }}:{{ .Values.easyRsa.easyRsa.image.tag
+          | default .Chart.AppVersion }}
+        name: easy-rsa
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-jwtauth
+  labels:
+    io.kompose.service: jwtauth
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.jwtauth.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: jwtauth
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: jwtauth
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.jwtauth.jwtauth.image.repository }}:{{ .Values.jwtauth.jwtauth.image.tag
+          | default .Chart.AppVersion }}
+        name: jwtauth
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-logs
+  labels:
+    io.kompose.service: logs
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.logs.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: logs
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: logs
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.logs.logs.image.repository }}:{{ .Values.logs.logs.image.tag
+          | default .Chart.AppVersion }}
+        name: logs
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-mongo
+  labels:
+    io.kompose.service: mongo
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.mongo.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: mongo
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: mongo
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: {{ quote .Values.mongo.mongo.env.mongoInitdbRootPassword }}
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: {{ quote .Values.mongo.mongo.env.mongoInitdbRootUsername }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.mongo.mongo.image.repository }}:{{ .Values.mongo.mongo.image.tag
+          | default .Chart.AppVersion }}
+        name: mongo
+        ports:
+        - containerPort: 27017
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-mongo-express
+  labels:
+    io.kompose.service: mongo-express
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.mongoExpress.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: mongo-express
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: mongo-express
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          value: {{ quote .Values.mongoExpress.mongoExpress.env.meConfigMongodbAdminpassword
+            }}
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          value: {{ quote .Values.mongoExpress.mongoExpress.env.meConfigMongodbAdminusername
+            }}
+        - name: ME_CONFIG_MONGODB_URL
+          value: {{ quote .Values.mongoExpress.mongoExpress.env.meConfigMongodbUrl }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.mongoExpress.mongoExpress.image.repository }}:{{ .Values.mongoExpress.mongoExpress.image.tag
+          | default .Chart.AppVersion }}
+        name: mongo-express
+        ports:
+        - containerPort: 8081
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-nginx
+  labels:
+    io.kompose.service: nginx
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.nginx.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: nginx
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: nginx
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: CAPIF_HOSTNAME
+          value: {{ quote .Values.nginx.nginx.env.capifHostname }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.nginx.nginx.image.repository }}:{{ .Values.nginx.nginx.image.tag
+          | default .Chart.AppVersion }}
+        name: nginx
+        ports:
+        - containerPort: 8080
+        - containerPort: 443
+        resources: {}
+      hostname: ${CAPIF_HOSTNAME}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-published-apis
+  labels:
+    io.kompose.service: published-apis
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.publishedApis.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: published-apis
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: published-apis
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.publishedApis.publishedApis.image.repository }}:{{ .Values.publishedApis.publishedApis.image.tag
+          | default .Chart.AppVersion }}
+        name: published-apis
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-redis
+  labels:
+    io.kompose.service: redis
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.redis.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: redis
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: redis
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - args:
+        - redis-server
+        env:
+        - name: REDIS_REPLICATION_MODE
+          value: {{ quote .Values.redis.redis.env.redisReplicationMode }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.redis.redis.image.repository }}:{{ .Values.redis.redis.image.tag
+          | default .Chart.AppVersion }}
+        name: redis
+        ports:
+        - containerPort: 6379
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-service-apis
+  labels:
+    io.kompose.service: service-apis
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  replicas: {{ .Values.serviceApis.replicas }}
+  selector:
+    matchLabels:
+      io.kompose.service: service-apis
+    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        io.kompose.network/services-default: "true"
+        io.kompose.service: service-apis
+      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      annotations:
+        kompose.cmd: kompose -f ../services/docker-compose.yml convert
+        kompose.version: 1.28.0 (c4137012e)
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.serviceApis.serviceApis.image.repository }}:{{ .Values.serviceApis.serviceApis.image.tag
+          | default .Chart.AppVersion }}
+        name: service-apis
+        ports:
+        - containerPort: 8080
+        resources: {}
+      restartPolicy: Always

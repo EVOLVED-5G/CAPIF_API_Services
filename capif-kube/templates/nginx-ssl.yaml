@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-nginx-ssl
+  labels:
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: capif.apps.ocp-epg.hi.inet
+    http:
+      paths:
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 443
+        path: /
+        pathType: Prefix

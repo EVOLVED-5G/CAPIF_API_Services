@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-jwtauth
+  labels:
+    io.kompose.service: jwtauth
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  type: {{ .Values.jwtauth.type }}
+  selector:
+    io.kompose.service: jwtauth
+  {{- include "capif-kube.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.jwtauth.ports | toYaml | nindent 2 -}}

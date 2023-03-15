@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-mongo-express
+  labels:
+    io.kompose.service: mongo-express
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  type: {{ .Values.mongoExpress.type }}
+  selector:
+    io.kompose.service: mongo-express
+  {{- include "capif-kube.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.mongoExpress.ports | toYaml | nindent 2 -}}

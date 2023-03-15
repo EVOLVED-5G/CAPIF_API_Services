@@ -1,0 +1,82 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-nginx
+  labels:
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "{{ .Values.nginx.nginx.env.capifHostname }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /ca-root
+        pathType: Prefix
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /sign-csr
+        pathType: Prefix
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /certdata
+        pathType: Prefix
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /register
+        pathType: Prefix
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /testdata
+        pathType: Prefix
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /getauth
+        pathType: Prefix
+      - backend:
+          service:
+            name: '{{ include "capif-kube.fullname" . }}-nginx'
+            port:
+              number: 8080
+        path: /test
+        pathType: Prefix
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-nginx
+  labels:
+    io.kompose.service: nginx
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  type: {{ .Values.nginx.type }}
+  selector:
+    io.kompose.service: nginx
+  {{- include "capif-kube.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.nginx.ports | toYaml | nindent 2 -}}

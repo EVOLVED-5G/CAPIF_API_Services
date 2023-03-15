@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "capif-kube.fullname" . }}-capif-events
+  labels:
+    io.kompose.service: capif-events
+  {{- include "capif-kube.labels" . | nindent 4 }}
+  annotations:
+    kompose.cmd: kompose -f ../services/docker-compose.yml convert
+    kompose.version: 1.28.0 (c4137012e)
+spec:
+  type: {{ .Values.capifEvents.type }}
+  selector:
+    io.kompose.service: capif-events
+  {{- include "capif-kube.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.capifEvents.ports | toYaml | nindent 2 -}}
