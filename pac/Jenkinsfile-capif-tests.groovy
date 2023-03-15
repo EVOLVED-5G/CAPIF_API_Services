@@ -57,6 +57,7 @@ pipeline {
         booleanParam(name: 'RUN_LOCAL_CAPIF', defaultValue: false, description: 'Run test on local deployment')
         string(name: 'CAPIF_HOSTNAME', defaultValue: 'capifcore', description:'Nginx to forward requests')
         string(name: 'CAPIF_PORT', defaultValue: '8080', description:'Port of capif')
+        string(name: 'CAPIF_TLS_PORT', defaultValue: '443', description:'Port of TLS capif')
         choice(name: 'TESTS', choices: test_plan.keySet() as ArrayList, description: 'Select option to run. Prefix')
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
         string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '4.0', description: 'Robot Docker image version')
@@ -72,6 +73,7 @@ pipeline {
         CUSTOM_TEST = "${params.CUSTOM_TEST}"
         CAPIF_HOSTNAME = "${params.CAPIF_HOSTNAME}"
         CAPIF_PORT = "${params.CAPIF_PORT}"
+        CAPIF_TLS_PORT = "${params.CAPIF_TLS_PORT}"
         ROBOT_TEST_OPTIONS = setRobotOptionsValue("${params.ROBOT_TEST_OPTIONS}")
         ROBOT_TESTS_INCLUDE = robotTestSelection("${params.TESTS}", "${params.CUSTOM_TEST}")
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
@@ -114,6 +116,7 @@ pipeline {
                                 -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}  \
                                 --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                 --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
+                                --variable CAPIF_HTTPS_PORT:${CAPIF_TLS_PORT} \
                                 ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                     '''
                     }
@@ -141,6 +144,7 @@ pipeline {
                                 -v ${ROBOT_RESULTS_DIRECTORY}:/opt/robot-tests/results ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}  \
                                 --variable CAPIF_HOSTNAME:${CAPIF_HOSTNAME} \
                                 --variable CAPIF_HTTP_PORT:${CAPIF_PORT} \
+                                --variable CAPIF_HTTPS_PORT:${CAPIF_TLS_PORT} \
                                 ${ROBOT_TESTS_INCLUDE} ${ROBOT_TEST_OPTIONS}
                     '''
                 }
