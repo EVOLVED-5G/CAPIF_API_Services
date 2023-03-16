@@ -41,7 +41,7 @@ spec:
             }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.apiInvocationLogs.apiInvocationLogs.image.repository }}:{{ .Values.apiInvocationLogs.apiInvocationLogs.image.tag
+        image: {{ .Values.apiInvocationLogs.apiInvocationLogs.image.repository }}-{{ .Values.apiInvocationLogs.apiInvocationLogs.image.tag
           | default .Chart.AppVersion }}
         name: api-invocation-logs
         ports:
@@ -89,7 +89,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.apiInvokerManagement.apiInvokerManagement.image.repository }}:{{
+        image: {{ .Values.apiInvokerManagement.apiInvokerManagement.image.repository }}-{{
           .Values.apiInvokerManagement.apiInvokerManagement.image.tag | default .Chart.AppVersion
           }}
         name: api-invoker-management
@@ -139,7 +139,7 @@ spec:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.apiProviderManagement.apiProviderManagement.image.repository
-          }}:{{ .Values.apiProviderManagement.apiProviderManagement.image.tag | default
+          }}-{{ .Values.apiProviderManagement.apiProviderManagement.image.tag | default
           .Chart.AppVersion }}
         name: api-provider-management
         ports:
@@ -187,7 +187,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.capifEvents.capifEvents.image.repository }}:{{ .Values.capifEvents.capifEvents.image.tag
+        image: {{ .Values.capifEvents.capifEvents.image.repository }}-{{ .Values.capifEvents.capifEvents.image.tag
           | default .Chart.AppVersion }}
         name: capif-events
         ports:
@@ -235,7 +235,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.capifRoutingInfo.capifRoutingInfo.image.repository }}:{{ .Values.capifRoutingInfo.capifRoutingInfo.image.tag
+        image: {{ .Values.capifRoutingInfo.capifRoutingInfo.image.repository }}-{{ .Values.capifRoutingInfo.capifRoutingInfo.image.tag
           | default .Chart.AppVersion }}
         name: capif-routing-info
         ports:
@@ -285,7 +285,7 @@ spec:
           value: {{ quote .Values.capifSecurity.capifSecurity.env.capifHostname }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.capifSecurity.capifSecurity.image.repository }}:{{ .Values.capifSecurity.capifSecurity.image.tag
+        image: {{ .Values.capifSecurity.capifSecurity.image.repository }}-{{ .Values.capifSecurity.capifSecurity.image.tag
           | default .Chart.AppVersion }}
         name: capif-security
         ports:
@@ -333,7 +333,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.easyRsa.easyRsa.image.repository }}:{{ .Values.easyRsa.easyRsa.image.tag
+        image: {{ .Values.easyRsa.easyRsa.image.repository }}-{{ .Values.easyRsa.easyRsa.image.tag
           | default .Chart.AppVersion }}
         name: easy-rsa
         ports:
@@ -381,7 +381,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.jwtauth.jwtauth.image.repository }}:{{ .Values.jwtauth.jwtauth.image.tag
+        image: {{ .Values.jwtauth.jwtauth.image.repository }}-{{ .Values.jwtauth.jwtauth.image.tag
           | default .Chart.AppVersion }}
         name: jwtauth
         ports:
@@ -429,7 +429,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.logs.logs.image.repository }}:{{ .Values.logs.logs.image.tag
+        image: {{ .Values.logs.logs.image.repository }}-{{ .Values.logs.logs.image.tag
           | default .Chart.AppVersion }}
         name: logs
         ports:
@@ -481,7 +481,7 @@ spec:
           value: {{ quote .Values.mongo.mongo.env.mongoInitdbRootUsername }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.mongo.mongo.image.repository }}:{{ .Values.mongo.mongo.image.tag
+        image: {{ .Values.mongo.mongo.image.repository }}-{{ .Values.mongo.mongo.image.tag
           | default .Chart.AppVersion }}
         name: mongo
         ports:
@@ -537,7 +537,7 @@ spec:
           value: {{ quote .Values.mongoExpress.mongoExpress.env.meConfigMongodbUrl }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.mongoExpress.mongoExpress.image.repository }}:{{ .Values.mongoExpress.mongoExpress.image.tag
+        image: {{ .Values.mongoExpress.mongoExpress.image.repository }}-{{ .Values.mongoExpress.mongoExpress.image.tag
           | default .Chart.AppVersion }}
         name: mongo-express
         ports:
@@ -587,7 +587,7 @@ spec:
           value: {{ quote .Values.nginx.nginx.env.capifHostname }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.nginx.nginx.image.repository }}:{{ .Values.nginx.nginx.image.tag
+        image: {{ .Values.nginx.nginx.image.repository }}-{{ .Values.nginx.nginx.image.tag
           | default .Chart.AppVersion }}
         name: nginx
         ports:
@@ -636,7 +636,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.publishedApis.publishedApis.image.repository }}:{{ .Values.publishedApis.publishedApis.image.tag
+        image: {{ .Values.publishedApis.publishedApis.image.repository }}-{{ .Values.publishedApis.publishedApis.image.tag
           | default .Chart.AppVersion }}
         name: published-apis
         ports:
@@ -688,7 +688,7 @@ spec:
           value: {{ quote .Values.redis.redis.env.redisReplicationMode }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.redis.redis.image.repository }}:{{ .Values.redis.redis.image.tag
+        image: {{ .Values.redis.redis.image.repository }}-{{ .Values.redis.redis.image.tag
           | default .Chart.AppVersion }}
         name: redis
         ports:
@@ -736,7 +736,7 @@ spec:
       - env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.serviceApis.serviceApis.image.repository }}:{{ .Values.serviceApis.serviceApis.image.tag
+        image: {{ .Values.serviceApis.serviceApis.image.repository }}-{{ .Values.serviceApis.serviceApis.image.tag
           | default .Chart.AppVersion }}
         name: service-apis
         ports:
