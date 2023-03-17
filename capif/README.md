@@ -4,11 +4,6 @@
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=for-the-badge) 
 ![AppVersion: 3.0](https://img.shields.io/badge/AppVersion-3.0-informational?style=for-the-badge) 
 
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)
-![Minecraft](https://img.shields.io/badge/Minecraft-62B47A?style=for-the-badge&logo=Minecraft&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Alpine Linux 3.15.0](https://img.shields.io/badge/alpine_linux_3.15.0-0D597F?style=for-the-badge&logo=alpine-linux&logoColor=white)
-
 ## Description
 
 A CAPIF Helm chart for Kubernetes
