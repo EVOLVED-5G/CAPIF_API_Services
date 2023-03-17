@@ -1,0 +1,30 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: "2022-09-15T06:43:56Z"
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    io.kompose.service: nginx
+  name: ca-root
+  resourceVersion: "753070195"
+  uid: f93a8346-5d72-485d-bbc4-20b8746dec9d
+spec:
+  host: {{ .Values.nginx.nginx.env.capifHostname }}
+  path: /ca-root
+  port:
+    targetPort: nginx-http
+  to:
+    kind: Service
+    name: nginx
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: "2022-09-15T06:43:56Z"
+      status: "True"
+      type: Admitted
+    host: {{ .Values.nginx.nginx.env.capifHostname }}
+    routerCanonicalHostname: router-default.apps.ocp-epg.hi.inet
+    routerName: default
+    wildcardPolicy: None

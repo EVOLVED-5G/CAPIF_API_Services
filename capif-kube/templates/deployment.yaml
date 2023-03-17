@@ -37,8 +37,7 @@ spec:
       containers:
       - env:
         - name: CAPIF_HOSTNAME
-          value: {{ quote .Values.apiInvocationLogs.apiInvocationLogs.env.capifHostname
-            }}
+          value: {{ quote .Values.nginx.nginx.env.capifHostname }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.apiInvocationLogs.apiInvocationLogs.image.repository }}-{{ .Values.apiInvocationLogs.apiInvocationLogs.image.tag
@@ -292,7 +291,7 @@ spec:
       containers:
       - env:
         - name: CAPIF_HOSTNAME
-          value: {{ quote .Values.capifSecurity.capifSecurity.env.capifHostname }}
+          value: {{ quote .Values.nginx.nginx.env.capifHostname }}
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.capifSecurity.capifSecurity.image.repository }}-{{ .Values.capifSecurity.capifSecurity.image.tag

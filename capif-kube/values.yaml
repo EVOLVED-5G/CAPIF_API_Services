@@ -6,8 +6,6 @@ ingress_ip:
 
 apiInvocationLogs:
   apiInvocationLogs:
-    env:
-      capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invocation-logs_1"
       tag: ""
@@ -98,8 +96,6 @@ capifRoutingInfo:
   type: ClusterIP
 capifSecurity:
   capifSecurity:
-    env:
-      capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-security_1"
       tag: ""

@@ -1,0 +1,29 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: "2022-09-14T08:31:33Z"
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    io.kompose.service: mongo-express
+  name: mongo-express
+  resourceVersion: "751945857"
+  uid: 6d7963ca-3fd7-41a6-a09a-83bc0bc64bc4
+spec:
+  host: mongo-express-capif-evol.apps.ocp-epg.hi.inet
+  port:
+    targetPort: "8081"
+  to:
+    kind: Service
+    name: mongo-express
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+  - conditions:
+    - lastTransitionTime: "2022-09-14T08:31:33Z"
+      status: "True"
+      type: Admitted
+    host: mongo-express-capif-evol.apps.ocp-epg.hi.inet
+    routerCanonicalHostname: router-default.apps.ocp-epg.hi.inet
+    routerName: default
+    wildcardPolicy: None
