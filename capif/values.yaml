@@ -1,5 +1,7 @@
+# -- The Environment variable. It accepts: 'kuberentes-athens', 'kuberentes-uma', 'openshift'
 env: "kubernetes-athens"
 
+# -- If env: 'kuberentes-athens' or env: 'kuberentes-uma', use the Ip address dude for the kubernetes to your Ingress Controller ej: kubectl -n NAMESPACE_CAPIF get ing 
 ingress_ip: 
     athens: "10.161.1.117"
     uma: "x.x.x.x"
@@ -7,7 +9,9 @@ ingress_ip:
 apiInvocationLogs:
   apiInvocationLogs:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invocation-logs_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -25,7 +29,9 @@ apiInvocationLogs:
 apiInvokerManagement:
   apiInvokerManagement:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invoker-management_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -43,7 +49,9 @@ apiInvokerManagement:
 apiProviderManagement:
   apiProviderManagement:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-provider-management_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -61,7 +69,9 @@ apiProviderManagement:
 capifEvents:
   capifEvents:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-events_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -79,7 +89,9 @@ capifEvents:
 capifRoutingInfo:
   capifRoutingInfo:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-routing-info_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -97,7 +109,9 @@ capifRoutingInfo:
 capifSecurity:
   capifSecurity:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-security_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -115,7 +129,9 @@ capifSecurity:
 easyRsa:
   easyRsa:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_easy-rsa_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -133,7 +149,9 @@ easyRsa:
 jwtauth:
   jwtauth:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_jwtauth_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -152,7 +170,9 @@ kubernetesClusterDomain: cluster.local
 logs:
   logs:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_logs_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -170,10 +190,14 @@ logs:
 mongo:
   mongo:
     env:
+      # User's password MongoDB
       mongoInitdbRootPassword: example
+      # Name of User's mongodb
       mongoInitdbRootUsername: root
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo_1"
+      # @default Chart version
       tag: ""
     resources: {}
 #     limits:
@@ -191,11 +215,16 @@ mongo:
 mongoExpress:
   mongoExpress:
     env:
+      # User's password MongoDB
       meConfigMongodbAdminpassword: example
+      # Name of User's mongodb
       meConfigMongodbAdminusername: root
+      # URI for connecting MongoDB
       meConfigMongodbUrl: mongodb://root:example@mongo:27017/
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo-express_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -213,9 +242,12 @@ mongoExpress:
 nginx:
   nginx:
     env:
+      # -- Ingress's host to Capif
       capifHostname: "my-capif.evolved-5g.eu"
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_nginx_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -240,7 +272,9 @@ publishedApis:
     targetPort: 8080
   publishedApis:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_published-apis_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -258,9 +292,12 @@ redis:
     targetPort: 6379
   redis:
     env:
+      # Mode of replication
       redisReplicationMode: master
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_redis_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
@@ -279,7 +316,9 @@ serviceApis:
   replicas: 1
   serviceApis:
     image:
+      # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_service-apis_1"
+      # @default Chart version
       tag: ""
     resources:
      limits:
