@@ -4,7 +4,7 @@ metadata:
   name: api-invocation-logs
   labels:
     io.kompose.service: api-invocation-logs
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -13,13 +13,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: api-invocation-logs
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: api-invocation-logs
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -57,7 +57,7 @@ metadata:
   name: api-invoker-management
   labels:
     io.kompose.service: api-invoker-management
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -66,13 +66,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: api-invoker-management
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: api-invoker-management
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -108,7 +108,7 @@ metadata:
   name: api-provider-management
   labels:
     io.kompose.service: api-provider-management
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -117,13 +117,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: api-provider-management
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: api-provider-management
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -159,7 +159,7 @@ metadata:
   name: capif-events
   labels:
     io.kompose.service: capif-events
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -168,13 +168,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: capif-events
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: capif-events
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -209,7 +209,7 @@ metadata:
   name: capif-routing-info
   labels:
     io.kompose.service: capif-routing-info
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -218,13 +218,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: capif-routing-info
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: capif-routing-info
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -259,7 +259,7 @@ metadata:
   name: capif-security
   labels:
     io.kompose.service: capif-security
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -268,13 +268,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: capif-security
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: capif-security
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -311,7 +311,7 @@ metadata:
   name: easy-rsa
   labels:
     io.kompose.service: easy-rsa
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -320,13 +320,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: easy-rsa
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: easy-rsa
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -361,7 +361,7 @@ metadata:
   name: jwtauth
   labels:
     io.kompose.service: jwtauth
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -370,13 +370,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: jwtauth
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: jwtauth
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -411,7 +411,7 @@ metadata:
   name: logs
   labels:
     io.kompose.service: logs
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -420,13 +420,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: logs
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: logs
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -461,7 +461,7 @@ metadata:
   name: mongo
   labels:
     io.kompose.service: mongo
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -470,13 +470,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: mongo
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: mongo
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -515,7 +515,7 @@ metadata:
   name: mongo-express
   labels:
     io.kompose.service: mongo-express
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -524,13 +524,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: mongo-express
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: mongo-express
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -573,7 +573,7 @@ metadata:
   name: nginx
   labels:
     io.kompose.service: nginx
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -582,13 +582,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: nginx
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: nginx
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -626,7 +626,7 @@ metadata:
   name: published-apis
   labels:
     io.kompose.service: published-apis
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -635,13 +635,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: published-apis
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: published-apis
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -676,7 +676,7 @@ metadata:
   name: redis
   labels:
     io.kompose.service: redis
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -685,13 +685,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: redis
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: redis
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)
@@ -730,7 +730,7 @@ metadata:
   name: service-apis
   labels:
     io.kompose.service: service-apis
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -739,13 +739,13 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: service-apis
-    {{- include "capif-kube.selectorLabels" . | nindent 6 }}
+    {{- include "capif.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
         io.kompose.network/services-default: "true"
         io.kompose.service: service-apis
-      {{- include "capif-kube.selectorLabels" . | nindent 8 }}
+      {{- include "capif.selectorLabels" . | nindent 8 }}
       annotations:
         kompose.cmd: kompose -f ../services/docker-compose.yml convert
         kompose.version: 1.28.0 (c4137012e)

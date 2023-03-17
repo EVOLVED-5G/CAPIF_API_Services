@@ -4,7 +4,7 @@ metadata:
   name: mongo
   labels:
     io.kompose.service: mongo
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -12,6 +12,6 @@ spec:
   type: {{ .Values.mongo.type }}
   selector:
     io.kompose.service: mongo
-  {{- include "capif-kube.selectorLabels" . | nindent 4 }}
+  {{- include "capif.selectorLabels" . | nindent 4 }}
   ports:
 	{{- .Values.mongo.ports | toYaml | nindent 2 -}}

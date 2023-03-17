@@ -4,7 +4,7 @@ metadata:
   name: service-apis
   labels:
     io.kompose.service: service-apis
-  {{- include "capif-kube.labels" . | nindent 4 }}
+  {{- include "capif.labels" . | nindent 4 }}
   annotations:
     kompose.cmd: kompose -f ../services/docker-compose.yml convert
     kompose.version: 1.28.0 (c4137012e)
@@ -12,6 +12,6 @@ spec:
   type: {{ .Values.serviceApis.type }}
   selector:
     io.kompose.service: service-apis
-  {{- include "capif-kube.selectorLabels" . | nindent 4 }}
+  {{- include "capif.selectorLabels" . | nindent 4 }}
   ports:
 	{{- .Values.serviceApis.ports | toYaml | nindent 2 -}}
