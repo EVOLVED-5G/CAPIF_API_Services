@@ -10,7 +10,13 @@ apiInvocationLogs:
       capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invocation-logs_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -21,7 +27,13 @@ apiInvokerManagement:
   apiInvokerManagement:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invoker-management_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -32,7 +44,13 @@ apiProviderManagement:
   apiProviderManagement:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-provider-management_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -43,7 +61,13 @@ capifEvents:
   capifEvents:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-events_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -54,7 +78,13 @@ capifRoutingInfo:
   capifRoutingInfo:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-routing-info_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -67,7 +97,13 @@ capifSecurity:
       capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-security_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -78,7 +114,13 @@ easyRsa:
   easyRsa:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_easy-rsa_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -89,7 +131,13 @@ jwtauth:
   jwtauth:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_jwtauth_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -101,7 +149,13 @@ logs:
   logs:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_logs_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -115,7 +169,13 @@ mongo:
       mongoInitdbRootUsername: root
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "27017"
     port: 27017
@@ -130,7 +190,13 @@ mongoExpress:
       meConfigMongodbUrl: mongodb://root:example@mongo:27017/
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo-express_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8082"
     port: 8082
@@ -143,7 +209,13 @@ nginx:
       capifHostname: "my-capif.evolved-5g.eu"
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_nginx_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
@@ -161,7 +233,13 @@ publishedApis:
   publishedApis:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_published-apis_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   replicas: 1
   type: ClusterIP
 redis:
@@ -174,7 +252,13 @@ redis:
       redisReplicationMode: master
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_redis_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   replicas: 1
   type: ClusterIP
 serviceApis:
@@ -186,5 +270,11 @@ serviceApis:
   serviceApis:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_service-apis_1"
-      tag: "3.0"
+      tag: ""
+    resources:
+     cpu: 100m
+     memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   type: ClusterIP

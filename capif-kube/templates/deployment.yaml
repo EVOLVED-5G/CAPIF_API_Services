@@ -43,10 +43,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.apiInvocationLogs.apiInvocationLogs.image.repository }}-{{ .Values.apiInvocationLogs.apiInvocationLogs.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: api-invocation-logs
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.apiInvocationLogs.apiInvocationLogs.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -92,10 +94,12 @@ spec:
         image: {{ .Values.apiInvokerManagement.apiInvokerManagement.image.repository }}-{{
           .Values.apiInvokerManagement.apiInvokerManagement.image.tag | default .Chart.AppVersion
           }}
+        imagePullPolicy: Always
         name: api-invoker-management
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.apiInvokerManagement.apiInvokerManagement.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -141,10 +145,12 @@ spec:
         image: {{ .Values.apiProviderManagement.apiProviderManagement.image.repository
           }}-{{ .Values.apiProviderManagement.apiProviderManagement.image.tag | default
           .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: api-provider-management
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.apiProviderManagement.apiProviderManagement.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -189,10 +195,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.capifEvents.capifEvents.image.repository }}-{{ .Values.capifEvents.capifEvents.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: capif-events
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.capifEvents.capifEvents.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -237,10 +245,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.capifRoutingInfo.capifRoutingInfo.image.repository }}-{{ .Values.capifRoutingInfo.capifRoutingInfo.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: capif-routing-info
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.capifRoutingInfo.capifRoutingInfo.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -287,10 +297,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.capifSecurity.capifSecurity.image.repository }}-{{ .Values.capifSecurity.capifSecurity.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: capif-security
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.capifSecurity.capifSecurity.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -335,10 +347,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.easyRsa.easyRsa.image.repository }}-{{ .Values.easyRsa.easyRsa.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: easy-rsa
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.easyRsa.easyRsa.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -383,10 +397,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.jwtauth.jwtauth.image.repository }}-{{ .Values.jwtauth.jwtauth.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: jwtauth
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.jwtauth.jwtauth.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -431,10 +447,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.logs.logs.image.repository }}-{{ .Values.logs.logs.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: logs
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.logs.logs.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -483,10 +501,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.mongo.mongo.image.repository }}-{{ .Values.mongo.mongo.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: mongo
         ports:
         - containerPort: 27017
-        resources: {}
+        resources:
+            {{- toYaml .Values.mongo.mongo.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -539,10 +559,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.mongoExpress.mongoExpress.image.repository }}-{{ .Values.mongoExpress.mongoExpress.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: mongo-express
         ports:
         - containerPort: 8081
-        resources: {}
+        resources:
+            {{- toYaml .Values.mongoExpress.mongoExpress.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -589,11 +611,13 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.nginx.nginx.image.repository }}-{{ .Values.nginx.nginx.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: nginx
         ports:
         - containerPort: 8080
         - containerPort: 443
-        resources: {}
+        resources:
+            {{- toYaml .Values.nginx.nginx.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -638,10 +662,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.publishedApis.publishedApis.image.repository }}-{{ .Values.publishedApis.publishedApis.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: published-apis
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.publishedApis.publishedApis.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -690,10 +716,12 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.redis.redis.image.repository }}-{{ .Values.redis.redis.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: redis
         ports:
         - containerPort: 6379
-        resources: {}
+        resources:
+            {{- toYaml .Values.redis.redis.resources | nindent 12 }}
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -738,8 +766,10 @@ spec:
           value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.serviceApis.serviceApis.image.repository }}-{{ .Values.serviceApis.serviceApis.image.tag
           | default .Chart.AppVersion }}
+        imagePullPolicy: Always
         name: service-apis
         ports:
         - containerPort: 8080
-        resources: {}
+        resources:
+            {{- toYaml .Values.serviceApis.serviceApis.resources | nindent 12 }}
       restartPolicy: Always
