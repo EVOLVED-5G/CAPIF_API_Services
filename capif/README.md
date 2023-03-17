@@ -2,11 +2,11 @@
 
 ![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=for-the-badge)
 ![Type: application](https://img.shields.io/badge/Type-application-informational?style=for-the-badge) 
-![AppVersion: 3.0](https://img.shields.io/badge/AppVersion-3.0-informational?style=for-the-badge) 
+![AppVersion: 3.0](https://img.shields.io/badge/AppVersion-3.0-informational?style=for-the-badge)
 
 ## Description
 
-A Helm chart for Kubernetes
+A CAPIF Helm chart for Kubernetes
 
 ## Usage
 <fill out>
