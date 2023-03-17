@@ -179,13 +179,13 @@ mongo:
     image:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo_1"
       tag: ""
-    resources:
-     limits:
-       cpu: 100m
-       memory: 128Mi
-     requests:
-       cpu: 100m
-       memory: 128Mi
+    resources: {}
+#     limits:
+#       cpu: 100m
+#       memory: 128Mi
+#     requests:
+#       cpu: 100m
+#       memory: 128Mi
   ports:
   - name: "27017"
     port: 27017
