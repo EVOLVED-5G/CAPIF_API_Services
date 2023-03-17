@@ -11,6 +11,7 @@ apiInvocationLogs:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invocation-logs_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -31,6 +32,7 @@ apiInvokerManagement:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-invoker-management_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -51,6 +53,7 @@ apiProviderManagement:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_api-provider-management_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -71,6 +74,7 @@ capifEvents:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-events_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -91,6 +95,7 @@ capifRoutingInfo:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-routing-info_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -111,6 +116,7 @@ capifSecurity:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_capif-security_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -131,6 +137,7 @@ easyRsa:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_easy-rsa_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -151,6 +158,7 @@ jwtauth:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_jwtauth_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -172,6 +180,7 @@ logs:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_logs_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -197,6 +206,7 @@ mongo:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources: {}
@@ -224,6 +234,7 @@ mongoExpress:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_mongo-express_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -247,6 +258,7 @@ nginx:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_nginx_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -274,6 +286,7 @@ publishedApis:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_published-apis_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -297,6 +310,7 @@ redis:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_redis_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
@@ -318,6 +332,7 @@ serviceApis:
     image:
       # -- The docker image repository to use
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_service-apis_1"
+      # -- The docker image tag to use
       # @default Chart version
       tag: ""
     resources:
