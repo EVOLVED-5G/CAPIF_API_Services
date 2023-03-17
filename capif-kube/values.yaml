@@ -151,11 +151,12 @@ logs:
       repository: "709233559969.dkr.ecr.eu-central-1.amazonaws.com/evolved5g:capif-services_logs_1"
       tag: ""
     resources:
-     cpu: 100m
-     memory: 128Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+     limits:
+       cpu: 100m
+       memory: 128Mi
+     requests:
+       cpu: 100m
+       memory: 128Mi
   ports:
   - name: "8080"
     port: 8080
