@@ -23,21 +23,24 @@ valid_user = ControlAccess()
 def cert_validation():
     def _cert_validation(f):
         @wraps(f)
-        def __cert_validation( *args, **kwargs):
+        def __cert_validation(*args, **kwargs):
             #just do here everything what you need
 
             args = request.view_args
             cert_tmp = request.headers['X-Ssl-Client-Cert']
             cert_raw = cert_tmp.replace('\t', '')
 
-
             cert = x509.load_pem_x509_certificate(str.encode(cert_raw), default_backend())
-            cert_signature = cert.signature.hex()
-            result = valid_user.validate_user_cert(args["onboardingId"], cert_signature)
 
-            if result is not None:
-                return result
-            #current_app.logger.info(f(*args, **kwargs))
+            cn = cert.subject.get_attributes_for_oid(x509.OID_COMMON_NAME)[0].value.strip()
+
+            if cn != "superadmin":
+                cert_signature = cert.signature.hex()
+                result = valid_user.validate_user_cert(args["onboardingId"], cert_signature)
+
+                if result is not None:
+                    return result
+
             result = f(**kwargs)
             return result
         return __cert_validation

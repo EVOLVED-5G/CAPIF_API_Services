@@ -7,16 +7,16 @@ from .responses import internal_server_error
 
 class ControlAccess(Resource):
 
-    def validate_user_cert(self, api_invoker_id, cert_signature):
+    def validate_user_cert(self, apf_id, service_id, cert_signature):
 
         cert_col = self.db.get_col_by_name(self.db.certs_col)
 
         try:
-            my_query = {'invoker_id':api_invoker_id}
+            my_query = {'id':apf_id}
             cert_entry = cert_col.find_one(my_query)
 
             if cert_entry is not None:
-                if cert_entry["cert_signature"] != cert_signature:
+                if cert_entry["cert_signature"] != cert_signature or service_id not in cert_entry["resources"]["services"]:
                     prob = ProblemDetails(title="Unauthorized", detail="User not authorized", cause="You are not the owner of this resource")
                     return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype="application/json")
 

@@ -14,6 +14,7 @@ from ..encoder import JSONEncoder
 from ..db.db import MongoDatabse
 from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
+from .auth_manager import AuthManager
 from .resources import Resource
 from bson import json_util
 from cryptography import x509
@@ -52,12 +53,15 @@ class InvokerManagementOperations(Resource):
         response_payload = json.loads(response.text)
 
         return response_payload
+    
+    def __init__(self):
+        Resource.__init__(self)
+        self.auth_manager = AuthManager()
 
 
     def add_apiinvokerenrolmentdetail(self, apiinvokerenrolmentdetail):
 
         mycol = self.db.get_col_by_name(self.db.invoker_enrolment_details)
-        cert_col = self.db.get_col_by_name(self.db.certs_col)
 
         try:
 
@@ -81,11 +85,11 @@ class InvokerManagementOperations(Resource):
             apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
             mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
 
-            cert = x509.load_pem_x509_certificate(str.encode(cert['certificate']), default_backend())
-            cert_col.insert_one({"id":api_invoker_id, "cert": cert.signature.hex()})
 
             current_app.logger.debug("Invoker inserted in database")
             current_app.logger.debug("Netapp onboarded sucessfuly")
+
+            self.auth_manager.add_auth_invoker(cert['certificate'], api_invoker_id)
 
             res = make_response(object=apiinvokerenrolmentdetail, status=201)
             res.headers['Location'] = "/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
@@ -99,7 +103,6 @@ class InvokerManagementOperations(Resource):
     def update_apiinvokerenrolmentdetail(self, onboard_id, apiinvokerenrolmentdetail):
 
         mycol = self.db.get_col_by_name(self.db.invoker_enrolment_details)
-        cert_col = self.db.get_col_by_name(self.db.certs_col)
 
         try:
             current_app.logger.debug("Updating invoker resource")
@@ -111,8 +114,7 @@ class InvokerManagementOperations(Resource):
             if apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key != result["onboarding_information"]["api_invoker_public_key"]:
                 cert = self.__sign_cert(apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key, apiinvokerenrolmentdetail.api_invoker_information)
                 apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
-                cert = x509.load_pem_x509_certificate(str.encode(cert['certificate']), default_backend())
-                cert_col.insert_one({"id":onboard_id, "cert": cert.signature.hex()})
+                self.db.auth_manager.update_auth_invoker(cert["certificate"], onboard_id)
 
             apiinvokerenrolmentdetail_update = apiinvokerenrolmentdetail.to_dict()
             apiinvokerenrolmentdetail_update = {
@@ -137,7 +139,6 @@ class InvokerManagementOperations(Resource):
     def remove_apiinvokerenrolmentdetail(self, onboard_id):
 
         mycol = self.db.get_col_by_name(self.db.invoker_enrolment_details)
-        cert_col = self.db.get_col_by_name(self.db.certs_col)
 
         try:
             current_app.logger.debug("Removing invoker resource")
@@ -147,7 +148,7 @@ class InvokerManagementOperations(Resource):
                 return result
 
             mycol.delete_one({'api_invoker_id':onboard_id})
-            cert_col.delete_one({"id":onboard_id})
+            self.auth_manager.remove_auth_invoker(onboard_id)
 
             current_app.logger.debug("Invoker resource removed from database")
             current_app.logger.debug("Netapp offboarded sucessfuly")
