@@ -86,7 +86,7 @@ def get_files(prefix):
     return names
 
 def revoke_cert(name):
-    p = subprocess.call("/root/EasyRSA-3.0.4/easyrsa --batch revoke {}".format(name),
+    p = subprocess.call("/root/certs/EasyRSA-3.0.4/easyrsa --batch revoke {}".format(name),
                         stdout=subprocess.PIPE, shell=True)
     delete_file('/root/certs/{}.csr'.format(name))
     delete_file('/root/certs/pki/issued/{}.crt'.format(name))
