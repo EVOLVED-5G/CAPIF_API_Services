@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  register:
+    build:
+      context: ./register
+    ports:
+      - 8084:8080
+    volumes:
+      - ./register:/usr/src/app
+    environment:
+      - CAPIF_PRIV_KEY=${CAPIF_PRIV_KEY}
+    extra_hosts:
+      - host.docker.internal:host-gateway
+      - easy-rsa:host-gateway
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/jwtauth:latest
+    depends_on:
+       - mongo_register
+
+  mongo_register:
+    image: mongo:6.0.2
+    logging:
+      driver: 'none'
+    restart: unless-stopped
+    ports:
+      - 28017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+
+

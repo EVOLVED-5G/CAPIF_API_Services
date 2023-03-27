@@ -1,6 +1,6 @@
 #!/bin/bash
 EASY_RSA_HOSTNAME="easy-rsa"
-EASY_RSA_PORT="8080"
+EASY_RSA_PORT="8083"
 CERTS_FOLDER="/etc/nginx/certs"
 cd $CERTS_FOLDER
 

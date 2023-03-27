@@ -4,8 +4,8 @@ services:
   easy-rsa:
       build:
         context: ./easy_rsa
-      expose:
-        - "8080"
+      ports:
+      - 8083:8080
       volumes:
         - ./easy_rsa/certs:/root/certs
       restart: unless-stopped

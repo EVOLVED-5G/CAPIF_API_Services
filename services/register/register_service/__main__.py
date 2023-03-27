@@ -1,5 +1,6 @@
 
 import os
+import base64
 from flask import Flask
 from .controllers.register_controller import register_routes
 from flask_jwt_extended import JWTManager
@@ -10,6 +11,7 @@ jwt = JWTManager(app)
 
 with open("/usr/src/app/register_service/server.key", "rb") as key_file:
             key_data = key_file.read()
+
 
 app.config['JWT_ALGORITHM'] = 'RS256'
 app.config['JWT_PRIVATE_KEY'] = key_data
