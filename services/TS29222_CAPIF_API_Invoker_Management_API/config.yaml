@@ -9,3 +9,7 @@ mongo: {
   'host': 'mongo',
   'port': "27017"
 }
+ca_factory: {
+  "url": "easy-rsa",
+  "port": "8083"
+}

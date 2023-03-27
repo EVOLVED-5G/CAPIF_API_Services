@@ -1,9 +1,12 @@
 import requests
 import json
 import sys
+from ..config import Config
 
 def sign_certificate(publick_key, information):
-    url = "http://easy-rsa:8080/sign-csr"
+
+    config =  Config().get_config()
+    url = f"http://{config['ca_factory']['url']}:{config['ca_factory']['port']}/sign-csr"
 
     payload = dict()
     payload['csr'] = publick_key

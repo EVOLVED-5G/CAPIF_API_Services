@@ -16,6 +16,7 @@ from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
 from .auth_manager import AuthManager
 from .resources import Resource
+from ..config import Config
 from bson import json_util
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -36,7 +37,7 @@ class InvokerManagementOperations(Resource):
         return old_values
 
     def __sign_cert(self, publick_key, invoker_information):
-        url = "http://easy-rsa:8080/sign-csr"
+        url = f"http://{self.config['ca_factory']['url']}:{self.config['ca_factory']['port']}/sign-csr"
 
         payload = dict()
         payload['csr'] = publick_key
@@ -57,6 +58,7 @@ class InvokerManagementOperations(Resource):
     def __init__(self):
         Resource.__init__(self)
         self.auth_manager = AuthManager()
+        self.config = Config().get_config()
 
 
     def add_apiinvokerenrolmentdetail(self, apiinvokerenrolmentdetail):

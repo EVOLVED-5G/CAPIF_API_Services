@@ -14,5 +14,5 @@ class Config:
 			self.my_config = yaml.safe_load(f)
 			f.close()
 
-	def getConfig(self):
+	def get_config(self):
 		return self.my_config
