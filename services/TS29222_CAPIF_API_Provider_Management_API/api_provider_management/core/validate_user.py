@@ -21,6 +21,6 @@ class ControlAccess(Resource):
                     return Response(json.dumps(prob, cls=JSONEncoder), status=401, mimetype="application/json")
 
         except Exception as e:
-            exception = "An exception occurred in validate invoker"
+            exception = "An exception occurred in validate amf"
             current_app.logger.error(exception + "::" + str(e))
             return internal_server_error(detail=exception, cause=str(e))

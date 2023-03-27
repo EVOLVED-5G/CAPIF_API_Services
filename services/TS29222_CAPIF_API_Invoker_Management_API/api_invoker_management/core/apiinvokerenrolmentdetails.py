@@ -53,7 +53,7 @@ class InvokerManagementOperations(Resource):
         response_payload = json.loads(response.text)
 
         return response_payload
-    
+
     def __init__(self):
         Resource.__init__(self)
         self.auth_manager = AuthManager()
@@ -114,7 +114,7 @@ class InvokerManagementOperations(Resource):
             if apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key != result["onboarding_information"]["api_invoker_public_key"]:
                 cert = self.__sign_cert(apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key, apiinvokerenrolmentdetail.api_invoker_information)
                 apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
-                self.db.auth_manager.update_auth_invoker(cert["certificate"], onboard_id)
+                self.auth_manager.update_auth_invoker(cert["certificate"], onboard_id)
 
             apiinvokerenrolmentdetail_update = apiinvokerenrolmentdetail.to_dict()
             apiinvokerenrolmentdetail_update = {
