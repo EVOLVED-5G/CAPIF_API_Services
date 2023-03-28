@@ -432,9 +432,10 @@ spec:
             - sh
             - -c 
             - |-
-              redis-cli -h redis -p 6379 -n 1 GET  server_priv_key
-          initialDelaySeconds: 5
+              redis-cli -h redis -p 6379 -n 1 GET  server_priv_key  > /usr/src/app/register_service/server.key
+          initialDelaySeconds: 10
           periodSeconds: 5
+          successThreshold: 3
       restartPolicy: Always
 ---
 apiVersion: apps/v1
@@ -772,6 +773,11 @@ spec:
         - containerPort: 6379
         resources:
             {{- toYaml .Values.redis.redis.resources | nindent 12 }}
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+        initialDelaySeconds: 2
+        periodSeconds: 2
       restartPolicy: Always
 ---
 apiVersion: apps/v1
