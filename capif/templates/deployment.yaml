@@ -426,6 +426,15 @@ spec:
         - containerPort: 8080
         resources:
             {{- toYaml .Values.jwtauth.jwtauth.resources | nindent 12 }}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c 
+            - |-
+              redis-cli -h redis -p 6379 -n 1 GET  server_priv_key
+          initialDelaySeconds: 5
+          periodSeconds: 5
       restartPolicy: Always
 ---
 apiVersion: apps/v1
