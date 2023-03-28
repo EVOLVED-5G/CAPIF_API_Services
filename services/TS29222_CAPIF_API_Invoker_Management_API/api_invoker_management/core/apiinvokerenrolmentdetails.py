@@ -37,7 +37,7 @@ class InvokerManagementOperations(Resource):
         return old_values
 
     def __sign_cert(self, publick_key, invoker_information):
-        url = f"http://{self.config['ca_factory']['url']}:{self.config['ca_factory']['port']}/sign-csr"
+        url = f"https://{self.config['ca_factory']['url']}:{self.config['ca_factory']['port']}/sign-csr"
 
         payload = dict()
         payload['csr'] = publick_key
@@ -50,7 +50,7 @@ class InvokerManagementOperations(Resource):
 
         }
 
-        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+        response = requests.request("POST", url, headers=headers, data=json.dumps(payload), verify = False)
         response_payload = json.loads(response.text)
 
         return response_payload
