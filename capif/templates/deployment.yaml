@@ -320,6 +320,16 @@ spec:
         - containerPort: 8080
         resources:
             {{- toYaml .Values.capifSecurity.capifSecurity.resources | nindent 12 }}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c 
+            - |-
+              redis-cli -h redis -p 6379 -n 1 GET  server_priv_key > /usr/src/app/capif_security/server.key
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 3
       restartPolicy: Always
 ---
 apiVersion: apps/v1
