@@ -23,7 +23,7 @@ class LoggingInvocationOperations(Resource):
 
         if aef_res is None:
             current_app.logger.error("Exposer not exist")
-            return unauthorized_error(detail="Exposer not exist", cause="Exposer id not found")
+            return not_found_error(detail="Exposer not exist", cause="Exposer id not found")
 
         return None
 
@@ -35,7 +35,7 @@ class LoggingInvocationOperations(Resource):
 
         if invoker_res is None:
             current_app.logger.error("Invoker not exist")
-            return unauthorized_error(detail="Invoker not exist", cause="Invoker id not found")
+            return not_found_error(detail="Invoker not exist", cause="Invoker id not found")
 
         return None
 
@@ -49,7 +49,7 @@ class LoggingInvocationOperations(Resource):
             detail = "Service API not exist"
             cause = "Service API with id {} and name {} not found".format(api_id, api_name)
             current_app.logger.error(detail)
-            return unauthorized_error(detail=detail, cause=cause)
+            return not_found_error(detail=detail, cause=cause)
 
         return None
 
