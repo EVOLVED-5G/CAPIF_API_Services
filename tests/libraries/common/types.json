@@ -364,10 +364,10 @@
       "sourceNfInstanceId": "UUID"
     }
   },
-  "NfSetId":{
+  "NfSetId": {
     "regex": "set[a-zA-Z0-9\\-]+\\.(nrf|udm|amf|smf|ausf|nef|pcf|smsf|nssf|udr|lmf|gmlc|5g_eir|sepp|upf|n3iwf|af|udsf|bsf|chf|nwdaf|pcscf|cbcf|hss|ucmf|sor_af|spaf|mme|scsas|scef|scp|nssaaf|icscf|scscf|dra|ims_as|aanf|5g_ddnmf|nsacf|mfaf|easdf|dccf|mb_smf|tsctsf|adrf|gba_bsf|cef|mb_upf|nswof|pkmf|mnpf|sms_gmsc|sms_iwmsc|mbsf|mbstf|panf)set\\.5gc(\\.nid[A-Fa-f0-9]{11})?\\.mnc[0-9]{3}\\.mcc[0-9]{3}"
   },
-  "NfServiceSetId":{
+  "NfServiceSetId": {
     "regex": "set[a-zA-Z0-9\\-]+\\.(nrf|udm|amf|smf|ausf|nef|pcf|smsf|nssf|udr|lmf|gmlc|5g_eir|sepp|upf|n3iwf|af|udsf|bsf|chf|nwdaf|pcscf|cbcf|hss|ucmf|sor_af|spaf|mme|scsas|scef|scp|nssaaf|icscf|scscf|dra|ims_as|aanf|5g_ddnmf|nsacf|mfaf|easdf|dccf|mb_smf|tsctsf|adrf|gba_bsf|cef|mb_upf|nswof|pkmf|mnpf|sms_gmsc|sms_iwmsc|mbsf|mbstf|panf)set\\.5gc(\\.nid[A-Fa-f0-9]{11})?\\.mnc[0-9]{3}\\.mcc[0-9]{3}"
   },
   "ScopeRegex": {
@@ -446,7 +446,7 @@
     },
     "optional_attributes": {}
   },
-  "PlmnIdNid":{
+  "PlmnIdNid": {
     "mandatory_attributes": {
       "mcc": "Mcc",
       "mnc": "Mnc"
@@ -472,7 +472,7 @@
   "SlideDifferentiator": {
     "regex": "^[A-Fa-f0-9]{6}$"
   },
-  "Nid":{
+  "Nid": {
     "regex": "^[A-Fa-f0-9]{11}$"
   },
   "AccessTokenRsp": {
@@ -541,5 +541,40 @@
   },
   "ApiProviderFuncRole": {
     "enum": ["AEF", "APF", "AMF"]
+  },
+  "InvocationLog": {
+    "mandatory_attributes": {
+      "aefId": "string",
+      "apiInvokerId": "string",
+      "logs": "Log"
+    },
+    "optional_attributes": {
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "Log": {
+    "mandatory_attributes": {
+      "apiId": "string",
+      "apiName": "string",
+      "apiVersion": "string",
+      "resourceName": "string",
+      "protocol": "Protocol",
+      "result": "string"
+    },
+    "optional_attributes": {
+      "uri": "URI",
+      "operation": "Operation",
+      "invocationTime": "string",
+      "invocationLatency": "integer",
+      "inputParameters": "Any",
+      "outputParameters": "Any",
+      "srcInterface": "InterfaceDescription",
+      "destInterface": "InterfaceDescription",
+      "fwdInterface": "string",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "Any": {
+    "Check": false
   }
 }
