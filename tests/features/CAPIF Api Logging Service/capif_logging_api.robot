@@ -43,8 +43,8 @@ Create a log entry
     ...    username=${AEF_PROVIDER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values    ${resp}    201    ServiceSecurity
-    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_SECURITY_RESOURCE_REGEX}
+    Check Response Variable Type And Values    ${resp}    201    InvocationLog
+    ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_LOGGING_RESOURCE_REGEX}
 
 Create a log entry invalid aefId
     [Tags]    capif_api_logging_service-2

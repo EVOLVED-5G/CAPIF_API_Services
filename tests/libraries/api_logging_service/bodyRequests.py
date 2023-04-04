@@ -8,7 +8,7 @@ def create_log_entry(aefId=None, apiInvokerId=None, apiId=None, apiName=None):
         "apiName": apiName[0],
         "apiVersion": "string",
         "resourceName": "string",
-        "uri": "string",
+        "uri": "http://resource/endpoint",
         "protocol": "HTTP_1_1",
         "operation": "GET",
         "result": "string",
