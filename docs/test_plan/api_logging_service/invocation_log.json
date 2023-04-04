@@ -23,7 +23,7 @@
           "apiPrefix": "string",
           "securityMethods": [
             "PSK",
-            "string"
+            "Oauth"
           ]
         },
         "destInterface": {

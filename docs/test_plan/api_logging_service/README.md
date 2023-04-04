@@ -20,7 +20,7 @@ At this documentation you will have all information and related files and exampl
   This test case will check that a CAPIF AEF can create log entry to Logging Service
 * Pre-Conditions:
   
-  *  CAPIF provider is pre-authorised (has valid apfId from CAPIF Authority)
+  *  CAPIF provider is pre-authorised (has valid aefId from CAPIF Authority)
   *  Service exist in CAPIF
   *  Invoker exist in CAPIF
 
@@ -63,7 +63,7 @@ At this documentation you will have all information and related files and exampl
   This test case will check that a CAPIF subscriber (AEF) cannot create Log Entry without valid aefId
 * Pre-Conditions:
 
-  * CAPIF provider is not pre-authorised (has not valid apfId from CAPIF Authority)
+  * CAPIF provider is not pre-authorised (has not valid aefId from CAPIF Authority)
   *  Service exist in CAPIF
   *  Invoker exist in CAPIF
 
@@ -96,8 +96,6 @@ At this documentation you will have all information and related files and exampl
         * detail with message "Exposer not exist".
         * cause with message "Exposer id not found".
 
-
-
 ## Test Case 3:  Creates a new individual CAPIF Log Entry with Invalid serviceAPI
 * Test ID: ***capif_api_logging-3***
 * Description:
@@ -105,7 +103,7 @@ At this documentation you will have all information and related files and exampl
   This test case will check that a CAPIF subscriber (AEF) cannot create Log Entry without valid aefId
 * Pre-Conditions:
   
-  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+  * CAPIF subscriber is pre-authorised (has valid aefId from CAPIF Authority)
 
 * Information of Test:
 
@@ -145,7 +143,7 @@ At this documentation you will have all information and related files and exampl
   This test case will check that a CAPIF subscriber (AEF) cannot create Log Entry without valid aefId
 * Pre-Conditions:
   
-  * CAPIF subscriber is pre-authorised (has valid apfId from CAPIF Authority)
+  * CAPIF subscriber is pre-authorised (has valid aefId from CAPIF Authority)
 
 * Information of Test:
 
@@ -185,6 +183,47 @@ At this documentation you will have all information and related files and exampl
         * cause with message "Invoker id not found".
 
   3. Log Entry are not stored in CAPIF Database
+
+
+## Test Case 5:  Creates a new individual CAPIF Log Entry with Invalid aefId in body
+* Test ID: ***capif_api_logging-5***
+* Description:
+
+  This test case will check that a CAPIF subscriber (AEF) cannot create Log Entry without valid aefId
+* Pre-Conditions:
+
+  *  CAPIF provider is pre-authorised (has valid apfId from CAPIF Authority)
+  *  Service exist in CAPIF
+  *  Invoker exist in CAPIF
+
+* Information of Test:
+
+  1. Perform [provider onboarding] and [invoker onboarding]
+
+  2. Publish Service API at CCF:
+    - Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+    - body [service api description] with apiName service_1
+    - Use APF Certificate
+
+  3. Log Entry:
+     1. Send POST to *https://{CAPIF_HOSTNAME}/api-invocation-logs/v1/{aefId}/logs*
+     2. body [log entry request body with bad aefId] 
+     3. Use AEF Certificate
+
+* Execution Steps:
+  1. Register Provider and Invoker CCF
+  2. Publish Service
+  3. Create Log Entry
+  
+* Expected Result:
+
+  1. Response to Logging Service must accomplish:
+     1. **400 Bad request**
+     2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 400
+        * title with message "Not Found"
+        * detail with message "Exposer not exist".
+        * cause with message "Exposer id not found".
 
 
 

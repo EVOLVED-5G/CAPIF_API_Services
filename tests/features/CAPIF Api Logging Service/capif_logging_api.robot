@@ -41,6 +41,7 @@ Create a log entry
     ...    server=https://${CAPIF_HOSTNAME}/
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
+    ...    
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    201    InvocationLog

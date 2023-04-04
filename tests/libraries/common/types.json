@@ -549,6 +549,7 @@
       "logs": "Log"
     },
     "optional_attributes": {
+      "log_id":"string",
       "supportedFeatures": "SupportedFeatures"
     }
   },
@@ -562,6 +563,7 @@
       "result": "string"
     },
     "optional_attributes": {
+      "log_id": "string",
       "uri": "URI",
       "operation": "Operation",
       "invocationTime": "string",

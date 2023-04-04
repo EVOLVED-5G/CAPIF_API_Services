@@ -44,6 +44,7 @@ At this documentation you will have all information and related files and exampl
   1. Register Provider and Invoker CCF
   2. Publish Service
   3. Create Log Entry
+  4. Get Log Entry
 
 * Expected Result:
 
@@ -60,11 +61,51 @@ At this documentation you will have all information and related files and exampl
 
   This test case will check that a CAPIF AEF can create log entry to Logging Service
 * Pre-Conditions:
-  
+
   *  CAPIF provider is pre-authorised (has valid AMF cert from CAPIF Authority)
   *  Service exist in CAPIF
   *  Invoker exist in CAPIF
- 
+
+
+* Information of Test:
+
+  1. Perform [provider onboarding], [invoker onboarding] 
+
+  2. Publish Service API at CCF:
+    - Send Post to ccf_publish_url https://{CAPIF_HOSTNAME}/published-apis/v1/{apfId}/service-apis
+    - body [service api description] with apiName service_1
+    - Use APF Certificate
+
+  4. Get Log:
+     1. Send GET to *https://{CAPIF_HOSTNAME}/logs/v1/apiInvocationLogs
+     2. Use AMF Certificate
+
+* Execution Steps:
+  1. Register Provider and Invoker CCF
+  2. Publish Service
+  3. Get Log Entry
+
+* Expected Result:
+
+  1. Response to Logging Service must accomplish:
+     1. **404 Not Found**
+    2. Error Response Body must accomplish with **ProblemDetails** data structure with:
+        * status 404
+        * title with message "Not Found Log Entry in CAPIF".
+        * cause with message "Not Exist Logs with the filters applied".
+
+
+## Test Case 3: Get CAPIF Log Entry With invalid with not authorized AMF.
+* Test ID: ***capif_api_auditing-3***
+* Description:
+
+  This test case will check that a CAPIF AEF can create log entry to Logging Service
+* Pre-Conditions:
+
+  *  CAPIF provider is no pre-authorised (has no valid AMF cert from CAPIF Authority)
+  *  Service exist in CAPIF
+  *  Invoker exist in CAPIF
+  *  Log Entry exist in CAPIF
 
 * Information of Test:
 
@@ -82,12 +123,13 @@ At this documentation you will have all information and related files and exampl
 
   4. Get Log:
      1. Send GET to *https://{CAPIF_HOSTNAME}/logs/v1/apiInvocationLogs
-     2. Use AMF Certificate
+     2. Use APF Certificate
 
 * Execution Steps:
   1. Register Provider and Invoker CCF
   2. Publish Service
   3. Create Log Entry
+  4. Get Log Entry
 
 * Expected Result:
 
