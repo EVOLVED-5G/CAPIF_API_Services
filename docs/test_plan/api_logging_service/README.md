@@ -77,7 +77,7 @@ At this documentation you will have all information and related files and exampl
     - Use APF Certificate
 
   3. Log Entry:
-     1. Send POST to *https://{CAPIF_HOSTNAME}/api-invocation-logs/v1/{aefId}/logs*
+     1. Send POST to *https://{CAPIF_HOSTNAME}/api-invocation-logs/v1/{not-valid-aefId}/logs*
      2. body [log entry request body]
      3. Use AEF Certificate
 
@@ -118,7 +118,7 @@ At this documentation you will have all information and related files and exampl
 
   3. Log Entry:
      1. Send POST to *https://{CAPIF_HOSTNAME}/api-invocation-logs/v1/{aefId}/logs*
-     2. body [log entry request body]
+     2. body [log entry request body with serviceAPI apiName apiId not valid]
      3. Use AEF Certificate
 
 * Execution Steps:
@@ -158,7 +158,7 @@ At this documentation you will have all information and related files and exampl
 
   3. Log Entry:
      1. Send POST to *https://{CAPIF_HOSTNAME}/api-invocation-logs/v1/{aefId}/logs*
-     2. body [log entry request body]
+     2. body [log entry request body with invokerId not valid]
      3. Use AEF Certificate
 
 * Execution Steps:
