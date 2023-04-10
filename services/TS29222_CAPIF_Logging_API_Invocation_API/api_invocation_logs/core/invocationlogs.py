@@ -8,6 +8,8 @@ import json
 from ..db.db import MongoDatabse
 from ..encoder import JSONEncoder
 from ..models.problem_details import ProblemDetails
+from pymongo import ReturnDocument
+from ..util import dict_to_camel_case, clean_empty
 from .resources import Resource
 from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
 
@@ -69,25 +71,44 @@ class LoggingInvocationOperations(Resource):
             if result is not None:
                 return result
 
+            current_app.logger.debug("URL aef_id: {}".format(aef_id))
+            current_app.logger.debug("URL invocationlog.aef_id: {}".format(invocationlog.aef_id))
+            if aef_id != invocationlog.aef_id:
+                return bad_request_error(detail="invocationlog.aef_id is not in the same with URL aef_id", cause="Detected different values of aef_id parameter", invalid_params=[{"param": "invocationlog.aef_id", "reason": "Not the same with URL aef_id"}])
+
             for i in range(0, len(invocationlog.logs)):
                 result = self.__check_service_apis(invocationlog.logs[i].api_id, invocationlog.logs[i].api_name)
 
                 if result is not None:
                     return result
 
-            log_id = secrets.token_hex(15)
-            rec = dict()
-            rec['log_id'] = log_id
-            rec.update(invocationlog.to_dict())
-            mycol.insert_one(rec)
+            my_query = {'aef_id': aef_id, 'api_invoker_id': invocationlog.api_invoker_id}
+            existing_invocationlog = mycol.find_one(my_query)
+
+            if existing_invocationlog is None:
+                current_app.logger.debug("Test 0")
+                log_id = secrets.token_hex(15)
+                rec = dict()
+                rec['log_id'] = log_id
+                rec.update(invocationlog.to_dict())
+                mycol.insert_one(rec)
+                result = invocationlog
+            else:
+                log_id = existing_invocationlog['log_id']
+                updated_invocation_log = invocationlog.to_dict()
+                for i in range(0, len(updated_invocation_log['logs'])):
+                    existing_invocationlog['logs'].append(updated_invocation_log['logs'][i])
+                existing_invocation_log = clean_empty(existing_invocationlog)
+                response = mycol.find_one_and_update(my_query, {"$set": existing_invocation_log}, projection={'_id': 0, 'log_id': 0}, return_document=ReturnDocument.AFTER, upsert=False)
+                result = dict_to_camel_case(response)
 
             current_app.logger.debug("Invocation Logs inserted in database")
-            res = make_response(object=invocationlog, status=201)
+            res = make_response(object=result, status=201)
             res.headers['Location'] = "https://{}/api-invocation-logs/v1/{}/logs/{}".format(os.getenv('CAPIF_HOSTNAME'), str(aef_id), str(log_id))
             return res
 
         except Exception as e:
-            exception = "An exception occurred in inserting invovation logs"
+            exception = "An exception occurred in inserting invocation logs"
             current_app.logger.error(exception + "::" + str(e))
             return internal_server_error(detail=exception, cause=str(e))
 
