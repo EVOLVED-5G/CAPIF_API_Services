@@ -71,10 +71,10 @@ class LoggingInvocationOperations(Resource):
             if result is not None:
                 return result
 
-            current_app.logger.debug("URL aef_id: {}".format(aef_id))
-            current_app.logger.debug("URL invocationlog.aef_id: {}".format(invocationlog.aef_id))
-            if aef_id != invocationlog.aef_id:
-                return bad_request_error(detail="invocationlog.aef_id is not in the same with URL aef_id", cause="Detected different values of aef_id parameter", invalid_params=[{"param": "invocationlog.aef_id", "reason": "Not the same with URL aef_id"}])
+            result = self.__check_aef(invocationlog.aef_id)
+
+            if result is not None:
+                return result
 
             for i in range(0, len(invocationlog.logs)):
                 result = self.__check_service_apis(invocationlog.logs[i].api_id, invocationlog.logs[i].api_name)
@@ -86,7 +86,6 @@ class LoggingInvocationOperations(Resource):
             existing_invocationlog = mycol.find_one(my_query)
 
             if existing_invocationlog is None:
-                current_app.logger.debug("Test 0")
                 log_id = secrets.token_hex(15)
                 rec = dict()
                 rec['log_id'] = log_id
