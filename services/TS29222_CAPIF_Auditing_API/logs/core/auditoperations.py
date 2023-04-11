@@ -8,6 +8,7 @@ from .resources import Resource
 from bson import json_util
 from ..util import dict_to_camel_case, clean_empty
 from .responses import bad_request_error, not_found_error, forbidden_error, internal_server_error, make_response
+from ..models.invocation_log import InvocationLog
 
 
 class AuditOperations (Resource):
@@ -19,120 +20,46 @@ class AuditOperations (Resource):
         current_app.logger.debug("Find invocation logs")
 
         try:
+            result = mycol.find_one({'aef_id': query_parameters['aef_id'], 'api_invoker_id': query_parameters['api_invoker_id']}, {"_id": 0})
 
-            my_params = []
-            my_query = {}
-
-            if 'aef_id' not in query_parameters or 'api_invoker_id' not in query_parameters:
-                return bad_request_error(detail="aef_id and api_invoker_id parameters are mandatory", cause="Mandatory parameters missing", invalid_params=[
-                    {"param": "aef_id or api_invoker_id", "reason": "missing"}])
-
-            result_test = mycol.find_one({'aef_id': query_parameters['aef_id'], 'api_invoker_id': query_parameters['api_invoker_id']}, {"_id": 0})
-
-            if result_test is None:
+            if result is None:
                 return not_found_error(detail="aefId or/and apiInvokerId do not match any InvocationLogs", cause="No log invocations found")
 
-            logs = result_test['logs'].copy()
+            logs = result['logs'].copy()
 
             for log in logs:
-                if query_parameters['api_id'] is not None:
-                    if log['api_id'] != query_parameters['api_id']:
-                        result_test['logs'].remove(log)
-                        continue
 
-                if query_parameters['api_name'] is not None:
-                    if log['api_name'] != query_parameters['api_name']:
-                        result_test['logs'].remove(log)
-                        continue
+                query_params = dict((k,v) for k,v in query_parameters.items() if v is not None and k != 'aef_id' and k != 'api_invoker_id')
 
-                if query_parameters['api_version'] is not None:
-                    if log['api_version'] != query_parameters['api_version']:
-                        result_test['logs'].remove(log)
-                        continue
+                for param in query_params:
+                    if param == 'time_range_start':
+                        if query_params[param] > log['invocation_time'].astimezone(query_params[param].tzinfo):
+                            result['logs'].remove(log)
+                            break
+                    elif param == 'time_range_end':
+                        if query_params[param] < log['invocation_time'].astimezone(query_params[param].tzinfo):
+                            result['logs'].remove(log)
+                            break
+                    elif param == 'src_interface' or param == 'dest_interface':
+                        interface = json.loads(query_params[param])
+                        if 'security_methods' not in interface:
+                            return bad_request_error(detail="security_methods is mandatory",
+                                                     cause="security_methods parameter missing", invalid_params=[
+                                    {"param": "security_methods", "reason": "missing"}])
+                        for key in interface:
+                            if log[param][key] != interface[key]:
+                                result['logs'].remove(log)
+                                break
+                    elif log[param] != query_params[param]:
+                        result['logs'].remove(log)
+                        break
 
-                if query_parameters['resource_name'] is not None:
-                    if log['resource_name'] != query_parameters['resource_name']:
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters['protocol'] is not None:
-                    if log['protocol'] != query_parameters['protocol']:
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters['operation'] is not None:
-                    if log['operation'] != query_parameters['operation']:
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters['result'] is not None:
-                    if log['result'] != query_parameters['result']:
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters['supported_features'] is not None:
-                    if log['supported_features'] != query_parameters['supported_features']:
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters["time_range_start"] is not None:
-                    if query_parameters["time_range_start"] > log['invocation_time'].astimezone(query_parameters["time_range_start"].tzinfo):
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters["time_range_end"] is not None:
-                    if query_parameters["time_range_end"] < log['invocation_time'].astimezone(query_parameters["time_range_end"].tzinfo):
-                        result_test['logs'].remove(log)
-                        continue
-
-                if query_parameters['src_interface'] is not None:
-                    src_int = json.loads(query_parameters['src_interface'])
-                    if 'securityMethods' not in src_int:
-                        return bad_request_error(detail="securityMethods is mandatory",
-                                                 cause="securityMethods parameter missing", invalid_params=[
-                                {"param": "securityMethods", "reason": "missing"}])
-                    if log['src_interface']['security_methods'] != src_int['securityMethods']:
-                        result_test['logs'].remove(log)
-                        continue
-                    if 'ipv4Addr' in src_int:
-                        if log['src_interface']['ipv4_addr'] != src_int['ipv4Addr']:
-                            result_test['logs'].remove(log)
-                            continue
-                    if 'port' in src_int:
-                        if log['src_interface']['port'] != src_int['port']:
-                            result_test['logs'].remove(log)
-                            continue
-                    if 'ipv6Addr' in src_int:
-                        if log['src_interface']['ipv6_addr'] != src_int['ipv6_addr']:
-                            result_test['logs'].remove(log)
-                            continue
-
-                if query_parameters['dest_interface'] is not None:
-                    dest_int = json.loads(query_parameters['dest_interface'])
-                    if 'securityMethods' not in dest_int:
-                        return bad_request_error(detail="securityMethods is mandatory",
-                                                 cause="securityMethods parameter missing", invalid_params=[
-                                {"param": "securityMethods", "reason": "missing"}])
-                    if log['dest_interface']['security_methods'] != dest_int['securityMethods']:
-                        result_test['logs'].remove(log)
-                        continue
-                    if 'ipv4Addr' in dest_int:
-                        if log['dest_interface']['ipv4_addr'] != dest_int['ipv4Addr']:
-                            result_test['logs'].remove(log)
-                            continue
-                    if 'port' in dest_int:
-                        if log['dest_interface']['port'] != dest_int['port']:
-                            result_test['logs'].remove(log)
-                            continue
-                    if 'ipv6Addr' in dest_int:
-                        if log['dest_interface']['ipv6_addr'] != dest_int['ipv6_addr']:
-                            result_test['logs'].remove(log)
-                            continue
-
-            if not result_test['logs']:
+            if not result['logs']:
                 return not_found_error(detail="Parameters do not match any log entry", cause="No logs found")
 
-            res = make_response(object=dict_to_camel_case(result_test), status=200)
+            invocation_log = InvocationLog(result['aef_id'], result['api_invoker_id'], result['logs'],
+                                           result['supported_features'])
+            res = make_response(object=invocation_log, status=200)
             current_app.logger.debug("Found invocation logs")
             return res
 

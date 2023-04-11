@@ -12,16 +12,20 @@ from pymongo import ReturnDocument
 from ..util import dict_to_camel_case, clean_empty
 from .resources import Resource
 from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
+from ..models.invocation_log import InvocationLog
 
 
 class LoggingInvocationOperations(Resource):
 
-    def __check_aef(self, aef_id):
+    def __check_aef(self, request_aef_id, body_aef_id):
+
+        if request_aef_id != body_aef_id:
+            return unauthorized_error(detail="AEF id not matching in request and body", cause="Not identical AEF id")
+
         prov_col = self.db.get_col_by_name(self.db.provider_details)
 
         current_app.logger.debug("Checking aef id")
-        # aef_res = prov_col.find_one({'api_prov_dom_id': aef_id})
-        aef_res = prov_col.find_one({'api_prov_funcs': {'$elemMatch': {'api_prov_func_role': 'AEF', 'api_prov_func_id': aef_id}}})
+        aef_res = prov_col.find_one({'api_prov_funcs': {'$elemMatch': {'api_prov_func_role': 'AEF', 'api_prov_func_id': request_aef_id}}})
 
         if aef_res is None:
             current_app.logger.error("Exposer not exist")
@@ -61,48 +65,46 @@ class LoggingInvocationOperations(Resource):
 
         try:
             current_app.logger.debug("Adding invocation logs")
-            result = self.__check_aef(aef_id)
+            current_app.logger.debug("Check request aef_id")
+            result = self.__check_aef(aef_id, invocationlog.aef_id)
 
             if result is not None:
                 return result
 
+            current_app.logger.debug("Check request api_invoker_id")
             result = self.__check_invoker(invocationlog.api_invoker_id)
 
             if result is not None:
                 return result
 
-            result = self.__check_aef(invocationlog.aef_id)
-
-            if result is not None:
-                return result
-
-            for i in range(0, len(invocationlog.logs)):
-                result = self.__check_service_apis(invocationlog.logs[i].api_id, invocationlog.logs[i].api_name)
+            current_app.logger.debug("Check service apis")
+            for log in invocationlog.logs:
+                result = self.__check_service_apis(log.api_id, log.api_name)
 
                 if result is not None:
                     return result
 
+            current_app.logger.debug("Check existing logs")
             my_query = {'aef_id': aef_id, 'api_invoker_id': invocationlog.api_invoker_id}
             existing_invocationlog = mycol.find_one(my_query)
 
             if existing_invocationlog is None:
+                current_app.logger.debug("Create new log")
                 log_id = secrets.token_hex(15)
                 rec = dict()
                 rec['log_id'] = log_id
                 rec.update(invocationlog.to_dict())
                 mycol.insert_one(rec)
-                result = invocationlog
             else:
+                current_app.logger.debug("Update existing log")
                 log_id = existing_invocationlog['log_id']
-                updated_invocation_log = invocationlog.to_dict()
-                for i in range(0, len(updated_invocation_log['logs'])):
-                    existing_invocationlog['logs'].append(updated_invocation_log['logs'][i])
-                existing_invocation_log = clean_empty(existing_invocationlog)
-                response = mycol.find_one_and_update(my_query, {"$set": existing_invocation_log}, projection={'_id': 0, 'log_id': 0}, return_document=ReturnDocument.AFTER, upsert=False)
-                result = dict_to_camel_case(response)
+                updated_invocation_logs = invocationlog.to_dict()
+                for updated_invocation_log in updated_invocation_logs['logs']:
+                    existing_invocationlog['logs'].append(updated_invocation_log)
+                mycol.find_one_and_update(my_query, {"$set": existing_invocationlog}, projection={'_id': 0, 'log_id': 0}, return_document=ReturnDocument.AFTER, upsert=False)
 
-            current_app.logger.debug("Invocation Logs inserted in database")
-            res = make_response(object=result, status=201)
+            res = make_response(object=invocationlog, status=201)
+            current_app.logger.debug("Invocation Logs response ready")
             res.headers['Location'] = "https://{}/api-invocation-logs/v1/{}/logs/{}".format(os.getenv('CAPIF_HOSTNAME'), str(aef_id), str(log_id))
             return res
 
