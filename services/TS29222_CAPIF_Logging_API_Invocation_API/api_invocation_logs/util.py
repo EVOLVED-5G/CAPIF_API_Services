@@ -4,6 +4,44 @@ import six
 import typing
 from api_invocation_logs import typing_utils
 
+def clean_empty(d):
+    if isinstance(d, dict):
+        return {
+            k: v
+            for k, v in ((k, clean_empty(v)) for k, v in d.items())
+            if v
+        }
+    if isinstance(d, list):
+        return [v for v in map(clean_empty, d) if v]
+    return d
+
+def dict_to_camel_case(my_dict):
+
+
+        result = {}
+
+        for attr, value in my_dict.items():
+
+            my_key = ''.join(word.title() for word in attr.split('_'))
+            my_key= ''.join([my_key[0].lower(), my_key[1:]])
+            if my_key == "serviceApiCategory":
+                my_key = "serviceAPICategory"
+
+            if isinstance(value, list):
+                result[my_key] = list(map(
+                    lambda x: dict_to_camel_case(x) if isinstance(x, dict) else x, value ))
+
+            elif hasattr(value, "to_dict"):
+                result[my_key] = dict_to_camel_case(value)
+
+            elif isinstance(value, dict):
+                value = dict_to_camel_case(value)
+                result[my_key] = value
+            else:
+                result[my_key] = value
+
+        return result
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
