@@ -27,9 +27,9 @@ class AuditOperations (Resource):
 
             logs = result['logs'].copy()
 
-            for log in logs:
+            query_params = dict((k,v) for k,v in query_parameters.items() if v is not None and k != 'aef_id' and k != 'api_invoker_id')
 
-                query_params = dict((k,v) for k,v in query_parameters.items() if v is not None and k != 'aef_id' and k != 'api_invoker_id')
+            for log in logs:
 
                 for param in query_params:
                     if param == 'time_range_start':
