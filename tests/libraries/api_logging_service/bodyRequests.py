@@ -6,7 +6,42 @@ def create_log_entry(aefId=None, apiInvokerId=None, apiId=None, apiName=None):
         {
         "apiId": apiId[0],
         "apiName": apiName[0],
-        "apiVersion": "string",
+        "apiVersion": "v1",
+        "resourceName": "string",
+        "uri": "http://resource/endpoint",
+        "protocol": "HTTP_1_1",
+        "operation": "GET",
+        "result": "string",
+        "invocationTime": "2023-03-30T10:30:21.408Z",
+        "invocationLatency": 0,
+        "inputParameters": "string",
+        "outputParameters": "string",
+        "srcInterface": {
+            "ipv4Addr": "192.168.1.1",
+            "fqdn": "string",
+            "port": 65535,
+            "apiPrefix": "string",
+            "securityMethods": [
+            "PSK",
+            "string"
+            ]
+        },
+        "destInterface": {
+            "ipv4Addr": "192.168.1.23",
+            "fqdn": "string",
+            "port": 65535,
+            "apiPrefix": "string",
+            "securityMethods": [
+            "PSK",
+            "string"
+            ]
+        },
+        "fwdInterface": "string"
+        },
+        {
+        "apiId": apiId[0],
+        "apiName": apiName[0],
+        "apiVersion": "v2",
         "resourceName": "string",
         "uri": "http://resource/endpoint",
         "protocol": "HTTP_1_1",

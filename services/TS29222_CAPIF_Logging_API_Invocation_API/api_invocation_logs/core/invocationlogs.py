@@ -19,9 +19,6 @@ class LoggingInvocationOperations(Resource):
 
     def __check_aef(self, request_aef_id, body_aef_id):
 
-        if request_aef_id != body_aef_id:
-            return unauthorized_error(detail="AEF id not matching in request and body", cause="Not identical AEF id")
-
         prov_col = self.db.get_col_by_name(self.db.provider_details)
 
         current_app.logger.debug("Checking aef id")
@@ -30,6 +27,10 @@ class LoggingInvocationOperations(Resource):
         if aef_res is None:
             current_app.logger.error("Exposer not exist")
             return not_found_error(detail="Exposer not exist", cause="Exposer id not found")
+
+        if request_aef_id != body_aef_id:
+            return unauthorized_error(detail="AEF id not matching in request and body", cause="Not identical AEF id")
+
 
         return None
 

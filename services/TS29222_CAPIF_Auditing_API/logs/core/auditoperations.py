@@ -57,8 +57,10 @@ class AuditOperations (Resource):
             if not result['logs']:
                 return not_found_error(detail="Parameters do not match any log entry", cause="No logs found")
 
-            invocation_log = InvocationLog(result['aef_id'], result['api_invoker_id'], result['logs'],
-                                           result['supported_features'])
+
+            result = dict_to_camel_case(clean_empty(result))
+            invocation_log = InvocationLog(result['aefId'], result['apiInvokerId'], result['logs'],
+                                           result['supportedFeatures'])
             res = make_response(object=invocation_log, status=200)
             current_app.logger.debug("Found invocation logs")
             return res

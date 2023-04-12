@@ -7,6 +7,8 @@
   - [Test Case 3: Creates a new individual CAPIF Log Entry with Invalid serviceAPI](#test-case-3-creates-a-new-individual-capif-log-entry-with-invalid-serviceapi)
   - [Test Case 4: Creates a new individual CAPIF Log Entry with Invalid apiInvokerId](#test-case-4-creates-a-new-individual-capif-log-entry-with-invalid-apiinvokerid)
 
+  - [Test Case 5: Creates a new individual CAPIF Log Entry with differnted aef_id in body and request](#test-case-5-creates-a-new-individual-capif-log-entry-with-invalid-aefid-in-body)
+
 
 # Test Plan for CAPIF Api Logging Service
 At this documentation you will have all information and related files and examples of test plan for this API.
@@ -189,7 +191,7 @@ At this documentation you will have all information and related files and exampl
 * Test ID: ***capif_api_logging-5***
 * Description:
 
-  This test case will check that a CAPIF subscriber (AEF) cannot create Log Entry without valid aefId
+  This test case will check that a CAPIF subscriber (AEF) cannot create Log Entry without valid aefId in body
 * Pre-Conditions:
 
   *  CAPIF provider is pre-authorised (has valid apfId from CAPIF Authority)
@@ -218,12 +220,12 @@ At this documentation you will have all information and related files and exampl
 * Expected Result:
 
   1. Response to Logging Service must accomplish:
-     1. **400 Bad request**
+     1. **401 Unauthorized**
      2. Error Response Body must accomplish with **ProblemDetails** data structure with:
-        * status 400
-        * title with message "Not Found"
-        * detail with message "Exposer not exist".
-        * cause with message "Exposer id not found".
+        * status 401
+        * title with message "Unauthorized"
+        * detail with message "AEF id not matching in request and body".
+        * cause with message "Not identical AEF id".
 
 
 
