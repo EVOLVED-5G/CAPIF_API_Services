@@ -36,6 +36,5 @@ app.add_api('openapi.yaml',
 
 configure_logging(app.app)
 
-
 if __name__ == '__main__':
     app.run(port=8080)

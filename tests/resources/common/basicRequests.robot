@@ -23,6 +23,8 @@ ${LOCATION_SECURITY_RESOURCE_REGEX}
 ...                                     ^/capif-security/v1/trustedInvokers/[0-9a-zA-Z]+
 ${LOCATION_PROVIDER_RESOURCE_REGEX}
 ...                                     ^/api-provider-management/v1/registrations/[0-9a-zA-Z]+
+${LOCATION_LOGGING_RESOURCE_REGEX}
+...                                     ^/api-invocation-logs/v1/[0-9a-zA-Z]+/logs/[0-9a-zA-Z]+
 
 ${INVOKER_ROLE}                         invoker
 ${AMF_ROLE}                             amf

@@ -1,0 +1,45 @@
+{
+    "aefId": "aefId",
+    "apiInvokerId": "apiInvokerId",
+    "logs": [
+      {
+        "apiId": "apiId",
+        "apiName": "apiName",
+        "apiVersion": "string",
+        "resourceName": "string",
+        "uri": "string",
+        "protocol": "HTTP_1_1",
+        "operation": "GET",
+        "result": "string",
+        "invocationTime": "2023-03-30T10:30:21.404Z",
+        "invocationLatency": 0,
+        "inputParameters": "string",
+        "outputParameters": "string",
+        "srcInterface": {
+          "ipv4Addr": "string",
+          "ipv6Addr": "string",
+          "fqdn": "string",
+          "port": 65535,
+          "apiPrefix": "string",
+          "securityMethods": [
+            "PSK",
+            "Oauth"
+          ]
+        },
+        "destInterface": {
+          "ipv4Addr": "string",
+          "ipv6Addr": "string",
+          "fqdn": "string",
+          "port": 65535,
+          "apiPrefix": "string",
+          "securityMethods": [
+            "PSK",
+            "string"
+          ]
+        },
+        "fwdInterface": "string"
+      }
+    ],
+    "supportedFeatures": "string"
+  }
+  
