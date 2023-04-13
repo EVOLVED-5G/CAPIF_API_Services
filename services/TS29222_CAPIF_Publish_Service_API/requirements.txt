@@ -4,8 +4,7 @@ python_dateutil >= 2.6.0
 setuptools >= 21.0.0
 Flask == 2.0.3
 pymongo == 4.0.1
-flask_jwt_extended
-flask_executor
-pyopenssl
-redis
-
+flask_jwt_extended == 4.4.4
+pyopenssl == 23.0.0
+redis ==  4.5.4
+flask_executor == 1.0.0

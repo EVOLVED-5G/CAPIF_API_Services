@@ -541,5 +541,42 @@
   },
   "ApiProviderFuncRole": {
     "enum": ["AEF", "APF", "AMF"]
+  },
+  "InvocationLog": {
+    "mandatory_attributes": {
+      "aefId": "string",
+      "apiInvokerId": "string",
+      "logs": "Log"
+    },
+    "optional_attributes": {
+      "log_id":"string",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "Log": {
+    "mandatory_attributes": {
+      "apiId": "string",
+      "apiName": "string",
+      "apiVersion": "string",
+      "resourceName": "string",
+      "protocol": "Protocol",
+      "result": "string"
+    },
+    "optional_attributes": {
+      "log_id": "string",
+      "uri": "URI",
+      "operation": "Operation",
+      "invocationTime": "string",
+      "invocationLatency": "integer",
+      "inputParameters": "Any",
+      "outputParameters": "Any",
+      "srcInterface": "InterfaceDescription",
+      "destInterface": "InterfaceDescription",
+      "fwdInterface": "string",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "Any": {
+    "Check": false
   }
 }

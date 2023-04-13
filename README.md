@@ -250,7 +250,21 @@ Changes at Tests:
 * Complete code refactor of all tests
 * Complete test plan review, including all services (except auditing and logging)
 
+# CAPIF Tool Release 3.1
 
+* Delete a service automatically if the provider that contains the APF that published it is deleted
+* Clear the security context of an invoker automatically if the invoker is deleted
+* Delete automatically the entry in the security info of the security context if the provider that has the aef that published the service is deleted
+* Delete automatically the entry in the security info of the security context if the service on which that context was created is deleted
+
+# CAPIF Tool Release 3.1.1
+
+* Minor Fixes in Logging/Auditing Service
+* Update redis version
+
+Changes at Tests:
+* Add test plan to logging/auditing service
+* Add tests to cover logging/auditing test plan
 
 
 [Open API Descriptions of 3GPP 5G APIs]: https://github.com/jdegre/5GC_APIs  "Open API Descriptions of 3GPP 5G APIs"
