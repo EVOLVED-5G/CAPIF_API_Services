@@ -31,7 +31,6 @@ def cert_validation():
     def _cert_validation(f):
         @wraps(f)
         def __cert_validation(*args, **kwargs):
-            #just do here everything what you need
 
             args = request.view_args
             cert_tmp = request.headers['X-Ssl-Client-Cert']
