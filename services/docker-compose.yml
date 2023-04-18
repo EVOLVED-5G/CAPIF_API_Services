@@ -27,16 +27,17 @@ services:
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
     depends_on:
     - redis
-    - nginx
+    - mongo
+    - easy-rsa
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
     depends_on:
-      - redis
-      - nginx
-
+    - redis
+    - mongo
+    - easy-rsa
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
@@ -51,6 +52,10 @@ services:
       - ./TS29222_CAPIF_Auditing_API:/usr/src/app
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/auditing_api:latest
+    depends_on:
+    - redis
+    - mongo
+    - easy-rsa
   service-apis:
     build:
       context: ./TS29222_CAPIF_Discover_Service_API
@@ -61,7 +66,9 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/discover_service_api:latest
     depends_on:
+    - redis
     - mongo
+    - easy-rsa
   capif-events:
     build: TS29222_CAPIF_Events_API/.
     expose:
@@ -70,8 +77,9 @@ services:
       - ./TS29222_CAPIF_Events_API:/usr/src/app
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
-      - redis
-      - mongo
+    - redis
+    - mongo
+    - easy-rsa
   api-invocation-logs:
     build:
       context: ./TS29222_CAPIF_Logging_API_Invocation_API
@@ -83,6 +91,10 @@ services:
     image: dockerhub.hi.inet/evolved-5g/capif/api_invocation_logs_api:latest
     environment:
       - CAPIF_HOSTNAME=${CAPIF_HOSTNAME}
+    depends_on:
+    - redis
+    - mongo
+    - easy-rsa
   published-apis:
     build: TS29222_CAPIF_Publish_Service_API/.
     expose:
@@ -92,13 +104,18 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/publish_service_api:latest
     depends_on:
-      - redis
-      - mongo
+    - redis
+    - mongo
+    - easy-rsa
   capif-routing-info:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
+    depends_on:
+    - redis
+    - mongo
+    - easy-rsa
   capif-security:
     build: TS29222_CAPIF_Security_API/.
     expose:
@@ -112,8 +129,9 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     depends_on:
-      - redis
-      - nginx
+    - redis
+    - mongo
+    - easy-rsa
   easy-rsa:
     build:
       context: ./easy_rsa
@@ -172,19 +190,15 @@ services:
       - ./nginx/certs:/etc/nginx/certs
     restart: unless-stopped
     depends_on:
-      #- api-invoker-management
+      - api-invoker-management
       - easy-rsa
       - redis
-#      - aef-security
-#      - api-invoker-management
-      #- api-provider-management
-#      - access-control-policy
+      - mongo
+      - api-provider-management
       - service-apis
       - api-invocation-logs
       - published-apis
-#      - capif-routing-info
-      #- capif-security
+      - capif-routing-info
+      - capif-security
       - capif-events
       - logs
-
-
