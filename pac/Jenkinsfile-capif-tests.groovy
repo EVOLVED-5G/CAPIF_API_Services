@@ -77,7 +77,7 @@ pipeline {
         ROBOT_TEST_OPTIONS = setRobotOptionsValue("${params.ROBOT_TEST_OPTIONS}")
         ROBOT_TESTS_INCLUDE = robotTestSelection("${params.TESTS}", "${params.CUSTOM_TEST}")
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
-        ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/5gnow-robot-test-image'
+        ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/evolved-robot-test-image'
         RUN_LOCAL_CAPIF = "${params.RUN_LOCAL_CAPIF}"
         DEPLOYMENT = "${params.DEPLOYMENT}"
     }
