@@ -258,6 +258,14 @@ Changes at Tests:
 * Delete automatically the entry in the security info of the security context if the provider that has the aef that published the service is deleted
 * Delete automatically the entry in the security info of the security context if the service on which that context was created is deleted
 
+# CAPIF Tool Release 3.1.1
+
+* Minor Fixes in Logging/Auditing Service
+* Update redis version
+
+Changes at Tests:
+* Add test plan to logging/auditing service
+* Add tests to cover logging/auditing test plan
 
 
 

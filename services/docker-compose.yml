@@ -17,8 +17,7 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
   api-invoker-management:
-    build:
-      context: ./TS29222_CAPIF_API_Invoker_Management_API
+    build: TS29222_CAPIF_API_Invoker_Management_API/.
     expose:
       - "8080"
     volumes:
@@ -35,17 +34,15 @@ services:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
     depends_on:
-    - redis
-    - mongo
-    - easy-rsa
+      - redis
+      - nginx
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
 #      - "8080"
 #    image: dockerhub.hi.inet/evolved-5g/capif/access_control_policy_api:latest
   logs:
-    build:
-      context: ./TS29222_CAPIF_Auditing_API
+    build: TS29222_CAPIF_Auditing_API/.
     expose:
       - "8080"
     volumes:
@@ -57,8 +54,7 @@ services:
     - mongo
     - easy-rsa
   service-apis:
-    build:
-      context: ./TS29222_CAPIF_Discover_Service_API
+    build: TS29222_CAPIF_Discover_Service_API/.
     expose:
       - "8080"
     volumes:
@@ -81,8 +77,7 @@ services:
     - mongo
     - easy-rsa
   api-invocation-logs:
-    build:
-      context: ./TS29222_CAPIF_Logging_API_Invocation_API
+    build: TS29222_CAPIF_Logging_API_Invocation_API/.
     expose:
       - "8080"
     volumes:
