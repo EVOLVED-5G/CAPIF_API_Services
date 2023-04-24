@@ -49,7 +49,7 @@ pipeline {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
         ansiColor('xterm')
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
         retry(1)
     }
     parameters {
