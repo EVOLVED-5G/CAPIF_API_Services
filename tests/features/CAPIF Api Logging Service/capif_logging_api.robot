@@ -27,7 +27,7 @@ Create a log entry
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -38,7 +38,7 @@ Create a log entry
     ${resp}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -60,7 +60,7 @@ Create a log entry invalid aefId
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -71,7 +71,7 @@ Create a log entry invalid aefId
     ${resp}=    Post Request Capif
     ...    /api-invocation-logs/v1/${AEF_ID_NOT_VALID}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -97,7 +97,7 @@ Create a log entry invalid serviceApi
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -106,7 +106,7 @@ Create a log entry invalid serviceApi
     ${resp}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -129,7 +129,7 @@ Create a log entry invalid apiInvokerId
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -140,7 +140,7 @@ Create a log entry invalid apiInvokerId
     ${resp}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -165,7 +165,7 @@ Create a log entry different aef_id in body
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -176,7 +176,7 @@ Create a log entry different aef_id in body
     ${resp}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 

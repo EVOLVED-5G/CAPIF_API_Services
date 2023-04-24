@@ -373,7 +373,7 @@ Publish Service Api
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${register_user_info_provider['apf_id']}/service-apis
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${register_user_info_provider['apf_username']}
 
