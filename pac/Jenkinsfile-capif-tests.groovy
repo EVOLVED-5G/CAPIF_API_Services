@@ -99,13 +99,15 @@ pipeline {
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS'
                 )]) {
-                        try {
-                            sh '''
+                        script {
+                            try {
+                                sh '''
                         docker login --username ${USER} --password ${PASS} dockerhub.hi.inet
                         docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
                         '''
                     } catch (Exception e) {
-                           echo "Robot Docker version is not currently uploaded to artifactory."
+                                echo 'Robot Docker version is not currently uploaded to artifactory.'
+                            }
                         }
                 }
                 }
