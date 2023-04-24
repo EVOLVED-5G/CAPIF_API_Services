@@ -83,11 +83,6 @@ pipeline {
     }
     stages {
         stage('Prepare robot docker image tool') {
-            when {
-                expression {
-                    return REPORTING
-                }
-            }
             options {
                 retry(2)
             }
@@ -99,12 +94,12 @@ pipeline {
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS'
                 )]) {
-                        script {
-                            try {
-                                sh '''
-                        docker login --username ${USER} --password ${PASS} dockerhub.hi.inet
-                        docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
-                        '''
+                    script {
+                        try {
+                            sh '''
+                            docker login --username ${USER} --password ${PASS} dockerhub.hi.inet
+                            docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                            '''
                     } catch (Exception e) {
                                 echo 'Robot Docker version is not currently uploaded to artifactory.'
                             }
