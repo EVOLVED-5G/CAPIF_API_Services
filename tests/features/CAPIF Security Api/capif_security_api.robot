@@ -421,7 +421,7 @@ Revoke the authorization of the API invoker for APIs
 
     # Test
     ${discover_response}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&aef-id=${register_user_info_provider['aef_id']}
     ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
