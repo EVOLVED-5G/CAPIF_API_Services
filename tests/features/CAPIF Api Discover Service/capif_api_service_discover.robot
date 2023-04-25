@@ -27,7 +27,7 @@ Discover Published service APIs by Authorised API Invoker
 
     # Test
     ${resp}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&aef-id=${register_user_info['aef_id']}
     ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -110,7 +110,7 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&aef-id=${register_user_info['aef_id']}
     ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -158,7 +158,7 @@ Discover Published service APIs by registered API Invoker filtered with no match
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&aef-id=${register_user_info['aef_id']}
     ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
@@ -206,7 +206,7 @@ Discover Published service APIs by registered API Invoker not filtered
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&aef-id=${register_user_info['aef_id']}
     ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
