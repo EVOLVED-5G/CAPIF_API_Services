@@ -11,9 +11,11 @@ ROBOT_DOCKER_FILE_FOLDER=$REPOSITORY_BASE_FOLDER/tools/robot
 # nginx Hostname and http port (80 by default) to reach for tests
 CAPIF_HOSTNAME=capifcore
 CAPIF_HTTP_PORT=8080
+CAPIF_HTTPS_PORT=443
 
 echo "HOSTNAME = $CAPIF_HOSTNAME"
 echo "CAPIF_HTTP_PORT = $CAPIF_HTTP_PORT"
+echo "CAPIF_HTTPS_PORT = $CAPIF_HTTPS_PORT"
 
 docker >/dev/null 2>/dev/null
 if [[ $? -ne 0 ]]
@@ -43,4 +45,5 @@ docker run -ti --rm --network="host" \
     -v $TEST_FOLDER:/opt/robot-tests/tests \
     -v $RESULT_FOLDER:/opt/robot-tests/results ${DOCKER_ROBOT_IMAGE}:${DOCKER_ROBOT_IMAGE_VERSION}  \
     --variable CAPIF_HOSTNAME:$CAPIF_HOSTNAME \
-    --variable CAPIF_HTTP_PORT:$CAPIF_HTTP_PORT $@
+    --variable CAPIF_HTTP_PORT:$CAPIF_HTTP_PORT \
+    --variable CAPIF_HTTPS_PORT:$CAPIF_HTTPS_PORT $@
