@@ -20,12 +20,12 @@ String robotTestSelection(String tests, String customTest) {
 
 def getAgent(deployment) {
     String var = deployment
-    if("openshift".equals(var)) {
-        return "evol5-openshift";
-    }else if("kubernetes-athens".equals(var)){
-        return "evol5-athens"
+    if ('openshift'.equals(var)) {
+        return 'evol5-openshift'
+    }else if ('kubernetes-athens'.equals(var)) {
+        return 'evol5-athens'
     }else {
-        return "evol5-slave";
+        return 'evol5-slave'
     }
 }
 
@@ -44,12 +44,12 @@ test_plan = [
 // ################################################
 
 pipeline {
-    agent {node {label getAgent("${params.DEPLOYMENT}") == "any" ? "" : getAgent("${params.DEPLOYMENT}")}}
+    agent { node { label getAgent("${params.DEPLOYMENT }") == 'any' ? '' : getAgent("${params.DEPLOYMENT }") } }
     options {
         disableConcurrentBuilds()
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '30', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '30'))
         ansiColor('xterm')
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
         retry(1)
     }
     parameters {
@@ -62,14 +62,14 @@ pipeline {
         string(name: 'CUSTOM_TEST', defaultValue: '', description: 'If CUSTOM is set in TESTS, here you can add test tag')
         string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '4.0', description: 'Robot Docker image version')
         string(name: 'ROBOT_TEST_OPTIONS', defaultValue: '', description: 'Options to set in test to robot testing. --variable <key>:<value>, --include <tag>, --exclude <tag>')
-        choice(name: "DEPLOYMENT", choices: ["openshift", "kubernetes-athens", "kubernetes-uma"], description: 'Environment where the CAPIF is tested')
+        choice(name: 'DEPLOYMENT', choices: ['openshift', 'kubernetes-athens', 'kubernetes-uma'], description: 'Environment where the CAPIF is tested')
     }
     environment {
         BRANCH_NAME = "${params.BRANCH_NAME}"
         CAPIF_SERVICES_DIRECTORY = "${WORKSPACE}/services"
         ROBOT_TESTS_DIRECTORY = "${WORKSPACE}/tests"
         ROBOT_RESULTS_DIRECTORY = "${WORKSPACE}/results"
-        ROBOT_DOCKER_FILE_FOLDER="${WORKSPACE}/tools/robot"
+        ROBOT_DOCKER_FILE_FOLDER = "${WORKSPACE}/tools/robot"
         CUSTOM_TEST = "${params.CUSTOM_TEST}"
         CAPIF_HOSTNAME = "${params.CAPIF_HOSTNAME}"
         CAPIF_PORT = "${params.CAPIF_PORT}"
@@ -77,11 +77,37 @@ pipeline {
         ROBOT_TEST_OPTIONS = setRobotOptionsValue("${params.ROBOT_TEST_OPTIONS}")
         ROBOT_TESTS_INCLUDE = robotTestSelection("${params.TESTS}", "${params.CUSTOM_TEST}")
         ROBOT_VERSION = robotDockerVersion("${params.ROBOT_DOCKER_IMAGE_VERSION}")
-        ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/5gnow-robot-test-image'
+        ROBOT_IMAGE_NAME = 'dockerhub.hi.inet/5ghacking/evolved-robot-test-image'
         RUN_LOCAL_CAPIF = "${params.RUN_LOCAL_CAPIF}"
         DEPLOYMENT = "${params.DEPLOYMENT}"
     }
     stages {
+        stage('Prepare robot docker image tool') {
+            options {
+                retry(2)
+            }
+
+            steps {
+                dir("${env.WORKSPACE}") {
+                    withCredentials([usernamePassword(
+                    credentialsId: 'docker_pull_cred',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    script {
+                        try {
+                            sh '''
+                            docker login --username ${USER} --password ${PASS} dockerhub.hi.inet
+                            docker pull ${ROBOT_IMAGE_NAME}:${ROBOT_VERSION}
+                            '''
+                    } catch (Exception e) {
+                                echo 'Robot Docker version is not currently uploaded to artifactory.'
+                            }
+                        }
+                }
+                }
+            }
+        }
         stage('CAPIF: Local Test') {
             when {
                 allOf {
@@ -89,18 +115,18 @@ pipeline {
                 }
             }
             steps {
-                dir ("${CAPIF_SERVICES_DIRECTORY}") {
+                dir("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
                             bash ./run.sh ${CAPIF_HOSTNAME}
                            '''
                 }
-                dir ("${CAPIF_SERVICES_DIRECTORY}") {
+                dir("${CAPIF_SERVICES_DIRECTORY}") {
                         sh '''
                             bash ./check_services_are_running.sh
                            '''
                 }
                 steps {
-                    dir ("${env.WORKSPACE}") {
+                    dir("${env.WORKSPACE}") {
                         sh '''#!/bin/bash
                             echo "Executing tests in local"
                             docker images|grep -Eq '^'$ROBOT_IMAGE_NAME'[ ]+[ ]'$ROBOT_VERSION''
@@ -123,12 +149,12 @@ pipeline {
                 }
             }
         }
-        stage("CAPIF: Launch tests") {
+        stage('CAPIF: Launch tests') {
             when {
                 expression { RUN_LOCAL_CAPIF == 'false' }
             }
             steps {
-                dir ("${env.WORKSPACE}") {
+                dir("${env.WORKSPACE}") {
                     sh '''#!/bin/bash
                             echo "Executing tests in ${DEPLOYMENT}"
                             docker images|grep -Eq '^'$ROBOT_IMAGE_NAME'[ ]+[ ]'$ROBOT_VERSION''
@@ -154,7 +180,7 @@ pipeline {
     post {
         always {
             script {
-                dir ("${env.CAPIF_SERVICES_DIRECTORY}") {
+                dir("${env.CAPIF_SERVICES_DIRECTORY}") {
                     echo 'Shutdown all capif services'
                     sh 'sudo ./clean_capif_docker_services.sh'
                 }
@@ -178,7 +204,7 @@ pipeline {
             junit allowEmptyResults: true, testResults: 'results/xunit.xml'
 
             script {
-                dir ("${env.WORKSPACE}") {
+                dir("${env.WORKSPACE}") {
                     sh "sudo rm -rf ${env.ROBOT_TESTS_DIRECTORY}"
                     sh "sudo rm -rf ${env.CAPIF_SERVICES_DIRECTORY}"
                 }

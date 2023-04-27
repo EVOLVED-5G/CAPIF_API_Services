@@ -29,7 +29,7 @@ Get Log Entry
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -40,14 +40,14 @@ Get Log Entry
     ${resp_1}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
 
     ${resp_2}=    Get Request Capif
     ...    /logs/v1/apiInvocationLogs?aef-id=${register_user_info['aef_id']}&api-invoker-id=${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -69,7 +69,7 @@ Get a log entry without entry created
 
      ${resp_1}=  Get Request Capif
     ...    /logs/v1/apiInvocationLogs?aef-id=${register_user_info['aef_id']}&api-invoker-id=${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -94,7 +94,7 @@ Get a log entry withut aefid and apiInvokerId
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -105,14 +105,14 @@ Get a log entry withut aefid and apiInvokerId
     ${resp_1}=    Post Request Capif
     ...    /api-invocation-logs/v1/${AEF_ID_NOT_VALID}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
 
      ${resp_2}=    Get Request Capif
     ...    /logs/v1/apiInvocationLogs
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -137,7 +137,7 @@ Get Log Entry with apiVersion filter
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -148,14 +148,14 @@ Get Log Entry with apiVersion filter
     ${resp_1}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
 
     ${resp_2}=    Get Request Capif
     ...    /logs/v1/apiInvocationLogs?aef-id=${register_user_info['aef_id']}&api-invoker-id=${register_user_info_invoker['api_invoker_id']}&api-version=${API_VERSION_VALID} 
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -176,7 +176,7 @@ Get Log Entry with no exist apiVersion filter
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -187,14 +187,14 @@ Get Log Entry with no exist apiVersion filter
     ${resp_1}=    Post Request Capif
     ...    /api-invocation-logs/v1/${register_user_info['aef_id']}/logs
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
 
     ${resp_2}=    Get Request Capif
     ...    /logs/v1/apiInvocationLogs?aef-id=${register_user_info['aef_id']}&api-invoker-id=${register_user_info_invoker['api_invoker_id']}&api-version=${API_VERSION_NOT_VALID} 
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
