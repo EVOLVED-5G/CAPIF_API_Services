@@ -106,6 +106,11 @@ class LoggingInvocationOperations(Resource):
 
             res = make_response(object=invocationlog, status=201)
             current_app.logger.debug("Invocation Logs response ready")
+
+            apis_added = {log.api_id:log.api_name for log in invocationlog.logs}
+
+            current_app.logger.debug(f"Added log entry to apis: {apis_added}")
+
             res.headers['Location'] = "https://{}/api-invocation-logs/v1/{}/logs/{}".format(os.getenv('CAPIF_HOSTNAME'), str(aef_id), str(log_id))
             return res
 

@@ -19,6 +19,8 @@
 - [CAPIF Tool Release 2.1](#capif-tool-release-21)
 - [CAPIF Tool Release 3.0](#capif-tool-release-30)
 - [CAPIF Tool Release 3.1](#capif-tool-release-31)
+- [CAPIF Tool Release 3.1.1](#capif-tool-release-311)
+- [CAPIF Tool Release 3.1.2](#capif-tool-release-312)
 
 
 # Repository structure
@@ -266,6 +268,15 @@ Changes at Tests:
 Changes at Tests:
 * Add test plan to logging/auditing service
 * Add tests to cover logging/auditing test plan
+
+# CAPIF Tool Release 3.1.2
+
+* Improvements of CAPIF robot tests.
+* Update Startup scripts for all services in order to be sure service has REDIS connection and properly certificate to raise server side.
+
+Changes at Tests:
+* Allow different port for https connection.
+* Improved code according to other tests to have more homogeneity when we invoke apis on all tests
 
 
 

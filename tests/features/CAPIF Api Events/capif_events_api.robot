@@ -24,7 +24,7 @@ Creates a new individual CAPIF Event Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -41,7 +41,7 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${SUBSCRIBER_ID_NOT_VALID}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -61,7 +61,7 @@ Deletes an individual CAPIF Event Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -71,7 +71,7 @@ Deletes an individual CAPIF Event Subscription
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${subscriber_id}/subscriptions/${subscription_id}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -86,7 +86,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -96,7 +96,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${SUBSCRIBER_ID_NOT_VALID}/subscriptions/${subscription_id}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
     
@@ -118,7 +118,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -128,7 +128,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${subscriber_id}/subscriptions/${SUBSCRIPTION_ID_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 

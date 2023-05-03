@@ -28,7 +28,7 @@ Onboard NetApp
     ${resp}=    Post Request Capif
     ...    ${register_user_info['ccf_onboarding_url']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -47,7 +47,7 @@ Register NetApp Already Onboarded
     ${resp}=    Post Request Capif
     ...    ${register_user_info['ccf_onboarding_url']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -72,7 +72,7 @@ Update Onboarded NetApp
     ${resp}=    Put Request Capif
     ...    ${url.path}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -88,7 +88,7 @@ Update Not Onboarded NetApp
     ${resp}=    Put Request Capif
     ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -106,7 +106,7 @@ Offboard NetApp
 
     ${resp}=    Delete Request Capif
     ...    ${url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -120,7 +120,7 @@ Offboard Not Previously Onboarded NetApp
 
     ${resp}=    Delete Request Capif
     ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -154,7 +154,7 @@ Update Onboarded NetApp Certificate
     ${resp}=    Put Request Capif
     ...    ${url.path}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -169,7 +169,7 @@ Update Onboarded NetApp Certificate
     ${resp}=    Put Request Capif
     ...    ${url.path}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME_NEW}
 

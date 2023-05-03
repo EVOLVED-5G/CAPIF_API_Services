@@ -280,7 +280,7 @@ Invoker Default Onboarding
     ${resp}=    Post Request Capif
     ...    ${register_user_info['ccf_onboarding_url']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -324,7 +324,7 @@ Provider Registration
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -373,7 +373,7 @@ Publish Service Api
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${register_user_info_provider['apf_id']}/service-apis
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${register_user_info_provider['apf_username']}
 
