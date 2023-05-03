@@ -26,7 +26,7 @@ Create a security context for an API invoker
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -47,7 +47,7 @@ Create a security context for an API invoker with Provider role
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -68,7 +68,7 @@ Create a security context for an API invoker with Provider entity role and inval
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -88,7 +88,7 @@ Create a security context for an API invoker with Invalid apiInvokerID
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -108,7 +108,7 @@ Retrieve the Security Context of an API Invoker
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -123,7 +123,7 @@ Retrieve the Security Context of an API Invoker
     # ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -144,7 +144,7 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -163,7 +163,7 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -172,7 +172,7 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     # We will request information using invoker user, that is not allowed
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -192,7 +192,7 @@ Delete the Security Context of an API Invoker
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -204,7 +204,7 @@ Delete the Security Context of an API Invoker
     # Remove Security Context
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -213,7 +213,7 @@ Delete the Security Context of an API Invoker
     # Check if Security Context is removed
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -232,7 +232,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -240,7 +240,7 @@ Delete the Security Context of an API Invoker with Invoker entity role
 
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -258,7 +258,7 @@ Delete the Security Context of an API Invoker with Invoker entity role and inval
 
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -276,7 +276,7 @@ Delete the Security Context of an API Invoker with invalid apiInvokerID
 
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -299,7 +299,7 @@ Update the Security Context of an API Invoker
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -314,7 +314,7 @@ Update the Security Context of an API Invoker
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/update
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -326,7 +326,7 @@ Update the Security Context of an API Invoker
     # Check Security Context is corretly modified at CCF
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -343,7 +343,7 @@ Update the Security Context of an API Invoker with Provider entity role
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -355,7 +355,7 @@ Update the Security Context of an API Invoker with Provider entity role
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/update
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -375,7 +375,7 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/update
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -394,7 +394,7 @@ Update the Security Context of an API Invoker with invalid apiInvokerID
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/update
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -421,8 +421,8 @@ Revoke the authorization of the API invoker for APIs
 
     # Test
     ${discover_response}=    Get Request Capif
-    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}&aef-id=${register_user_info_provider['aef_id']}
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -437,7 +437,7 @@ Revoke the authorization of the API invoker for APIs
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -450,7 +450,7 @@ Revoke the authorization of the API invoker for APIs
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -460,7 +460,7 @@ Revoke the authorization of the API invoker for APIs
     # Check if Security Context is removed
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -479,7 +479,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -495,7 +495,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/delete
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -508,7 +508,7 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -529,7 +529,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -544,7 +544,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/delete
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -557,7 +557,7 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
 
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -582,7 +582,7 @@ Retrieve access token
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -595,7 +595,7 @@ Retrieve access token
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -607,7 +607,7 @@ Retrieve access token
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -634,7 +634,7 @@ Retrieve access token by Provider
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -647,7 +647,7 @@ Retrieve access token by Provider
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -659,7 +659,7 @@ Retrieve access token by Provider
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -685,7 +685,7 @@ Retrieve access token by Provider with invalid apiInvokerId
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -698,7 +698,7 @@ Retrieve access token by Provider with invalid apiInvokerId
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -710,7 +710,7 @@ Retrieve access token by Provider with invalid apiInvokerId
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AEF_PROVIDER_USERNAME}
 
@@ -737,7 +737,7 @@ Retrieve access token with invalid apiInvokerId
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -750,7 +750,7 @@ Retrieve access token with invalid apiInvokerId
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -762,7 +762,7 @@ Retrieve access token with invalid apiInvokerId
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${API_INVOKER_NOT_VALID}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -791,7 +791,7 @@ Retrieve access token with invalid client_id
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -804,7 +804,7 @@ Retrieve access token with invalid client_id
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -816,7 +816,7 @@ Retrieve access token with invalid client_id
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -843,7 +843,7 @@ Retrieve access token with unsupported grant_type
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -856,7 +856,7 @@ Retrieve access token with unsupported grant_type
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -872,7 +872,7 @@ Retrieve access token with unsupported grant_type
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -902,7 +902,7 @@ Retrieve access token with invalid scope
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -915,7 +915,7 @@ Retrieve access token with invalid scope
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -929,7 +929,7 @@ Retrieve access token with invalid scope
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -956,7 +956,7 @@ Retrieve access token with invalid aefid at scope
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -969,7 +969,7 @@ Retrieve access token with invalid aefid at scope
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -983,7 +983,7 @@ Retrieve access token with invalid aefid at scope
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -1010,7 +1010,7 @@ Retrieve access token with invalid apiName at scope
     # Test
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -1023,7 +1023,7 @@ Retrieve access token with invalid apiName at scope
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -1037,7 +1037,7 @@ Retrieve access token with invalid apiName at scope
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/securities/${register_user_info_invoker['api_invoker_id']}/token
     ...    data=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 

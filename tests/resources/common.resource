@@ -16,6 +16,7 @@ ${PROVIDER_ROLE}                provider
 
 ${CAPIF_HOSTNAME}               capifcore
 ${CAPIF_HTTP_PORT}
+${CAPIF_HTTPS_PORT}
 ${CAPIF_IP}                     127.0.0.1
 ${CAPIF_CALLBACK_IP}            host.docker.internal
 ${CAPIF_CALLBACK_PORT}          8086

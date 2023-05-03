@@ -42,7 +42,7 @@ Register Api Provider
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -62,7 +62,7 @@ Register Api Provider Already registered
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
     ...    json=${register_user_info['provider_enrollment_details']}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -84,7 +84,7 @@ Update Registered Api Provider
     ${resp}=    Put Request Capif
     ...    ${register_user_info['resource_url'].path}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -101,7 +101,7 @@ Update Not Registered Api Provider
     ${resp}=    Put Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -121,7 +121,7 @@ Partially Update Registered Api Provider
     ${resp}=    Patch Request Capif
     ...    ${register_user_info['resource_url'].path}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -138,7 +138,7 @@ Partially Update Not Registered Api Provider
     ${resp}=    Patch Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -155,7 +155,7 @@ Delete Registered Api Provider
 
     ${resp}=    Delete Request Capif
     ...    ${register_user_info['resource_url'].path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
@@ -168,7 +168,7 @@ Delete Not Registered Api Provider
 
     ${resp}=    Delete Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 

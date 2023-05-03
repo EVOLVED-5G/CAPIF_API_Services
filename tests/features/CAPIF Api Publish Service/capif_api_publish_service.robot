@@ -23,7 +23,7 @@ Publish API by Authorised API Publisher
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -41,7 +41,7 @@ Publish API by NON Authorised API Publisher
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -67,7 +67,7 @@ Retrieve all APIs Published by Authorised apfId
     # Retrieve Services published
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -84,7 +84,7 @@ Retrieve all APIs Published by NON Authorised apfId
     # Retrieve Services published
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -113,7 +113,7 @@ Retrieve single APIs Published by Authorised apfId
     # Retrieve Services 1
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${serviceApiId1}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -123,7 +123,7 @@ Retrieve single APIs Published by Authorised apfId
     # Retrieve Services 1
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${serviceApiId2}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -137,7 +137,7 @@ Retrieve single APIs non Published by Authorised apfId
 
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -162,7 +162,7 @@ Retrieve single APIs Published by NON Authorised apfId
 
     ${resp}=    Get Request Capif
     ...    ${resource_url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -185,7 +185,7 @@ Update API Published by Authorised apfId with valid serviceApiId
     ${resp}=    Put Request Capif
     ...    ${resource_url.path}
     ...    json=${request_body_modified}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -195,7 +195,7 @@ Update API Published by Authorised apfId with valid serviceApiId
     # Retrieve Service
     ${resp}=    Get Request Capif
     ...    ${resource_url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -215,7 +215,7 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
     ${resp}=    Put Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -241,7 +241,7 @@ Update APIs Published by NON Authorised apfId
     ${resp}=    Put Request Capif
     ...    ${resource_url.path}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -254,7 +254,7 @@ Update APIs Published by NON Authorised apfId
     # Retrieve Service
     ${resp}=    Get Request Capif
     ...    ${resource_url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -272,7 +272,7 @@ Delete API Published by Authorised apfId with valid serviceApiId
 
     ${resp}=    Delete Request Capif
     ...    ${resource_url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -280,7 +280,7 @@ Delete API Published by Authorised apfId with valid serviceApiId
 
     ${resp}=    Get Request Capif
     ...    ${resource_url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -297,7 +297,7 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
 
     ${resp}=    Delete Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
@@ -317,7 +317,7 @@ Delete APIs Published by NON Authorised apfId
 
     ${resp}=    Delete Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
