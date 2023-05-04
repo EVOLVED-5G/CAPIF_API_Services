@@ -114,7 +114,7 @@
     "mandatory_attributes": {
       "resourceName": "string",
       "commType": "CommunicationType",
-      "uri": "URI_reference"
+      "uri": "string"
     },
     "optional_attributes": {
       "custOpName": "string",
