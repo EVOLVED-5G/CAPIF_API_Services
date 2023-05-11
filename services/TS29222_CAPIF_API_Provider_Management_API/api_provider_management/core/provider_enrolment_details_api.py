@@ -13,6 +13,7 @@ from bson import json_util
 from ..db.db import MongoDatabse
 from ..util import dict_to_camel_case, clean_empty
 from .resources import Resource
+from .auth_manager import AuthManager
 import sys
 
 class ProviderManagementOperations(Resource):
@@ -30,6 +31,10 @@ class ProviderManagementOperations(Resource):
 
         return provider_enrolment_details
 
+    def __init__(self):
+        Resource.__init__(self)
+        self.auth_manager = AuthManager()
+
     def register_api_provider_enrolment_details(self, api_provider_enrolment_details):
         try:
             mycol = self.db.get_col_by_name(self.db.provider_enrolment_details)
@@ -45,10 +50,13 @@ class ProviderManagementOperations(Resource):
             api_provider_enrolment_details.api_prov_dom_id = secrets.token_hex(15)
 
             current_app.logger.debug("Geretaing certs to api prov funcs")
+
             for api_provider_func in api_provider_enrolment_details.api_prov_funcs:
                 api_provider_func.api_prov_func_id = secrets.token_hex(15)
                 certificate = sign_certificate(api_provider_func.reg_info.api_prov_pub_key, api_provider_func.api_prov_func_info)
                 api_provider_func.reg_info.api_prov_cert = certificate
+
+                self.auth_manager.add_auth_provider(certificate, api_provider_func.api_prov_func_id, api_provider_func.api_prov_func_role, api_provider_enrolment_details.api_prov_dom_id)
 
 
             mycol.insert_one(api_provider_enrolment_details.to_dict())
@@ -74,9 +82,17 @@ class ProviderManagementOperations(Resource):
             if isinstance(result, Response):
                 return result
 
+            apf_id = [ provider_func['api_prov_func_id'] for provider_func in result["api_prov_funcs"] if provider_func['api_prov_func_role'] == 'APF' ]
+            aef_id = [ provider_func['api_prov_func_id'] for provider_func in result["api_prov_funcs"] if provider_func['api_prov_func_role'] == 'AEF' ]
+            amf_id = [ provider_func['api_prov_func_id'] for provider_func in result["api_prov_funcs"] if provider_func['api_prov_func_role'] == 'AMF' ]
+
             mycol.delete_one({'api_prov_dom_id': api_prov_dom_id})
             out =  "The provider matching apiProvDomainId  " + api_prov_dom_id + " was offboarded."
             current_app.logger.debug("Removed provider domain from database")
+
+            self.auth_manager.remove_auth_provider([apf_id[0], aef_id[0], amf_id[0]])
+
+            self.publish_ops.publish_message("internal-messages", f"provider-removed:{aef_id[0]}:{apf_id[0]}")
             return make_response(object=out, status=204)
 
         except Exception as e:
@@ -99,6 +115,8 @@ class ProviderManagementOperations(Resource):
                     func.api_prov_func_id = secrets.token_hex(15)
                     certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
                     func.reg_info.api_prov_cert = certificate
+
+                    self.auth_manager.update_auth_provider(certificate, func.api_prov_func_id, api_prov_dom_id, func.api_prov_func_role)
                 else:
                     api_prov_funcs = result["api_prov_funcs"]
                     for api_func in api_prov_funcs:
@@ -108,6 +126,7 @@ class ProviderManagementOperations(Resource):
                             if func.reg_info.api_prov_pub_key != api_func["reg_info"]["api_prov_pub_key"]:
                                 certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
                                 func.reg_info.api_prov_cert = certificate
+                                self.auth_manager.update_auth_provider(certificate, func.api_prov_func_id, api_prov_dom_id, func.api_prov_func_role)
 
 
             api_provider_enrolment_details = api_provider_enrolment_details.to_dict()

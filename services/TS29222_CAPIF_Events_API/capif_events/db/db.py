@@ -11,6 +11,7 @@ class MongoDatabse():
         self.event_collection = self.config['mongo']['col']
         self.invoker_collection = self.config['mongo']['capif_invokers_col']
         self.provider_collection = self.config['mongo']['capif_providers_col']
+        self.certs_col = self.config['mongo']['certs_col']
 
     def get_col_by_name(self, name):
         return self.db[name].with_options(codec_options=CodecOptions(tz_aware=True))

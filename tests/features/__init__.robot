@@ -12,10 +12,26 @@ Force Tags      all
 Prepare environment
     Log    ${CAPIF_HOSTNAME}
     Log    "${CAPIF_HTTP_PORT}"
+    Log    "${CAPIF_HTTPS_PORT}"
+
+    Set Global Variable    ${CAPIF_HTTPS_EASY_RSA_URL}    https://${CAPIF_EASY_RSA}/
+    IF    "${CAPIF_EASY_RSA_PORT}" != ""
+        Set Global Variable    ${CAPIF_HTTPS_EASY_RSA_URL}    https://${CAPIF_EASY_RSA}:${CAPIF_EASY_RSA_PORT}/
+    END
+
+    Set Global Variable    ${CAPIF_HTTPS_REGISTER_URL}    https://${CAPIF_REGISTER}/
+    IF    "${CAPIF_REGISTER_PORT}" != ""
+        Set Global Variable     ${CAPIF_HTTPS_REGISTER_URL}    https://${CAPIF_REGISTER}:${CAPIF_REGISTER_PORT}/
+    END
 
     Set Global Variable    ${CAPIF_HTTP_URL}    http://${CAPIF_HOSTNAME}/
     IF    "${CAPIF_HTTP_PORT}" != ""
         Set Global Variable    ${CAPIF_HTTP_URL}    http://${CAPIF_HOSTNAME}:${CAPIF_HTTP_PORT}/
+    END
+
+    Set Global Variable    ${CAPIF_HTTPS_URL}    https://${CAPIF_HOSTNAME}/
+    IF    "${CAPIF_HTTPS_PORT}" != ""
+        Set Global Variable    ${CAPIF_HTTPS_URL}    https://${CAPIF_HOSTNAME}:${CAPIF_HTTPS_PORT}/
     END
 
     ${status}    ${CAPIF_IP}=    Run Keyword And Ignore Error    Get Ip From Hostname    ${CAPIF_HOSTNAME}
@@ -34,7 +50,7 @@ Prepare environment
 
 Retrieve Ca Root
     [Documentation]    This keyword retrieve ca.root from CAPIF and store it at ca.crt in order to use at TLS communications
-    ${resp}=    Get Request Capif    /ca-root    server=${CAPIF_HTTP_URL}
+    ${resp}=    Get Request Capif    /ca-root    server=${CAPIF_HTTPS_EASY_RSA_URL}
     Status Should Be    201    ${resp}
     Log    ${resp.json()['certificate']}
     Store In File    ca.crt    ${resp.json()['certificate']}

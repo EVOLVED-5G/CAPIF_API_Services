@@ -3,6 +3,7 @@ mongo: {
   'password': 'example',
   'db': 'capif',
   'col': 'serviceapidescriptions',
+  'certs_col': "certs",
   'capif_provider_col': "providerenrolmentdetails",
   'host': 'mongo',
   'port': "27017"

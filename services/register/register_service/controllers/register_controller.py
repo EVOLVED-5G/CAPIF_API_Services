@@ -20,11 +20,9 @@ def register():
     if role != "invoker" and role != "provider":
         return jsonify(message="Role must be invoker or provider"), 400
 
-    if role == "invoker":
-        return register_operation.register_invoker(username, password, description, cn, role)
 
-    elif role == "provider":
-        return register_operation.register_provider(username, password, description, cn, role)
+    return register_operation.register_user(username, password, description, cn, role)
+
 
 @register_routes.route("/getauth", methods=["POST"])
 def getauth():
@@ -33,8 +31,9 @@ def getauth():
 
     return register_operation.get_auth(username, password)
 
-#Pending to remove
-@register_routes.route("/testdata", methods=["DELETE"])
-def testusers():
-    return register_operation.delete_tests()
-    
+@register_routes.route("/remove", methods=["DELETE"])
+def remove():
+    username = request.json["username"]
+    password = request.json["password"]
+
+    return register_operation.remove_user(username, password)

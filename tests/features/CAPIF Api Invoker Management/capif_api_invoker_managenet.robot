@@ -7,6 +7,7 @@ Library         Process
 Library         Collections
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 
 *** Variables ***
@@ -28,12 +29,15 @@ Onboard NetApp
     ${resp}=    Post Request Capif
     ...    ${register_user_info['ccf_onboarding_url']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
     # Check Results
     Check Response Variable Type And Values  ${resp}  201  APIInvokerEnrolmentDetails
+    ${url}=    Parse Url    ${resp.headers['Location']}
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
     Check Location Header    ${resp}    ${LOCATION_INVOKER_RESOURCE_REGEX}
 
     # Store dummy signed certificate
@@ -44,10 +48,13 @@ Register NetApp Already Onboarded
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${resp}=    Post Request Capif
     ...    ${register_user_info['ccf_onboarding_url']}
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    access_token=${register_user_info['access_token']}
 
@@ -65,6 +72,9 @@ Update Onboarded NetApp
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     Set To Dictionary
     ...    ${request_body}
     ...    notificationDestination=${new_notification_destination}
@@ -72,7 +82,7 @@ Update Onboarded NetApp
     ${resp}=    Put Request Capif
     ...    ${url.path}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -85,10 +95,13 @@ Update Not Onboarded NetApp
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${resp}=    Put Request Capif
     ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -104,9 +117,11 @@ Offboard NetApp
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${resp}=    Delete Request Capif
     ...    ${url.path}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -118,9 +133,12 @@ Offboard Not Previously Onboarded NetApp
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${resp}=    Delete Request Capif
     ...    /api-invoker-management/v1/onboardedInvokers/${INVOKER_NOT_REGISTERED}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -138,6 +156,9 @@ Update Onboarded NetApp Certificate
     # Default Invoker Registration and Onboarding
     ${register_user_info}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${INVOKER_USERNAME_NEW}=   Set Variable     ${INVOKER_USERNAME}_NEW
 
     ${csr_request_new}=    Create User Csr    ${INVOKER_USERNAME_NEW}    invoker
@@ -154,7 +175,7 @@ Update Onboarded NetApp Certificate
     ${resp}=    Put Request Capif
     ...    ${url.path}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -169,10 +190,12 @@ Update Onboarded NetApp Certificate
     ${resp}=    Put Request Capif
     ...    ${url.path}
     ...    ${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME_NEW}
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    APIInvokerEnrolmentDetails
     ...    notificationDestination=${new_notification_destination}
+
+

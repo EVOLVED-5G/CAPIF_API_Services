@@ -16,6 +16,7 @@ from ..encoder import JSONEncoder
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import pymongo
+from ..core.responses import bad_request_error
 
 audit_operations = AuditOperations()
 
@@ -58,6 +59,11 @@ def api_invocation_logs_get(aef_id=None, api_invoker_id=None, time_range_start=N
     """
 
     current_app.logger.info("Audit logs")
+
+    if aef_id is None or api_invoker_id is None:
+        return bad_request_error(detail="aef_id and api_invoker_id parameters are mandatory",
+                                 cause="Mandatory parameters missing", invalid_params=[
+                {"param": "aef_id or api_invoker_id", "reason": "missing"}])
 
     time_range_start = util.deserialize_datetime(time_range_start)
     time_range_end = util.deserialize_datetime(time_range_end)

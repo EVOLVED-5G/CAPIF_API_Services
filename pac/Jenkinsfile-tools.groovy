@@ -15,7 +15,7 @@ pipeline {
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Deployment git branch name')
         choice(name: 'FORCE_DOCKER_CLEAN_BUILD', choices: ['False', 'True'], description: 'Force Docker Clean Build. Default use cached images (False)')
-        string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '2.0', description: 'Robot Docker image version')
+        string(name: 'ROBOT_DOCKER_IMAGE_VERSION', defaultValue: '4.0', description: 'Robot Docker image version')
         booleanParam(name: 'GENERATE_ROBOT_DOCKER_IMAGE', defaultValue: false, description: 'Check if robot docker image should be generated')
     }
     environment {

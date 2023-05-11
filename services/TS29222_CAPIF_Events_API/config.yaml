@@ -3,6 +3,7 @@ mongo: {
   'password': 'example',
   'db': 'capif',
   'col': 'eventsdetails',
+  'certs_col': "certs",
   'capif_invokers_col': 'invokerdetails',
   'capif_providers_col': 'providerenrolmentdetails',
   'host': 'mongo',

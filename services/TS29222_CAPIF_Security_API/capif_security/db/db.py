@@ -11,6 +11,7 @@ class MongoDatabse():
         self.security_info = self.config['mongo']['col']
         self.capif_service_col = self.config['mongo']['capif_service_col']
         self.capif_invokers = self.config['mongo']['capif_invokers']
+        self.certs_col = self.config['mongo']['certs_col']
 
 
     def get_col_by_name(self, name):

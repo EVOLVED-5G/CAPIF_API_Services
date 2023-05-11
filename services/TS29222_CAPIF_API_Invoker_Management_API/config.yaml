@@ -4,7 +4,12 @@ mongo: {
   'db': 'capif',
   'col': 'invokerdetails',
   'capif_users_col': "user",
+  'certs_col': "certs",
   'service_col': 'serviceapidescriptions',
   'host': 'mongo',
   'port': "27017"
+}
+ca_factory: {
+  "url": "easy-rsa",
+  "port": "8083"
 }

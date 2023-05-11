@@ -10,6 +10,7 @@ class MongoDatabse():
         self.db = self.__connect()
         self.service_api_descriptions = self.config['mongo']['col']
         self.capif_provider_col = self.config['mongo']['capif_provider_col']
+        self.certs_col = self.config['mongo']['certs_col']
 
 
     def get_col_by_name(self, name):

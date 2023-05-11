@@ -13,6 +13,7 @@ from bson import json_util
 from .responses import internal_server_error, not_found_error, make_response, bad_request_error
 from ..db.db import MongoDatabse
 from ..util import dict_to_camel_case
+from .auth_manager import AuthManager
 
 class EventSubscriptionsOperations(Resource):
 
@@ -35,6 +36,10 @@ class EventSubscriptionsOperations(Resource):
             return not_found_error(detail="Invoker or APF or AEF or AMF Not found", cause="Subscriber Not Found")
 
         return None
+
+    def __init__(self):
+        Resource.__init__(self)
+        self.auth_manager = AuthManager()
 
     def create_event(self, subscriber_id, event_subscription):
 
@@ -65,6 +70,8 @@ class EventSubscriptionsOperations(Resource):
             mycol.insert_one(evnt)
 
             current_app.logger.debug("Event Subscription inserted in database")
+
+            self.auth_manager.add_auth_event(subscription_id, subscriber_id)
 
             res = make_response(object=event_subscription, status=201)
             res.headers['Location'] = "http://localhost:8080/capif-events/v1/" + \
@@ -100,6 +107,8 @@ class EventSubscriptionsOperations(Resource):
 
             mycol.delete_one(my_query)
             current_app.logger.debug("Event subscription removed from database")
+
+            self.auth_manager.remove_auth_event(subscription_id, subscriber_id)
 
             out =  "The event matching subscriptionId  " + subscription_id + " was deleted."
             return make_response(out, status=204)

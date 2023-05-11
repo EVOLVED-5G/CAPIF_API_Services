@@ -14,6 +14,7 @@ from .resources import Resource
 from ..util import dict_to_camel_case, clean_empty
 from .responses import bad_request_error, internal_server_error, forbidden_error, not_found_error, unauthorized_error, make_response
 from bson import json_util
+from .auth_manager import AuthManager
 
 
 service_api_not_found_message = "Service API not found"
@@ -37,6 +38,9 @@ class PublishServiceOperations(Resource):
 
         return None
 
+    def __init__(self):
+        Resource.__init__(self)
+        self.auth_manager = AuthManager()
 
     def get_serviceapis(self, apf_id):
 
@@ -45,7 +49,7 @@ class PublishServiceOperations(Resource):
         try:
 
             current_app.logger.debug("Geting service apis")
-           
+
             result = self.__check_apf(apf_id)
 
             if result != None:
@@ -95,6 +99,8 @@ class PublishServiceOperations(Resource):
             rec['apf_id'] = apf_id
             rec.update(serviceapidescription.to_dict())
             mycol.insert_one(rec)
+
+            self.auth_manager.add_auth_service(api_id, apf_id)
 
             current_app.logger.debug("Service inserted in database")
             res = make_response(object=serviceapidescription, status=201)
@@ -159,6 +165,8 @@ class PublishServiceOperations(Resource):
                 return not_found_error(detail="Service API not existing", cause="Service API id not found")
 
             mycol.delete_one(my_query)
+
+            self.auth_manager.remove_auth_service(service_api_id, apf_id)
 
             current_app.logger.debug("Removed service from database")
             out =  "The service matching api_id " + service_api_id + " was deleted."

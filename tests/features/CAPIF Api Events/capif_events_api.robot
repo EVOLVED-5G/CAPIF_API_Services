@@ -6,6 +6,7 @@ Resource        /opt/robot-tests/tests/resources/common/basicRequests.robot
 Resource        ../../resources/common.resource
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 
 *** Variables ***
@@ -20,11 +21,14 @@ Creates a new individual CAPIF Event Subscription
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -37,11 +41,14 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${SUBSCRIBER_ID_NOT_VALID}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -57,11 +64,14 @@ Deletes an individual CAPIF Event Subscription
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -71,7 +81,7 @@ Deletes an individual CAPIF Event Subscription
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${subscriber_id}/subscriptions/${subscription_id}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -82,11 +92,14 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -96,7 +109,7 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${SUBSCRIBER_ID_NOT_VALID}/subscriptions/${subscription_id}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
     
@@ -114,11 +127,14 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
     ...    json=${request_body}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
@@ -128,14 +144,13 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
 
     ${resp}=    Delete Request Capif
     ...    /capif-events/v1/${subscriber_id}/subscriptions/${SUBSCRIPTION_ID_NOT_VALID}
-    ...    server=https://${CAPIF_HOSTNAME}/
+    ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
-    ...    title=Not Found
-    ...    status=404
-    ...    detail=Event subscription not exist
-    ...    cause=Event API subscription id not found
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    detail=User not authorized
+    ...    cause=You are not the owner of this resource
 

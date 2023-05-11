@@ -33,6 +33,6 @@ def modify_ind_api_provider_enrolment(registration_id, body):  # noqa: E501
     if connexion.request.is_json:
         body = APIProviderEnrolmentDetailsPatch.from_dict(connexion.request.get_json())  # noqa: E501
 
-    res = provider_management_ops.patch_api_provider_enrolment_details(registration_id, body)
+    res = provider_management_ops.update_api_provider_enrolment_details(registration_id, body)
 
     return res

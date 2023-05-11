@@ -14,8 +14,12 @@ from ..encoder import JSONEncoder
 from ..db.db import MongoDatabse
 from ..models.problem_details import ProblemDetails
 from ..util import dict_to_camel_case
+from .auth_manager import AuthManager
 from .resources import Resource
+from ..config import Config
 from bson import json_util
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
 
 class InvokerManagementOperations(Resource):
 
@@ -33,7 +37,7 @@ class InvokerManagementOperations(Resource):
         return old_values
 
     def __sign_cert(self, publick_key, invoker_information):
-        url = "http://easy-rsa:8080/sign-csr"
+        url = f"https://{self.config['ca_factory']['url']}:{self.config['ca_factory']['port']}/sign-csr"
 
         payload = dict()
         payload['csr'] = publick_key
@@ -46,10 +50,15 @@ class InvokerManagementOperations(Resource):
 
         }
 
-        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+        response = requests.request("POST", url, headers=headers, data=json.dumps(payload), verify = False)
         response_payload = json.loads(response.text)
 
         return response_payload
+
+    def __init__(self):
+        Resource.__init__(self)
+        self.auth_manager = AuthManager()
+        self.config = Config().get_config()
 
 
     def add_apiinvokerenrolmentdetail(self, apiinvokerenrolmentdetail):
@@ -78,8 +87,11 @@ class InvokerManagementOperations(Resource):
             apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
             mycol.insert_one(apiinvokerenrolmentdetail.to_dict())
 
+
             current_app.logger.debug("Invoker inserted in database")
             current_app.logger.debug("Netapp onboarded sucessfuly")
+
+            self.auth_manager.add_auth_invoker(cert['certificate'], api_invoker_id)
 
             res = make_response(object=apiinvokerenrolmentdetail, status=201)
             res.headers['Location'] = "/api-invoker-management/v1/onboardedInvokers/" + str(api_invoker_id)
@@ -104,6 +116,7 @@ class InvokerManagementOperations(Resource):
             if apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key != result["onboarding_information"]["api_invoker_public_key"]:
                 cert = self.__sign_cert(apiinvokerenrolmentdetail.onboarding_information.api_invoker_public_key, apiinvokerenrolmentdetail.api_invoker_information)
                 apiinvokerenrolmentdetail.onboarding_information.api_invoker_certificate = cert['certificate']
+                self.auth_manager.update_auth_invoker(cert["certificate"], onboard_id)
 
             apiinvokerenrolmentdetail_update = apiinvokerenrolmentdetail.to_dict()
             apiinvokerenrolmentdetail_update = {
@@ -137,6 +150,7 @@ class InvokerManagementOperations(Resource):
                 return result
 
             mycol.delete_one({'api_invoker_id':onboard_id})
+            self.auth_manager.remove_auth_invoker(onboard_id)
 
             current_app.logger.debug("Invoker resource removed from database")
             current_app.logger.debug("Netapp offboarded sucessfuly")

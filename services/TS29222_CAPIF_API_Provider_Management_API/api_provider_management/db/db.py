@@ -6,10 +6,11 @@ from bson.codec_options import CodecOptions
 class MongoDatabse():
 
     def __init__(self):
-        self.config = Config().getConfig()
+        self.config = Config().get_config()
         self.db = self.__connect()
         self.provider_enrolment_details = self.config['mongo']['col']
         self.capif_users = self.config['mongo']['capif_users']
+        self.certs_col = self.config['mongo']['certs_col']
 
     def get_col_by_name(self, name):
         return self.db[name].with_options(codec_options=CodecOptions(tz_aware=True))

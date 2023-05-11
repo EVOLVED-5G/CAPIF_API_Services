@@ -4,6 +4,7 @@ mongo: {
   'db': 'capif',
   'col': 'security',
   'capif_service_col': 'serviceapidescriptions',
+  'certs_col': "certs",
   'capif_invokers' : 'invokerdetails',
   'host': 'mongo',
   'port': "27017"

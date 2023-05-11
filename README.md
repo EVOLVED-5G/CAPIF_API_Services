@@ -18,6 +18,8 @@
 - [CAPIF Tool Release 2.0](#capif-tool-release-20)
 - [CAPIF Tool Release 2.1](#capif-tool-release-21)
 - [CAPIF Tool Release 3.0](#capif-tool-release-30)
+- [CAPIF Tool Release 3.1.1](#capif-tool-release-311)
+- [CAPIF Tool Release 3.1.2](#capif-tool-release-312)
 
 
 # Repository structure
@@ -250,6 +252,30 @@ Changes at Tests:
 * Complete code refactor of all tests
 * Complete test plan review, including all services (except auditing and logging)
 
+# CAPIF Tool Release 3.1
+
+* Delete a service automatically if the provider that contains the APF that published it is deleted
+* Clear the security context of an invoker automatically if the invoker is deleted
+* Delete automatically the entry in the security info of the security context if the provider that has the aef that published the service is deleted
+* Delete automatically the entry in the security info of the security context if the service on which that context was created is deleted
+
+# CAPIF Tool Release 3.1.1
+
+* Minor Fixes in Logging/Auditing Service
+* Update redis version
+
+Changes at Tests:
+* Add test plan to logging/auditing service
+* Add tests to cover logging/auditing test plan
+
+# CAPIF Tool Release 3.1.2
+
+* Improvements of CAPIF robot tests.
+* Update Startup scripts for all services in order to be sure service has REDIS connection and properly certificate to raise server side.
+
+Changes at Tests:
+* Allow different port for https connection.
+* Improved code according to other tests to have more homogeneity when we invoke apis on all tests
 
 
 
