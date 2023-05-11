@@ -173,7 +173,7 @@ Register User At Jwt Auth
     ...    description=${description}
     ...    cn=${cn}
 
-    Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
+    Create Session    jwtsession   ${CAPIF_HTTPS_REGISTER_URL}    verify=False  disable_warnings=1
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
@@ -224,7 +224,7 @@ Register User At Jwt Auth Provider
     ...    description=${description}
     ...    cn=${username}
 
-    Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
+    Create Session    jwtsession    ${CAPIF_HTTPS_REGISTER_URL}    verify=False  disable_warnings=1
 
     ${resp}=    POST On Session    jwtsession    /register    json=${body}
 
@@ -262,11 +262,52 @@ Get Auth For User
 
     RETURN    ${resp.json()}
 
-Clean Test Information By HTTP Requests
-    Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
+# Clean Test Information By HTTP Requests
+#     Create Session    jwtsession    ${CAPIF_HTTP_URL}    verify=True
 
-    ${resp}=    DELETE On Session    jwtsession    /testdata
-    Should Be Equal As Strings    ${resp.status_code}    200
+#     ${resp}=    DELETE On Session    jwtsession    /testdata
+#     Should Be Equal As Strings    ${resp.status_code}    200
+
+Clean Test Information
+
+    ${capif_users_dict}  Call Method  ${CAPIF_USERS}  get_capif_users_dict
+
+    ${register_users}  Call Method  ${CAPIF_USERS}  get_register_users
+
+    ${keys} =    Get Dictionary Keys    ${capif_users_dict}
+
+    FOR    ${key}    IN    @{keys}
+      ${value}=    Get From Dictionary    ${capif_users_dict}    ${key}
+      ${resp}=    Delete Request Capif
+        ...    ${key}
+        ...    server=${CAPIF_HTTPS_URL}
+        ...    verify=ca.crt
+        ...    username=${value}
+
+      Status Should Be    204    ${resp}
+
+      Call Method  ${CAPIF_USERS}  remove_capif_users_entry  ${key}
+
+    END
+
+    FOR  ${user}  IN  @{register_users}
+
+        &{body}=    Create Dictionary
+        ...    password=password
+        ...    username=${user}
+
+
+        Create Session    jwtsession   ${CAPIF_HTTPS_REGISTER_URL}    verify=False  disable_warnings=1
+
+        ${resp}=    DELETE On Session    jwtsession    /remove    json=${body}
+
+        Should Be Equal As Strings    ${resp.status_code}    204
+
+        Call Method  ${CAPIF_USERS}  remove_register_users_entry  ${user}
+
+    END
+
+
 
 Invoker Default Onboarding
     ${register_user_info}=    Register User At Jwt Auth

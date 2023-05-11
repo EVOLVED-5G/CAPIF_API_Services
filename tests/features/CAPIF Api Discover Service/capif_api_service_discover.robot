@@ -5,6 +5,7 @@ Resource        ../../resources/common.resource
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 # Test Setup    Initialize Test And Register    role=invoker
 
 
@@ -18,12 +19,18 @@ Discover Published service APIs by Authorised API Invoker
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     ${service_api_description_published}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info}
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${resp}=    Get Request Capif
@@ -46,11 +53,17 @@ Discover Published service APIs by Non Authorised API Invoker
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${resp}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
@@ -70,11 +83,17 @@ Discover Published service APIs by not registered API Invoker
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${resp}=    Get Request Capif
     ...    ${DISCOVER_URL}${API_INVOKER_NOT_REGISTERED}
@@ -94,6 +113,9 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name_1}=    Set Variable    service_1
     ${api_name_2}=    Set Variable    service_2
 
@@ -107,6 +129,9 @@ Discover Published service APIs by registered API Invoker with 1 result filtered
 
     # Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
@@ -142,6 +167,9 @@ Discover Published service APIs by registered API Invoker filtered with no match
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name_1}=    Set Variable    apiName1
     ${api_name_2}=    Set Variable    apiName2
 
@@ -155,6 +183,9 @@ Discover Published service APIs by registered API Invoker filtered with no match
 
     # Change to invoker role and register at api invoker management
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif
@@ -190,6 +221,9 @@ Discover Published service APIs by registered API Invoker not filtered
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name_1}=    Set Variable    apiName1
     ${api_name_2}=    Set Variable    apiName2
 
@@ -203,6 +237,9 @@ Discover Published service APIs by registered API Invoker not filtered
 
     # Change to invoker role and register at api invoker management
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Request all APIs for Invoker
     ${resp}=    Get Request Capif

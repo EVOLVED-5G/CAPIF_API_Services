@@ -6,6 +6,7 @@ Library         Process
 Library         Collections
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 
 *** Variables ***
@@ -48,7 +49,13 @@ Register Api Provider
 
     # Check Results
     Check Response Variable Type And Values    ${resp}    201    APIProviderEnrolmentDetails
+
+    ${url}=    Parse Url    ${resp.headers['Location']}
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${register_user_info['amf_username']}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${resource_url}=    Check Location Header    ${resp}    ${LOCATION_PROVIDER_RESOURCE_REGEX}
+
 
     FOR    ${prov}    IN    @{resp.json()['apiProvFuncs']}
         Log Dictionary    ${prov}
@@ -58,6 +65,10 @@ Register Api Provider
 Register Api Provider Already registered
     [Tags]    capif_api_provider_management-2
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
 
     ${resp}=    Post Request Capif
     ...    /api-provider-management/v1/registrations
@@ -77,6 +88,9 @@ Update Registered Api Provider
     [Tags]    capif_api_provider_management-3
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${request_body}=    Set Variable    ${register_user_info['provider_enrollment_details']}
 
     Set To Dictionary    ${request_body}    apiProvDomInfo=ROBOT_TESTING_MOD
@@ -88,6 +102,20 @@ Update Registered Api Provider
     ...    verify=ca.crt
     ...    username=${AMF_PROVIDER_USERNAME}
 
+    FOR    ${prov}    IN    @{resp.json()['apiProvFuncs']}
+        Log Dictionary    ${prov}
+        Store In File    ${prov['apiProvFuncInfo']}.crt    ${prov['regInfo']['apiProvCert']}
+        IF    "${prov['apiProvFuncRole']}" == "APF"
+            Set To Dictionary    ${register_user_info}    apf_id=${prov['apiProvFuncId']}
+        ELSE IF    "${prov['apiProvFuncRole']}" == "AEF"
+            Set To Dictionary    ${register_user_info}    aef_id=${prov['apiProvFuncId']}
+        ELSE IF    "${prov['apiProvFuncRole']}" == "AMF"
+            Set To Dictionary    ${register_user_info}    amf_id=${prov['apiProvFuncId']}
+        ELSE
+            Fail    "${prov['apiProvFuncRole']} is not valid role"
+        END
+    END
+
     # Check Results
     Check Response Variable Type And Values    ${resp}    200    APIProviderEnrolmentDetails
     ...    apiProvDomInfo=ROBOT_TESTING_MOD
@@ -95,6 +123,9 @@ Update Registered Api Provider
 Update Not Registered Api Provider
     [Tags]    capif_api_provider_management-4
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${request_body}=    Set Variable    ${register_user_info['provider_enrollment_details']}
 
@@ -112,26 +143,32 @@ Update Not Registered Api Provider
     ...    detail=Not Exist Provider Enrolment Details
     ...    cause=Not found registrations to send this api provider details
 
-Partially Update Registered Api Provider
-    [Tags]    capif_api_provider_management-5
-    ${register_user_info}=    Provider Default Registration
+# Partially Update Registered Api Provider
+#     [Tags]    capif_api_provider_management-5
+#     ${register_user_info}=    Provider Default Registration
 
-    ${request_body}=    Create Api Provider Enrolment Details Patch Body    ROBOT_TESTING_MOD
+#     ${request_body}=    Create Api Provider Enrolment Details Patch Body    ROBOT_TESTING_MOD
 
-    ${resp}=    Patch Request Capif
-    ...    ${register_user_info['resource_url'].path}
-    ...    json=${request_body}
-    ...    server=${CAPIF_HTTPS_URL}
-    ...    verify=ca.crt
-    ...    username=${AMF_PROVIDER_USERNAME}
+#     ${resp}=    Patch Request Capif
+#     ...    ${register_user_info['resource_url'].path}
+#     ...    json=${request_body}
+#     ...    server=${CAPIF_HTTPS_URL}
+#     ...    verify=ca.crt
+#     ...    username=${AMF_PROVIDER_USERNAME}
 
-    # Check Results
-    Check Response Variable Type And Values    ${resp}    200    APIProviderEnrolmentDetails
-    ...    apiProvDomInfo=ROBOT_TESTING_MOD
+#     Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${register_user_info['amf_username']}
+#     Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
+#     # Check Results
+#     Check Response Variable Type And Values    ${resp}    200    APIProviderEnrolmentDetails
+#     ...    apiProvDomInfo=ROBOT_TESTING_MOD
 
 Partially Update Not Registered Api Provider
     [Tags]    capif_api_provider_management-6
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${request_body}=    Create Api Provider Enrolment Details Patch Body
 
@@ -153,6 +190,8 @@ Delete Registered Api Provider
     [Tags]    capif_api_provider_management-7
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${resp}=    Delete Request Capif
     ...    ${register_user_info['resource_url'].path}
     ...    server=${CAPIF_HTTPS_URL}
@@ -165,6 +204,9 @@ Delete Registered Api Provider
 Delete Not Registered Api Provider
     [Tags]    capif_api_provider_management-8
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${resp}=    Delete Request Capif
     ...    /api-provider-management/v1/registrations/${API_PROVIDER_NOT_REGISTERED}

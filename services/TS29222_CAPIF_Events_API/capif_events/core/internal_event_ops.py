@@ -14,6 +14,8 @@ class InternalEventOperations(Resource):
         my_query = {'subscriber_id': subscriber_id}
         mycol.delete_many(my_query)
 
+        current_app.logger.info(f"Removed events for this subscriber: {subscriber_id}")
+
         self.auth_manager.remove_auth_all_event(subscriber_id)
 
     def get_event_subscriptions(self, event):

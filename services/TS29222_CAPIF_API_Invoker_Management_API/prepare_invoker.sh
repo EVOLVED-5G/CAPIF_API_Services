@@ -1,15 +1,18 @@
 #!/bin/bash
 
-OUTPUT=$(redis-cli -h redis -p 6379 -n 1 GET  server_pub_key)
-echo "$OUTPUT"
+sleep 20
+redis-cli -h redis -p 6379 -n 1 GET  server_pub_key > /usr/src/app/api_invoker_management/pubkey.pem
 
-if [ -z "$OUTPUT" ]; then
-    echo "OUTPUT empty"
-    exit 1;
-else
-    echo "OUTPUT: $OUTPUT"
-    redis-cli -h redis -p 6379 -n 1 GET  server_pub_key > /usr/src/app/api_invoker_management/pubkey.pem
-fi
+# OUTPUT=$(redis-cli -h redis -p 6379 -n 1 GET  server_pub_key)
+# echo "$OUTPUT"
+
+# if [ -z "$OUTPUT" ]; then
+#     echo "OUTPUT empty"
+#     exit 1;
+# else
+#     echo "OUTPUT: $OUTPUT"
+#     redis-cli -h redis -p 6379 -n 1 GET  server_pub_key > /usr/src/app/api_invoker_management/pubkey.pem
+# fi
 
 
 cd /usr/src/app/

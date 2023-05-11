@@ -116,7 +116,7 @@ class ProviderManagementOperations(Resource):
                     certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
                     func.reg_info.api_prov_cert = certificate
 
-                    self.auth_manager.update_auth_provider(certificate, func.api_prov_func_id, api_prov_dom_id)
+                    self.auth_manager.update_auth_provider(certificate, func.api_prov_func_id, api_prov_dom_id, func.api_prov_func_role)
                 else:
                     api_prov_funcs = result["api_prov_funcs"]
                     for api_func in api_prov_funcs:
@@ -126,7 +126,7 @@ class ProviderManagementOperations(Resource):
                             if func.reg_info.api_prov_pub_key != api_func["reg_info"]["api_prov_pub_key"]:
                                 certificate = sign_certificate(func.reg_info.api_prov_pub_key, func.api_prov_func_info)
                                 func.reg_info.api_prov_cert = certificate
-                                self.auth_manager.update_auth_provider(certificate, func.api_prov_func_id, api_prov_dom_id)
+                                self.auth_manager.update_auth_provider(certificate, func.api_prov_func_id, api_prov_dom_id, func.api_prov_func_role)
 
 
             api_provider_enrolment_details = api_provider_enrolment_details.to_dict()

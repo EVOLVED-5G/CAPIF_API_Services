@@ -42,6 +42,9 @@ fi
 mkdir -p $RESULT_FOLDER
 
 docker run -ti --rm --network="host" \
+    --add-host host.docker.internal:host-gateway \
+    --add-host easy-rsa:host-gateway \
+    --add-host register:host-gateway \
     -v $TEST_FOLDER:/opt/robot-tests/tests \
     -v $RESULT_FOLDER:/opt/robot-tests/results ${DOCKER_ROBOT_IMAGE}:${DOCKER_ROBOT_IMAGE_VERSION}  \
     --variable CAPIF_HOSTNAME:$CAPIF_HOSTNAME \

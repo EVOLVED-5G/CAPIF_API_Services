@@ -6,6 +6,7 @@ Resource        /opt/robot-tests/tests/resources/common/basicRequests.robot
 Resource        ../../resources/common.resource
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 
 *** Variables ***
@@ -19,6 +20,9 @@ Creates a new individual CAPIF Event Subscription
     [Tags]    capif_api_events-1
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
@@ -36,6 +40,9 @@ Creates a new individual CAPIF Event Subscription with Invalid SubscriberId
     [Tags]    capif_api_events-2
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
@@ -56,6 +63,9 @@ Deletes an individual CAPIF Event Subscription
     [Tags]    capif_api_events-3
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
@@ -81,6 +91,9 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriberId
     [Tags]    capif_api_events-4
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
@@ -114,6 +127,9 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Events Subscription
     ${resp}=    Post Request Capif
     ...    /capif-events/v1/${register_user_info_invoker['api_invoker_id']}/subscriptions
@@ -133,9 +149,8 @@ Deletes an individual CAPIF Event Subscription with invalid SubscriptionId
     ...    username=${INVOKER_USERNAME}
 
     # Check Results
-    Check Response Variable Type And Values  ${resp}    404    ProblemDetails
-    ...    title=Not Found
-    ...    status=404
-    ...    detail=Event subscription not exist
-    ...    cause=Event API subscription id not found
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    detail=User not authorized
+    ...    cause=You are not the owner of this resource
 

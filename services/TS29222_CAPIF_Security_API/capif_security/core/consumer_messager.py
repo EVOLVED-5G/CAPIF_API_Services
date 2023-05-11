@@ -21,9 +21,9 @@ class Subscriber():
         for raw_message in self.p.listen():
             if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
                 message, *ids = raw_message["data"].decode('utf-8').split(":")
-                if message == "invoker-removed":
+                if message == "invoker-removed" and len(ids)>0:
                     self.security_ops.delete_intern_servicesecurity(ids[0])
-                if message == "provider-removed" or message == "service-removed":
+                if message == "provider-removed" or message == "service-removed" and len(ids) > 0:
                     self.security_ops.update_intern_servicesecurity(ids[0])
                 
 

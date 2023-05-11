@@ -6,6 +6,7 @@ Resource        /opt/robot-tests/tests/resources/common/basicRequests.robot
 Resource        ../../resources/common.resource
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 
 *** Variables ***
@@ -20,6 +21,9 @@ Create a security context for an API invoker
     [Tags]    capif_security_api-1
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Create Security Context
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
@@ -39,8 +43,14 @@ Create a security context for an API invoker with Provider role
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     # Create Security Context
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
@@ -63,6 +73,9 @@ Create a security context for an API invoker with Provider entity role and inval
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Create Security Context
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
@@ -84,6 +97,9 @@ Create a security context for an API invoker with Invalid apiInvokerID
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
@@ -104,6 +120,9 @@ Retrieve the Security Context of an API Invoker
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -119,6 +138,10 @@ Retrieve the Security Context of an API Invoker
 
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Retrieve Security context can setup by parameters if authenticationInfo and authorizationInfo are needed at response.
     # ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}?authenticationInfo=true&authorizationInfo=true
     ${resp}=    Get Request Capif
@@ -142,6 +165,9 @@ Retrieve the Security Context of an API Invoker with invalid apiInvokerID
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${resp}=    Get Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    server=${CAPIF_HTTPS_URL}
@@ -158,6 +184,9 @@ Retrieve the Security Context of an API Invoker with invalid apfId
     [Tags]    capif_security_api-7
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
@@ -188,6 +217,9 @@ Delete the Security Context of an API Invoker
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -200,6 +232,9 @@ Delete the Security Context of an API Invoker
 
     # Register APF
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     # Remove Security Context
     ${resp}=    Delete Request Capif
@@ -227,6 +262,9 @@ Delete the Security Context of an API Invoker with Invoker entity role
     [Tags]    capif_security_api-9
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
@@ -256,6 +294,9 @@ Delete the Security Context of an API Invoker with Invoker entity role and inval
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
     ...    server=${CAPIF_HTTPS_URL}
@@ -273,6 +314,9 @@ Delete the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-11
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${resp}=    Delete Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}
@@ -292,8 +336,14 @@ Update the Security Context of an API Invoker
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
@@ -339,6 +389,9 @@ Update the Security Context of an API Invoker with Provider entity role
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -351,6 +404,9 @@ Update the Security Context of an API Invoker with Provider entity role
 
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}/update
@@ -371,6 +427,9 @@ Update the Security Context of an API Invoker with AEF entity role and invalid a
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Post Request Capif
     ...    /capif-security/v1/trustedInvokers/${API_INVOKER_NOT_VALID}/update
@@ -389,6 +448,9 @@ Update the Security Context of an API Invoker with invalid apiInvokerID
     [Tags]    capif_security_api-15
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Post Request Capif
@@ -409,6 +471,10 @@ Revoke the authorization of the API invoker for APIs
     [Tags]    capif_security_api-16
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -418,6 +484,10 @@ Revoke the authorization of the API invoker for APIs
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -475,6 +545,9 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -489,6 +562,9 @@ Revoke the authorization of the API invoker for APIs without valid apfID.
 
     # Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     # Revoke Security Context by Invoker
     ${request_body}=    Create Security Notification Body    ${register_user_info_invoker['api_invoker_id']}    1234
@@ -525,6 +601,9 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
     ${request_body}=    Create Service Security Body    ${NOTIFICATION_DESTINATION}
     ${resp}=    Put Request Capif
     ...    /capif-security/v1/trustedInvokers/${register_user_info_invoker['api_invoker_id']}
@@ -539,6 +618,9 @@ Revoke the authorization of the API invoker for APIs with invalid apiInvokerId
 
     #Register Provider
     ${register_user_info_publisher}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_publisher['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${request_body}=    Create Security Notification Body    ${API_INVOKER_NOT_VALID}    1234
     ${resp}=    Post Request Capif
@@ -569,6 +651,10 @@ Retrieve access token
     [Tags]    capif_security_api-19
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -578,6 +664,9 @@ Retrieve access token
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -621,6 +710,10 @@ Retrieve access token by Provider
     [Tags]    capif_security_api-20
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -630,6 +723,9 @@ Retrieve access token by Provider
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -672,6 +768,10 @@ Retrieve access token by Provider with invalid apiInvokerId
     [Tags]    capif_security_api-21
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -681,6 +781,9 @@ Retrieve access token by Provider with invalid apiInvokerId
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -724,6 +827,10 @@ Retrieve access token with invalid apiInvokerId
     # Default Invoker Registration and Onboarding
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -733,6 +840,9 @@ Retrieve access token with invalid apiInvokerId
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -778,6 +888,10 @@ Retrieve access token with invalid client_id
     # Default Invoker Registration and Onboarding
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -787,6 +901,9 @@ Retrieve access token with invalid client_id
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -830,6 +947,10 @@ Retrieve access token with unsupported grant_type
     # Default Invoker Registration and Onboarding
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -839,6 +960,9 @@ Retrieve access token with unsupported grant_type
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -889,6 +1013,10 @@ Retrieve access token with invalid scope
     # Default Invoker Registration and Onboarding
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -898,6 +1026,9 @@ Retrieve access token with invalid scope
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -943,6 +1074,10 @@ Retrieve access token with invalid aefid at scope
     # Default Invoker Registration and Onboarding
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -952,6 +1087,9 @@ Retrieve access token with invalid aefid at scope
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif
@@ -997,6 +1135,10 @@ Retrieve access token with invalid apiName at scope
     # Default Invoker Registration and Onboarding
     # Register APF
     ${register_user_info_provider}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info_provider['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${api_name}=    Set Variable    service_1
 
     # Register One Service
@@ -1006,6 +1148,9 @@ Retrieve access token with invalid apiName at scope
 
     # Default Invoker Registration and Onboarding
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     # Test
     ${discover_response}=    Get Request Capif

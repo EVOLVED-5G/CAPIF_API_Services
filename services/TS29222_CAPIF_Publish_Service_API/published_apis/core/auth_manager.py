@@ -40,7 +40,8 @@ class AuthManager(Resource):
 
         auth_context = cert_col.find_one({"id":apf_id})
 
-        if "services" in auth_context["resources"]:
-            auth_context["resources"]["services"] = []
+        if auth_context != None:
+            if "services" in auth_context["resources"]:
+                auth_context["resources"]["services"] = []
 
-        cert_col.find_one_and_update({"id":apf_id}, {"$set":auth_context})
+            cert_col.find_one_and_update({"id":apf_id}, {"$set":auth_context})

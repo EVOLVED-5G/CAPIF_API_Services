@@ -5,6 +5,7 @@ Resource        ../../resources/common.resource
 Library         /opt/robot-tests/tests/libraries/bodyRequests.py
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 
 *** Variables ***
@@ -17,6 +18,9 @@ Publish API by Authorised API Publisher
     [Tags]    capif_api_publish_service-1
     #Register APF
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     # Test
     ${request_body}=    Create Service Api Description    service_1
@@ -37,6 +41,9 @@ Publish API by NON Authorised API Publisher
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${request_body}=    Create Service Api Description
     ${resp}=    Post Request Capif
     ...    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
@@ -55,6 +62,9 @@ Retrieve all APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-3
     #Register APF
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     # Register One Service
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
@@ -81,6 +91,9 @@ Retrieve all APIs Published by NON Authorised apfId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Retrieve Services published
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${APF_ID_NOT_VALID}/service-apis
@@ -98,6 +111,9 @@ Retrieve single APIs Published by Authorised apfId
     [Tags]    capif_api_publish_service-5
     #Register APF
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info}
@@ -135,22 +151,28 @@ Retrieve single APIs non Published by Authorised apfId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${resp}=    Get Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
     ...    server=${CAPIF_HTTPS_URL}
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
-    ...    title=Not Found
-    ...    status=404
-    ...    detail=Service API not found
-    ...    cause=No Service with specific credentials exists
+
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    detail=User not authorized
+    ...    cause=You are not the owner of this resource
 
 Retrieve single APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-7
     # Register APF
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     # Publish Service API
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
@@ -158,7 +180,10 @@ Retrieve single APIs Published by NON Authorised apfId
     ...    service_1
 
     # Register INVOKER
-    ${register_user_info_invoker}=    Invoker Default Onboarding
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${resp}=    Get Request Capif
     ...    ${resource_url.path}
@@ -176,6 +201,9 @@ Update API Published by Authorised apfId with valid serviceApiId
     [Tags]    capif_api_publish_service-8
     #Register APF
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info}
@@ -207,6 +235,9 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info}
     ...    service_1
@@ -219,23 +250,28 @@ Update APIs Published by Authorised apfId with invalid serviceApiId
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
-    ...    title=Not Found
-    ...    status=404
-    ...    detail=Service API not existing
-    ...    cause=Service API id not found
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    detail=User not authorized
+    ...    cause=You are not the owner of this resource
 
 Update APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-10
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info}
     ...    service_1
 
     #Register INVOKER
-    ${register_user_info_invoker}=    Invoker Default Onboarding
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${request_body}=    Create Service Api Description    service_1_modified
     ${resp}=    Put Request Capif
@@ -266,6 +302,9 @@ Delete API Published by Authorised apfId with valid serviceApiId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     ${service_api_description_published_1}    ${resource_url}    ${request_body}=    Publish Service Api
     ...    ${register_user_info}
     ...    first_service
@@ -284,16 +323,18 @@ Delete API Published by Authorised apfId with valid serviceApiId
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
-    ...    title=Not Found
-    ...    status=404
-    ...    detail=Service API not found
-    ...    cause=No Service with specific credentials exists
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    detail=User not authorized
+    ...    cause=You are not the owner of this resource
 
 Delete APIs Published by Authorised apfId with invalid serviceApiId
     [Tags]    capif_api_publish_service-12
     #Register APF
     ${register_user_info}=    Provider Default Registration
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
 
     ${resp}=    Delete Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}
@@ -301,19 +342,24 @@ Delete APIs Published by Authorised apfId with invalid serviceApiId
     ...    verify=ca.crt
     ...    username=${APF_PROVIDER_USERNAME}
 
-    Check Response Variable Type And Values    ${resp}    404    ProblemDetails
-    ...    title=Not Found
-    ...    status=404
-    ...    detail=Service API not existing
-    ...    cause=Service API id not found
+    Check Response Variable Type And Values    ${resp}    401    ProblemDetails
+    ...    title=Unauthorized
+    ...    detail=User not authorized
+    ...    cause=You are not the owner of this resource
 
 Delete APIs Published by NON Authorised apfId
     [Tags]    capif_api_publish_service-13
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     #Register INVOKER
-    ${register_user_info_invoker}=    Invoker Default Onboarding
+    ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${resp}=    Delete Request Capif
     ...    /published-apis/v1/${register_user_info['apf_id']}/service-apis/${SERVICE_API_ID_NOT_VALID}

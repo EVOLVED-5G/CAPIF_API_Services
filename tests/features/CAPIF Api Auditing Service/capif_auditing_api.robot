@@ -6,6 +6,7 @@ Resource        /opt/robot-tests/tests/resources/common/basicRequests.robot
 Resource        ../../resources/common.resource
 
 Test Setup      Reset Testing Environment
+Suite Teardown   Reset Testing Environment
 
 *** Variables ***
 ${AEF_ID_NOT_VALID}             aef-example
@@ -21,11 +22,17 @@ Get Log Entry
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
@@ -60,11 +67,17 @@ Get a log entry without entry created
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
 
      ${resp_1}=  Get Request Capif
@@ -86,11 +99,17 @@ Get a log entry withut aefid and apiInvokerId
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
@@ -129,11 +148,17 @@ Get Log Entry with apiVersion filter
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}
@@ -168,11 +193,18 @@ Get Log Entry with no exist apiVersion filter
     #Register APF
     ${register_user_info}=    Provider Default Registration
 
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${register_user_info['resource_url'].path}  ${AMF_PROVIDER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${PROVIDER_USERNAME}
+
     # Publish one api
     Publish Service Api    ${register_user_info}
 
     #Register INVOKER
     ${register_user_info_invoker}    ${url}    ${request_body}=    Invoker Default Onboarding
+
+    Call Method  ${CAPIF_USERS}  update_capif_users_dicts  ${url.path}  ${INVOKER_USERNAME}
+    Call Method  ${CAPIF_USERS}  update_register_users   ${INVOKER_USERNAME}
+
 
     ${discover_response}=    Get Request Capif
     ...    ${DISCOVER_URL}${register_user_info_invoker['api_invoker_id']}

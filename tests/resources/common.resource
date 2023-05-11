@@ -1,5 +1,6 @@
 *** Settings ***
 Library     /opt/robot-tests/tests/libraries/helpers.py
+Variables    /opt/robot-tests/tests/libraries/environment.py
 Resource    /opt/robot-tests/tests/resources/common/basicRequests.robot
 
 
@@ -15,6 +16,10 @@ ${INVOKER_ROLE}                 invoker
 ${PROVIDER_ROLE}                provider
 
 ${CAPIF_HOSTNAME}               capifcore
+${CAPIF_EASY_RSA}               easy-rsa
+${CAPIF_EASY_RSA_PORT}          8083
+${CAPIF_REGISTER}               register
+${CAPIF_REGISTER_PORT}          8084
 ${CAPIF_HTTP_PORT}
 ${CAPIF_HTTPS_PORT}
 ${CAPIF_IP}                     127.0.0.1
@@ -28,7 +33,8 @@ ${DISCOVER_URL}                 /service-apis/v1/allServiceAPIs?api-invoker-id=
 Reset Testing Environment
     Log    Db capif.invokerdetails collection will be removed in order to isolate each test.
 
-    Clean Test Information By HTTP Requests
+    #Clean Test Information By HTTP Requests
+    Clean Test Information
 
 Check Location Header
     [Documentation]    This keyword will check location header at response according to regular expression provided as argument
