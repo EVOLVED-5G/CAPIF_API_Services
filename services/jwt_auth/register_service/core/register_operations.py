@@ -70,6 +70,16 @@ class RegisterOperations:
                 return jsonify(message="Token returned successfully", access_token=access_token), 200
         except Exception as e:
             return jsonify(message=f"Errors when try getting auth: {e}"), 500
+
+    def remove_user(self, username, password):
+        mycol = self.db.get_col_by_name(self.db.capif_users)
+
+        try:
+            mycol.delete_one({"username": username, "password": password})
+            return jsonify(message="User removed successfully"), 204
+        except Exception as e:
+            return jsonify(message=f"Errors when try remove user: {e}"), 500
+
     def delete_tests(self):
         user = self.db.get_col_by_name("user")
         invokerdetails = self.db.get_col_by_name('invokerdetails')
