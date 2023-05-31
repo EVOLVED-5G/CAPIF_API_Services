@@ -33,6 +33,13 @@ def getauth():
 
     return register_operation.get_auth(username, password)
 
+@register_routes.route("/remove", methods=["DELETE"])
+def remove():
+    username = request.json["username"]
+    password = request.json["password"]
+
+    return register_operation.remove_user(username, password)
+
 #Pending to remove
 @register_routes.route("/testdata", methods=["DELETE"])
 def testusers():
