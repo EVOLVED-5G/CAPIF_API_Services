@@ -1,0 +1,54 @@
+apiVersion: 1
+
+datasources:
+  - name: Loki
+    type: loki
+    uid: e4f43364-7019-45a7-aa7a-14ce2d4ddb0b
+    typeName: Loki
+    typeLogoUrl: public/app/plugins/datasource/loki/img/loki_icon.svg
+    access: proxy
+    url: http://loki:3100
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: false
+    jsonData:
+      derivedFields:
+      - datasourceUid: fee7e008-f836-424a-b701-88cad583c715
+        matcherRegex: '"traceID":\s*"([a-fA-F0-9]+)"'
+        name: traceID
+        url: "${__value.raw}"
+    readOnly: false
+
+  - name: Prometheus
+    type: prometheus
+    typeName: Prometheus
+    typeLogoUrl: public/app/plugins/datasource/prometheus/img/prometheus_logo.svg
+    access: proxy
+    url: http://prometheus:9090
+    uid: af6b44aa-0703-4979-825c-c1afba946534
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: false
+    jsonData:
+      httpMethod: POST
+      prometheusType: Prometheus
+      prometheusVersion: 2.40.1
+    readOnly: false
+
+  - name: Tempo
+    type: tempo
+    typeName: Tempo
+    typeLogoUrl: public/app/plugins/datasource/tempo/img/tempo_logo.svg
+    uid: fee7e008-f836-424a-b701-88cad583c715
+    access: proxy
+    url: http://tempo:3200
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: false
+    jsonData:
+      lokiSearch:
+        datasourceUid: e4f43364-7019-45a7-aa7a-14ce2d4ddb0b
+    readOnly: false

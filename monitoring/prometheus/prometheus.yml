@@ -1,0 +1,32 @@
+# global:
+#   scrape_interval: 5s
+#   external_labels:
+#     monitor: 'prakash-monitor'
+# scrape_configs:
+#   - job_name: 'prometheus'
+#     static_configs:
+#       - targets: ['0.0.0.0:9090'] ## IP Address of the localhost
+#   - job_name: 'cAdvisor' 
+#     static_configs:
+#       - targets: ['0.0.0.0:8090']
+#       #- cadvisor:8090
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+    # whatever you want
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['prometheus:9090']
+      labels:
+        alias: 'prometheus'
+  - job_name: 'cadvisor'
+    static_configs:
+    - targets: ['cadvisor:8080']
+      labels:
+        alias: 'cadvisor'

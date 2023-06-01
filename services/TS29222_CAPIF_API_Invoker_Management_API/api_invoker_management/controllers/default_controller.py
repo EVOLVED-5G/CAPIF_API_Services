@@ -62,7 +62,7 @@ def onboarded_invokers_onboarding_id_delete(onboarding_id):  # noqa: E501
 
     if res.status_code == 204:
         current_app.logger.info("Invoker Removed")
-        publisher_ops.publish_message("events", "API_INVOKER_UPDATED")
+        publisher_ops.publish_message("events", "API_INVOKER_OFFBOARDED")
         publisher_ops.publish_message("internal-messages", f"invoker-removed:{onboarding_id}")
 
     return res

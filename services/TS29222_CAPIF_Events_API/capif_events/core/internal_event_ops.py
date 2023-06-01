@@ -16,7 +16,8 @@ class InternalEventOperations(Resource):
 
         current_app.logger.info(f"Removed events for this subscriber: {subscriber_id}")
 
-        self.auth_manager.remove_auth_all_event(subscriber_id)
+        #We dont need remove all auth events, becase when invoker is removed, remove auth entry
+        #self.auth_manager.remove_auth_all_event(subscriber_id)
 
     def get_event_subscriptions(self, event):
         try:

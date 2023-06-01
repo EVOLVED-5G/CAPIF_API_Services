@@ -27,7 +27,6 @@ class Subscriber():
             elif raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
                 message, *invoker_id = raw_message["data"].decode('utf-8').split(":")
                 if message == "invoker-removed" and len(invoker_id)>0:
-                    current_app.logger.debug("Recevived message, invoker remove, removing event subscriptions")
                     self.event_ops.delete_all_events(invoker_id[0])
 
 

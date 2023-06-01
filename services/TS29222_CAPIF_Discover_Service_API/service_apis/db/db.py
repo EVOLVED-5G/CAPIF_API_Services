@@ -1,6 +1,14 @@
+import atexit
+import time
 from pymongo import MongoClient
-from service_apis.config import Config
+from pymongo.errors import AutoReconnect
+from ..config import Config
 from bson.codec_options import CodecOptions
+import os
+from opentelemetry.instrumentation.pymongo import PymongoInstrumentor
+
+if eval(os.environ.get("MONITORING").lower().capitalize()):
+    PymongoInstrumentor().instrument()
 
 class MongoDatabse():
 
@@ -15,14 +23,22 @@ class MongoDatabse():
     def get_col_by_name(self, name):
         return self.db[name].with_options(codec_options=CodecOptions(tz_aware=True))
 
-    def __connect(self):
-        uri = "mongodb://" + self.config['mongo']['user'] + ":" + self.config['mongo']['password'] + "@" + self.config['mongo']['host'] + ":" + self.config['mongo']['port']
-        client = MongoClient(uri)
+    def __connect(self, max_retries=3, retry_delay=1):
+        retries = 0
+        while retries < max_retries:
+            try:
+                uri = f"mongodb://{self.config['mongo']['user']}:{self.config['mongo']['password']}@" \
+                      f"{self.config['mongo']['host']}:{self.config['mongo']['port']}"
+                client = MongoClient(uri)
+                mydb = client[self.config['mongo']['db']]
+                mydb.command("ping")
+                return mydb
+            except AutoReconnect:
+                retries += 1
+                print(f"Reconnecting... Retry {retries} of {max_retries}")
+                time.sleep(retry_delay)
+        return None
 
-        try:
-            client.admin.command("ping")
-            mydb = client[self.config['mongo']['db']]
-            return mydb
-        except Exception as e:
-            print("An exception occurred ::", e)
-            return None
+    def close_connection(self):
+        if self.db.client:
+            self.db.client.close()

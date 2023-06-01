@@ -14,3 +14,13 @@ ca_factory: {
   "port": "8083"
 }
 
+monitoring: {
+  "fluent_bit_host": fluent-bit,
+  "fluent_bit_port": 24224,
+  "opentelemetry_url": "otel-collector",
+  "opentelemetry_port": "55680",
+  "opentelemetry_max_queue_size": 8192,
+  "opentelemetry_schedule_delay_millis": 20000,
+  "opentelemetry_max_export_batch_size": 2048,
+  "opentelemetry_export_timeout_millis": 60000
+}

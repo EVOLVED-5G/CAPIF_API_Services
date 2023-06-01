@@ -19,7 +19,6 @@ class Subscriber():
     def listen(self):
         current_app.logger.info("Listening publish messages")
         for raw_message in self.p.listen():
-            current_app.logger.debug(f"Received message")
             if raw_message["type"] == "message" and raw_message["channel"].decode('utf-8') == "internal-messages":
                 message, *ids = raw_message["data"].decode('utf-8').split(":")
                 if message == "provider-removed" and len(ids)==2:

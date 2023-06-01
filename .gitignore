@@ -19,12 +19,12 @@ services/easy_rsa/certs/*.profile
 services/easy_rsa/certs/*.csr
 
 
-monitoring/*.rules
-moniroting/grafana_db/
-moniroting/prometheus_db/
-monitoring/*tempo-data/
-monitoring/data/
-moniroting/etc/
+monitoring/grafana/*grafana_db*
+monitoring/prometheus/*prometheus_db
+monitoring/prometheus/*.rules
+monitoring/tempo/*tempo-data
+
+
 
 
 

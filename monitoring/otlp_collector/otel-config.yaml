@@ -1,0 +1,26 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:55680
+
+
+processors:
+  batch:
+
+
+exporters:
+  otlp:
+    #timeout: 60s
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      # exporters: [otlp]
+      exporters: [otlp]

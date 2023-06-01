@@ -16,6 +16,7 @@ class InternalServiceOps(Resource):
         my_query = {'apf_id': apf_id}
         mycol.delete_many(my_query)
 
-        self.auth_manager.remove_auth_all_service(apf_id)
+        #We dont need remove all auth events, because when provider is removed, remove auth entry
+        #self.auth_manager.remove_auth_all_service(apf_id)
 
         current_app.logger.info("Removed service")
