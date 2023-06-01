@@ -86,6 +86,23 @@ When we need to stop CAPIF services, we can use next bash script:
 ```
 This shell script will remove and clean all CAPIF services started previously with run.sh
 
+### Run All CAPIF Services locally with Docker images and deploy monitoring stack
+It is now possible to deploy a monitoring stack for CAPIF with Grafana, Prometheus, FluentBit, Loki, Cadvisor, Tempo and Opentelemetry.
+
+To deploy CAPIF together with the monitoring stack, it is only necessary to execute the following.
+
+```
+./run.sh --monitoring true
+```
+
+After they have been built, the different panels can be consulted in Grafana at the url
+
+```
+http:<0.0.0.0>:3000
+```
+
+By default, the monitoring option is set to false. Once up, all data sources and dashboards are automatically provisioned
+
 ### Run each service using Docker
 
 Also you can run service by service using docker:
