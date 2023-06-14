@@ -1,13 +1,13 @@
 version: '3.7'
 
 services:
-  backoffice-microservice:
+  backoffice_microservice:
     build:
-      context: ./backoffice_microservice
+      context: ../backoffice_microservice
     ports:
       - 8085:8080
     volumes:
-      - ./backoffice_microservice:/usr/src/app
+      - ../backoffice_microservice:/usr/src/app
     extra_hosts:
       - host.docker.internal:host-gateway
       - mongo:host-gateway

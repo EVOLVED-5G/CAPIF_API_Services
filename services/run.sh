@@ -1,6 +1,7 @@
 #!/bin/bash
 HOSTNAME=capifcore
 DEPLOY=all
+DEPLOY_BACKOFFICE=${DEPLOY_BACKOFFICE:-true}
 
 
 echo Nginx hostname will be $HOSTNAME and deploy $DEPLOY
@@ -37,6 +38,11 @@ if [ $status -eq 0 ]; then
     echo "*** Register Service are running ***"
 else
     echo "*** Register Service failed to start ***"
+fi
+
+
+if [ $DEPLOY_BACKOFFICE -eq false ]; then
+    exit $status
 fi
 
 

@@ -1,0 +1,16 @@
+mongo: {
+  'user': 'root',
+  'password': 'example',
+  'db': 'capif',
+  'host': 'mongo',
+  'port': '27017',
+  'col_invoker': "invokerdetails",
+  'col_provider': "providerenrolmentdetails",
+  'col_services': "serviceapidescriptions",
+  'col_security': "security",
+  'col_event': "eventsdetails",
+}
+ca_factory: {
+  "url": "easy-rsa",
+  "port": "8083"
+}
