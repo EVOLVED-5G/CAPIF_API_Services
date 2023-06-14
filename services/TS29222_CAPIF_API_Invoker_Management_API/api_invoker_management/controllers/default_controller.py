@@ -13,7 +13,7 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from ..core.publisher import Publisher
 from functools import wraps
-import pymongo
+
 
 invoker_operations = InvokerManagementOperations()
 publisher_ops = Publisher()

@@ -161,5 +161,3 @@ class InvokerManagementOperations(Resource):
             exception = "An exception occurred in remove invoker"
             current_app.logger.error(exception + "::" + str(e))
             return internal_server_error(detail=exception, cause=str(e))
-
-

@@ -18,7 +18,6 @@ else
 fi
 
 
-
 CAPIF_HOSTNAME=$HOSTNAME docker-compose -f "docker-compose-capif.yml"  up --detach --build
 
 status=$?
@@ -30,7 +29,7 @@ else
 fi
 
 
-CAPIF_PRIV_KEY_BASE_64=$(echo "$(cat nginx/certs/server.key)")
+CAPIF_PRIV_KEY_BASE_64="$(cat nginx/certs/server.key)"
 CAPIF_PRIV_KEY=$CAPIF_PRIV_KEY_BASE_64 docker-compose -f "docker-compose-register.yml"  up --detach --build
 
 status=$?
@@ -40,11 +39,14 @@ else
     echo "*** Register Service failed to start ***"
 fi
 
+
+docker-compose -f "docker-compose-backoffice.yml"  up --detach --build
+
+status=$?
+if [ $status -eq 0 ]; then
+    echo "*** Backoffice Service are running ***"
+else
+    echo "*** Backoffice Service failed to start ***"
+fi
+
 exit $status
-
-
-
-
-
-
-

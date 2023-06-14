@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  backoffice-microservice:
+    build:
+      context: ./backoffice_microservice
+    ports:
+      - 8085:8080
+    volumes:
+      - ./backoffice_microservice:/usr/src/app
+    extra_hosts:
+      - host.docker.internal:host-gateway
+      - mongo:host-gateway
+    restart: unless-stopped
+    image: dockerhub.hi.inet/evolved-5g/capif/backoffice-microservice:latest
