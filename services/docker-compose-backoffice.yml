@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  backoffice-microservice:
+  backoffice_microservice:
     build:
       context: ../backoffice_microservice
     ports:
