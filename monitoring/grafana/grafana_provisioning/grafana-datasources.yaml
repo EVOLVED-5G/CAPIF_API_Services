@@ -17,7 +17,7 @@ datasources:
       - datasourceUid: fee7e008-f836-424a-b701-88cad583c715
         matcherRegex: '"traceID":\s*"([a-fA-F0-9]+)"'
         name: traceID
-        url: "${__value.raw}"
+        url: "$${__value.raw}"
     readOnly: false
 
   - name: Prometheus
