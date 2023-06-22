@@ -183,6 +183,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+
   mongo-express:
     image: mongo-express:1.0.0-alpha.4
     logging:
