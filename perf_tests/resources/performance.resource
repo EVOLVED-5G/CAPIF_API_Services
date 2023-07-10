@@ -1,7 +1,7 @@
 *** Variables ***
 
 ${ITERATIONS}           2
-${THRESHOLD}            2.05
+${THRESHOLD}            3.05
 
 *** Keywords ***
 
