@@ -1,4 +1,4 @@
-FROM harbor.elevenpaths.com/dockerhub-proxy/library/ubuntu:18.04
+FROM harbor.elevenpaths.com/dockerhub-proxy/library/ubuntu:20.04
 LABEL maintainer="Jorge Moratinos Salcines <jorge.moratinossalcines@telefonica.com>"
 LABEL version="2.0"
 LABEL description="Docker to run Robot Framework"
