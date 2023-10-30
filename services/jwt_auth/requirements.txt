@@ -2,7 +2,8 @@ python_dateutil >= 2.6.0
 setuptools >= 21.0.0
 Flask == 2.0.3
 pymongo == 4.0.1
-flask_jwt_extended
-pyopenssl
-pyyaml
-requests
+flask_jwt_extended == 4.4.4
+pyopenssl == 23.0.0
+pyyaml == 6.0.1
+requests == 2.31.0
+Werkzeug == 2.0.0
