@@ -33,6 +33,7 @@ services:
       - "8080"
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
     depends_on:
+      - api-invoker-management
       - redis
       - nginx
 #  access-control-policy:
