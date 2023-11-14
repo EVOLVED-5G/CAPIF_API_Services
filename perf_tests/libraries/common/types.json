@@ -1,0 +1,582 @@
+{
+  "ProblemDetails": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "type": "URI",
+      "title": "string",
+      "status": "integer",
+      "detail": "string",
+      "instance": "URI",
+      "cause": "string",
+      "invalidParams": "InvalidParam",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "ProblemDetails29571": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "type": "URI",
+      "title": "string",
+      "status": "integer",
+      "detail": "string",
+      "instance": "URI",
+      "cause": "string",
+      "invalidParams": "InvalidParam",
+      "supportedFeatures": "SupportedFeatures",
+      "accessTokenError": "AccessTokenErr",
+      "accessTokenRequest": "AccessTokenReq29571",
+      "nrfId": "NrfId"
+    }
+  },
+  "NrfId": {
+    "regex": "^([0-9A-Za-z]([-0-9A-Za-z]{0,61}[0-9A-Za-z])?\\.)+[A-Za-z]{2,63}\\.?$"
+  },
+  "InvalidParam": {
+    "mandatory_attributes": {
+      "param": "string"
+    },
+    "optional_attributes": {
+      "reason": "string"
+    }
+  },
+  "APIInvokerEnrolmentDetails": {
+    "mandatory_attributes": {
+      "apiInvokerId": "string",
+      "onboardingInformation": "OnboardingInformation",
+      "notificationDestination": "URI"
+    },
+    "optional_attributes": {
+      "requestTestNotification": "boolean",
+      "websockNotifConfig": "WebsockNotifConfig",
+      "apiList": "ServiceAPIDescription",
+      "apiInvokerInformation": "string",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "OnboardingInformation": {
+    "mandatory_attributes": {
+      "apiInvokerPublicKey": "string"
+    },
+    "optional_attributes": {
+      "apiInvokerCertificate": "string",
+      "onboardingSecret": "string"
+    }
+  },
+  "WebsockNotifConfig": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "websocketUri": "URI_reference",
+      "requestWebsocketUri": "boolean"
+    }
+  },
+  "ServiceAPIDescription": {
+    "mandatory_attributes": {
+      "apiName": "string"
+    },
+    "optional_attributes": {
+      "apiId": "string",
+      "aefProfiles": "AefProfile",
+      "description": "string",
+      "supportedFeatures": "SupportedFeatures",
+      "shareableInfo": "ShareableInformation",
+      "serviceAPICategory": "string",
+      "apiSuppFeats": "SupportedFeatures",
+      "pubApiPath": "PublishedApiPath",
+      "ccfId": "string"
+    }
+  },
+  "AefProfile": {
+    "mandatory_attributes": {
+      "aefId": "string",
+      "versions": "Version"
+    },
+    "optional_attributes": {
+      "protocol": "Protocol",
+      "dataFormat": "DataFormat",
+      "securityMethods": "SecurityMethod",
+      "domainName": "string",
+      "interfaceDescriptions": "InterfaceDescription",
+      "aefLocation": "AefLocation"
+    },
+    "oneOf": ["interfaceDescriptions", "domainName"]
+  },
+  "Version": {
+    "mandatory_attributes": {
+      "apiVersion": "string"
+    },
+    "optional_attributes": {
+      "expiry": "string",
+      "resources": "Resource",
+      "custOperations": "CustomOperation"
+    }
+  },
+  "Resource": {
+    "mandatory_attributes": {
+      "resourceName": "string",
+      "commType": "CommunicationType",
+      "uri": "string"
+    },
+    "optional_attributes": {
+      "custOpName": "string",
+      "operations": "Operation",
+      "description": "string"
+    }
+  },
+  "CommunicationType": {
+    "enum": ["REQUEST_RESPONSE", "SUBSCRIBE_NOTIFY"]
+  },
+  "Operation": {
+    "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+  },
+  "CustomOperation": {
+    "mandatory_attributes": {
+      "commType": "CommunicationType",
+      "custOpName": "string"
+    },
+    "optional_attributes": {
+      "operations": "Operation",
+      "description": "string"
+    }
+  },
+  "Protocol": {
+    "enum": ["HTTP_1_1", "HTTP_2"]
+  },
+  "DataFormat": {
+    "enum": ["JSON"]
+  },
+  "SecurityMethod": {
+    "enum": ["PSK", "PKI", "OAUTH"]
+  },
+  "InterfaceDescription": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "ipv4Addr": "string",
+      "ipv6Addr": "string",
+      "port": "integer",
+      "securityMethods": "SecurityMethod"
+    },
+    "oneOf": ["ipv4Addr", "ipv6Addr"]
+  },
+  "AefLocation": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "civicAddr": "CivicAddress",
+      "geoArea": "GeographicArea",
+      "dcId": "string"
+    }
+  },
+  "CivicAddress": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "country": "string",
+      "A1": "string",
+      "A2": "string",
+      "A3": "string",
+      "A4": "string",
+      "A5": "string",
+      "A6": "string",
+      "PRD": "string",
+      "POD": "string",
+      "STS": "string",
+      "HNO": "string",
+      "HNS": "string",
+      "LMK": "string",
+      "LOC": "string",
+      "NAM": "string",
+      "PC": "string",
+      "BLD": "string",
+      "UNIT": "string",
+      "FLR": "string",
+      "ROOM": "string",
+      "PLC": "string",
+      "PCN": "string",
+      "POBOX": "string",
+      "ADDCODE": "string",
+      "SEAT": "string",
+      "RD": "string",
+      "RDSEC": "string",
+      "RDBR": "string",
+      "RDSUBBR": "string",
+      "PRM": "string",
+      "POM": "string",
+      "usageRules": "string",
+      "method": "string",
+      "providedBy": "string"
+    }
+  },
+  "GeographicArea": {
+    "Check": false
+  },
+  "ShareableInformation": {
+    "mandatory_attributes": {
+      "isShareable": "boolean"
+    },
+    "optional_attributes": {
+      "capifProvDoms": "string"
+    }
+  },
+  "PublishedApiPath": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "ccfIds": "string"
+    }
+  },
+  "EventSubscription": {
+    "mandatory_attributes": {
+      "events": "CAPIFEvent",
+      "notificationDestination": "URI"
+    },
+    "optional_attributes": {
+      "eventFilters": "CAPIFEventFilter",
+      "eventReq": "ReportingInformation",
+      "requestTestNotification": "boolean",
+      "websockNotifConfig": "WebsockNotifConfig",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "CAPIFEvent": {
+    "enum": [
+      "SERVICE_API_AVAILABLE",
+      "SERVICE_API_UNAVAILABLE",
+      "SERVICE_API_UPDATE",
+      "API_INVOKER_ONBOARDED",
+      "API_INVOKER_OFFBOARDED",
+      "SERVICE_API_INVOCATION_SUCCESS",
+      "SERVICE_API_INVOCATION_FAILURE",
+      "ACCESS_CONTROL_POLICY_UPDATE",
+      "ACCESS_CONTROL_POLICY_UNAVAILABLE",
+      "API_INVOKER_AUTHORIZATION_REVOKED",
+      "API_INVOKER_UPDATED",
+      "API_TOPOLOGY_HIDING_CREATED",
+      "API_TOPOLOGY_HIDING_REVOKED"
+    ]
+  },
+  "CAPIFEventFilter": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "apiIds": "string",
+      "apiInvokerIds": "string",
+      "aefIds": "string"
+    }
+  },
+  "ReportingInformation": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "immRep": "boolean",
+      "notifMethod": "NotificationMethod",
+      "maxReportNbr": "integer",
+      "monDur": "string",
+      "repPeriod": "integer",
+      "sampRatio": "integer",
+      "partitionCriteria": "PartitioningCriteria",
+      "grpRepTime": "integer",
+      "notifFlag": "NotificationFlag"
+    }
+  },
+  "NotificationMethod": {
+    "enum": ["PERIODIC", "ONE_TIME", "ON_EVENT_DETECTION"]
+  },
+  "PartitioningCriteria": {
+    "enum": ["TAC", "SUBPLMN", "GEOAREA", "SNSSAI", "DNN"]
+  },
+  "NotificationFlag": {
+    "enum": ["ACTIVATE", "DEACTIVATE", "RETRIEVAL"]
+  },
+  "DiscoveredAPIs": {
+    "mandatory_attributes": {},
+    "optional_attributes": {
+      "serviceAPIDescriptions": "ServiceAPIDescription"
+    }
+  },
+  "ServiceSecurity": {
+    "mandatory_attributes": {
+      "securityInfo": "SecurityInformation",
+      "notificationDestination": "URI"
+    },
+    "optional_attributes": {
+      "requestTestNotification": "boolean",
+      "websockNotifConfig": "WebsockNotifConfig",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "SecurityInformation": {
+    "mandatory_attributes": {
+      "prefSecurityMethods": "SecurityMethod"
+    },
+    "optional_attributes": {
+      "interfaceDetails": "InterfaceDescription",
+      "aefId": "string",
+      "apiId": "string",
+      "selSecurityMethod": "SecurityMethod",
+      "authenticationInfo": "string",
+      "authorizationInfo": "string"
+    },
+    "oneOf": ["interfaceDetails", "aefId"]
+  },
+  "SupportedFeatures": {
+    "regex": "^[A-Fa-f0-9]*$"
+  },
+  "SecurityNotification": {
+    "mandatory_attributes": {
+      "apiInvokerId": "string",
+      "apiIds": "string",
+      "cause": "Cause"
+    },
+    "optional_attributes": {
+      "aefId": "string"
+    }
+  },
+  "Cause": {
+    "enum": ["OVERLIMIT_USAGE", "UNEXPECTED_REASON"]
+  },
+  "AccessTokenReq": {
+    "mandatory_attributes": {
+      "grant_type": "GrantType",
+      "client_id": "string"
+    },
+    "optional_attributes": {
+      "client_secret": "string",
+      "scope": "string"
+    }
+  },
+  "AccessTokenReq29571": {
+    "mandatory_attributes": {
+      "grant_type": "GrantType",
+      "nfInstanceId": "UUID",
+      "scope": "ScopeRegex"
+    },
+    "optional_attributes": {
+      "nfType": "NFType",
+      "targetNfType": "NFType",
+      "targetNfInstanceId": "UUID",
+      "requesterPlmn": "PlmnId",
+      "requesterPlmnList": "PlmnId",
+      "requesterSnssaiList": "Snssai",
+      "requesterFqdn": "Fqdn",
+      "requesterSnpnList": "PlmnIdNid",
+      "targetPlmn": "PlmnId",
+      "targetSnpn": "PlmnIdNid",
+      "targetSnssaiList": "Snssai",
+      "targetNsiList": "string",
+      "targetNfSetId": "NfSetId",
+      "targetNfServiceSetId": "NfServiceSetId",
+      "hnrfAccessTokenUri": "URI",
+      "sourceNfInstanceId": "UUID"
+    }
+  },
+  "NfSetId": {
+    "regex": "set[a-zA-Z0-9\\-]+\\.(nrf|udm|amf|smf|ausf|nef|pcf|smsf|nssf|udr|lmf|gmlc|5g_eir|sepp|upf|n3iwf|af|udsf|bsf|chf|nwdaf|pcscf|cbcf|hss|ucmf|sor_af|spaf|mme|scsas|scef|scp|nssaaf|icscf|scscf|dra|ims_as|aanf|5g_ddnmf|nsacf|mfaf|easdf|dccf|mb_smf|tsctsf|adrf|gba_bsf|cef|mb_upf|nswof|pkmf|mnpf|sms_gmsc|sms_iwmsc|mbsf|mbstf|panf)set\\.5gc(\\.nid[A-Fa-f0-9]{11})?\\.mnc[0-9]{3}\\.mcc[0-9]{3}"
+  },
+  "NfServiceSetId": {
+    "regex": "set[a-zA-Z0-9\\-]+\\.(nrf|udm|amf|smf|ausf|nef|pcf|smsf|nssf|udr|lmf|gmlc|5g_eir|sepp|upf|n3iwf|af|udsf|bsf|chf|nwdaf|pcscf|cbcf|hss|ucmf|sor_af|spaf|mme|scsas|scef|scp|nssaaf|icscf|scscf|dra|ims_as|aanf|5g_ddnmf|nsacf|mfaf|easdf|dccf|mb_smf|tsctsf|adrf|gba_bsf|cef|mb_upf|nswof|pkmf|mnpf|sms_gmsc|sms_iwmsc|mbsf|mbstf|panf)set\\.5gc(\\.nid[A-Fa-f0-9]{11})?\\.mnc[0-9]{3}\\.mcc[0-9]{3}"
+  },
+  "ScopeRegex": {
+    "regex": "^([a-zA-Z0-9_:-]+)( [a-zA-Z0-9_:-]+)*$"
+  },
+  "Fqdn": {
+    "regex": "^([0-9A-Za-z]([-0-9A-Za-z]{0,61}[0-9A-Za-z])?\\.)+[A-Za-z]{2,63}\\.?$"
+  },
+  "UUID": {
+    "regex": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$"
+  },
+  "NFType": {
+    "enum": [
+      "NRF",
+      "UDM",
+      "AMF",
+      "SMF",
+      "AUSF",
+      "NEF",
+      "PCF",
+      "SMSF",
+      "NSSF",
+      "UDR",
+      "LMF",
+      "GMLC",
+      "5G_EIR",
+      "SEPP",
+      "UPF",
+      "N3IWF",
+      "AF",
+      "UDSF",
+      "BSF",
+      "CHF",
+      "NWDAF",
+      "PCSCF",
+      "CBCF",
+      "HSS",
+      "UCMF",
+      "SOR_AF",
+      "SPAF",
+      "MME",
+      "SCSAS",
+      "SCEF",
+      "SCP",
+      "NSSAAF",
+      "ICSCF",
+      "SCSCF",
+      "DRA",
+      "IMS_AS",
+      "AANF",
+      "5G_DDNMF",
+      "NSACF",
+      "MFAF",
+      "EASDF",
+      "DCCF",
+      "MB_SMF",
+      "TSCTSF",
+      "ADRF",
+      "GBA_BSF",
+      "CEF",
+      "MB_UPF",
+      "NSWOF",
+      "PKMF",
+      "MNPF",
+      "SMS_GMSC",
+      "SMS_IWMSC",
+      "MBSF",
+      "MBSTF",
+      "PANF"
+    ]
+  },
+  "PlmnId": {
+    "mandatory_attributes": {
+      "mcc": "Mcc",
+      "mnc": "Mnc"
+    },
+    "optional_attributes": {}
+  },
+  "PlmnIdNid": {
+    "mandatory_attributes": {
+      "mcc": "Mcc",
+      "mnc": "Mnc"
+    },
+    "optional_attributes": {
+      "nid": "Nid"
+    }
+  },
+  "Mcc": {
+    "regex": "^[0-9]{3}$"
+  },
+  "Mnc": {
+    "regex": "^[0-9]{2,3}$"
+  },
+  "Snssai": {
+    "mandatory_attributes": {
+      "sst": "integer"
+    },
+    "optional_attributes": {
+      "sd": "SlideDifferentiator"
+    }
+  },
+  "SlideDifferentiator": {
+    "regex": "^[A-Fa-f0-9]{6}$"
+  },
+  "Nid": {
+    "regex": "^[A-Fa-f0-9]{11}$"
+  },
+  "AccessTokenRsp": {
+    "mandatory_attributes": {
+      "access_token": "string",
+      "token_type": "TokenType",
+      "expires_in": "integer"
+    },
+    "optional_attributes": {
+      "scope": "string"
+    }
+  },
+  "GrantType": {
+    "enum": ["client_credentials"]
+  },
+  "TokenType": {
+    "enum": ["Bearer"]
+  },
+  "AccessTokenErr": {
+    "mandatory_attributes": {
+      "error": "ErrorType"
+    },
+    "optional_attributes": {
+      "error_description": "string",
+      "error_uri": "string"
+    }
+  },
+  "ErrorType": {
+    "enum": [
+      "invalid_request",
+      "invalid_client",
+      "invalid_grant",
+      "unauthorized_client",
+      "unsupported_grant_type",
+      "invalid_scope"
+    ]
+  },
+  "APIProviderEnrolmentDetails": {
+    "mandatory_attributes": {
+      "regSec": "string",
+      "apiProvDomId": "string"
+    },
+    "optional_attributes": {
+      "apiProvFuncs": "APIProviderFunctionDetails",
+      "apiProvDomInfo": "string",
+      "suppFeat": "SupportedFeatures",
+      "failReason": "string"
+    }
+  },
+  "APIProviderFunctionDetails": {
+    "mandatory_attributes": {
+      "regInfo": "RegistrationInformation",
+      "apiProvFuncRole": "ApiProviderFuncRole",
+      "apiProvFuncId": "string"
+    },
+    "optional_attributes": {
+      "apiProvFuncInfo": "string"
+    }
+  },
+  "RegistrationInformation": {
+    "mandatory_attributes": {
+      "apiProvPubKey": "string",
+      "apiProvCert": "string"
+    },
+    "optional_attributes": {}
+  },
+  "ApiProviderFuncRole": {
+    "enum": ["AEF", "APF", "AMF"]
+  },
+  "InvocationLog": {
+    "mandatory_attributes": {
+      "aefId": "string",
+      "apiInvokerId": "string",
+      "logs": "Log"
+    },
+    "optional_attributes": {
+      "log_id":"string",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "Log": {
+    "mandatory_attributes": {
+      "apiId": "string",
+      "apiName": "string",
+      "apiVersion": "string",
+      "resourceName": "string",
+      "protocol": "Protocol",
+      "result": "string"
+    },
+    "optional_attributes": {
+      "log_id": "string",
+      "uri": "URI",
+      "operation": "Operation",
+      "invocationTime": "string",
+      "invocationLatency": "integer",
+      "inputParameters": "Any",
+      "outputParameters": "Any",
+      "srcInterface": "InterfaceDescription",
+      "destInterface": "InterfaceDescription",
+      "fwdInterface": "string",
+      "supportedFeatures": "SupportedFeatures"
+    }
+  },
+  "Any": {
+    "Check": false
+  }
+}
