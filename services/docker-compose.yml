@@ -25,16 +25,16 @@ services:
     restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_invoker_management_api:latest
     depends_on:
-    - redis
-    - nginx
+      - redis
   api-provider-management:
     build: TS29222_CAPIF_API_Provider_Management_API/.
     expose:
       - "8080"
+    restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/api_provider_management_api:latest
     depends_on:
+      - api-invoker-management
       - redis
-      - nginx
 #  access-control-policy:
 #    build: TS29222_CAPIF_Access_Control_Policy_API/.
 #    expose:
@@ -64,6 +64,7 @@ services:
       - "8080"
     volumes:
       - ./TS29222_CAPIF_Events_API:/usr/src/app
+    restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/events_api:latest
     depends_on:
       - redis
@@ -93,6 +94,7 @@ services:
     build: TS29222_CAPIF_Routing_Info_API/.
     expose:
       - "8080"
+    restart: unless-stopped
     image: dockerhub.hi.inet/evolved-5g/capif/routing_info_api:latest
   capif-security:
     build: TS29222_CAPIF_Security_API/.
@@ -108,7 +110,6 @@ services:
       - host.docker.internal:host-gateway
     depends_on:
       - redis
-      - nginx
   easy-rsa:
     build:
       context: ./easy_rsa
@@ -167,18 +168,17 @@ services:
       - ./nginx/certs:/etc/nginx/certs
     restart: unless-stopped
     depends_on:
-      #- api-invoker-management
+      - api-invoker-management
+      - api-provider-management
       - easy-rsa
       - redis
 #      - aef-security
-#      - api-invoker-management
-      #- api-provider-management
 #      - access-control-policy
       - service-apis
       - api-invocation-logs
       - published-apis
-#      - capif-routing-info
-      #- capif-security
+      - capif-routing-info
+      - capif-security
       - capif-events
       - logs
 
