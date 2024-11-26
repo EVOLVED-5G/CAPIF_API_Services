@@ -1,3 +1,5 @@
+This resporitory is archived, the project was moved to ETSI Labs, please follow this link to reach latest code version [ETSI Gitlab](https://labs.etsi.org/rep/ocf/capif), and for further information check [OCF Webpage](https://ocf.etsi.org/)
+
 # Common API Framework (CAPIF)
 
 - [Common API Framework (CAPIF)](#common-api-framework-capif)
