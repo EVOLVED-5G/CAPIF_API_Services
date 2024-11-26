@@ -1,0 +1,51 @@
+
+name: Analyze pull request
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - '!develop'
+      - '**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup sonarqube
+        uses: warchant/setup-sonar-scanner@v1
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: True
+
+      - name: 'Checkout repository on branch: ${{ github.REF }}'
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.HEAD_REF }}
+      - name: Setup sonarqube
+        uses: actions/setup-python@v2.2.1 
+         
+
+      - name: Retrieve entire repository history
+        run: |
+          git fetch --prune --unshallow
+      - name: Run an analysis of the PR
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: True
+        run: sonar-scanner
+          -Dsonar.host.url=http://195.235.92.134:9000
+          -Dsonar.login=f353f8d8949598ed6edb2a484ee1cbdadf82f8bb
+          -Dsonar.projectKey=Evolved5g-CAPIF
+          -Dsonar.scanner.appVersion=4.4.0.2170
+          -Dsonar.sourceEncoding=UTF-8
+          -Dsonar.verbose=true
+          -Dsonar.sources=.
+          -Dsonar.scanner.app=ScannerCLI
+          -Dsonar.pullrequest.key=${{ github.event.number }}
+          -Dsonar.pullrequest.branch=${{ github.HEAD_REF }}
+          -Dsonar.pullrequest.base=${{ github.BASE_REF }}
+          -Dsonar.pullrequest.github.repository=${{ github.repository }}
+          -Dsonar.scm.provider=git
+          -Dsonar.language=python 
+          -Dsonar.sourceEncoding=UTF-8
